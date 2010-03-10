@@ -16,7 +16,7 @@ describe MonthlyRule, 'occurs_on?' do
   it 'should produce the correct number of days for @interval = 1 with only weekends' do
     start_date = WEDNESDAY
     schedule = Schedule.new(start_date)
-    schedule.add_recurrence_rule Rule.weekly.day_of_week(:saturday, :sunday)
+    schedule.add_recurrence_rule Rule.weekly.day(:saturday, :sunday)
     #check assumption
     schedule.occurrences(start_date + 7 * 4).count.should == 8
   end
@@ -24,7 +24,7 @@ describe MonthlyRule, 'occurs_on?' do
   it 'should produce the correct number of days for @interval = 2 with only one day per week' do
     start_date = WEDNESDAY
     schedule = Schedule.new(start_date)
-    schedule.add_recurrence_rule Rule.weekly.day_of_week(:thursday)
+    schedule.add_recurrence_rule Rule.weekly.day(:thursday)
     #check assumption
     schedule.occurrences(start_date + 7 * 4).count.should == 4
   end

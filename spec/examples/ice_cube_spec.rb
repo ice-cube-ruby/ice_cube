@@ -34,7 +34,7 @@ describe Schedule, 'occurs_on?' do
   it 'should return properly with a combination of a recurrence and exception rule' do
     schedule = Schedule.new(Date.today)
     schedule.add_recurrence_rule Rule.daily # every day
-    schedule.add_exception_rule Rule.weekly.day_of_week(:monday, :tuesday, :wednesday) # except these
+    schedule.add_exception_rule Rule.weekly.day(:monday, :tuesday, :wednesday) # except these
     #check assumption - in 2 weeks, we should have 8 days
     schedule.occurrences(Date.today + 13).count.should == 8
   end

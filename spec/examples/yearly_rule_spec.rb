@@ -2,6 +2,14 @@ require 'ice_cube.rb'
 include IceCube
 
 describe YearlyRule, 'occurs_on?' do
+
+  it 'should be able to specify complex yearly rules' do
+    start_date = Date.today
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.yearly.month_of_year(:april).day_of_week(:monday => [1, -1])
+    #check assumption - over 2 years should be 4
+    schedule.occurrences(start_date + 366 * 2).count.should == 4
+  end
   
   it 'should produce the correct number of days for @interval = 1' do
     start_date = Date.today

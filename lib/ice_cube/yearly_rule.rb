@@ -1,6 +1,6 @@
 module IceCube
 
-  class YearlyRule < Rule
+  class YearlyRule < MonthlyRule
 
     # Specify what months of the year this rule applies to.  
     # ie: Schedule.yearly(2).month_of_year(:january, :march) would create a
@@ -30,12 +30,6 @@ module IceCube
       end
       self
     end
-
-    # first and last mondays of april and september    
-    def day_of_week(days)
-
-
-    end
     
     # Determine whether or not the rule, given a start_date,
     # occurs on a given date.
@@ -45,13 +39,17 @@ module IceCube
     # and expect to roll into the next year (this might be a possible direction in the future)
     def occurs_on?(date, start_date)
       return false unless validate(date, start_date)
-      #by default, yearly basis uses day and month of start date
-      if @days_of_year
-        days_in_year = Date.civil(date.year, 12, -1).yday
-        return false unless @days_of_year.include?(date.yday) || @days_of_year.include?(date.yday - days_in_year - 1)
-      elsif @months_of_year
-        return false unless @months_of_year.include?(date.month) and date.day == start_date.day
-      else
+      return false unless validate_days(date)
+      return false unless validate_days_of_year(date)
+      return false unless validate_days_of_week(date)
+      return false unless validate_days_of_month(date)
+      return false unless validate_months_of_year(date)
+      # if only months of year is specified, it should only return the single day of start_date
+      unless @days_of_year || @days_of_month || @days_of_week
+        return false unless date.day == start_date.day
+      end
+      # fall back on making sure that the day falls on this exact day of the year
+      unless @months_of_year || @days_of_year
         return false unless date.month == start_date.month && date.day == start_date.day
       end
       #make sure we're in the proper interval
@@ -68,6 +66,19 @@ module IceCube
       else
         beginning
       end
+    end
+
+  private
+
+    def validate_months_of_year(date)
+      return true unless @months_of_year
+      @months_of_year.include?(date.month)
+    end
+
+    def validate_days_of_year(date)
+      return true unless @days_of_year
+      days_in_year = Date.civil(date.year, 12, -1).yday
+      @days_of_year.include?(date.yday) || @days_of_year.include?(date.yday - days_in_year - 1)
     end
     
   end
