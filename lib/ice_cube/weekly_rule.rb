@@ -39,7 +39,7 @@ module IceCube
     end
 
   private
-
+    
     def validate_days(date)
       return true unless @days
       @days.include?(date.wday)

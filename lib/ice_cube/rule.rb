@@ -36,7 +36,7 @@ module IceCube
       throw ArgumentError.new('Interval must be > 0') unless interval > 0
       @interval = interval
     end
-
+    
     # perform some basic validation
     def validate(date, start_date)
       return false if @until_date && (date > @until_date)

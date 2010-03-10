@@ -14,7 +14,7 @@ module IceCube
     def to_s
       "Every #{@interval} day(s)"
     end
-      
+    
   end
 
 end

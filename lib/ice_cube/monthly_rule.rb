@@ -40,7 +40,7 @@ module IceCube
       return false unless validate_days_of_month(date)
       # if we haven't performed any other validations, perform the default validation
       # which is to make sure that the day falls on the same day of the month as the start_date
-      unless @days_of_month || @days_of_week
+      unless @days_of_month || @days_of_week || @days
         return false unless date.mday == start_date.mday #TODO - document behavior when user wants 31st day
       end
       #make sure we're in the proper interval

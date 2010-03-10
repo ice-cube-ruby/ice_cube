@@ -45,11 +45,11 @@ module IceCube
       return false unless validate_days_of_month(date)
       return false unless validate_months_of_year(date)
       # if only months of year is specified, it should only return the single day of start_date
-      unless @days_of_year || @days_of_month || @days_of_week
+      unless @days_of_year || @days_of_month || @days_of_week || @days
         return false unless date.day == start_date.day
       end
       # fall back on making sure that the day falls on this exact day of the year
-      unless @months_of_year || @days_of_year
+      unless @months_of_year || @days_of_year || @days_of_week || @days_of_month || @days
         return false unless date.month == start_date.month && date.day == start_date.day
       end
       #make sure we're in the proper interval
