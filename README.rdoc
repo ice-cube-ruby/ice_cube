@@ -24,42 +24,42 @@ Individual rules may optionally specify an until date, which is a date that that
 
 There are 6 types of recurrence rules that can be added to a schedule:
 
-1. Daily
+==Daily==
 
 # every day
 schedule.addRecurrenceRule Rule.daily
 # every third day
 schedule.addRecurrenceRule Rule.daily(3)
 
-2. Weekly
+==Weekly==
 
 # every week
 schedule.addRecurrenceRule Rule.weekly
 # every other week on monday and tuesday
 schedule.addRecurrenceRule Rule.weekly(2).day_of_week(:monday, :tuesday) 
 
-3. Monthly (by day of month)
+==Monthly (by day of month)==
 
 # every month on the first and last days of the month
 schedule.addRecurrenceRule Rule.monthly.day_of_month(1, -1)
 # every other month on the 15th of the month
 schedule.addRecurrenceRule Rule.monthly(2).day_of_month(15)
 
-4. Monthly (by day of week)
+==Monthly (by day of week)==
 
 # every month on the first and last tuesdays of the month
 schedule.addRecurrenceRule Rule.monthly.day_of_week(:tuesday => [1, -1])
 # every other month on the first monday and last tuesday
 schedule.addRecurrenceRule Rule.monthly.day_of_week(:monday => [1], :tuesday => [-1])
 
-5. Yearly (by day of year)
+==Yearly (by day of year)==
 
 # every year on the 100th day from the beginning and end of the year
 schedule.addRecurrenceRule Rule.yearly.day_of_year(100, -100)
 # every fourth year on new year's eve
 schedule.addRecurrenceRule Rule.yearly(4).day_of_year(-1)
 
-6. Yearly (by month of year)
+==Yearly (by month of year)==
 
 # every year on the same day as start_date but in january and february
 schedule.addRecurrenceRule Rule.yearly.month_of_year(:january, :februrary)
