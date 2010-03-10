@@ -81,9 +81,17 @@ There are 6 types of recurrence rules that can be added to a schedule:
 
 ---
 
+==Combining rules
+
 Things start to get really powerful when you combine rules:
 
-Rule.yearly(2).day_of_week(:monday => [1, -1]).month_of_year(:june, july)
+    Rule.yearly(2).day_of_week(:monday => [1, -1]).month_of_year(:june, july)
+
+---
+
+===Coming Soon
+
+* Time recurrence
 
 ---
 
