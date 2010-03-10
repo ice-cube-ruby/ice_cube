@@ -39,25 +39,25 @@ module IceCube
     end
 
     # Add a rule of any type as an recurrence in this schedule
-    def addRecurrenceRule(rule)
+    def add_recurrence_rule(rule)
       raise ArgumentError.new('Argument must be a valid rule') unless rule.class < Rule
       @rrules << rule
     end
 
     # Add a rule of any type as an exception to this schedule
-    def addExceptionRule(rule)
+    def add_exception_rule(rule)
       raise ArgumentError.new('Argument must be a valid rule') unless rule.class < Rule
       @exrules << rule
     end
 
     # Add an individual date to this schedule
-    def addRecurrenceDate(date)
+    def add_recurrence_date(date)
       raise ArgumentError.new('Argument must be a valid date') unless date.class == Date
       @rdates << date
     end
 
     # Add an individual date exception to this schedule
-    def addExceptionDate(date)
+    def add_exception_date(date)
       raise ArgumentError.new('Argument must be a valid date') unless date.class == Date
       @exdates << date
     end

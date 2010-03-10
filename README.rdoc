@@ -12,17 +12,17 @@ With ice_cube, you can specify (in order of precendence)
 EX: Specifying a exception/recurrence date:
 
     schedule = Schedule.new(start_date)
-    schedule.addRecurrenceDate(Date.today)
-    schedule.addExceptionDate(Date.today + 1)
+    schedule.add_recurrence_date(Date.today)
+    schedule.add_exception_date(Date.today + 1)
 
     # list all occurrences from start_date to end_date
-    occurrences = schedule.occurrences(end_date)
+    occurrences = schedule.occurrences(end_date) # [Date.today]
  
     # or between a certain range (still obeying the schedule's start date)
-    occurrences = schedule.occurrences_between(start_date, end_date)
+    occurrences = schedule.occurrences_between(start_date, end_date) # [Date.today]
 
     # or check just a single day
-    schedule.occurs_on?(Date.today)
+    schedule.occurs_on?(Date.today) # [Date.today]
 
 ---
 
@@ -38,46 +38,46 @@ There are 6 types of recurrence rules that can be added to a schedule:
 ===Daily
 
     # every day
-    schedule.addRecurrenceRule Rule.daily
+    schedule.add_recurrence_rule Rule.daily
 
     # every third day
-    schedule.addRecurrenceRule Rule.daily(3)
+    schedule.add_recurrence_rule Rule.daily(3)
 
 ===Weekly
 
     # every week
-    schedule.addRecurrenceRule Rule.weekly
+    schedule.add_recurrence_rule Rule.weekly
 
     # every other week on monday and tuesday
-    schedule.addRecurrenceRule Rule.weekly(2).day_of_week(:monday, :tuesday) 
+    schedule.add_recurrence_rule Rule.weekly(2).day_of_week(:monday, :tuesday) 
 
 ===Monthly (by day of month)
 
     # every month on the first and last days of the month
-    schedule.addRecurrenceRule Rule.monthly.day_of_month(1, -1)
+    schedule.add_recurrence_rule Rule.monthly.day_of_month(1, -1)
     # every other month on the 15th of the month
-    schedule.addRecurrenceRule Rule.monthly(2).day_of_month(15)
+    schedule.add_recurrence_rule Rule.monthly(2).day_of_month(15)
 
 ===Monthly (by day of week)
 
     # every month on the first and last tuesdays of the month
-    schedule.addRecurrenceRule Rule.monthly.day_of_week(:tuesday => [1, -1])
+    schedule.add_recurrence_rule Rule.monthly.day_of_week(:tuesday => [1, -1])
     # every other month on the first monday and last tuesday
-    schedule.addRecurrenceRule Rule.monthly.day_of_week(:monday => [1], :tuesday => [-1])
+    schedule.add_recurrence_rule Rule.monthly(2).day_of_week(:monday => [1], :tuesday => [-1])
 
 ===Yearly (by day of year)
 
     # every year on the 100th day from the beginning and end of the year
-    schedule.addRecurrenceRule Rule.yearly.day_of_year(100, -100)
+    schedule.add_recurrence_rule Rule.yearly.day_of_year(100, -100)
     # every fourth year on new year's eve
-    schedule.addRecurrenceRule Rule.yearly(4).day_of_year(-1)
+    schedule.add_recurrence_rule Rule.yearly(4).day_of_year(-1)
 
 ===Yearly (by month of year)
 
     # every year on the same day as start_date but in january and february
-    schedule.addRecurrenceRule Rule.yearly.month_of_year(:january, :februrary)
+    schedule.add_recurrence_rule Rule.yearly.month_of_year(:january, :februrary)
     # every third year in march
-    schedule.addRecurrenceRule Rule.yearly(3).month_of_year(:march)
+    schedule.add_recurrence_rule Rule.yearly(3).month_of_year(:march)
 
 ---
 
@@ -85,15 +85,15 @@ You can easily combine rules to generate more complicated sets
 
     # every two years, on july 13th, but only if its a wednesday
     schedule = Schedule.new(Date.civil(2010, 7, 13))
-    schedule.addRecurrenceRule Rule.yearly(2).month_of_year(:july)
-    schedule.addRecurrenceRule Rule.monthly.day_of_month(13)
-    schedule.addRecurrenceRule Rule.weekly.day_of_week(:wednesday)
+    schedule.add_recurrence_rule Rule.yearly(2).month_of_year(:july)
+    schedule.add_recurrence_rule Rule.monthly.day_of_month(13)
+    schedule.add_recurrence_rule Rule.weekly.day_of_week(:wednesday)
 
 Or combine rules and exceptions
 
     # every three years, every day in april, except the tuesdays and thursdays
-    schedule.addRecurrenceRule Rule.daily
-    schedule.addExceptionRule Rule.weekly.day_of_week(:tuesday, :thursday)
+    schedule.add_recurrence_rule Rule.daily
+    schedule.add_exception_rule Rule.weekly.day_of_week(:tuesday, :thursday)
 
 ---
 
