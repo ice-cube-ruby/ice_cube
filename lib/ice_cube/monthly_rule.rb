@@ -2,12 +2,10 @@ module IceCube
 
   class MonthlyRule < Rule
 
-    # Specify the day9s) of the month that this rule should
+    # Specify the days of the month that this rule should
     # occur on.  ie: rule.day_of_month(1, -1) would mean that
     # this rule should occur on the first and last day of every month.
-    # Note: you cannot specify both a day_of_month and day_of_week
     def day_of_month(*days)
-      raise ArgumentError.new('Cannot specify day of week AND day of month') if @days_of_week
       @days_of_month ||= []
       days.each do |day|
         raise ArgumentError.new('Argument must be a valid date') if day.abs > 31 
@@ -20,9 +18,7 @@ module IceCube
     # Specify the day(s) of the week that this rule should occur
     # on.  ie: rule.day_of_week(:monday => [1, -1]) would mean
     # that this rule should occur on the first and last mondays of each month.
-    # Note: you cannot specify both a day_of_week and day_of_month
     def day_of_week(days)
-      raise ArgumentError.new('Cannot specify day of week AND day of month') if @days_of_month
       @days_of_week ||= {}
       days.each do |day, occurrences|
         raise ArgumentError.new('Argument must be a valid day') unless DAYS.has_key?(day)
@@ -40,17 +36,22 @@ module IceCube
     def occurs_on?(date, start_date) 
       return false unless validate(date, start_date)
       number_of_days_in_month = Date.civil(date.year, date.month, -1).day
-      #by default, monthly basis uses day in month
+      # make sure the day in questions falls on a proper day of the week
       if @days_of_week
         return false unless @days_of_week.has_key?(date.wday)
         first_occurrence = ((7 - Date.civil(date.year, date.month, 1).wday) + date.wday) % 7 + 1 #day of first occurrence of a wday in a month
         this_weekday_in_month_count = ((number_of_days_in_month - first_occurrence + 1) / 7.0).ceil #how many of these in the month
         nth_occurrence_of_weekday = (date.mday - first_occurrence) / 7 + 1 #what occurrence of the weekday is +date+
         return false unless @days_of_week[date.wday].include?(nth_occurrence_of_weekday) || @days_of_week[date.wday].include?(nth_occurrence_of_weekday - this_weekday_in_month_count - 1)
-      else
-        days_of_month = @days_of_month || [[start_date.mday, number_of_days_in_month].min]
-        #check all negative/positive day numbers
-        return false unless days_of_month.include?(date.mday - number_of_days_in_month - 1) || days_of_month.include?(date.mday)
+      end
+      # make sure the day in question falls on a proper day of the month
+      if @days_of_month
+        return false unless @days_of_month.include?(date.mday - number_of_days_in_month - 1) || @days_of_month.include?(date.mday)
+      end
+      # if we haven't performed any other validations, perform the default validation
+      # which is to make sure that the day falls on the same day of the month as the start_date
+      unless @days_of_month || @days_of_week
+        return false unless date.mday == [start_date.mday, number_of_days_in_month].min #TODO - rethink?
       end
       #make sure we're in the proper interval
       months_to_start_date = (date.month - start_date.month) + (date.year - start_date.year) * 12

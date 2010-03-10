@@ -31,6 +31,12 @@ module IceCube
       self
     end
 
+    # first and last mondays of april and september    
+    def day_of_week(days)
+
+
+    end
+    
     # Determine whether or not the rule, given a start_date,
     # occurs on a given date.
     # Yearly occurs if we're in a proper interval
