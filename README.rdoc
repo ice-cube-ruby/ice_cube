@@ -1,0 +1,84 @@
+ice_cube is a ruby library for easily handling repeated events (schedules).  The API is modeled after iCalendar repeated dates.  The power lies in the ability to specify multiple rules and dates, and have ice_cube quickly figure out whether the schedule falls on a certain date (.occurs_on?) or what dates in a range the schedule meets (.occurrences / .occurrences_between).
+
+With ice_cube, you can specify (in order of precendence)
+
+* Exception Dates - Dates to specifically exclude from a schedule
+* Recurrence Dates - Dates to specifically include in a schedule
+* Exception Rules - Rules on how to exclude recurring dates in a schedule
+* Recurrence Rules - Rules on how to include recurring dates in a schedule
+
+EX: Specifying a exception/recurrence date:
+
+schedule = Schedule.new(start_date)
+schedule.addRecurrenceDate(Date.today)
+schedule.addExceptionDate(Date.today + 1)
+
+---
+
+Schedules must have a start date, this allows all occurs_on? calculations to be run in constant time.
+All rules are based off of the schedule's start date.  
+
+Individual rules may optionally specify an until date, which is a date that that individual rule is no longer effective.
+
+---
+
+There are 6 types of recurrence rules that can be added to a schedule:
+
+1. Daily
+
+# every day
+schedule.addRecurrenceRule Rule.daily
+# every third day
+schedule.addRecurrenceRule Rule.daily(3)
+
+2. Weekly
+
+# every week
+schedule.addRecurrenceRule Rule.weekly
+# every other week on monday and tuesday
+schedule.addRecurrenceRule Rule.weekly(2).day_of_week(:monday, :tuesday) 
+
+3. Monthly (by day of month)
+
+# every month on the first and last days of the month
+schedule.addRecurrenceRule Rule.monthly.day_of_month(1, -1)
+# every other month on the 15th of the month
+schedule.addRecurrenceRule Rule.monthly(2).day_of_month(15)
+
+4. Monthly (by day of week)
+
+# every month on the first and last tuesdays of the month
+schedule.addRecurrenceRule Rule.monthly.day_of_week(:tuesday => [1, -1])
+# every other month on the first monday and last tuesday
+schedule.addRecurrenceRule Rule.monthly.day_of_week(:monday => [1], :tuesday => [-1])
+
+5. Yearly (by day of year)
+
+# every year on the 100th day from the beginning and end of the year
+schedule.addRecurrenceRule Rule.yearly.day_of_year(100, -100)
+# every fourth year on new year's eve
+schedule.addRecurrenceRule Rule.yearly(4).day_of_year(-1)
+
+6. Yearly (by month of year)
+
+# every year on the same day as start_date but in january and february
+schedule.addRecurrenceRule Rule.yearly.month_of_year(:january, :februrary)
+# every third year in march
+schedule.addRecurrenceRule Rule.yearly(3).month_of_year(:march)
+
+---
+
+You can easily combine rules to generate more complicated sets
+
+# every two years, on july 13th, but only if its a wednesday
+schedule = Schedule.new(Date.civil(2010, 7, 13))
+schedule.addRecurrenceRule Rule.yearly(2).month_of_year(:july)
+schedule.addRecurrenceRule Rule.monthly.day_of_month(13)
+schedule.addRecurrenceRule Rule.weekly.day_of_week(:wednesday)
+
+Or combine rules and exceptions
+
+# every three years, every day in april, except the tuesdays and thursdays
+
+schedule.addRecurrenceRule Rule.daily
+schedule.addExceptionRule Rule.weekly.day_of_week(:tuesday, :thursday)
