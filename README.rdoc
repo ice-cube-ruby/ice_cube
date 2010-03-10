@@ -16,9 +16,7 @@ schedule.addExceptionDate(Date.today + 1)
 ---
 
 Schedules must have a start date, this allows all occurs_on? calculations to be run in constant time.
-All rules are based off of the schedule's start date.  
-
-Individual rules may optionally specify an until date, which is a date that that individual rule is no longer effective.
+All rules are based off of the schedule's start date.  Individual rules may optionally specify an until date, which is a date that that individual rule is no longer effective.
 
 ---
 
@@ -26,7 +24,7 @@ There are 6 types of recurrence rules that can be added to a schedule:
 
 ===Daily
 
-# every day
+# every day<br>
 schedule.addRecurrenceRule Rule.daily
 # every third day
 schedule.addRecurrenceRule Rule.daily(3)
