@@ -49,30 +49,4 @@ describe Schedule, 'occurs_on?' do
     dates.should_not include(Date.today + 1)
   end
 
-  it 'should be able to handle a complex rule from the README' do
-    schedule = Schedule.new(Date.civil(2010, 7, 13))
-    schedule.add_recurrence_rule Rule.yearly
-    schedule.add_recurrence_rule Rule.weekly.day_of_week(:sunday)
-    #check assumption
-    dates = schedule.occurrences(Date.civil(2030, 01, 01))
-    dates.count.should > 0
-    dates.each do |date|
-      date.wday.should == 0
-      date.mday.should == 13
-    end
-  end
-
-  it 'should be able to handle a complex rule from the README with exceptions' do
-    schedule = Schedule.new(Date.civil(2010, 01, 01))
-    schedule.add_exception_rule Rule.weekly.day_of_week(:tuesday, :thursday)
-    schedule.add_recurrence_rule Rule.daily
-    #check assumptions
-    dates = schedule.occurrences(Date.civil(2011, 01, 01))
-    dates.count.should > 0
-    dates.each do |date|
-      date.wday.should_not == 2
-      date.wday.should_not == 4
-    end
-  end
-  
 end

@@ -24,7 +24,7 @@ module IceCube
       return true if @rdates.include?(date)
       #check rules
       return false if @exrules.any? { |rule| rule.occurs_on?(date, @start_date) }
-      @rrules.all? { |rule| rule.occurs_on?(date, @start_date) } && !@rrules.empty?
+      @rrules.any? { |rule| rule.occurs_on?(date, @start_date) } && !@rrules.empty?
     end
 
     # Find all occurrences (following rules and exceptions) from start_date to end_date

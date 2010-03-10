@@ -81,22 +81,6 @@ There are 6 types of recurrence rules that can be added to a schedule:
 
 ---
 
-You can easily combine rules to generate more complicated sets
-
-    # every two years, on july 13th, but only if its a wednesday
-    schedule = Schedule.new(Date.civil(2010, 7, 13))
-    schedule.add_recurrence_rule Rule.yearly(2).month_of_year(:july)
-    schedule.add_recurrence_rule Rule.monthly.day_of_month(13)
-    schedule.add_recurrence_rule Rule.weekly.day_of_week(:wednesday)
-
-Or combine rules and exceptions
-
-    # every three years, every day in april, except the tuesdays and thursdays
-    schedule.add_recurrence_rule Rule.daily
-    schedule.add_exception_rule Rule.weekly.day_of_week(:tuesday, :thursday)
-
----
-
 ===License
 
 (The MIT License)
