@@ -83,7 +83,7 @@ Or combine rules and exceptions
 schedule.addRecurrenceRule Rule.daily
 schedule.addExceptionRule Rule.weekly.day_of_week(:tuesday, :thursday)
 
---
+---
 
 ===License
 
