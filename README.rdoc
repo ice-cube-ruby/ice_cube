@@ -2,6 +2,18 @@
 
 ice_cube is a ruby library for easily handling repeated events (schedules).  The API is modeled after iCalendar repeated dates.  The power lies in the ability to specify multiple rules and dates, and have ice_cube quickly figure out whether the schedule falls on a certain date (.occurs_on?) or what dates in a range the schedule meets (.occurrences / .occurrences_between).
 
+Imagine you want:
+
+    Every third monday and the first and last tuesdays in every month - but you really don't want tuesday if it falls in the months of february and march
+
+You would write:
+
+    schedule.add_recurrence_rule Rule.weekly(3).day(:monday)
+    schedule.add_recurrence_rule Rule.monthly.day_of_week(:tuesday => [1, -1])
+    schedule.add_exception_rule Rule.yearly.month_of_year(:february, :march).day(:tuesday)
+
+---
+
 With ice_cube, you can specify (in order of precendence)
 
 * Exception Dates - Dates to specifically exclude from a schedule

@@ -13,6 +13,35 @@ describe Schedule, 'to_yaml' do
 end
 
 describe Schedule, 'occurs_on?' do
+
+  it 'README' do
+    start_date = Date.civil(2010, 1, 1)
+    end_date = Date.civil(2010, 12, -1)
+    schedule = Schedule.new(start_date)
+    #every monday, and the first and last tuesdays, with the exception of april
+    #where we will have ALL tuesdays, except tuesday the 20th and all mondays in february/march
+    schedule.add_recurrence_rule Rule.weekly.day(:monday)
+    schedule.add_recurrence_rule Rule.monthly.day_of_week(:tuesday => [1, -1])
+    schedule.add_recurrence_rule Rule.yearly.month_of_year(:april).day(:tuesday)
+    schedule.add_exception_date Date.civil(2010, 4, 20)
+    schedule.add_exception_rule Rule.yearly.month_of_year(:february, :march).day(:tuesday)
+    #check assumptions
+    dates = schedule.occurrences(Date.civil(2010, 12, -1)) # whole year
+    dates.count.should == 73 # todo - document and move to README as example
+  end
+  
+  it 'should respond to complex combinations (1)' do
+    start_date = Date.civil(2010, 1, 1)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.yearly(2).day(:wednesday).month_of_year(:april)
+    #check assumptions
+    dates = schedule.occurrences(Date.civil(2011, 12, -1)) #two years
+    dates.each do |date|
+      date.wday.should == 3
+      date.month.should == 4
+      date.year.should == start_date.year #since we're doing every other
+    end
+  end
   
   it 'should respond to a single date event' do
     schedule = Schedule.new(Date.today)
