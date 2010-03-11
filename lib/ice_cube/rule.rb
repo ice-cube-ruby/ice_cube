@@ -102,8 +102,6 @@ module IceCube
       self
     end
     
-    ICAL_DAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
-    
     attr_accessor :occurrence_count
     
   private
