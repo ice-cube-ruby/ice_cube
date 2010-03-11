@@ -6,7 +6,7 @@ module IceCube
       @rrules = []
       @exrules = []
       @rdates = []
-      @exdates = [] #todo change these declarations to be not like this
+      @exdates = []
       @start_date = start_date
     end
 
@@ -37,9 +37,9 @@ module IceCube
     def occurrences(end_date)
       occurrences_between(@start_date, end_date)
     end
-
+     
     # Return an array of the first (count) occurrences after @start_date
-    # todo - guard infinite loop
+    # todo - guard infinite loop - maybe only allow use if until and count both exist in all rules - like .all_occurrences will be
     def first(count)
       so_far = 0
       dates = []

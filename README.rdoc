@@ -102,6 +102,8 @@ Things start to get really powerful when you combine rules:
 ===TODO
 
 * Time recurrence
+* Rollover dates - as implemented by RFC
+* Import and export to iCalendar format
 
 ---
 
