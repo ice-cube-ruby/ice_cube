@@ -123,5 +123,178 @@ describe Schedule, 'occurs_on?' do
     expectation << [8, 10, 12, 22, 24].map { |d| Date.civil(1997, 12, d) }
     dates.should == expectation.flatten
   end
+
+  it 'should ~ every other week on tuesday and thursday for 8 occurrences' do
+    start_date = Date.civil(1997, 9, 2)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.weekly(2).count(8).day(:tuesday, :thursday)
+    dates = schedule.occurrences(Date.civil(1997, 11, 1))
+    expectation = []
+    expectation << [2, 4, 16, 18, 30].map { |d| Date.civil(1997, 9, d) }
+    expectation << [2, 14, 16].map { |d| Date.civil(1997, 10, d) }
+    dates.should == expectation.flatten
+  end
+
+  it 'should ~ monthly on the 1st friday for ten occurrences' do
+    start_date = Date.civil(1997, 9, 5)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.monthly.count(10).day_of_week(:friday => [1])
+    dates = schedule.occurrences(Date.civil(1998, 7, 1))
+    expectation = [Date.civil(1997, 9, 5), Date.civil(1997, 10, 3), Date.civil(1997, 11, 7), Date.civil(1997, 12, 5), Date.civil(1998, 1, 2), Date.civil(1998, 2, 6), Date.civil(1998, 3, 6), Date.civil(1998, 4, 3), Date.civil(1998, 5, 1), Date.civil(1998, 6, 5)]
+    dates.should == expectation
+  end
+
+  it 'should ~ monthly on the first friday until december 24, 1997' do
+    start_date = Date.civil(1997, 9, 5)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.monthly.until(Date.civil(1997, 12, 24)).day_of_week(:friday => [1])
+    dates = schedule.occurrences(Date.civil(1998, 12, 24))
+    expectation = [Date.civil(1997, 9, 5), Date.civil(1997, 10, 3), Date.civil(1997, 11, 7), Date.civil(1997, 12, 5)]
+    dates.should == expectation
+  end
+
+  it 'should ~ every other month on the 1st and last sunday of the month for 10 occurrences' do
+    start_date = Date.civil(1997, 9, 7)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.monthly(2).count(10).day_of_week(:sunday => [1, -1])
+    dates = schedule.occurrences(Date.civil(1998, 12, 1))
+    expectation = [Date.civil(1997, 9, 7), Date.civil(1997, 9, 28), Date.civil(1997, 11, 2), Date.civil(1997, 11, 30), Date.civil(1998, 1, 4), Date.civil(1998, 1, 25), Date.civil(1998, 3, 1), Date.civil(1998, 3, 29), Date.civil(1998, 5, 3), Date.civil(1998, 5, 31)]
+    dates.should == expectation
+  end
+
+  it 'should ~ monthly on the second to last monday of the month for 6 months' do
+    start_date = Date.civil(1997, 9, 22)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.monthly.count(6).day_of_week(:monday => [-2])
+    dates = schedule.occurrences(Date.civil(1998, 3, 1))
+    expectation = [Date.civil(1997, 9, 22), Date.civil(1997, 10, 20), Date.civil(1997, 11, 17), Date.civil(1997, 12, 22), Date.civil(1998, 1, 19), Date.civil(1998, 2, 16)]
+    dates.should == expectation
+  end
+
+  it 'should ~ monthly on the third to last day of the month, 6 times' do
+    start_date = Date.civil(1997, 9, 28)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.monthly.count(6).day_of_month(-3)
+    dates = schedule.occurrences(Date.civil(1998, 2, 26))
+    expectation = [Date.civil(1997, 9, 28), Date.civil(1997, 10, 29), Date.civil(1997, 11, 28), Date.civil(1997, 12, 29), Date.civil(1998, 1, 29), Date.civil(1998, 2, 26)]
+    dates.should == expectation
+  end
+
+  it 'should ~ monthly on the 2nd and 15th of the month for 10 occurrences' do
+    start_date = Date.civil(1997, 9, 2)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.monthly.count(10).day_of_month(2, 15)
+    dates = schedule.occurrences(Date.civil(1998, 1, 16))
+    expectation = [Date.civil(1997, 9, 2), Date.civil(1997, 9, 15), Date.civil(1997, 10, 2), Date.civil(1997, 10, 15), Date.civil(1997, 11, 2), Date.civil(1997, 11, 15), Date.civil(1997, 12, 2), Date.civil(1997, 12, 15), Date.civil(1998, 1, 2), Date.civil(1998, 1, 15)]
+    dates.should == expectation
+  end
+
+  it 'should ~ monthly on the 1st and last days of the month for 10 occurrences' do
+    start_date = Date.civil(1997, 9, 30)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.monthly.count(10).day_of_month(1, -1)
+    dates = schedule.occurrences(Date.civil(1998, 2, 2))
+    expectation = [Date.civil(1997, 9, 30), Date.civil(1997, 10, 1), Date.civil(1997, 10, 31), Date.civil(1997, 11, 1), Date.civil(1997, 11, 30), Date.civil(1997, 12, 1), Date.civil(1997, 12, 31), Date.civil(1998, 1, 1), Date.civil(1998, 1, 31), Date.civil(1998, 2, 1)]
+    dates.should == expectation
+  end
+
+  it 'should ~ every 18 months on the 10th through the 15th of the month for 10 occurrences' do
+    schedule = Schedule.new(Date.civil(1997, 9, 10))
+    schedule.add_recurrence_rule Rule.monthly(18).count(10).day_of_month(10, 11, 12, 13, 14, 15)
+    dates = schedule.occurrences(Date.civil(1999, 12, 1))
+    expectation = []
+    expectation << [10, 11, 12, 13, 14, 15].map { |d| Date.civil(1997, 9, d) }
+    expectation << [10, 11, 12, 13].map { |d| Date.civil(1999, 3, d) }
+    dates.should == expectation.flatten
+  end
+
+  it 'should ~ every tuesday, every other month' do
+    schedule = Schedule.new(Date.civil(1997, 9, 2))
+    schedule.add_recurrence_rule Rule.monthly(2).day(:tuesday)
+    dates = schedule.occurrences(Date.civil(1998, 4, 1))
+    expectation = []
+    expectation << [2, 9, 16, 23, 30].map { |d| Date.civil(1997, 9, d) }
+    expectation << [4, 11, 18, 25].map { |d| Date.civil(1997, 11, d) }
+    expectation << [6, 13, 20, 27].map { |d| Date.civil(1998, 1, d) }
+    expectation << [3, 10, 17, 24, 31].map { |d| Date.civil(1998, 3, d) }
+    dates.should == expectation.flatten
+  end
+
+  it 'should ~ yearly in june and july for 10 occurrences' do
+    schedule = Schedule.new(Date.civil(1997, 6, 10))
+    schedule.add_recurrence_rule Rule.yearly.count(10).month_of_year(:june, :july)
+    dates = schedule.occurrences(Date.civil(2001, 8, 1))
+    expectation = []
+    (1997..2001).each do |year|
+      expectation << Date.civil(year, 6, 10)
+      expectation << Date.civil(year, 7, 10)
+    end
+    dates.should == expectation.flatten
+  end
+
+  it 'should ~ every other year on january, feburary, and march for 10 occurrences' do
+    schedule = Schedule.new(Date.civil(1997, 3, 10))
+    schedule.add_recurrence_rule Rule.yearly(2).count(10).month_of_year(:january, :february, :march)
+    dates = schedule.occurrences(Date.civil(2003, 4, 1))
+    expectation = [Date.civil(1997, 3, 10), Date.civil(1999, 1, 10), Date.civil(1999, 2, 10), Date.civil(1999, 3, 10), Date.civil(2001, 1, 10), Date.civil(2001, 2, 10), Date.civil(2001, 3, 10), Date.civil(2003, 1, 10), Date.civil(2003, 2, 10), Date.civil(2003, 3, 10)]
+    dates.should == expectation
+  end
+
+  it 'should ~ every third year on the 1st, 100th and 200th day for 10 occurrences' do
+    schedule = Schedule.new(Date.civil(1997, 1, 1))
+    schedule.add_recurrence_rule Rule.yearly(3).count(10).day_of_year(1, 100, 200)
+    dates = schedule.occurrences(Date.civil(2006, 1, 2))
+    expectation = [Date.civil(1997, 1, 1), Date.civil(1997, 4, 10), Date.civil(1997, 7, 19), Date.civil(2000, 1, 1), Date.civil(2000, 4, 9), Date.civil(2000, 7, 18), Date.civil(2003, 1, 1), Date.civil(2003, 4, 10), Date.civil(2003, 7, 19), Date.civil(2006, 1, 1)]
+    dates.should == expectation
+  end
+
+  it 'should ~ every thursday in march, forever' do
+    schedule = Schedule.new(Date.civil(1997, 3, 13))
+    schedule.add_recurrence_rule Rule.yearly.month_of_year(:march).day(:thursday)
+    dates = schedule.occurrences(Date.civil(1999, 3, 25))
+    expectation = []
+    expectation << [13, 20, 27].map { |d| Date.civil(1997, 3, d) }
+    expectation << [5, 12, 19, 26].map { |d| Date.civil(1998, 3, d) }
+    expectation << [4, 11, 18, 25].map { |d| Date.civil(1999, 3, d) }
+    dates.should == expectation.flatten
+  end
+
+  it 'should ~ every thursday, but only during june, july, and august' do
+    schedule = Schedule.new(Date.civil(1997, 6, 5))
+    schedule.add_recurrence_rule Rule.yearly.day(:thursday).month_of_year(:june, :july, :august)
+    dates = schedule.occurrences(Date.civil(1998, 9, 1))
+    expectation = []
+    expectation << [5, 12, 19, 26].map { |d| Date.civil(1997, 6, d) }
+    expectation << [3, 10, 17, 24, 31].map { |d| Date.civil(1997, 7, d) }
+    expectation << [7, 14, 21, 28].map { |d| Date.civil(1997, 8, d) }
+    expectation << [4, 11, 18, 25].map { |d| Date.civil(1998, 6, d) }
+    expectation << [2, 9, 16, 23, 30].map { |d| Date.civil(1998, 7, d) }
+    expectation << [6, 13, 20, 27].map { |d| Date.civil(1998, 8, d) }
+    dates.should == expectation.flatten
+  end
+
+  it 'should ~ every friday the 13th' do
+    schedule = Schedule.new(Date.civil(1997, 9, 2))
+    schedule.add_recurrence_rule Rule.monthly.day(:friday).day_of_month(13)
+    dates = schedule.occurrences(Date.civil(2000, 10, 13))
+    expectation = [Date.civil(1998, 2, 13), Date.civil(1998, 3, 13), Date.civil(1998, 11, 13), Date.civil(1999, 8, 13), Date.civil(2000, 10, 13)]
+    dates.should == expectation
+  end
+
+  it 'should ~ the first saturday that follows the first sunday of the month' do
+    schedule = Schedule.new(Date.civil(1997, 9, 13))
+    schedule.add_recurrence_rule Rule.monthly.day(:saturday).day_of_month(7, 8, 9, 10, 11, 12, 13)
+    dates = schedule.occurrences(Date.civil(1997, 12, 13))
+    expectation = [Date.civil(1997, 9, 13), Date.civil(1997, 10, 11), Date.civil(1997, 11, 8), Date.civil(1997, 12, 13)]
+    dates.should == expectation
+  end
+
+  it 'should ~ every 4 years, the first tuesday after a monday in november (u.s. presidential election day)' do
+    schedule = Schedule.new(Date.civil(1996, 11, 5))
+    schedule.add_recurrence_rule Rule.yearly(4).month_of_year(:november).day(:tuesday).day_of_month(2, 3, 4, 5, 6, 7, 8)
+    dates = schedule.occurrences(Date.civil(2004, 11, 2))
+    expectation = [Date.civil(1996, 11, 5), Date.civil(2000, 11, 7), Date.civil(2004, 11, 2)]
+    dates.should == expectation
+  end
   
 end
