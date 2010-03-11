@@ -116,10 +116,10 @@ module IceCube
     
     # perform some basic validation
     def validate(date, start_date)
-      return false if @count && @occurrence_count >= @count
+      return false if @count && @occurrence_count >= @count # break rfc evaluation order for speed increase
       return false if @until_date && (date > @until_date)
       return false if date < start_date
-      #heavier validations
+      # execute validations in RFC 2445 order
       return false unless validate_months_of_year(date)
       return false unless validate_days_of_year(date)
       return false unless validate_days_of_month(date)

@@ -9,11 +9,6 @@ module IceCube
       day_count = (start_date...date).count
       day_count % @interval == 0
     end
-
-    # A meaningful string representation of this rule
-    def to_s
-      "Every #{@interval} day(s)"
-    end
     
   end
 
