@@ -24,6 +24,7 @@ module IceCube
 
     # Set the time when this rule will no longer be effective
     def until(until_date)
+      raise ArgumentError.new('Cannot specify until and count on the same rule') if @count
       raise ArgumentError.new('Argument must be a valid date') unless until_date.class == Date
       @until_date = until_date
       self
@@ -31,6 +32,7 @@ module IceCube
 
     # Set the count
     def count(count)
+      raise ArgumentError.new('Cannot specify count and until on the same rule') if @until_date
       raise ArgumentError.new('Argument must be an integer') unless Integer(count)
       @count = count
       self
