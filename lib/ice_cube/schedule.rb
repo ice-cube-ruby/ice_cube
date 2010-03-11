@@ -16,7 +16,7 @@ module IceCube
     # * Single date inclusions
     # * Rule exceptions
     # * Rule recurrences
-    def occurs_on?(date) #TODO - reordering the rules by yearly>month>week>date could give speed increase
+    def occurs_on?(date)
       #basic validation
       return false if @start_date > date
       #check dates

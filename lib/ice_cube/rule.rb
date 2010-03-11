@@ -114,7 +114,6 @@ module IceCube
       @occurrence_count = 0
     end
     
-    # perform some basic validation
     def validate(date, start_date)
       return false if @count && @occurrence_count >= @count # break rfc evaluation order for speed increase
       return false if @until_date && (date > @until_date)

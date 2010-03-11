@@ -15,15 +15,6 @@ module IceCube
       day_count = (start_date..date).count
       (day_count / 7) % @interval == 0
     end
-
-    # a meaningful representation of the rule
-    def to_s
-      if @days_of_week
-        "Every #{@interval} week(s), on (#{@days.join(', ')})"
-      else
-        "Every #{@interval} week(s)"
-      end
-    end
     
   end
 
