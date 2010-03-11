@@ -1,7 +1,7 @@
 module IceCube
   
   class Rule
-
+    
     # create a new daily rule
     def self.daily(interval = 1)
       DailyRule.new(interval)
@@ -28,17 +28,28 @@ module IceCube
       @until_date = until_date
       self
     end
-      
+
+    # Set the count
+    def count(count)
+      @count = count
+      self
+    end
+    
+    attr_accessor :occurrence_count
+    
   private
+
     # Set the interval for the rule.  Depending on the type of rule,
     # interval means every (n) weeks, months, etc. starting on the start_date's
     def initialize(interval)
       throw ArgumentError.new('Interval must be > 0') unless interval > 0
       @interval = interval
+      @occurrence_count = 0
     end
     
     # perform some basic validation
     def validate(date, start_date)
+      return false if @count && @occurrence_count >= @count
       return false if @until_date && (date > @until_date)
       return false if date < start_date
       true
