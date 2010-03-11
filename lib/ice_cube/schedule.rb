@@ -45,15 +45,12 @@ module IceCube
       dates = []
       date = @start_date
       while so_far < count
-        if occurs_on?(date)
-          dates << date
-          so_far += 1
-        end
+        (dates << date; so_far += 1) if occurs_on?(date)
         date = date.next
       end
       dates
     end
-    
+        
     # Add a rule of any type as an recurrence in this schedule
     def add_recurrence_rule(rule)
       raise ArgumentError.new('Argument must be a valid rule') unless rule.class < Rule
