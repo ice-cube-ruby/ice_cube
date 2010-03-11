@@ -1,9 +1,6 @@
-require 'ice_cube.rb'
-include IceCube
+require File.dirname(__FILE__) + '/spec_helper'
 
 describe DailyRule, 'occurs_on?' do
-
-  DAY = Date.civil(2010, 3, 1)
   
   it 'should produce the correct days for @interval = 1' do
     start_date = DAY
