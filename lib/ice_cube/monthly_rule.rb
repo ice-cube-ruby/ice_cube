@@ -23,6 +23,10 @@ module IceCube
       'FREQ=MONTHLY' << to_ical_base
     end
     
+    def to_s
+      to_ical
+    end
+    
   end
 
 end

@@ -14,6 +14,10 @@ module IceCube
       'FREQ=DAILY' << to_ical_base
     end
         
+    def to_s
+      to_ical
+    end
+        
   end
 
 end

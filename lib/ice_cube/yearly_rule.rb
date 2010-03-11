@@ -26,6 +26,10 @@ module IceCube
       'FREQ=YEARLY' << to_ical_base
     end
     
+    def to_s
+      to_ical
+    end
+    
   end
     
 end
