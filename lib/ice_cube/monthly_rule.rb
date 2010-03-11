@@ -12,7 +12,7 @@ module IceCube
       # if we haven't performed any other validations, perform the default validation
       # which is to make sure that the day falls on the same day of the month as the start_date
       unless has_obscure_validations?
-        return false unless date.mday == start_date.mday #TODO - document behavior when user wants 31st day
+        return false unless date.mday == start_date.mday #as per RFC, dates are skipped
       end
       #make sure we're in the proper interval
       months_to_start_date = (date.month - start_date.month) + (date.year - start_date.year) * 12

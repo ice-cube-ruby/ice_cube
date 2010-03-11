@@ -12,7 +12,7 @@ module IceCube
         return false unless date.wday == start_date.wday
       end
       #check to make sure we're in the right interval
-      day_count = (start_date...date).count
+      day_count = (start_date..date).count
       (day_count / 7) % @interval == 0
     end
 
@@ -24,10 +24,6 @@ module IceCube
         "Every #{@interval} week(s)"
       end
     end
-
-  private
-    
-
     
   end
 
