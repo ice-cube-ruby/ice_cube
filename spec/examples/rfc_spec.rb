@@ -46,14 +46,14 @@ describe Schedule, 'occurs_on?' do
     end
   end
 
-#  it 'should ~ everyday in january, for 3 years (b)' do
-#    schedule = Schedule.new(Date.civil(1998, 1, 1))
-#    schedule.add_recurrence_rule Rule.daily.month_of_year(:january).until(Date.civil(2000, 1, 31))
-#    dates = schedule.occurrences(Date.civil(2000, 1, 31))
-#    dates.each do |date|
-#      date.month.should == 1
-#      [1998, 1999, 2000].should include(date.year)
-#    end
-#  end
+  it 'should ~ everyday in january, for 3 years (b)' do
+    schedule = Schedule.new(Date.civil(1998, 1, 1))
+    schedule.add_recurrence_rule Rule.daily.month_of_year(:january).until(Date.civil(2000, 1, 31))
+    dates = schedule.occurrences(Date.civil(2000, 1, 31))
+    dates.each do |date|
+      date.month.should == 1
+      [1998, 1999, 2000].should include(date.year)
+    end
+  end
   
 end

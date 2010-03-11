@@ -36,6 +36,7 @@ describe Schedule, 'occurs_on?' do
     schedule.add_recurrence_rule Rule.yearly(2).day(:wednesday).month_of_year(:april)
     #check assumptions
     dates = schedule.occurrences(Date.civil(2011, 12, -1)) #two years
+    dates.count.should == 4
     dates.each do |date|
       date.wday.should == 3
       date.month.should == 4
