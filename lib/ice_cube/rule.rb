@@ -31,6 +31,7 @@ module IceCube
 
     # Set the count
     def count(count)
+      raise ArgumentError.new('Argument must be an integer') unless Integer(count)
       @count = count
       self
     end
