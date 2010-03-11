@@ -9,7 +9,11 @@ module IceCube
       day_count = (start_date...date).count
       day_count % @interval == 0
     end
-    
+      
+    def to_ical 
+      'FREQ=DAILY' << to_ical_base
+    end
+        
   end
 
 end

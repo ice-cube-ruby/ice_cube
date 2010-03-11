@@ -102,13 +102,42 @@ module IceCube
       self
     end
     
+    ICAL_DAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
+    
     attr_accessor :occurrence_count
     
   private
-
+    
+    #get the icalendar representation of this rule logic
+    def to_ical_base
+      representation = ''
+      representation << ";INTERVAL=#{@interval}" if @interval > 1
+      representation << ';BYMONTH=' << @months_of_year.join(',') if @months_of_year
+      representation << ';BYYEARDAY=' << @days_of_year.join(',') if @days_of_year
+      representation << ';BYMONTHDAY=' << @days_of_month.join(',') if @days_of_month
+      if @days || @days_of_week
+        representation << ';BYDAY='
+        days_of_week_dedup = @days_of_week.dup if @days_of_week
+        #put days on the string, remove all occurrences in days from days_of_week
+        if @days
+          @days.each { |day| days_of_week_dedup.delete(day) } if days_of_week_dedup
+          representation << (@days.map { |d| ICAL_DAYS[d]} ).join(',')
+        end 
+        representation << ',' if @days && @days_of_week
+        #put days_of_week on string representation
+        representation << days_of_week_dedup.inject([]) do |day_rules, pair|
+          day, occ = *pair
+          day_rules.concat(occ.map {|v| v.to_s + ICAL_DAYS[day]})
+        end.flatten.join(',') if days_of_week_dedup
+      end
+      representation << ";COUNT=#{@count}" if @count
+      representation << ";UNTIL=#{@until}" if @until_date
+      representation
+    end
+    
     # Set the interval for the rule.  Depending on the type of rule,
     # interval means every (n) weeks, months, etc. starting on the start_date's
-    def initialize(interval)
+    def initialize(interval = 1)
       throw ArgumentError.new('Interval must be > 0') unless interval > 0
       @interval = interval
       @occurrence_count = 0

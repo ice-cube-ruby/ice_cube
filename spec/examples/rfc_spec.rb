@@ -74,16 +74,17 @@ describe Schedule, 'occurs_on?' do
     expectation << [2, 9, 16, 23].map { |d| Date.civil(1997, 12, d) }
     dates.should == expectation.flatten
   end
+  
 
   it 'should ~ every other week' do
     start_date = Date.civil(1997, 9, 2)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.weekly(2)
     dates = schedule.occurrences(Date.civil(1997, 12, -1))
+    previous_date = dates.shift
     dates.each do |date|
-      (last_date = date; next) unless last_date
-      date.yday.should == last_date.yday + 14
-      last_date = date
+      date.yday.should == previous_date.yday + 14
+      previous_date = date
     end
   end
 

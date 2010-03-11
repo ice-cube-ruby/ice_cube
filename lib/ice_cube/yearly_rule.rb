@@ -22,6 +22,10 @@ module IceCube
       (date.year - start_date.year) % @interval == 0
     end
     
+    def to_ical 
+      'FREQ=YEARLY' << to_ical_base
+    end
+    
   end
     
 end

@@ -16,6 +16,10 @@ module IceCube
       (day_count / 7) % @interval == 0
     end
     
+    def to_ical 
+      'FREQ=WEEKLY' << to_ical_base
+    end
+    
   end
 
 end

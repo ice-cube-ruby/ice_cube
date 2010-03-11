@@ -19,6 +19,10 @@ module IceCube
       months_to_start_date % @interval == 0
     end
     
+    def to_ical 
+      'FREQ=MONTHLY' << to_ical_base
+    end
+    
   end
 
 end
