@@ -3,3 +3,20 @@ include IceCube
 
 #some custom dates
 DAY = Date.civil(2010, 3, 1)
+
+def test_expectations(schedule, dates_array)
+  expectation = []
+  dates_array.each do |y, months|
+    months.each do |m, days|
+      days.each do |d|
+        expectation << Date.civil(y, m, d)
+      end
+    end
+  end
+  #test equality
+  expectation.sort!
+  expectation.should == schedule.occurrences(expectation.last)
+  expectation.each do |date|
+    schedule.occurs_on?(date)
+  end
+end

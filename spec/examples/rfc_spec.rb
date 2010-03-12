@@ -6,8 +6,7 @@ describe Schedule, 'occurs_on?' do
   it 'should ~ daily for 10 occurrences' do
     schedule = Schedule.new(Date.civil(2010, 9, 2))
     schedule.add_recurrence_rule Rule.daily
-    dates = schedule.occurrences(Date.civil(2011, 1, 1))
-    dates.slice(0, 10).should == (Date.civil(2010, 9, 2)..Date.civil(2010, 9, 11)).to_a
+    test_expectations(schedule, {2010 => {9 => [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}})
   end
 
   it 'should ~ daily until a certain date' do

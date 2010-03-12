@@ -95,6 +95,15 @@ module IceCube
       self
     end
     
+    # set the number of occurrences after which this rule is no longer effective
+    def count(count)
+      raise ArgumentError.new('Argument must be a positive integer') unless Integer(count) && count > 0 #todo - maybe allow count to be 0
+      @count = count
+      self
+    end
+    
+    attr_reader :count
+    
   private
     
     #get the icalendar representation of this rule logic
