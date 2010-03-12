@@ -153,7 +153,7 @@ module IceCube
     end
 
     def has_obscure_validations?
-      @months_of_year || @days_of_year || @days || @days_of_week || @days_of_month
+      !!(@months_of_year || @days_of_year || @days || @days_of_week || @days_of_month)
     end
 
     def validate_months_of_year(date)

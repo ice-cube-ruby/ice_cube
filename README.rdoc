@@ -36,9 +36,7 @@ EX: Specifying a exception/recurrence date:
 
 ---
 
-Schedules must have a start date, this allows all occurs_on? calculations to be run in constant time.
-All rules are based off of the schedule's start date.  
-
+All rules are based off of the schedule's start date. 
 Individual rules may optionally specify an until date, which is a date that that individual rule is no longer effective.
 
 ---

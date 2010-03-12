@@ -28,7 +28,7 @@ module IceCube
     #end
 
     def occurs_on?(date)
-      occurrences_finder(@start_date, date) do |date_found| 
+      find_occurrences(@start_date, date) do |date_found| 
         return true if date == date_found
       end
       return false
@@ -42,7 +42,7 @@ module IceCube
     # Find all occurrences (following rules and exceptions) from start_date to end_date    
     def occurrences_between(start_date, end_date) 
       dates = []
-      occurrences_finder(start_date, end_date) { |date| dates << date }
+      find_occurrences(start_date, end_date) { |date| dates << date }
       dates
     end
              
@@ -70,9 +70,9 @@ module IceCube
       @exdates << date
     end
 
-  private
+    private
    
-    def occurrences_finder(start_date, end_date)
+    def find_occurrences(start_date, end_date)
       rrules_occurrences = {}
       exrules_occurrences = {}
       (start_date..end_date).each do |date|
