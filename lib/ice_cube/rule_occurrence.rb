@@ -13,6 +13,17 @@ module IceCube
       @date
     end
    
+    def upto(end_date)
+      include_dates = []
+      roc = self
+      begin
+        next if roc.to_date.nil? # Handle the case where start_date is not a valid occurrence
+        break if roc.to_date > end_date
+        include_dates << roc.to_date
+      end while roc = roc.succ
+      include_dates
+    end
+   
     def initialize(rule, start_date, date = nil, index = 0)
       @rule = rule
       @date = date

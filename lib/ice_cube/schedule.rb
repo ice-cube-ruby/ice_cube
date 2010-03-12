@@ -1,3 +1,5 @@
+require 'Set'
+
 module IceCube
 
   class Schedule
@@ -18,33 +20,18 @@ module IceCube
     
     # Find all occurrences (following rules and exceptions) from the schedule's start date to end_date.
     def occurrences(end_date)
-      exclude_dates = []
-      include_dates = []
-      # add all rdates, remove all exdates
-      include_dates += @rdates
-      exclude_dates += @exdates
+      exclude_dates, include_dates = Set.new(@exdates), SortedSet.new(@rdates)
       # walk through each rule, adding it to dates
-      @rrule_occurrence_heads.each do |rrule_occurrence_head| 
-        roc = rrule_occurrence_head
-        begin 
-          next if roc.to_date.nil?
-          break if roc.to_date > end_date
-          include_dates << roc.to_date
-        end while roc = roc.succ
+      @rrule_occurrence_heads.each do |rrule_occurrence_head|
+        include_dates.merge(rrule_occurrence_head.upto(end_date))
       end
       # walk through each exrule, removing it from dates
       @exrule_occurrence_heads.each do |exrule_occurrence_head|
-        roc = exrule_occurrence_head
-        begin
-          next if roc.to_date.nil?
-          break if roc.to_date > end_date
-          exclude_dates << roc.to_date
-        end while roc = roc.succ
+        exclude_dates.merge(exrule_occurrence_head.upto(end_date))
       end
       #return a unique list of dates
-      include_dates -= exclude_dates
-      include_dates.sort!.uniq!
-      include_dates
+      include_dates.reject! { |date| exclude_dates.include?(date) }
+      include_dates.to_a
     end
              
     # Add a rule of any type as an recurrence in this schedule
