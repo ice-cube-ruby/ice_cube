@@ -102,7 +102,7 @@ module IceCube
       self
     end
     
-    attr_reader :occurrence_count
+    attr_reader :occurrence_count, :until_date
     
   private
     

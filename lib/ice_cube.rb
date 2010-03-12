@@ -16,3 +16,4 @@ require 'ice_cube/monthly_rule'
 require 'ice_cube/yearly_rule'
 
 require 'ice_cube/schedule'
+require 'ice_cube/rule_occurrence'
