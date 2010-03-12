@@ -8,7 +8,6 @@ describe IceCube, 'to_ical' do
     rule.day_of_year(100)
     rule.day_of_week(:monday => [1, -1], :wednesday => [2, -1])
     rule.day_of_month(31, -2)
-    puts rule.to_ical
   end
   
 end
