@@ -31,19 +31,18 @@ module IceCube
     end
 
     # Set the count
-    def count(count)
-      raise ArgumentError.new('Cannot specify count and until on the same rule') if @until_date #as per rfc
-      raise ArgumentError.new('Argument must be an integer') unless Integer(count)
-      @count = count
-      self
-    end
+#    def count(count)
+#      raise ArgumentError.new('Cannot specify count and until on the same rule') if @until_date #as per rfc
+#      raise ArgumentError.new('Argument must be an integer') unless Integer(count)
+#      @count = count
+#      self
+#    end
 
     # Specify what months of the year this rule applies to.  
     # ie: Schedule.yearly(2).month_of_year(:january, :march) would create a
     # rule which occurs every january and march, every other year
     # Note: you cannot combine day_of_year and month_of_year in the same rule.
     def month_of_year(*months)
-      raise ArgumentError.new('Cannot specify month_of_year AND day_of_year') if @days_of_year
       @months_of_year ||= []
       months.each do |month|
         raise ArgumentError.new('Argument must be a valid month') unless MONTHS.has_key?(month)
@@ -57,7 +56,6 @@ module IceCube
     # rule which occurs every 17th and last day of every other year.
     # Note: you cannot combine month_of_year and day_of_year in the same rule.
     def day_of_year(*days)
-      raise ArgumentError.new('Cannot specify month_of_year AND day_of_year') if @months_of_year
       @days_of_year ||= []
       days.each do |day|
         raise ArgumentError.new('Argument must be a valid day') if day.abs > 366
@@ -105,8 +103,6 @@ module IceCube
       self
     end
     
-    attr_accessor :occurrence_count
-    
   private
     
     #get the icalendar representation of this rule logic
@@ -141,11 +137,10 @@ module IceCube
     def initialize(interval = 1)
       throw ArgumentError.new('Interval must be > 0') unless interval > 0
       @interval = interval
-      @occurrence_count = 0
     end
     
     def validate(date, start_date)
-      return false if @count && @occurrence_count >= @count # break rfc evaluation order for speed increase
+#      return false if @count && @occurrence_count >= @count # break rfc evaluation order for speed increase
       return false if @until_date && (date > @until_date)
       return false if date < start_date
       # execute validations in RFC 2445 order

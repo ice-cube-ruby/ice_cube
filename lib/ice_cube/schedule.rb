@@ -22,9 +22,9 @@ module IceCube
       #check dates
       return false if @exdates.include?(date)
       return true if @rdates.include?(date)
-      #check rules
-      return false if @exrules.any? { |rule| rule.occurrence_count += 1 if rule.occurs_on?(date, @start_date) }
-      @rrules.any? { |rule| rule.occurrence_count += 1 if rule.occurs_on?(date, @start_date) } && !@rrules.empty?
+      #check all rules
+      return false if @exrules.any? { |rule| rule.occurs_on?(date, @start_date) }
+      @rrules.any? { |rule| rule.occurs_on?(date, @start_date) } && !@rrules.empty?
     end
 
     # Find all occurrences (following rules and exceptions) from start_date to end_date
@@ -40,16 +40,16 @@ module IceCube
      
     # Return an array of the first (count) occurrences after @start_date
     # todo - guard infinite loop - maybe only allow use if until and count both exist in all rules - like .all_occurrences will be
-    def first(count)
-      so_far = 0
-      dates = []
-      date = @start_date
-      while so_far < count
-        (dates << date; so_far += 1) if occurs_on?(date)
-        date = date.next
-      end
-      dates
-    end
+#    def first(count)
+#      so_far = 0
+#      dates = []
+#      date = @start_date
+#      while so_far < count
+#        (dates << date; so_far += 1) if occurs_on?(date)
+#        date = date.next
+#      end
+#      dates
+#    end
         
     # Add a rule of any type as an recurrence in this schedule
     def add_recurrence_rule(rule)
