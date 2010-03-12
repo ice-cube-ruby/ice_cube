@@ -2,10 +2,9 @@ require File.dirname(__FILE__) + '/spec_helper'
 
 describe Schedule, 'occurs_on?' do
 
-  # 10
   it 'should ~ daily for 10 occurrences' do
     schedule = Schedule.new(Date.civil(2010, 9, 2))
-    schedule.add_recurrence_rule Rule.daily
+    schedule.add_recurrence_rule Rule.daily.count(10)
     test_expectations(schedule, {2010 => {9 => [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}})
   end
 
@@ -68,14 +67,9 @@ describe Schedule, 'occurs_on?' do
     schedule = Schedule.new(Date.civil(1997, 9, 2))
     schedule.add_recurrence_rule Rule.weekly.until(Date.civil(1997, 12, 24))
     dates = schedule.occurrences(Date.civil(1997, 12, 24))
-    expectation = []
-    expectation << [2, 9, 16, 23, 30].map { |d| Date.civil(1997, 9, d) }
-    expectation << [7, 14, 21, 28].map { |d| Date.civil(1997, 10, d) }
-    expectation << [4, 11, 18, 25].map { |d| Date.civil(1997, 11, d) }
-    expectation << [2, 9, 16, 23].map { |d| Date.civil(1997, 12, d) }
-    dates.should == expectation.flatten
+    #test expectations
+    test_expectations(schedule, {1997 => {9 => [2, 9, 16, 23, 30], 10 => [7, 14, 21, 28], 11 => [4, 11, 18, 25], 12 => [2, 9, 16, 23]}})
   end
-  
 
   it 'should ~ every other week' do
     start_date = Date.civil(1997, 9, 2)

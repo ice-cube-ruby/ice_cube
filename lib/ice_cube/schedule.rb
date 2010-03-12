@@ -75,7 +75,6 @@ module IceCube
     def occurrences_finder(start_date, end_date)
       rrules_occurrences = {}
       exrules_occurrences = {}
-      dates = []
       (start_date..end_date).each do |date|
         #basic validation
         success = nil
@@ -84,24 +83,22 @@ module IceCube
         success = false if @exdates.include?(date)
         success = true if @rdates.include?(date) && success.nil?
         #check exruless
-        exrules_occurrences = {}
         @exrules.each do |rule|
           exrules_occurrences[rule.object_id] = 0 unless exrules_occurrences.has_key?(rule.object_id)
           next unless rule.occurs_on?(date, @start_date) #skip ones that don't pass
           exrules_occurrences[rule.object_id] += 1
           #weird validations
-          next if rule.count && exrules_occurrences[rule.object_id] < rule.count
+          next if rule.occurrence_count && exrules_occurrences[rule.object_id] > rule.occurrence_count
           #set success to false if appropriate
           success = false
         end
-        #check rrules
-        rrules_occurrences = {}
+        #check rrule
         @rrules.each do |rule| 
           rrules_occurrences[rule.object_id] = 0 unless rrules_occurrences.has_key?(rule.object_id)
           next unless rule.occurs_on?(date, @start_date) #skip ones that don't passs
           rrules_occurrences[rule.object_id] += 1
           #weird validations
-          next if rule.count && rrules_occurrences[rule.object] < rule.count
+          next if rule.occurrence_count && rrules_occurrences[rule.object_id] > rule.occurrence_count
           #set success to true if appropriate
           success = true if success.nil?
         end

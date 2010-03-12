@@ -15,7 +15,7 @@ def test_expectations(schedule, dates_array)
   end
   #test equality
   expectation.sort!
-  expectation.should == schedule.occurrences(expectation.last)
+  schedule.occurrences(expectation.last).should == expectation
   expectation.each do |date|
     schedule.occurs_on?(date)
   end
