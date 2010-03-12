@@ -30,14 +30,6 @@ module IceCube
       self
     end
 
-    # Set the count
-#    def count(count)
-#      raise ArgumentError.new('Cannot specify count and until on the same rule') if @until_date #as per rfc
-#      raise ArgumentError.new('Argument must be an integer') unless Integer(count)
-#      @count = count
-#      self
-#    end
-
     # Specify what months of the year this rule applies to.  
     # ie: Schedule.yearly(2).month_of_year(:january, :march) would create a
     # rule which occurs every january and march, every other year
@@ -140,7 +132,6 @@ module IceCube
     end
     
     def validate(date, start_date)
-#      return false if @count && @occurrence_count >= @count # break rfc evaluation order for speed increase
       return false if @until_date && (date > @until_date)
       return false if date < start_date
       # execute validations in RFC 2445 order

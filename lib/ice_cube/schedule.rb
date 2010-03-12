@@ -22,7 +22,7 @@ module IceCube
       #check dates
       return false if @exdates.include?(date)
       return true if @rdates.include?(date)
-      #check all rules
+      #check validations
       return false if @exrules.any? { |rule| rule.occurs_on?(date, @start_date) }
       @rrules.any? { |rule| rule.occurs_on?(date, @start_date) } && !@rrules.empty?
     end
@@ -37,20 +37,7 @@ module IceCube
     def occurrences(end_date)
       occurrences_between(@start_date, end_date)
     end
-     
-    # Return an array of the first (count) occurrences after @start_date
-    # todo - guard infinite loop - maybe only allow use if until and count both exist in all rules - like .all_occurrences will be
-#    def first(count)
-#      so_far = 0
-#      dates = []
-#      date = @start_date
-#      while so_far < count
-#        (dates << date; so_far += 1) if occurs_on?(date)
-#        date = date.next
-#      end
-#      dates
-#    end
-        
+             
     # Add a rule of any type as an recurrence in this schedule
     def add_recurrence_rule(rule)
       raise ArgumentError.new('Argument must be a valid rule') unless rule.class < Rule
