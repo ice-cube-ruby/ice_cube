@@ -11,7 +11,7 @@ describe Schedule, 'occurs_on?' do
   it 'should ~ daily until a certain date' do
     schedule = Schedule.new(Date.civil(1997, 9, 2))
     schedule.add_recurrence_rule Rule.daily.until(Date.civil(1997, 12, 24))
-    dates = schedule.occurrences(Date.civil(1997, 12, -1))
+    dates = schedule.all_occurrences
     dates.should == (Date.civil(1997, 9, 2)..Date.civil(1997, 12, 24)).to_a
   end
 

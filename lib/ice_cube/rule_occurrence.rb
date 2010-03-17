@@ -13,6 +13,18 @@ module IceCube
       @date
     end
    
+    def all_occurrences
+      raise ArgumentError.new("Rule must specify either an until date or a count to use 'all'") unless @rule.occurrence_count || @rule.until_date
+      include_dates = []
+      roc = self
+      begin
+        break if roc.nil? #go until we run out of dates
+        next if roc.to_date.nil?
+        include_dates << roc.to_date
+      end while roc = roc.succ
+      include_dates
+    end
+   
     def upto(end_date)
       include_dates = []
       roc = self
