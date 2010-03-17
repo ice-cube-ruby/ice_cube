@@ -17,3 +17,14 @@ require 'ice_cube/yearly_rule'
 
 require 'ice_cube/schedule'
 require 'ice_cube/rule_occurrence'
+
+    
+class Date
+  
+  # get a date object for the first of the following month  
+  def first_of_next_month
+    wraparound = (month == 12)
+    Date.civil(wraparound ? year + 1 : year, wraparound ? 1 : month + 1, 1)
+  end
+  
+end

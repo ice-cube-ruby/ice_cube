@@ -103,7 +103,10 @@ module IceCube
     end
     
     def next_suggestion(date)
-      date.next
+      next_date = date.next #get this reference once
+      suggestion = []
+      suggestion << date.first_of_next_month if @months_of_year && !@months_of_year.include?(next_date.month) #if we're in the wrong month skip ahead
+      suggestion.min || next_date
     end
     
     attr_reader :occurrence_count, :until_date
