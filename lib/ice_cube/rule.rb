@@ -102,6 +102,10 @@ module IceCube
       self
     end
     
+    def next_suggestion(date)
+      date.next
+    end
+    
     attr_reader :occurrence_count, :until_date
     
   private

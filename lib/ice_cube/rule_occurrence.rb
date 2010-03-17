@@ -51,13 +51,7 @@ module IceCube
       begin
         return nil if @rule.until_date && date > @rule.until_date # until check
         return RuleOccurrence.new(@rule, @start_date, date, @index + 1) if @rule.occurs_on?(date, @start_date)
-      end while date = next_suggestion(date)
-    end
-      
-    private
-    
-    def next_suggestion(date)
-      date.next
+      end while date = @rule.next_suggestion(date)
     end
       
   end
