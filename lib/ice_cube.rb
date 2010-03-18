@@ -3,7 +3,8 @@ module IceCube
 
   ICAL_DAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
   DAYS = { :sunday => 0, :monday => 1, :tuesday => 2, :wednesday => 3, :thursday => 4, :friday => 5, :saturday => 6 }
-  MONTHS = { :january => 1, :february => 2, :march => 3, :april => 4, :may => 5, :june => 6, :july => 7, :august => 8, :september => 9, :october => 10, :november => 11, :december => 12 }
+  MONTHS = { :january => 1, :february => 2, :march => 3, :april => 4, :may => 5, :june => 6, :july => 7, :august => 8, 
+             :september => 9, :october => 10, :november => 11, :december => 12 }
 end
 
 require 'yaml.rb'
@@ -74,13 +75,26 @@ class Date
   def closest_month_of_year(months_of_year)
     #add 12 to all of the months that are less than this month
     return nil if months_of_year.empty?
-    months = months_of_year.map { |m| m <= month ? m + 12 : m}.sort!
+    months = months_of_year.map { |m| m <= month ? m + 12 : m }.sort!
     #return the proper first day in months[0]
     if months[0] > 12
       Date.civil(year + 1, months[0] - 12, 1)
     else
       Date.civil(year, months[0], 1)
     end
+  end
+  # dow wday d   
+  # [2] 1 => 2 = 2 - 1
+  # [2] 5 => 2 = 7 - 5 + 2
+  # [2] 2 => 2 = 7 - 2 + 2
+  # [2] 3 => 1 = 7 - 3 + 1
+
+  def closest_day_of_week(days_of_week)
+    #determine how far away the days we want are from where we're at now
+    return nil if days_of_week.empty?
+    days = days_of_week.map { |d| d <= wday ? d + 7 : d }.sort!
+    # return the proper next of this weekday
+    self + (days[0] - wday)
   end
 
 end
