@@ -54,5 +54,27 @@ class Date
     distances = distances.select { |d| d > 0 }
     distances.empty? ? nil : distances.min
   end
+  
+  def closest_day_of_month(days_of_month)
+    #get some variables we need
+    days_in_month = Date.civil(year, month, -1).mday
+    days_left_in_this_month = days_in_month - mday
+    next_month, next_year = month == 12 ? [1, year + 1] : [month + 1, year] #clean way to wrap over years
+    days_in_next_month = Date.civil(next_year, next_month, -1).mday
+    # create a list of distances
+    distances = []
+    days_of_month.each do |d|
+      if d > 0
+        distances << d - mday #today is 1, we want 20 (19)
+        distances << days_left_in_this_month + d #(364 + 20)
+      elsif d < 0
+        distances << (days_in_month + d + 1) - mday #today is 30, we want -1
+        distances << (days_in_next_month + d + 1) + days_left_in_this_month #today is 300, we want -70
+      end
+    end
+    #return the lowest distance
+    distances = distances.select { |d| d > 0 }
+    distances.empty? ? nil : distances.min
+  end
 
 end

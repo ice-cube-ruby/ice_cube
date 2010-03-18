@@ -42,7 +42,7 @@ describe YearlyRule, 'occurs_on?' do
     schedule.occurrences(Date.civil(2010, 12, -1)).count.should == 2
   end
 
-  it 'should product the correct number of days for @interval = 1 when you specify negative days' do
+  it 'should produce the correct number of days for @interval = 1 when you specify negative days' do
     schedule = Schedule.new(Date.civil(2010, 1, 1))
     schedule.add_recurrence_rule Rule.yearly.day_of_year(100, -1)
     #check assumption
