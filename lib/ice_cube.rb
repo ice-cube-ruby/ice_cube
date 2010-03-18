@@ -21,13 +21,6 @@ require 'ice_cube/rule_occurrence'
     
 class Date
   
-  # get a date object for the first of the following month  
-  def first_of_next_month
-    # get the number of days left in the month
-    days_in_month = Date.civil(year, month, -1).mday
-    days_in_month - mday + 1
-  end
-  
   #todo - there might be another optimization here - think about the possibility of incorporating these in the walks
   #TODO - combine the two methods below into one
   #todo - there might be a way to sort on insert in all of these, which would remove the need for map (negatives are a definite issue)
@@ -52,7 +45,7 @@ class Date
     end
     #return the lowest distance
     distances = distances.select { |d| d > 0 }
-    distances.empty? ? nil : distances.min
+    distances.empty? ? nil : self + distances.min
   end
   
   def closest_day_of_month(days_of_month)
@@ -74,7 +67,20 @@ class Date
     end
     #return the lowest distance
     distances = distances.select { |d| d > 0 }
-    distances.empty? ? nil : distances.min
+    distances.empty? ? nil : self + distances.min
+  end
+  
+  # return the date object corresponding to the first day of the closest month
+  def closest_month_of_year(months_of_year)
+    #add 12 to all of the months that are less than this month
+    return nil if months_of_year.empty?
+    months = months_of_year.map { |m| m <= month ? m + 12 : m}.sort!
+    #return the proper first day in months[0]
+    if months[0] > 12
+      Date.civil(year + 1, months[0] - 12, 1)
+    else
+      Date.civil(year, months[0], 1)
+    end
   end
 
 end
