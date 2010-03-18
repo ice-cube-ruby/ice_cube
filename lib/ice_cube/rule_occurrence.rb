@@ -47,7 +47,7 @@ module IceCube
     def succ
       return nil if @rule.occurrence_count && @index >= @rule.occurrence_count # count check
       #walk through all of the successive dates, looking for the next occurrence, then return it.
-      date = @date ? @date.next : @start_date # what to test next 
+      date = @date ? @rule.next_suggestion(@date) : @start_date # what to test next 
       begin
         return nil if @rule.until_date && date > @rule.until_date # until check
         return RuleOccurrence.new(@rule, @start_date, date, @index + 1) if @rule.occurs_on?(date, @start_date)

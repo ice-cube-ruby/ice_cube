@@ -23,8 +23,17 @@ class Date
   
   # get a date object for the first of the following month  
   def first_of_next_month
-    wraparound = (month == 12)
-    Date.civil(wraparound ? year + 1 : year, wraparound ? 1 : month + 1, 1)
+    # get the number of days left in the month
+    days_in_month = Date.civil(year, month, -1).mday
+    days_in_month - mday + 1
   end
   
+  #todo - there might be another optimization here - think about the possibility of incorporating these in the walks
+  #TODO - combine the two methods below into one
+  #todo - there might be a way to sort on insert in all of these, which would remove the need for map (negatives are a definite issue)
+  # todo - play with the idea of next_occurrence to replace occurs_on? for individual rules
+  # todo - make interval jump suggestions == maybe we don't use suggestions, we incorporate this into rules instead
+
+
+
 end

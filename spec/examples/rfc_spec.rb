@@ -171,6 +171,7 @@ describe Schedule, 'occurs_on?' do
     schedule.add_recurrence_rule Rule.monthly.day_of_month(-3).count(6)
     dates = schedule.occurrences(Date.civil(1998, 2, 26))
     expectation = [Date.civil(1997, 9, 28), Date.civil(1997, 10, 29), Date.civil(1997, 11, 28), Date.civil(1997, 12, 29), Date.civil(1998, 1, 29), Date.civil(1998, 2, 26)]
+    puts dates.should
     dates.should == expectation
   end
 

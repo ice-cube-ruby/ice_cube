@@ -18,6 +18,10 @@ module IceCube
       to_ical
     end
         
+    def start_of_next_interval(date)
+      date + @interval
+    end
+        
   end
 
 end
