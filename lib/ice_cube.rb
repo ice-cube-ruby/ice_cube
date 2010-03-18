@@ -34,6 +34,25 @@ class Date
   # todo - play with the idea of next_occurrence to replace occurs_on? for individual rules
   # todo - make interval jump suggestions == maybe we don't use suggestions, we incorporate this into rules instead
 
-
+  def closest_day_of_year(days_of_year)
+    #get some variables we need
+    days_in_year = Date.civil(year, 12, -1).yday
+    days_left_in_this_year = days_in_year - yday
+    days_in_next_year = Date.civil(year + 1, 12, -1).yday
+    # create a list of distances
+    distances = []
+    days_of_year.each do |d|
+      if d > 0
+        distances << d - yday #today is 1, we want 20 (19)
+        distances << days_left_in_this_year + d #(364 + 20)
+      elsif d < 0
+        distances << (days_in_year + d + 1) - yday #today is 300, we want -1
+        distances << (days_in_next_year + d + 1) + days_left_in_this_year #today is 300, we want -70
+      end
+    end
+    #return the lowest distance
+    distances = distances.select { |d| d > 0 }
+    distances.empty? ? nil : distances.min
+  end
 
 end
