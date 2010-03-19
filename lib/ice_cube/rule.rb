@@ -121,6 +121,7 @@ module IceCube
       suggestion << date.closest_day_of_year(@days_of_year) if @days_of_year && !@days_of_year.empty?
       suggestion << date.closest_day_of_month(@days_of_month) if @days_of_month && !@days_of_month.empty?
       suggestion << date.closest_hour if self.class == HourlyRule
+      suggestion << date.closest_minute if self.class == MinutelyRule
       @all_days = []
       @all_days.concat(@days) if @days
       @all_days.concat(@days_of_week.keys) if @days_of_week

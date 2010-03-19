@@ -6,14 +6,15 @@ module IceCube
     # Weekly rules occurs if we're in one of the interval weeks,
     # and we're in a valid day of the week.
     def occurs_on?(date, start_date)
-      return false unless validate(date, start_date)
       #by default, the days will be the start_date's day of the week
       unless @days
         return false unless date.wday == start_date.wday
       end
       #check to make sure we're in the right interval
       day_count = (start_date..date).count
-      (day_count / 7) % @interval == 0
+      return false unless (day_count / 7) % @interval == 0
+      #validate 
+      validate(date, start_date)
     end
     
     def to_ical 

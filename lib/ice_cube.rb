@@ -15,6 +15,7 @@ require 'ice_cube/rule_occurrence'
 
 #time-related rules
 require 'ice_cube/hourly_rule'
+require 'ice_cube/minutely_rule'
 
 #date-related rules
 require 'ice_cube/daily_rule'
@@ -104,7 +105,14 @@ class DateTime
 
   #TODO - this method can't exist once there's by_hour_of_day 
   def closest_hour
-    DateTime.new(year, month, day, hour + 1, 0, 0)
+    date = (self + 1/24)
+    DateTime.new(date.year, date.month, date.day, date.hour, 0, 0)
+  end
+  
+  #TODO - YUCK
+  def closest_minute
+    date = (self + Rational(1, 24 * 60))
+    DateTime.civil(date.year, date.month, date.day, date.hour, date.min, 0)
   end
 
 end

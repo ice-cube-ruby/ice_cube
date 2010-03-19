@@ -4,10 +4,11 @@ module IceCube
 
     # Determine whether this rule occurs on a give date.
     def occurs_on?(date, start_date)
-      return false unless validate(date, start_date)
-      #determine whether the rule falls in our interval
+      #make sure we're in a proper interval
       day_count = (start_date...date).count
-      day_count % @interval == 0
+      return false unless day_count % @interval == 0
+      #perform validations
+      validate(date, start_date)
     end
 
     def to_ical 
