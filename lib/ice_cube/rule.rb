@@ -21,11 +21,15 @@ module IceCube
     def self.yearly(interval = 1)
       YearlyRule.new(interval)
     end
+    
+    def self.hourly(interval = 1)
+      HourlyRule.new(interval)
+    end
 
     # Set the time when this rule will no longer be effective
     def until(until_date)
       raise ArgumentError.new('Cannot specify until and count on the same rule') if @count #as per rfc
-      raise ArgumentError.new('Argument must be a valid date') unless until_date.class == Date
+      raise ArgumentError.new('Argument must be a valid DateTime') unless until_date.class == DateTime
       @until_date = until_date
       self
     end
@@ -102,12 +106,16 @@ module IceCube
       self
     end
     
+    #TODO - move nil checking into functions to clean this up to just an array
+    #TODO - validate start_date to make sure its a DateTime
+    
     def next_suggestion(date)
-      next_date = date.next #get this reference once
+      next_date = date.next #todo - go by second
       suggestion = []
       suggestion << date.closest_month_of_year(@months_of_year) if @months_of_year && !@months_of_year.include?(date.next.month)
       suggestion << date.closest_day_of_year(@days_of_year) if @days_of_year && !@days_of_year.empty?
       suggestion << date.closest_day_of_month(@days_of_month) if @days_of_month && !@days_of_month.empty?
+      suggestion << date.closest_hour if self.class == HourlyRule
       @all_days = []
       @all_days.concat(@days) if @days
       @all_days.concat(@days_of_week.keys) if @days_of_week

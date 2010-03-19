@@ -2,10 +2,10 @@ require File.dirname(__FILE__) + '/spec_helper'
 
 describe MonthlyRule, 'occurs_on?' do
 
-  WEDNESDAY = Date.civil(2010, 3, 10)
+  WEDNESDAY = DateTime.civil(2010, 3, 10)
   
   it 'should produce the correct number of days for @interval = 1 with no weekdays specified' do
-    start_date = Date.today
+    start_date = DateTime.now
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.weekly
     #check assumption (4 weeks in the future) (1) (2) (3) (4) (5)

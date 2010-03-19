@@ -10,17 +10,19 @@ end
 require 'yaml.rb'
 
 require 'ice_cube/rule'
+require 'ice_cube/schedule'
+require 'ice_cube/rule_occurrence'
 
+#time-related rules
+require 'ice_cube/hourly_rule'
+
+#date-related rules
 require 'ice_cube/daily_rule'
 require 'ice_cube/weekly_rule'
 require 'ice_cube/monthly_rule'
 require 'ice_cube/yearly_rule'
-
-require 'ice_cube/schedule'
-require 'ice_cube/rule_occurrence'
-
     
-class Date
+class DateTime
   
   #todo - there might be another optimization here - think about the possibility of incorporating these in the walks
   #TODO - combine the two methods below into one
@@ -78,9 +80,9 @@ class Date
     months = months_of_year.map { |m| m <= month ? m + 12 : m }.sort!
     #return the proper first day in months[0]
     if months[0] > 12
-      Date.civil(year + 1, months[0] - 12, 1)
+      DateTime.new(year + 1, months[0] - 12, 1)
     else
-      Date.civil(year, months[0], 1)
+      DateTime.new(year, months[0], 1)
     end
   end
   # dow wday d   
@@ -88,6 +90,9 @@ class Date
   # [2] 5 => 2 = 7 - 5 + 2
   # [2] 2 => 2 = 7 - 2 + 2
   # [2] 3 => 1 = 7 - 3 + 1
+  
+  
+  #TODO - don't generate days here anymore, just generate DIFFs (if possible)
 
   def closest_day_of_week(days_of_week)
     #determine how far away the days we want are from where we're at now
@@ -95,6 +100,11 @@ class Date
     days = days_of_week.map { |d| d <= wday ? d + 7 : d }.sort!
     # return the proper next of this weekday
     self + (days[0] - wday)
+  end
+
+  #TODO - this method can't exist once there's by_hour_of_day 
+  def closest_hour
+    DateTime.new(year, month, day, hour + 1, 0, 0)
   end
 
 end

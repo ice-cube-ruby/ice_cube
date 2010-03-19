@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/spec_helper'
 describe MonthlyRule, 'occurs_on?' do
   
   it 'should produce the correct number of days for @interval = 1' do
-    start_date = Date.today
+    start_date = DateTime.now
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.monthly
     #check assumption
@@ -11,7 +11,7 @@ describe MonthlyRule, 'occurs_on?' do
   end
 
   it 'should produce the correct number of days for @interval = 2' do
-    start_date = Date.today
+    start_date = DateTime.now
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.monthly(2)
     #check assumption
@@ -19,7 +19,7 @@ describe MonthlyRule, 'occurs_on?' do
   end
 
   it 'should produce the correct number of days for @interval = 1 with only the 1st and 15th' do
-    start_date = Date.civil(2010, 1, 1)
+    start_date = DateTime.civil(2010, 1, 1)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.monthly.day_of_month(1, 15)
     #check assumption (1) (15) (1) (15)
@@ -27,7 +27,7 @@ describe MonthlyRule, 'occurs_on?' do
   end
 
   it 'should produce the correct number of days for @interval = 1 with only the 1st and last' do
-    start_date = Date.civil(2010, 1, 1)
+    start_date = DateTime.civil(2010, 1, 1)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.monthly.day_of_month(1, -1)
     #check assumption (1) (31) (1)
@@ -35,7 +35,7 @@ describe MonthlyRule, 'occurs_on?' do
   end
 
   it 'should produce the correct number of days for @interval = 1 with only the first mondays' do
-    start_date = Date.civil(2010, 1, 1)
+    start_date = DateTime.civil(2010, 1, 1)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.monthly.day_of_week(:monday => [1])
     #check assumption (month 1 monday) (month 2 monday)
@@ -43,7 +43,7 @@ describe MonthlyRule, 'occurs_on?' do
   end
 
   it 'should produce the correct number of days for @interval = 1 with only the last mondays' do
-    start_date = Date.civil(2010, 1, 1)
+    start_date = DateTime.civil(2010, 1, 1)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.monthly.day_of_week(:monday => [-1])
     #check assumption (month 1 monday)
@@ -51,8 +51,8 @@ describe MonthlyRule, 'occurs_on?' do
   end
 
   it 'should produce the correct number of days for @interval = 1 with only the first and last mondays' do
-    start_date = Date.civil(2010, 1, 1)
-    end_date = Date.civil(2010, 12, -1)
+    start_date = DateTime.civil(2010, 1, 1)
+    end_date = DateTime.civil(2010, 12, -1)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.monthly.day_of_week(:monday => [1, -2])
     #check assumption (12 months - 2 dates each)

@@ -44,13 +44,13 @@ module IceCube
 
     # Add an individual date to this schedule
     def add_recurrence_date(date)
-      raise ArgumentError.new('Argument must be a valid date') unless date.class == Date
+      raise ArgumentError.new('Argument must be a valid DateTime') unless date.class == DateTime
       @rdates << date
     end
 
     # Add an individual date exception to this schedule
     def add_exception_date(date)
-      raise ArgumentError.new('Argument must be a valid date') unless date.class == Date
+      raise ArgumentError.new('Argument must be a valid DateTime') unless date.class == DateTime
       @exdates << date
     end
    
