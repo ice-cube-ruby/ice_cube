@@ -9,7 +9,7 @@ def test_expectations(schedule, dates_array)
   dates_array.each do |y, months|
     months.each do |m, days|
       days.each do |d|
-        expectation << Date.civil(y, m, d)
+        expectation << DateTime.civil(y, m, d)
       end
     end
   end

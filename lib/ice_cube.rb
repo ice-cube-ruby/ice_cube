@@ -32,9 +32,9 @@ class DateTime
 
   def closest_day_of_year(days_of_year)
     #get some variables we need
-    days_in_year = Date.civil(year, 12, -1).yday
+    days_in_year = DateTime.civil(year, 12, -1).yday
     days_left_in_this_year = days_in_year - yday
-    days_in_next_year = Date.civil(year + 1, 12, -1).yday
+    days_in_next_year = DateTime.civil(year + 1, 12, -1).yday
     # create a list of distances
     distances = []
     days_of_year.each do |d|
@@ -53,10 +53,10 @@ class DateTime
   
   def closest_day_of_month(days_of_month)
     #get some variables we need
-    days_in_month = Date.civil(year, month, -1).mday
+    days_in_month = DateTime.civil(year, month, -1).mday
     days_left_in_this_month = days_in_month - mday
     next_month, next_year = month == 12 ? [1, year + 1] : [month + 1, year] #clean way to wrap over years
-    days_in_next_month = Date.civil(next_year, next_month, -1).mday
+    days_in_next_month = DateTime.civil(next_year, next_month, -1).mday
     # create a list of distances
     distances = []
     days_of_month.each do |d|

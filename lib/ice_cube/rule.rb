@@ -26,6 +26,10 @@ module IceCube
       HourlyRule.new(interval)
     end
 
+    def self.minutely(interval = 1) 
+      MinutelyRule.new(interval)
+    end
+    
     # Set the time when this rule will no longer be effective
     def until(until_date)
       raise ArgumentError.new('Cannot specify until and count on the same rule') if @count #as per rfc
@@ -108,9 +112,10 @@ module IceCube
     
     #TODO - move nil checking into functions to clean this up to just an array
     #TODO - validate start_date to make sure its a DateTime
+    #TODO - check anywhere we were using DateTime.now's wrap - it doesn't actually exist
     
     def next_suggestion(date)
-      next_date = date.next #todo - go by second
+      next_date = date + 1 # TODO - smaller interval
       suggestion = []
       suggestion << date.closest_month_of_year(@months_of_year) if @months_of_year && !@months_of_year.include?(date.next.month)
       suggestion << date.closest_day_of_year(@days_of_year) if @days_of_year && !@days_of_year.empty?
