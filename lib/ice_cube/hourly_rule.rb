@@ -15,15 +15,11 @@ module IceCube
     end
 
     def to_ical 
-      'FREQ=DAILY' << to_ical_base
+      'FREQ=HOURLY' << to_ical_base
     end
         
     def to_s
       to_ical
-    end
-        
-    def start_of_next_interval(date)
-      date + @interval
     end
         
   end
