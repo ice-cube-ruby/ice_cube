@@ -13,10 +13,6 @@ require 'ice_cube/rule'
 require 'ice_cube/schedule'
 require 'ice_cube/rule_occurrence'
 
-#time-related rules
-require 'ice_cube/hourly_rule'
-require 'ice_cube/minutely_rule'
-
 #date-related rules
 require 'ice_cube/daily_rule'
 require 'ice_cube/weekly_rule'
@@ -101,18 +97,6 @@ class DateTime
     days = days_of_week.map { |d| d <= wday ? d + 7 : d }.sort!
     # return the proper next of this weekday
     self + (days[0] - wday)
-  end
-
-  #TODO - this method can't exist once there's by_hour_of_day 
-  def closest_hour
-    date = (self + 1/24)
-    DateTime.new(date.year, date.month, date.day, date.hour, 0, 0)
-  end
-  
-  #TODO - YUCK
-  def closest_minute
-    date = (self + Rational(1, 24 * 60))
-    DateTime.civil(date.year, date.month, date.day, date.hour, date.min, 0)
   end
 
 end
