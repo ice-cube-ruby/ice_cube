@@ -8,6 +8,20 @@ describe Schedule, 'to_yaml' do
     #check assumption
     schedule.should respond_to('to_yaml')
   end
+  
+  it 'should be able to make a round-trip to YAML' do
+    schedule = Schedule.new(DateTime.now)
+    schedule.add_recurrence_rule Rule.daily.until(DateTime.now + 10)
+    result1 = schedule.all_occurrences
+    
+    yaml_string = schedule.to_yaml
+    
+    schedule2 = Schedule.from_yaml(yaml_string)
+    result2 = schedule.all_occurrences
+    
+    #make sure they both have the same result
+    result1.should == result2
+  end
 
 end
 

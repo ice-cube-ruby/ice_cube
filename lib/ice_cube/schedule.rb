@@ -53,6 +53,10 @@ module IceCube
       raise ArgumentError.new('Argument must be a valid DateTime') unless date.class == DateTime
       @exdates << date
     end
+    
+    def self.from_yaml(str)
+      YAML::load(str)
+    end
    
     private
     
