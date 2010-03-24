@@ -120,6 +120,10 @@ module IceCube
       suggestion.empty? ? next_date : suggestion.min
     end
     
+    def self.from_yaml(str)
+      YAML::load(str)
+    end
+    
     attr_reader :occurrence_count, :until_date
     
   private
