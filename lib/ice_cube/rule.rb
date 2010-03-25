@@ -116,7 +116,7 @@ module IceCube
       @all_days.concat(@days_of_week.keys) if @days_of_week
       suggestion << date.closest_day_of_week(@all_days) unless @all_days.empty?
       suggestion.compact!
-      suggestion.empty? ? next_date : suggestion.min
+      suggestion.empty? ? next_date : suggestion.max
     end
     
     def self.from_yaml(str)
