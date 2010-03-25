@@ -25,7 +25,7 @@ module IceCube
     # Set the time when this rule will no longer be effective
     def until(until_date)
       raise ArgumentError.new('Cannot specify until and count on the same rule') if @count #as per rfc
-      raise ArgumentError.new('Argument must be a valid DateTime') unless until_date.class == DateTime
+      raise ArgumentError.new('Argument must be a valid Time') unless until_date.class == Time
       @until_date = until_date
       self
     end
@@ -103,15 +103,14 @@ module IceCube
     end
     
     #TODO - move nil checking into functions to clean this up to just an array
-    #TODO - validate start_date to make sure its a DateTime
-    #TODO - check anywhere we were using DateTime.now's wrap - it doesn't actually exist
+    #TODO - collapse mass assignments
     
     def next_suggestion(date)
-      next_date = date + 1 # TODO - smaller interval
+      next_date = date + ONE_DAY # TODO - smaller interval
       suggestion = []
-      suggestion << date.closest_month_of_year(@months_of_year) if @months_of_year && !@months_of_year.include?(date.next.month)
+      suggestion << date.closest_month_of_year(@months_of_year) if @months_of_year && !@months_of_year.include?(next_date.month)
       suggestion << date.closest_day_of_year(@days_of_year) if @days_of_year && !@days_of_year.empty?
-      #suggestion << date.closest_day_of_month(@days_of_month) if @days_of_month && !@days_of_month.empty?
+      suggestion << date.closest_day_of_month(@days_of_month) if @days_of_month && !@days_of_month.empty?
       @all_days = []
       @all_days.concat(@days) if @days
       @all_days.concat(@days_of_week.keys) if @days_of_week
@@ -185,22 +184,19 @@ module IceCube
     
     def validate_days_of_year(date)
       return true unless @days_of_year
-      days_in_year = Date.civil(date.year, 12, -1).yday
-      @days_of_year.include?(date.yday) || @days_of_year.include?(date.yday - days_in_year - 1)
+      @days_of_year.include?(date.yday) || @days_of_year.include?(date.yday - date.days_in_year - 1)
     end
 
     def validate_days_of_month(date)
       return true unless @days_of_month
-      number_of_days_in_month = Date.civil(date.year, date.month, -1).day
-      @days_of_month.include?(date.mday - number_of_days_in_month - 1) || @days_of_month.include?(date.mday)
+      @days_of_month.include?(date.mday) || @days_of_month.include?(date.mday - date.days_in_month - 1)
     end
 
     def validate_days_of_week(date)
       return true unless @days_of_week
       return false unless @days_of_week.has_key?(date.wday)
-      number_of_days_in_month = Date.civil(date.year, date.month, -1).day
-      first_occurrence = ((7 - Date.civil(date.year, date.month, 1).wday) + date.wday) % 7 + 1 #day of first occurrence of a wday in a month
-      this_weekday_in_month_count = ((number_of_days_in_month - first_occurrence + 1) / 7.0).ceil #how many of these in the month
+      first_occurrence = ((7 - Time.utc(date.year, date.month, 1).wday) + date.wday) % 7 + 1 #day of first occurrence of a wday in a month
+      this_weekday_in_month_count = ((date.days_in_month - first_occurrence + 1) / 7.0).ceil #how many of these in the month
       nth_occurrence_of_weekday = (date.mday - first_occurrence) / 7 + 1 #what occurrence of the weekday is +date+
       @days_of_week[date.wday].include?(nth_occurrence_of_weekday) || @days_of_week[date.wday].include?(nth_occurrence_of_weekday - this_weekday_in_month_count - 1)
     end

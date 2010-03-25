@@ -2,14 +2,14 @@ require File.join(File.dirname(__FILE__), '..', '..', 'lib', 'ice_cube')
 include IceCube
 
 #some custom dates
-DAY = DateTime.civil(2010, 3, 1)
+DAY = Time.utc(2010, 3, 1)
 
 def test_expectations(schedule, dates_array)
   expectation = []
   dates_array.each do |y, months|
     months.each do |m, days|
       days.each do |d|
-        expectation << DateTime.civil(y, m, d)
+        expectation << Time.utc(y, m, d)
       end
     end
   end

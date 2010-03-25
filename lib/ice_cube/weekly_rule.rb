@@ -10,9 +10,9 @@ module IceCube
       unless @days
         return false unless date.wday == start_date.wday
       end
-      #check to make sure we're in the right interval
-      day_count = (start_date..date).count
-      return false unless (day_count / 7) % @interval == 0
+      #make sure we're in the right interval
+      week_of_year = Date.civil(date.year, date.month, date.day).cweek
+      return false unless week_of_year % @interval == 0
       #validate 
       validate(date, start_date)
     end

@@ -19,7 +19,24 @@ require 'ice_cube/weekly_rule'
 require 'ice_cube/monthly_rule'
 require 'ice_cube/yearly_rule'
     
-class DateTime
+ONE_DAY = 24 * 60 * 60
+    
+class Time
+  
+  LeapYearMonthDays	=	[31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+  CommonYearMonthDays	=	[31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+  
+  def is_leap?
+    (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
+  end
+  
+  def days_in_year
+    is_leap? ? 366 : 365
+  end
+  
+  def days_in_month
+    is_leap? ? LeapYearMonthDays[month - 1] : CommonYearMonthDays[month - 1]
+  end
   
   #todo - there might be another optimization here - think about the possibility of incorporating these in the walks
   #TODO - combine the two methods below into one
@@ -29,9 +46,8 @@ class DateTime
 
   def closest_day_of_year(days_of_year)
     #get some variables we need
-    days_in_year = DateTime.civil(year, 12, -1).yday
     days_left_in_this_year = days_in_year - yday
-    days_in_next_year = DateTime.civil(year + 1, 12, -1).yday
+    days_in_next_year = Time.utc(year + 1, 1, 1).days_in_year
     # create a list of distances
     distances = []
     days_of_year.each do |d|
@@ -45,15 +61,14 @@ class DateTime
     end
     #return the lowest distance
     distances = distances.select { |d| d > 0 }
-    distances.empty? ? nil : self + distances.min
+    distances.empty? ? nil : self + distances.min * ONE_DAY
   end
   
   def closest_day_of_month(days_of_month)
     #get some variables we need
-    days_in_month = DateTime.civil(year, month, -1).mday
     days_left_in_this_month = days_in_month - mday
     next_month, next_year = month == 12 ? [1, year + 1] : [month + 1, year] #clean way to wrap over years
-    days_in_next_month = DateTime.civil(next_year, next_month, -1).mday
+    days_in_next_month = Time.utc(next_year, next_month, 1).days_in_month
     # create a list of distances
     distances = []
     days_of_month.each do |d|
@@ -67,7 +82,7 @@ class DateTime
     end
     #return the lowest distance
     distances = distances.select { |d| d > 0 }
-    distances.empty? ? nil : self + distances.min
+    distances.empty? ? nil : self + distances.min * ONE_DAY
   end
   
   # return the date object corresponding to the first day of the closest month
@@ -77,9 +92,9 @@ class DateTime
     months = months_of_year.map { |m| m <= month ? m + 12 : m }.sort!
     #return the proper first day in months[0]
     if months[0] > 12
-      DateTime.new(year + 1, months[0] - 12, 1)
+      Time.utc(year + 1, months[0] - 12, 1)
     else
-      DateTime.new(year, months[0], 1)
+      Time.utc(year, months[0], 1)
     end
   end
   # dow wday d   
@@ -96,7 +111,7 @@ class DateTime
     return nil if days_of_week.empty?
     days = days_of_week.map { |d| d <= wday ? d + 7 : d }.sort!
     # return the proper next of this weekday
-    self + (days[0] - wday)
+    self + (days[0] - wday) * ONE_DAY
   end
 
 end
