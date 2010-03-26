@@ -7,6 +7,7 @@ module IceCube
 end
 
 require 'yaml.rb'
+require 'set.rb'
 
 require 'ice_cube/rule'
 

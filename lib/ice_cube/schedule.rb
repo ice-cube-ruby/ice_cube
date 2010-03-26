@@ -1,5 +1,3 @@
-require 'Set'
-
 module IceCube
 
   class Schedule
