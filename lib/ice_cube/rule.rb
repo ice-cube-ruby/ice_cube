@@ -30,6 +30,10 @@ module IceCube
       HourlyRule.new(interval)
     end
     
+    def self.minutely(interval = 1)
+      MinutelyRule.new(interval)
+    end
+    
     # Set the time when this rule will no longer be effective
     def until(until_date)
       raise ArgumentError.new('Cannot specify until and count on the same rule') if @count #as per rfc

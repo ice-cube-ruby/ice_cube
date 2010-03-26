@@ -11,6 +11,7 @@ require 'ice_cube/rules/monthly_rule'
 require 'ice_cube/rules/yearly_rule'
    
 require 'ice_cube/rules/hourly_rule'
+require 'ice_cube/rules/minutely_rule'
    
 module IceCube
   VERSION = '0.1'
