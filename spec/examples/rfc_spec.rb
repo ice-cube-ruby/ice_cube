@@ -302,4 +302,20 @@ describe Schedule, 'occurs_on?' do
     dates.should == [Time.utc(1997, 9, 2, 9, 0, 0), Time.utc(1997, 9, 2, 12, 0, 0), Time.utc(1997, 9, 2, 15, 0, 0)]
   end
   
+  it 'should ~ every 15 minutes for 6 occurrences' do
+    start_date = Time.utc(1997, 9, 2, 9, 0, 0)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.minutely(15).count(6)
+    dates = schedule.all_occurrences
+    dates.should == [Time.utc(1997, 9, 2, 9, 0, 0), Time.utc(1997, 9, 2, 9, 15, 0), Time.utc(1997, 9, 2, 9, 30, 0), Time.utc(1997, 9, 2, 9, 45, 0), Time.utc(1997, 9, 2, 10, 0, 0), Time.utc(1997, 9, 2, 10, 15, 0)]
+  end
+
+  it 'should ~ every hour and a half for 4 occurrences' do
+    start_date = Time.utc(1997, 9, 2, 9, 0, 0)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.minutely(90).count(4)
+    dates = schedule.all_occurrences
+    dates.should == [Time.utc(1997, 9, 2, 9, 0, 0), Time.utc(1997, 9, 2, 10, 30, 0), Time.utc(1997, 9, 2, 12, 0, 0), Time.utc(1997, 9, 2, 13, 30, 0)]
+  end
+  
 end
