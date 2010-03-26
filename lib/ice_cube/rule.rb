@@ -4,7 +4,7 @@ module IceCube
     
     attr_reader :occurrence_count, :until_date
 
-    SuggestionTypes = [:day, :month_of_year, :day_of_week, :day_of_year, :day_of_month]
+    SuggestionTypes = [:month_of_year, :day_of_year, :day_of_month, :day_of_week, :day]
     
     # create a new daily rule
     def self.daily(interval = 1)
@@ -113,11 +113,10 @@ module IceCube
       end
     end
     
-    #TODO - move to RFC order in suggestion types
-    
-    # MY MASTERPIECE
+    # The key
+    # This spidering behavior will go through look for the next suggestion
+    # by constantly moving the farthest back value forward
     def next_suggestion(date)
-      #CRAZY SPIDERS - @TODO - document
       # get the next date recommendation set
       suggestions = SuggestionTypes.map { |r| send("closest_#{r}", date) }
       loop do
