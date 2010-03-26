@@ -107,4 +107,11 @@ describe Schedule, 'occurs_on?' do
     dates.each { |date| date.sec == 30 }
   end
 
+  it 'ensure that when count on a rule is set to 0, 0 occurrences come back' do
+    start_date = DAY
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.daily.count(0)
+    schedule.all_occurrences.should == []
+  end
+
 end
