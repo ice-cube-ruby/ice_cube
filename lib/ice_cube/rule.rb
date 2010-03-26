@@ -102,7 +102,7 @@ module IceCube
       YAML::load(str)
     end
     
-  private
+    private
     
     #TODO utc to local
     
