@@ -25,10 +25,10 @@ module IceCube
       to_ical
     end
     
-    private
+    protected
     
-    def self.default_jump(date)
-      date + 7 * ONE_DAY
+    def default_jump(date)
+      date + 7 * ONE_DAY * @interval
     end
     
   end

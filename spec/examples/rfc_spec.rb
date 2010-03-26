@@ -294,4 +294,12 @@ describe Schedule, 'occurs_on?' do
     dates.should == expectation
   end
   
+  it 'should ~ every 3 hours from 9am to 5pm on a specific day' do
+    start_date = Time.utc(1997, 9, 2, 9, 0, 0)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.hourly(3).until(Time.utc(1997, 9, 2, 17, 0, 0))
+    dates = schedule.all_occurrences
+    dates.should == [Time.utc(1997, 9, 2, 9, 0, 0), Time.utc(1997, 9, 2, 12, 0, 0), Time.utc(1997, 9, 2, 15, 0, 0)]
+  end
+  
 end

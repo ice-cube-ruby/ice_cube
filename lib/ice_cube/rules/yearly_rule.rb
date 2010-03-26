@@ -31,10 +31,10 @@ module IceCube
       to_ical
     end
     
-    private
+    protected
     
-    def self.default_jump(date)
-      Time.utc(date.year + 1, date.month, date.day, date.hour, date.min, date.sec)
+    def default_jump(date)
+      Time.utc(date.year + @interval, date.month, date.day, date.hour, date.min, date.sec)
     end
     
   end

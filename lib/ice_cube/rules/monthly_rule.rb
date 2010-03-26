@@ -28,9 +28,10 @@ module IceCube
       to_ical
     end
     
-    private
+    protected
     
-    def self.default_jump(date)
+    #TODO make this jump @interval months
+    def default_jump(date)
       next_month = date.month + 1
       next_year = next_month > 12 ? date.year + 1 : date.year
       next_month = next_month > 12 ? next_month - 12 : next_month

@@ -26,6 +26,10 @@ module IceCube
       YearlyRule.new(interval)
     end
     
+    def self.hourly(interval = 1)
+      HourlyRule.new(interval)
+    end
+    
     # Set the time when this rule will no longer be effective
     def until(until_date)
       raise ArgumentError.new('Cannot specify until and count on the same rule') if @count #as per rfc
@@ -107,7 +111,7 @@ module IceCube
     end
     
     def validate_single_date(date)
-      SuggestionTypes.all? do |s| 
+      SuggestionTypes.all? do |s|
         response = send("validate_#{s}", date)
         response.nil? || response
       end
@@ -119,15 +123,27 @@ module IceCube
     def next_suggestion(date)
       # get the next date recommendation set
       suggestions = SuggestionTypes.map { |r| send("closest_#{r}", date) }
-      loop do
-        # validate all against the minimum
-        min_suggestion = suggestions.compact.min
-        return min_suggestion if validate_single_date(min_suggestion)
-        # move anything that is the minimum to its next closest
-        SuggestionTypes.each_with_index do |r, index|
-          suggestions[index] = send("closest_#{r}", min_suggestion) if min_suggestion == suggestions[index]
+      compact_suggestions = suggestions.compact
+      # find the next date to go to
+      if compact_suggestions.empty?
+        next_date = date
+        loop do
+          # keep going through rule suggestions
+          next_date = self.default_jump(next_date)
+          return next_date if validate_single_date(next_date)
         end
-      end      
+      else  
+        loop do
+          compact_suggestions = suggestions.compact
+          min_suggestion = compact_suggestions.min
+          # validate all against the minimum
+          return min_suggestion if validate_single_date(min_suggestion)
+          # move anything that is the minimum to its next closest
+          SuggestionTypes.each_with_index do |r, index|
+            suggestions[index] = send("closest_#{r}", min_suggestion) if min_suggestion == suggestions[index]
+          end
+        end
+      end
     end
     
     def self.from_yaml(str)
@@ -137,13 +153,13 @@ module IceCube
   private
     
     #TODO utc to local
-    #TODO look for some way not to duplicate code
+    #TODO look for some way not to duplicate code, or move into modules in sub-folder
     #TODO implement the rest of the RFC examples (time-based & set-pos)
     
     def validate_day_of_week(date)
       # is it even one of the valid days?
       return true if !@days_of_week || @days_of_week.empty?
-      return false unless @days_of_week.has_key?(date.wday)
+      return false unless @days_of_week.has_key?(date.wday) #shortcut
       # does this fall on one of the occurrences?
       first_occurrence = ((7 - Time.utc(date.year, date.month, 1).wday) + date.wday) % 7 + 1 #day of first occurrence of a wday in a month
       this_weekday_in_month_count = ((date.days_in_month - first_occurrence + 1) / 7.0).ceil #how many of these in the month
@@ -153,6 +169,7 @@ module IceCube
     
     #note - temporary implementation
     def closest_day_of_week(date)
+      return nil if !@days_of_week || @days_of_week.empty?
       tdate = date.dup
       while tdate += ONE_DAY
         return tdate if validate_day_of_week(tdate)
@@ -169,11 +186,9 @@ module IceCube
       # turn months into month of year
       # month > 12 should fall into the next year
       months = @months_of_year.map do |m|
-        m if m > date.month
-        m + 12 if m <= date.month
+        m > date.month ? m : m + 12
       end
       months.compact!
-      return nil if months.empty?
       # go to the closest distance away
       closest_month = months.min
       closest_month < 12 ? Time.utc(date.year, closest_month, date.day) : Time.utc(date.year + 1, closest_month - 12, date.day)
@@ -250,12 +265,9 @@ module IceCube
       return nil if !@days || @days.empty?
       # turn days into distances
       days = @days.map do |d| 
-        if d > date.wday : d - date.wday
-        elsif d < date.wday : 7 - date.wday + d
-        end
+        d > date.wday ? (d - date.wday) : (7 - date.wday + d)
       end
       days.compact!
-      return nil if days.empty?
       # go to the closest distance away, the start of that day
       goal = date + days.min * ONE_DAY
       Time.utc(goal.year, goal.month, goal.day)
