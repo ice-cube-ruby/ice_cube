@@ -42,14 +42,18 @@ module IceCube
 
     # Add an individual date to this schedule
     def add_recurrence_date(date)
-      raise ArgumentError.new('Argument must be a valid date') unless date.class == Date
+      raise ArgumentError.new('Argument must be a valid Time') unless date.class == Time
       @rdates << date
     end
 
     # Add an individual date exception to this schedule
     def add_exception_date(date)
-      raise ArgumentError.new('Argument must be a valid date') unless date.class == Date
+      raise ArgumentError.new('Argument must be a valid Time') unless date.class == Time
       @exdates << date
+    end
+    
+    def self.from_yaml(str)
+      YAML::load(str)
     end
    
     private

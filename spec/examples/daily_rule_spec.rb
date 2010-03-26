@@ -7,9 +7,9 @@ describe DailyRule, 'occurs_on?' do
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.daily
     #check assumption
-    dates = schedule.occurrences(start_date + 2)
+    dates = schedule.occurrences(start_date + 2 * ONE_DAY)
     dates.count.should == 3
-    dates.should == [DAY, DAY + 1, DAY + 2]
+    dates.should == [DAY, DAY + 1 * ONE_DAY, DAY + 2 * ONE_DAY]
   end
 
   it 'should produce the correct days for @interval = 2' do
@@ -17,9 +17,9 @@ describe DailyRule, 'occurs_on?' do
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.daily(2)
     #check assumption (3) -- (1) 2 (3) 4 (5) 6 
-    dates = schedule.occurrences(start_date + 5)
+    dates = schedule.occurrences(start_date + 5 * ONE_DAY)
     dates.count.should == 3
-    dates.should == [DAY, DAY + 2, DAY + 4]
+    dates.should == [DAY, DAY + 2 * ONE_DAY, DAY + 4 * ONE_DAY]
   end
     
 end

@@ -25,6 +25,8 @@ module IceCube
       include_dates
     end
    
+    #TODO - find a way to rewrite these
+   
     def upto(end_date)
       include_dates = []
       roc = self
@@ -41,17 +43,23 @@ module IceCube
       @date = date
       @start_date = start_date
       @index = index
+      @date = @start_date if @date.nil? && @rule.validate_single_date(@start_date) && @rule.occurs_on?(@start_date, @start_date)
     end
+
+    #TODO - there is a huge error here - @index should not be incremented if @date is nil
+    #TODO - can this be written a bit cleaner - no do..while
+    #TODO - change the name of 'next_suggestion' to something more appropriate
+    #TODO - change name of occurs_on? to something like in_interval?
     
     #get the next occurrence of this rule
     def succ
       return nil if @rule.occurrence_count && @index >= @rule.occurrence_count # count check
-      #walk through all of the successive dates, looking for the next occurrence, then return it.
-      date = @date ? @date.next : @start_date # what to test next 
+      #walk through all of the successive dates, looking for the next occurrence (interval-valid), then return it.
+      date = @date.nil? ? @rule.next_suggestion(@start_date) : @rule.next_suggestion(@date)
       begin
         return nil if @rule.until_date && date > @rule.until_date # until check
         return RuleOccurrence.new(@rule, @start_date, date, @index + 1) if @rule.occurs_on?(date, @start_date)
-      end while date = date.next
+      end while date = @rule.next_suggestion(date)
     end
       
   end

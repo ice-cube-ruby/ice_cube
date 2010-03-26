@@ -14,25 +14,25 @@ You would write:
 
 With ice_cube, you can specify (in order of precendence)
 
-* Exception Dates - Dates to specifically exclude from a schedule
-* Recurrence Dates - Dates to specifically include in a schedule
+* Exception Dates - To specifically exclude from a schedule
+* Recurrence Dates - To specifically include in a schedule
 * Exception Rules - Rules on how to exclude recurring dates in a schedule
 * Recurrence Rules - Rules on how to include recurring dates in a schedule
 
 EX: Specifying a exception/recurrence date:
 
     schedule = Schedule.new(start_date)
-    schedule.add_recurrence_date(Date.today)
-    schedule.add_exception_date(Date.today + 1)
+    schedule.add_recurrence_date(Time.now)
+    schedule.add_exception_date(Time.now + 1)
 
     # list all occurrences from start_date to end_date
-    occurrences = schedule.occurrences(end_date) # [Date.today]
+    occurrences = schedule.occurrences(end_date) # [Time.now]
  
     # or between a certain range (still obeying the schedule's start date)
-    occurrences = schedule.occurrences_between(start_date, end_date) # [Date.today]
+    occurrences = schedule.occurrences_between(start_date, end_date) # [Time.now]
 
     # or check just a single day
-    schedule.occurs_on?(Date.today) # [Date.today]
+    schedule.occurs_on?(Time.now) # [Time.now]
 
 ---
 

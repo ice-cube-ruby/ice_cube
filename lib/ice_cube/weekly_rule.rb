@@ -2,18 +2,21 @@ module IceCube
 
   class WeeklyRule < DailyRule
     
+    #TODO - look for  a way to rewrite all of these
+    
     # Determine whether or not this rule occurs on a given date.
     # Weekly rules occurs if we're in one of the interval weeks,
     # and we're in a valid day of the week.
     def occurs_on?(date, start_date)
-      return false unless validate(date, start_date)
+      #make sure we're in the right interval
+      week_of_year = Date.civil(date.year, date.month, date.day).cweek
+      return false unless week_of_year % @interval == 0
       #by default, the days will be the start_date's day of the week
-      unless @days
-        return false unless date.wday == start_date.wday
+      unless has_obscure_validations?
+        return date.wday == start_date.wday
       end
-      #check to make sure we're in the right interval
-      day_count = (start_date..date).count
-      (day_count / 7) % @interval == 0
+      # otherwise
+      true
     end
     
     def to_ical 
@@ -22,6 +25,12 @@ module IceCube
     
     def to_s
       to_ical
+    end
+    
+    private
+    
+    def self.default_jump(date)
+      date + 7 * ONE_DAY
     end
     
   end

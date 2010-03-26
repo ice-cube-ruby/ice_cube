@@ -4,9 +4,8 @@ module IceCube
 
     # Determine whether this rule occurs on a give date.
     def occurs_on?(date, start_date)
-      return false unless validate(date, start_date)
-      #determine whether the rule falls in our interval
-      day_count = (start_date...date).count
+      #make sure we're in a proper interval
+      day_count = ((date - start_date) / ONE_DAY).to_i
       day_count % @interval == 0
     end
 
@@ -16,6 +15,12 @@ module IceCube
         
     def to_s
       to_ical
+    end
+        
+    private
+    
+    def self.default_jump(date)
+      date + ONE_DAY
     end
         
   end

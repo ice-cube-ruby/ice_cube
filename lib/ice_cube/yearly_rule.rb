@@ -9,7 +9,8 @@ module IceCube
     # Note: rollover dates don't work, so you can't ask for the 400th day of a year
     # and expect to roll into the next year (this might be a possible direction in the future)
     def occurs_on?(date, start_date)
-      return false unless validate(date, start_date)
+      #make sure we're in the proper interval
+      return false unless (date.year - start_date.year) % @interval == 0
       # if only months of year is specified, it should only return the single day of start_date
       unless @days_of_year || @days_of_month || @days_of_week || @days
         return false unless date.day == start_date.day
@@ -18,8 +19,8 @@ module IceCube
       unless has_obscure_validations?
         return false unless date.month == start_date.month && date.day == start_date.day
       end
-      #make sure we're in the proper interval
-      (date.year - start_date.year) % @interval == 0
+      # otherwise
+      true
     end
     
     def to_ical 
@@ -28,6 +29,12 @@ module IceCube
     
     def to_s
       to_ical
+    end
+    
+    private
+    
+    def self.default_jump(date)
+      Time.utc(date.year + 1, date.month, date.day, date.hour, date.min, date.sec)
     end
     
   end
