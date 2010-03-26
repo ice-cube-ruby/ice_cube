@@ -12,25 +12,21 @@ module IceCube
     def to_date
       @date
     end
-   
+       
     def all_occurrences
-      raise ArgumentError.new("Rule must specify either an until date or a count to use 'all'") unless @rule.occurrence_count || @rule.until_date
-      include_dates = []
-      roc = self
-      begin
-        break if roc.nil? #go until we run out of dates
-        next if roc.to_date.nil?
-        include_dates << roc.to_date
-      end while roc = roc.succ
-      include_dates
+      raise ArgumentError.new("Rule must specify either an until date or a count to use 'all_occurrences'") unless @rule.occurrence_count || @rule.until_date
+      find_occurrences { |roc| false }
     end
    
-    #TODO - find a way to rewrite these
+    def upto(end_date)
+      find_occurrences { |roc| roc.to_date > end_date }
+    end
    
     def upto(end_date)
       include_dates = []
       roc = self
       begin
+        break if roc.nil?
         next if roc.to_date.nil? # Handle the case where start_date is not a valid occurrence
         break if roc.to_date > end_date
         include_dates << roc.to_date
@@ -43,7 +39,6 @@ module IceCube
       @date = date
       @start_date = start_date
       @index = index
-      #validate against the start date to determine if the rule occurs on the start date
     end
 
     #TODO - there is a huge error here - @index should not be incremented if @date is nil
@@ -67,6 +62,20 @@ module IceCube
         return nil if @rule.until_date && date > @rule.until_date # until check
         return RuleOccurrence.new(@rule, @start_date, date, @index + 1) if @rule.occurs_on?(date, @start_date)
       end while date = @rule.next_suggestion(date)
+    end
+   
+    private
+    
+    def find_occurrences
+      include_dates = []
+      roc = self
+      begin
+        break if roc.nil? #go until we run out of dates
+        next if roc.to_date.nil? #handle the case where start_date is not a valid occurrence
+        break if yield(roc) #recurrence condition
+        include_dates << roc.to_date
+      end while roc = roc.succ
+      include_dates
     end
       
   end

@@ -151,7 +151,7 @@ module IceCube
       @days_of_week[date.wday].include?(nth_occurrence_of_weekday) || @days_of_week[date.wday].include?(nth_occurrence_of_weekday - this_weekday_in_month_count - 1)
     end
     
-    #TODO - replace this implementation with a real one
+    #note - temporary implementation
     def closest_day_of_week(date)
       tdate = date.dup
       while tdate += ONE_DAY
