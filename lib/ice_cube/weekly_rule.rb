@@ -2,8 +2,6 @@ module IceCube
 
   class WeeklyRule < DailyRule
     
-    #TODO - look for  a way to rewrite all of these
-    
     # Determine whether or not this rule occurs on a given date.
     # Weekly rules occurs if we're in one of the interval weeks,
     # and we're in a valid day of the week.

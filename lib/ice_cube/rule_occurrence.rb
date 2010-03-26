@@ -30,8 +30,7 @@ module IceCube
     end
 
     #TODO - there is a huge error here - @index should not be incremented if @date is nil
-    #TODO - can this be written a bit cleaner - no do..while
-    #TODO - change the name of 'next_suggestion' to something more appropriate
+    #TODO - write this a bit cleaner - no do..while
     #TODO - change name of occurs_on? to something like in_interval?
     #TODO - change scope of things like occurs_on? and next_suggestion
     
