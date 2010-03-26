@@ -3,6 +3,8 @@ module IceCube
   class Rule
     
     attr_reader :occurrence_count, :until_date
+
+    SuggestionTypes = [:day, :month_of_year, :day_of_week, :day_of_year, :day_of_month]
     
     # create a new daily rule
     def self.daily(interval = 1)
@@ -104,13 +106,8 @@ module IceCube
       self
     end
     
-    #TODO - move nil checking into functions to clean this up to just an array
-    #TODO - collapse mass assignments
-    #TODO - centralize suggestion_types
-    
     def validate_single_date(date)
-      suggestion_types = [:day, :month_of_year, :day_of_week, :day_of_year, :day_of_month]
-      suggestion_types.all? do |s| 
+      SuggestionTypes.all? do |s| 
         response = send("validate_#{s}", date)
         response.nil? || response
       end
@@ -120,16 +117,15 @@ module IceCube
     
     # MY MASTERPIECE
     def next_suggestion(date)
-      suggestion_types = [:day, :month_of_year, :day_of_week, :day_of_year, :day_of_month]
       #CRAZY SPIDERS - @TODO - document
       # get the next date recommendation set
-      suggestions = suggestion_types.map { |r| send("closest_#{r}", date) }
+      suggestions = SuggestionTypes.map { |r| send("closest_#{r}", date) }
       loop do
         # validate all against the minimum
         min_suggestion = suggestions.compact.min
         return min_suggestion if validate_single_date(min_suggestion)
         # move anything that is the minimum to its next closest
-        suggestion_types.each_with_index do |r, index|
+        SuggestionTypes.each_with_index do |r, index|
           suggestions[index] = send("closest_#{r}", min_suggestion) if min_suggestion == suggestions[index]
         end
       end      
@@ -265,6 +261,8 @@ module IceCube
       goal = date + days.min * ONE_DAY
       Time.utc(goal.year, goal.month, goal.day)
     end
+    
+    #TODO - add new time rules into to_ical_base
     
     #get the icalendar representation of this rule logic
     def to_ical_base
