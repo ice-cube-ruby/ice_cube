@@ -61,11 +61,11 @@ describe Schedule, 'occurs_on?' do
   end
 
   it 'should return properly with a combination of a recurrence and exception rule' do
-    schedule = Schedule.new(Time.now)
+    schedule = Schedule.new(DAY)
     schedule.add_recurrence_rule Rule.daily # every day
     schedule.add_exception_rule Rule.weekly.day(:monday, :tuesday, :wednesday) # except these
     #check assumption - in 2 weeks, we should have 8 days
-    schedule.occurrences(Time.now + 13 * ONE_DAY).count.should == 8
+    schedule.occurrences(DAY + 13 * ONE_DAY).count.should == 8
   end
 
   it 'should be able to exclude a certain date from a range' do

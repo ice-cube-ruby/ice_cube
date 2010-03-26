@@ -129,7 +129,6 @@ module IceCube
         min_suggestion = suggestions.compact.min
         return min_suggestion if validate_single_date(min_suggestion)
         # move anything that is the minimum to its next closest
-        puts suggestions.join('-')
         suggestion_types.each_with_index do |r, index|
           suggestions[index] = send("closest_#{r}", min_suggestion) if min_suggestion == suggestions[index]
         end
@@ -148,7 +147,7 @@ module IceCube
     
     def validate_day_of_week(date)
       # is it even one of the valid days?
-      return true if !@days_of_week
+      return true if !@days_of_week || @days_of_week.empty?
       return false unless @days_of_week.has_key?(date.wday)
       # does this fall on one of the occurrences?
       first_occurrence = ((7 - Time.utc(date.year, date.month, 1).wday) + date.wday) % 7 + 1 #day of first occurrence of a wday in a month
@@ -166,7 +165,8 @@ module IceCube
     end
     
     def validate_month_of_year(date)
-      !@months_of_year || @months_of_year.include?(date.month)
+      return true if !@months_of_year || @months_of_year.empty?
+      @months_of_year.include?(date.month)
     end
     
     def closest_month_of_year(date)
@@ -185,7 +185,8 @@ module IceCube
     end
     
     def validate_day_of_month(date)
-      !@days_of_month || @days_of_month.include?(date.mday) || @days_of_month.include?(date.mday - date.days_in_month - 1)
+      return true if !@days_of_month || @days_of_month.empty?
+      @days_of_month.include?(date.mday) || @days_of_month.include?(date.mday - date.days_in_month - 1)
     end
     
     def closest_day_of_month(date)
@@ -215,7 +216,8 @@ module IceCube
     end
       
     def validate_day_of_year(date)
-      !@days_of_year || @days_of_year.include?(date.mday) || @days_of_year.include?(date.mday - date.days_in_month - 1)
+      return true if !@days_of_year || @days_of_year.empty?
+      @days_of_year.include?(date.yday) || @days_of_year.include?(date.yday - date.days_in_year - 1)
     end
     
     def closest_day_of_year(date)
@@ -245,7 +247,8 @@ module IceCube
     end
 
     def validate_day(date)
-      !@days || @days.include?(date.wday)
+      return true if !@days || @days.empty?
+      @days.include?(date.wday)
     end
     
     def closest_day(date)

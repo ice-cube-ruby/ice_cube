@@ -50,6 +50,7 @@ module IceCube
     #TODO - can this be written a bit cleaner - no do..while
     #TODO - change the name of 'next_suggestion' to something more appropriate
     #TODO - change name of occurs_on? to something like in_interval?
+    #TODO - change scope of things like occurs_on? and next_suggestion
     
     #get the next occurrence of this rule
     def succ
