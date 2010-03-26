@@ -4,7 +4,7 @@ module IceCube
     
     attr_reader :occurrence_count, :until_date
 
-    SuggestionTypes = [:month_of_year, :day_of_year, :day_of_month, :day_of_week, :day]
+    SuggestionTypes = [:month_of_year, :day_of_year, :day_of_month, :day_of_week, :day, :hour_of_day, :minute_of_hour, :second_of_minute]
     
     # create a new daily rule
     def self.daily(interval = 1)
@@ -34,6 +34,10 @@ module IceCube
       MinutelyRule.new(interval)
     end
     
+    def self.secondly(interval = 1)
+      SecondlyRule.new(interval)
+    end
+    
     # Set the time when this rule will no longer be effective
     def until(until_date)
       raise ArgumentError.new('Cannot specify until and count on the same rule') if @count #as per rfc
@@ -51,6 +55,35 @@ module IceCube
       months.each do |month|
         raise ArgumentError.new('Argument must be a valid month') unless MONTHS.has_key?(month)
         @months_of_year << MONTHS[month]
+      end
+      self
+    end
+
+    def hour_of_day(*hours)
+      @hours_of_day ||= []
+      hours.each do |hour| 
+        raise ArgumentError.new('Argument must be a valid hour') unless hour < 24 && hour >= 0
+        @hours_of_day << hour
+      end
+      self
+    end
+
+    def minute_of_hour(*minutes)
+      @minutes_of_hour ||= []
+      minutes.each do |minute|
+        raise ArgumentError.new('Argument must be a valid minute') unless minute < 60 && minute >= 0
+        @minutes_of_hour << minute
+      end
+      self
+    end
+    
+    # TODO - consider changing names to BY_ like in the RFC
+    
+    def second_of_minute(*seconds)
+      @seconds_of_minute ||= []
+      seconds.each do |second|
+        raise ArgumentError.new('Argument must be a valid second') unless second < 60 && second >= 0
+        @seconds_of_minute << second
       end
       self
     end
@@ -114,6 +147,8 @@ module IceCube
       self
     end
     
+    #TODO - move all of these into mixins
+    
     def validate_single_date(date)
       SuggestionTypes.all? do |s|
         response = send("validate_#{s}", date)
@@ -159,6 +194,62 @@ module IceCube
     #TODO utc to local
     #TODO look for some way not to duplicate code, or move into modules in sub-folder
     #TODO implement the rest of the RFC examples (time-based & set-pos)
+    
+    def validate_minute_of_hour(date)
+      return true if !@minutes_of_hour || @minutes_of_hour.empty?
+      @minutes_of_hour.include?(date.min)
+    end
+    
+    def closest_minute_of_hour(date)
+      return nil if !@minutes_of_hour || @minutes_of_hour.empty?
+      # turn minutes into minutes of hour
+      # minute >= 60 should fall into the next hour
+      minutes = @minutes_of_hour.map do |m|
+        m > date.min ? m - date.min : 60 - date.min + m
+      end
+      minutes.compact!
+      # go to the closest distance away, the beginning of that minute
+      closest_minute = minutes.min
+      goal = date + closest_minute * 60
+      Time.utc(goal.year, goal.month, goal.day, goal.hour, goal.min)
+    end
+    
+    def validate_second_of_minute(date)
+      return true if !@seconds_of_minute || @seconds_of_minute.empty?
+      @seconds_of_minute.include?(date.sec)
+    end
+    
+    def closest_second_of_minute(date)
+      return nil if !@seconds_of_minute || @seconds_of_minute.empty?
+      # turn seconds into seconds of minute
+      # second >= 60 should fall into the next minute
+      seconds = @seconds_of_minute.map do |s|
+        s > date.sec ? s - date.sec : 60 - date.sec + s
+      end
+      seconds.compact!
+      # go to the closest distance away
+      closest_second = seconds.min
+      date + closest_second
+    end
+    
+    def validate_hour_of_day(date)
+      return true if !@hours_of_day || @hours_of_day.empty?
+      @hours_of_day.include?(date.hour)
+    end
+    
+    def closest_hour_of_day(date)
+      return nil if !@hours_of_day || @hours_of_day.empty?
+      # turn hours into hour of day
+      # hour >= 24 should fall into the next day
+      hours = @hours_of_day.map do |h|
+        h > date.hour ? h - date.hour : 24 - date.hour + h
+      end
+      hours.compact!
+      # go to the closest distance away, the start of that hour
+      closest_hour = hours.min
+      goal = date + 60 * 60 * closest_hour
+      Time.utc(goal.year, goal.month, goal.day, goal.hour)
+    end
     
     def validate_day_of_week(date)
       # is it even one of the valid days?

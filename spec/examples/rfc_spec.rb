@@ -318,4 +318,14 @@ describe Schedule, 'occurs_on?' do
     dates.should == [Time.utc(1997, 9, 2, 9, 0, 0), Time.utc(1997, 9, 2, 10, 30, 0), Time.utc(1997, 9, 2, 12, 0, 0), Time.utc(1997, 9, 2, 13, 30, 0)]
   end
   
+  it 'should ~ every 20 minutes from 9am to 4:40pm every day (a)' do
+    start_date = Time.utc(1997, 9, 2, 8, 0, 0)
+    end_date = Time.utc(1997, 9, 2, 10, 20, 0)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.daily.hour_of_day(9, 10, 11, 12, 13, 14, 15, 16).minute_of_hour(0, 20, 40).until(end_date)
+    dates = schedule.all_occurrences
+    expecation = [Time.utc(1997, 9, 2, 9), Time.utc(1997, 9, 2, 9, 20), Time.utc(1997, 9, 2, 9, 40), Time.utc(1997, 9, 2, 10, 0), Time.utc(1997, 9, 2, 10, 20)]
+    dates.should == expecation
+  end
+  
 end

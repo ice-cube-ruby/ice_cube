@@ -12,6 +12,7 @@ require 'ice_cube/rules/yearly_rule'
    
 require 'ice_cube/rules/hourly_rule'
 require 'ice_cube/rules/minutely_rule'
+require 'ice_cube/rules/secondly_rule'
    
 module IceCube
   VERSION = '0.1'
