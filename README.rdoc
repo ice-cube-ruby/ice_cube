@@ -28,8 +28,8 @@ EX: Specifying a exception/recurrence date:
     # list all occurrences from start_date to end_date
     occurrences = schedule.occurrences(end_date) # [Time.now]
  
-    # or between a certain range (still obeying the schedule's start date)
-    occurrences = schedule.occurrences_between(start_date, end_date) # [Time.now]
+    # or all of the occurrences
+    occurrences = schedule.all_occurrences # [Time.now]
 
     # or check just a single day
     schedule.occurs_on?(Time.now) # [Time.now]
@@ -37,7 +37,7 @@ EX: Specifying a exception/recurrence date:
 ---
 
 All rules are based off of the schedule's start date. 
-Individual rules may optionally specify an until date, which is a date that that individual rule is no longer effective.
+Individual rules may optionally specify an until date, which is a date that that individual rule is no longer effective, or a count (which is how many times maximum you want the rule to be effective)
 
 ---
 
@@ -91,13 +91,29 @@ There are 6 types of recurrence rules that can be added to a schedule:
     # every third year in march
     schedule.add_recurrence_rule Rule.yearly(3).month_of_year(:march)
 
----
+===Hourly (by hour of day)
 
-==Combining rules
+    # every hour on the same minute and second as start date
+    schedule.add_recurrence_rule Rule.hourly
+    
+    # every other hour, on mondays
+    schedule.add_recurrence_rule Rule.hourly(2).day(:monday)
+    
+===Minutely (by minute of hour)
 
-Things start to get really powerful when you combine rules:
+    # every 10 minutes
+    schedule.add_recurrence_rule Rule.minutely(10)
+    
+    # every hour and a half, on the last tuesday of the month
+    schedule.add_recurrence_rule Rule.minutely(90).day_of_week(:tuesday => [-1])
 
-    Rule.yearly(2).day_of_week(:monday => [1, -1]).month_of_year(:june, july)
+===Secondly (by second of minute)
+
+    # every second
+    schedule.add_recurrence_rule Rule.secondly
+    
+    # every 15 seconds between 12 - 12:59
+    schedule.add_recurrence_rule Rule.secondly(15).hour_of_day(12)
 
 ---
 
