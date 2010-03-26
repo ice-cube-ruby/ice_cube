@@ -366,8 +366,6 @@ module IceCube
       date + days.min * ONE_DAY
     end
     
-    #TODO - add new time rules into to_ical_base
-    
     #get the icalendar representation of this rule logic
     def to_ical_base
       representation = ''

@@ -5,14 +5,14 @@ require 'ice_cube/rule'
 require 'ice_cube/schedule'
 require 'ice_cube/rule_occurrence'
 
-require 'ice_cube/rules/daily_rule'
-require 'ice_cube/rules/weekly_rule'
-require 'ice_cube/rules/monthly_rule'
-require 'ice_cube/rules/yearly_rule'
+autoload :DailyRule, 'ice_cube/rules/daily_rule'
+autoload :WeeklyRule, 'ice_cube/rules/weekly_rule'
+autoload :MonthlyRule, 'ice_cube/rules/monthly_rule'
+autoload :YearlyRule, 'ice_cube/rules/yearly_rule'
    
-require 'ice_cube/rules/hourly_rule'
-require 'ice_cube/rules/minutely_rule'
-require 'ice_cube/rules/secondly_rule'
+autoload :HourlyRule, 'ice_cube/rules/hourly_rule'
+autoload :MinutelyRule, 'ice_cube/rules/minutely_rule'
+autoload :SecondlyRule, 'ice_cube/rules/secondly_rule'
    
 module IceCube
   VERSION = '0.1'
