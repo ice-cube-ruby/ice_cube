@@ -43,7 +43,7 @@ module IceCube
       @date = date
       @start_date = start_date
       @index = index
-      @date = @start_date if @date.nil? && @rule.validate_single_date(@start_date) && @rule.occurs_on?(@start_date, @start_date)
+      #validate against the start date to determine if the rule occurs on the start date
     end
 
     #TODO - there is a huge error here - @index should not be incremented if @date is nil
@@ -54,8 +54,14 @@ module IceCube
     #get the next occurrence of this rule
     def succ
       return nil if @rule.occurrence_count && @index >= @rule.occurrence_count # count check
+      # get the next date to walk to
+      if @date.nil?
+        date = @start_date if @rule.validate_single_date(@start_date)
+        date = @rule.next_suggestion(@start_date) unless date
+      else
+        date = @rule.next_suggestion(@date)
+      end
       #walk through all of the successive dates, looking for the next occurrence (interval-valid), then return it.
-      date = @date.nil? ? @rule.next_suggestion(@start_date) : @rule.next_suggestion(@date)
       begin
         return nil if @rule.until_date && date > @rule.until_date # until check
         return RuleOccurrence.new(@rule, @start_date, date, @index + 1) if @rule.occurs_on?(date, @start_date)

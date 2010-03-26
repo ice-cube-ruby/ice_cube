@@ -2,6 +2,8 @@ module IceCube
   
   class Rule
     
+    attr_reader :occurrence_count, :until_date
+    
     # create a new daily rule
     def self.daily(interval = 1)
       DailyRule.new(interval)
@@ -107,7 +109,7 @@ module IceCube
     #TODO - centralize suggestion_types
     
     def validate_single_date(date)
-      suggestion_types = [:day, :month_of_year]
+      suggestion_types = [:day, :month_of_year, :day_of_week, :day_of_year, :day_of_month]
       suggestion_types.all? do |s| 
         response = send("validate_#{s}", date)
         response.nil? || response
@@ -118,49 +120,128 @@ module IceCube
     
     # MY MASTERPIECE
     def next_suggestion(date)
-      suggestion_types = [:day, :month_of_year]
-      #get initial suggestions
-      suggestions = suggestion_types.map { |s| send("closest_#{s}", date) }
+      suggestion_types = [:day, :month_of_year, :day_of_week, :day_of_year, :day_of_month]
       #CRAZY SPIDERS - @TODO - document
+      # get the next date recommendation set
+      suggestions = suggestion_types.map { |r| send("closest_#{r}", date) }
       loop do
-        #if all of the suggestions are the same (or nil), we've found a viable date... otherwise keeping pushing the back one forward
-        compact_suggestions = suggestions.compact
-        return self.class.default_jump(date) if compact_suggestions.empty?
-        return compact_suggestions.first if compact_suggestions.all? { |s| s == compact_suggestions.first }
-        # find the index of the maximum suggestion (may be multiple)
-        max_suggestion = compact_suggestions.max #don't recompute
-        to_recall = compact_suggestions.select { |s| s != max_suggestion }
-        # recall and reindex the suggestion
-        to_recall.each { |i| suggestions[i] = send("closest_#{suggestion_types[i]}", max_suggestion) }
-      end
+        # validate all against the minimum
+        min_suggestion = suggestions.compact.min
+        return min_suggestion if validate_single_date(min_suggestion)
+        # move anything that is the minimum to its next closest
+        puts suggestions.join('-')
+        suggestion_types.each_with_index do |r, index|
+          suggestions[index] = send("closest_#{r}", min_suggestion) if min_suggestion == suggestions[index]
+        end
+      end      
     end
     
     def self.from_yaml(str)
       YAML::load(str)
     end
     
-    attr_reader :occurrence_count, :until_date
-    
   private
     
     #TODO utc to local
+    #TODO look for some way not to duplicate code
+    #TODO implement the rest of the RFC examples (time-based & set-pos)
+    
+    def validate_day_of_week(date)
+      # is it even one of the valid days?
+      return true if !@days_of_week
+      return false unless @days_of_week.has_key?(date.wday)
+      # does this fall on one of the occurrences?
+      first_occurrence = ((7 - Time.utc(date.year, date.month, 1).wday) + date.wday) % 7 + 1 #day of first occurrence of a wday in a month
+      this_weekday_in_month_count = ((date.days_in_month - first_occurrence + 1) / 7.0).ceil #how many of these in the month
+      nth_occurrence_of_weekday = (date.mday - first_occurrence) / 7 + 1 #what occurrence of the weekday is +date+
+      @days_of_week[date.wday].include?(nth_occurrence_of_weekday) || @days_of_week[date.wday].include?(nth_occurrence_of_weekday - this_weekday_in_month_count - 1)
+    end
+    
+    #TODO - replace this implementation with a real one
+    def closest_day_of_week(date)
+      tdate = date.dup
+      while tdate += ONE_DAY
+        return tdate if validate_day_of_week(tdate)
+      end
+    end
     
     def validate_month_of_year(date)
       !@months_of_year || @months_of_year.include?(date.month)
     end
     
     def closest_month_of_year(date)
-      return nil if !@days_of_month || @days_of_month.empty?
+      return nil if !@months_of_year || @months_of_year.empty?
       # turn months into month of year
       # month > 12 should fall into the next year
       months = @months_of_year.map do |m|
         m if m > date.month
         m + 12 if m <= date.month
-      end.compact!
+      end
+      months.compact!
       return nil if months.empty?
       # go to the closest distance away
       closest_month = months.min
       closest_month < 12 ? Time.utc(date.year, closest_month, date.day) : Time.utc(date.year + 1, closest_month - 12, date.day)
+    end
+    
+    def validate_day_of_month(date)
+      !@days_of_month || @days_of_month.include?(date.mday) || @days_of_month.include?(date.mday - date.days_in_month - 1)
+    end
+    
+    def closest_day_of_month(date)
+      return nil if !@days_of_month || @days_of_month.empty?
+      #get some variables we need
+      days_in_month = date.days_in_month
+      days_left_in_this_month = days_in_month - date.mday
+      next_month, next_year = date.month == 12 ? [1, date.year + 1] : [date.month + 1, date.year] #clean way to wrap over years
+      days_in_next_month = Time.utc(next_year, next_month, 1).days_in_month
+      # create a list of distances
+      distances = []
+      @days_of_month.each do |d|
+        if d > 0
+          distances << d - date.mday #today is 1, we want 20 (19)
+          distances << days_left_in_this_month + d #(364 + 20)
+        elsif d < 0
+          distances << (days_in_month + d + 1) - date.mday #today is 30, we want -1
+          distances << (days_in_next_month + d + 1) + days_left_in_this_month #today is 300, we want -70
+        end
+      end
+      #return the lowest distance
+      distances = distances.select { |d| d > 0 }
+      return nil if distances.empty?
+      # return the start of the proper day
+      goal = date + distances.min * ONE_DAY
+      Time.utc(goal.year, goal.month, goal.day)
+    end
+      
+    def validate_day_of_year(date)
+      !@days_of_year || @days_of_year.include?(date.mday) || @days_of_year.include?(date.mday - date.days_in_month - 1)
+    end
+    
+    def closest_day_of_year(date)
+      return nil if !@days_of_year || @days_of_year.empty?
+      #get some variables we need
+      days_in_year = date.days_in_year
+      days_left_in_this_year = days_in_year - date.yday
+      days_in_next_year = Time.utc(date.year + 1, 1, 1).days_in_year
+      # create a list of distances
+      distances = []
+      @days_of_year.each do |d|
+        if d > 0
+          distances << d - date.yday #today is 1, we want 20 (19)
+          distances << days_left_in_this_year + d #(364 + 20)
+        elsif d < 0
+          distances << (days_in_year + d + 1) - date.yday #today is 300, we want -1
+          distances << (days_in_next_year + d + 1) + days_left_in_this_year #today is 300, we want -70
+        end
+      end
+      #return the lowest distance
+      #TODO - use inject in here and day_of_month
+      distances = distances.select { |d| d > 0 }
+      return nil if distances.empty?
+      # return the start of the proper day
+      goal = date + distances.min * ONE_DAY
+      Time.utc(goal.year, goal.month, goal.day)
     end
 
     def validate_day(date)
@@ -172,7 +253,7 @@ module IceCube
       # turn days into distances
       days = @days.map do |d| 
         if d > date.wday : d - date.wday
-        elsif d < date.wday : 7 - date.wday - d
+        elsif d < date.wday : 7 - date.wday + d
         end
       end
       days.compact!
