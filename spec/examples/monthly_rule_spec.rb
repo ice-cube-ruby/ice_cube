@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/spec_helper'
 describe MonthlyRule, 'occurs_on?' do
   
   it 'should produce the correct number of days for @interval = 1' do
-    start_date = Time.now
+    start_date = DAY
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.monthly
     #check assumption
@@ -11,10 +11,9 @@ describe MonthlyRule, 'occurs_on?' do
   end
 
   it 'should produce the correct number of days for @interval = 2' do
-    start_date = Time.now
+    start_date = DAY
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.monthly(2)
-    #check assumption
     schedule.occurrences(start_date + 50 * ONE_DAY).count.should == 1
   end
 

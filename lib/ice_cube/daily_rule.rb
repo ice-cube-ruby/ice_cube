@@ -6,9 +6,7 @@ module IceCube
     def occurs_on?(date, start_date)
       #make sure we're in a proper interval
       day_count = ((date - start_date) / ONE_DAY).to_i
-      return false unless day_count % @interval == 0
-      #perform validations
-      validate(date, start_date)
+      day_count % @interval == 0
     end
 
     def to_ical 
@@ -17,6 +15,12 @@ module IceCube
         
     def to_s
       to_ical
+    end
+        
+    private
+    
+    def self.default_jump(date)
+      date + ONE_DAY
     end
         
   end

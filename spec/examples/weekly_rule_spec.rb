@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-describe MonthlyRule, 'occurs_on?' do
+describe WeeklyRule, 'occurs_on?' do
 
   WEDNESDAY = Time.utc(2010, 3, 10)
   

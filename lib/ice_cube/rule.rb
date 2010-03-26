@@ -104,19 +104,35 @@ module IceCube
     
     #TODO - move nil checking into functions to clean this up to just an array
     #TODO - collapse mass assignments
+    #TODO - centralize suggestion_types
     
+    def validate_single_date(date)
+      suggestion_types = [:day, :month_of_year]
+      suggestion_types.all? do |s| 
+        response = send("validate_#{s}", date)
+        response.nil? || response
+      end
+    end
+    
+    #TODO - move to RFC order in suggestion types
+    
+    # MY MASTERPIECE
     def next_suggestion(date)
-      next_date = date + ONE_DAY # TODO - smaller interval
-      suggestion = []
-      suggestion << date.closest_month_of_year(@months_of_year) if @months_of_year && !@months_of_year.include?(next_date.month)
-      suggestion << date.closest_day_of_year(@days_of_year) if @days_of_year && !@days_of_year.empty?
-      suggestion << date.closest_day_of_month(@days_of_month) if @days_of_month && !@days_of_month.empty?
-      @all_days = []
-      @all_days.concat(@days) if @days
-      @all_days.concat(@days_of_week.keys) if @days_of_week
-      suggestion << date.closest_day_of_week(@all_days) unless @all_days.empty?
-      suggestion.compact!
-      suggestion.empty? ? next_date : suggestion.max
+      suggestion_types = [:day, :month_of_year]
+      #get initial suggestions
+      suggestions = suggestion_types.map { |s| send("closest_#{s}", date) }
+      #CRAZY SPIDERS - @TODO - document
+      loop do
+        #if all of the suggestions are the same (or nil), we've found a viable date... otherwise keeping pushing the back one forward
+        compact_suggestions = suggestions.compact
+        return self.class.default_jump(date) if compact_suggestions.empty?
+        return compact_suggestions.first if compact_suggestions.all? { |s| s == compact_suggestions.first }
+        # find the index of the maximum suggestion (may be multiple)
+        max_suggestion = compact_suggestions.max #don't recompute
+        to_recall = compact_suggestions.select { |s| s != max_suggestion }
+        # recall and reindex the suggestion
+        to_recall.each { |i| suggestions[i] = send("closest_#{suggestion_types[i]}", max_suggestion) }
+      end
     end
     
     def self.from_yaml(str)
@@ -126,6 +142,45 @@ module IceCube
     attr_reader :occurrence_count, :until_date
     
   private
+    
+    #TODO utc to local
+    
+    def validate_month_of_year(date)
+      !@months_of_year || @months_of_year.include?(date.month)
+    end
+    
+    def closest_month_of_year(date)
+      return nil if !@days_of_month || @days_of_month.empty?
+      # turn months into month of year
+      # month > 12 should fall into the next year
+      months = @months_of_year.map do |m|
+        m if m > date.month
+        m + 12 if m <= date.month
+      end.compact!
+      return nil if months.empty?
+      # go to the closest distance away
+      closest_month = months.min
+      closest_month < 12 ? Time.utc(date.year, closest_month, date.day) : Time.utc(date.year + 1, closest_month - 12, date.day)
+    end
+
+    def validate_day(date)
+      !@days || @days.include?(date.wday)
+    end
+    
+    def closest_day(date)
+      return nil if !@days || @days.empty?
+      # turn days into distances
+      days = @days.map do |d| 
+        if d > date.wday : d - date.wday
+        elsif d < date.wday : 7 - date.wday - d
+        end
+      end
+      days.compact!
+      return nil if days.empty?
+      # go to the closest distance away, the start of that day
+      goal = date + days.min * ONE_DAY
+      Time.utc(goal.year, goal.month, goal.day)
+    end
     
     #get the icalendar representation of this rule logic
     def to_ical_base
@@ -160,50 +215,9 @@ module IceCube
       throw ArgumentError.new('Interval must be > 0') unless interval > 0
       @interval = interval
     end
-    
-    def validate(date, start_date)
-      return false if @until_date && (date > @until_date)
-      return false if date < start_date
-      # execute validations in RFC 2445 order
-      return false unless validate_months_of_year(date)
-      return false unless validate_days_of_year(date)
-      return false unless validate_days_of_month(date)
-      return false unless validate_days_of_week(date)
-      return false unless validate_days(date)
-      true
-    end
-
+  
     def has_obscure_validations?
       !!(@months_of_year || @days_of_year || @days || @days_of_week || @days_of_month)
-    end
-
-    def validate_months_of_year(date)
-      return true unless @months_of_year
-      @months_of_year.include?(date.month)
-    end
-    
-    def validate_days_of_year(date)
-      return true unless @days_of_year
-      @days_of_year.include?(date.yday) || @days_of_year.include?(date.yday - date.days_in_year - 1)
-    end
-
-    def validate_days_of_month(date)
-      return true unless @days_of_month
-      @days_of_month.include?(date.mday) || @days_of_month.include?(date.mday - date.days_in_month - 1)
-    end
-
-    def validate_days_of_week(date)
-      return true unless @days_of_week
-      return false unless @days_of_week.has_key?(date.wday)
-      first_occurrence = ((7 - Time.utc(date.year, date.month, 1).wday) + date.wday) % 7 + 1 #day of first occurrence of a wday in a month
-      this_weekday_in_month_count = ((date.days_in_month - first_occurrence + 1) / 7.0).ceil #how many of these in the month
-      nth_occurrence_of_weekday = (date.mday - first_occurrence) / 7 + 1 #what occurrence of the weekday is +date+
-      @days_of_week[date.wday].include?(nth_occurrence_of_weekday) || @days_of_week[date.wday].include?(nth_occurrence_of_weekday - this_weekday_in_month_count - 1)
-    end
-
-    def validate_days(date)
-      return true unless @days
-      @days.include?(date.wday)
     end
     
   end
