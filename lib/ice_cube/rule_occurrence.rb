@@ -29,10 +29,9 @@ module IceCube
       @index = index
     end
 
-    #TODO - there is a huge error here - @index should not be incremented if @date is nil
     #TODO - write this a bit cleaner - no do..while
     #TODO - change name of occurs_on? to something like in_interval?
-    #TODO - change scope of things like occurs_on? and next_suggestion
+    #TODO - collapse assignments
     
     #get the next occurrence of this rule
     def succ

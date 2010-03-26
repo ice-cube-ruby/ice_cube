@@ -79,4 +79,24 @@ describe Schedule, 'occurs_on?' do
     dates.should_not include(start_date + 1 * ONE_DAY)
   end
 
+  it 'make a schedule with a start_date not included in a rule, and make sure that count behaves properly' do
+    start_date = WEDNESDAY
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.weekly.day(:thursday).count(5)
+    dates = schedule.all_occurrences
+    dates.uniq.count.should == 5
+    dates.each { |d| d.wday == 4 }
+    dates.should_not include(WEDNESDAY)
+  end
+
+  it 'make a schedule with a start_date included in a rule, and make sure that count behaves properly' do
+    start_date = WEDNESDAY + ONE_DAY
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.weekly.day(:thursday).count(5)
+    dates = schedule.all_occurrences
+    dates.uniq.count.should == 5
+    dates.each { |d| d.wday == 4 }
+    dates.should include(WEDNESDAY + ONE_DAY)
+  end
+
 end
