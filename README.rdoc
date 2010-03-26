@@ -103,9 +103,11 @@ Things start to get really powerful when you combine rules:
 
 ===TODO
 
-* Time recurrence
+* Add BYWEEKNO
+* Add BYSETPOS
+* Add WEEKST
 * Rollover dates - as implemented by RFC
-* Import and export to iCalendar format
+* Import to iCalendar format
 
 ---
 

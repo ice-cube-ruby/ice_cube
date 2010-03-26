@@ -392,6 +392,9 @@ module IceCube
           day_rules.concat(occ.map {|v| v.to_s + ICAL_DAYS[day]})
         end.flatten.join(',') if days_of_week_dedup
       end
+      representation << ';BYHOUR=' << @hours_of_day.join(',') if @hours_of_day
+      representation << ';BYMINUTE=' << @minutes_of_hour.join(',') if @minutes_of_hour
+      representation << ';BYSECOND=' << @seconds_of_minute.join(',') if @seconds_of_minute
       representation << ";COUNT=#{@count}" if @count
       representation << ";UNTIL=#{@until}" if @until_date
       representation
