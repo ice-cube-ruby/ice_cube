@@ -1,6 +1,15 @@
 require 'yaml.rb'
 require 'set.rb'
 
+require 'ice_cube/validations/month_of_year'
+require 'ice_cube/validations/day_of_year'
+require 'ice_cube/validations/day_of_month'
+require 'ice_cube/validations/day_of_week'
+require 'ice_cube/validations/day'
+require 'ice_cube/validations/hour_of_day'
+require 'ice_cube/validations/minute_of_hour'
+require 'ice_cube/validations/second_of_minute'
+
 require 'ice_cube/rule'
 require 'ice_cube/schedule'
 require 'ice_cube/rule_occurrence'
