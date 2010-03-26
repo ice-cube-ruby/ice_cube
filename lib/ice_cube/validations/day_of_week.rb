@@ -1,5 +1,9 @@
 module DayOfWeekValidation
   
+  def self.included(base)
+    base::SuggestionTypes << :day_of_week
+  end
+  
   # Specify the day(s) of the week that this rule should occur
   # on.  ie: rule.day_of_week(:monday => [1, -1]) would mean
   # that this rule should occur on the first and last mondays of each month.

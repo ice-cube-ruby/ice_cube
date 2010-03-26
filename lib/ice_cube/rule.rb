@@ -3,12 +3,10 @@ module IceCube
   class Rule
     
     attr_reader :occurrence_count, :until_date
-    SuggestionTypes = [:month_of_year, :day_of_year, :day_of_month, :day_of_week, :day, :hour_of_day, :minute_of_hour, :second_of_minute]
 
+    SuggestionTypes = []
     include MonthOfYearValidation, DayOfYearValidation, DayOfMonthValidation, DayOfWeekValidation, DayValidation
     include HourOfDayValidation, MinuteOfHourValidation, SecondOfMinuteValidation
-    
-    #TODO - move these into the rules - extending Rule?
     
     # create a new daily rule
     def self.daily(interval = 1)

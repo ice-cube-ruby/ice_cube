@@ -99,4 +99,12 @@ describe Schedule, 'occurs_on?' do
     dates.should include(WEDNESDAY + ONE_DAY)
   end
 
+  it 'should work as expected with a second_of_minute rule specified' do
+    start_date = DAY
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.weekly.second_of_minute(30)
+    dates = schedule.occurrences(start_date + 30 * 60)
+    dates.each { |date| date.sec == 30 }
+  end
+
 end

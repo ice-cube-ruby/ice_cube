@@ -1,5 +1,9 @@
 module DayOfYearValidation
   
+  def self.included(base)
+    base::SuggestionTypes << :day_of_year
+  end
+  
   # Specify what days of the year this rule applies to.
   # ie: Schedule.yearly(2).days_of_year(17, -1) would create a
   # rule which occurs every 17th and last day of every other year.

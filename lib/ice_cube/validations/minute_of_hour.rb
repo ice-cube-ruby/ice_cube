@@ -1,5 +1,9 @@
 module MinuteOfHourValidation
   
+  def self.included(base)
+    base::SuggestionTypes << :minute_of_hour
+  end
+  
   def minute_of_hour(*minutes)
     @minutes_of_hour ||= []
     minutes.each do |minute|

@@ -1,5 +1,9 @@
 module MonthOfYearValidation
   
+  def self.included(base)
+    base::SuggestionTypes << :month_of_year
+  end
+  
   # Specify what months of the year this rule applies to.  
   # ie: Schedule.yearly(2).month_of_year(:january, :march) would create a
   # rule which occurs every january and march, every other year

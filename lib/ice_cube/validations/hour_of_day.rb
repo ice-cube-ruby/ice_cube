@@ -1,5 +1,9 @@
 module HourOfDayValidation
   
+  def self.included(base)
+    base::SuggestionTypes << :hour_of_day
+  end
+  
   def hour_of_day(*hours)
     @hours_of_day ||= []
     hours.each do |hour| 

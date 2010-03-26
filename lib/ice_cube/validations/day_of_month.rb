@@ -1,5 +1,9 @@
 module DayOfMonthValidation
     
+  def self.included(base)
+    base::SuggestionTypes << :day_of_month
+  end
+    
   # Specify the days of the month that this rule should
   # occur on.  ie: rule.day_of_month(1, -1) would mean that
   # this rule should occur on the first and last day of every month.

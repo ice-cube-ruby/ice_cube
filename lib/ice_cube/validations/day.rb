@@ -1,5 +1,9 @@
 module DayValidation
   
+  def self.included(base)
+    base::SuggestionTypes << :day
+  end
+  
   # Specify what days of the week this rule should occur on.
   # ie: Schedule.weekly.day_of_week(:monday) would create a rule that
   # occurs every monday.

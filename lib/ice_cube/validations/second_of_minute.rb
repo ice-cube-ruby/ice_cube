@@ -1,5 +1,9 @@
 module SecondOfMinuteValidation
   
+  def self.included(base)
+    base::SuggestionTypes << :second_of_minute
+  end
+  
   def second_of_minute(*seconds)
     @seconds_of_minute ||= []
     seconds.each do |second|
