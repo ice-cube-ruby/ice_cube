@@ -31,7 +31,6 @@ module IceCube
 
     #TODO - write this a bit cleaner - no do..while
     #TODO - change name of occurs_on? to something like in_interval?
-    #TODO - collapse assignments
     
     #get the next occurrence of this rule
     def succ
