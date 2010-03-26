@@ -20,15 +20,15 @@ module DayOfYearValidation
   
   def validate_day_of_year(date)
     return true if !@days_of_year || @days_of_year.empty?
-    @days_of_year.include?(date.yday) || @days_of_year.include?(date.yday - date.days_in_year - 1)
+    @days_of_year.include?(date.yday) || @days_of_year.include?(date.yday - TimeUtil.days_in_year(date) - 1)
   end
   
   def closest_day_of_year(date)
     return nil if !@days_of_year || @days_of_year.empty?
     #get some variables we need
-    days_in_year = date.days_in_year
+    days_in_year = TimeUtil.days_in_year(date)
     days_left_in_this_year = days_in_year - date.yday
-    days_in_next_year = Time.utc(date.year + 1, 1, 1).days_in_year
+    days_in_next_year = TimeUtil.days_in_year(Time.utc(date.year + 1, 1, 1))
     # create a list of distances
     distances = []
     @days_of_year.each do |d|

@@ -114,4 +114,17 @@ describe Schedule, 'occurs_on?' do
     schedule.all_occurrences.should == []
   end
 
+  it 'cross a daylight savings time boundary with a recurrence rule in local time' do
+    start_date = Time.local(2010, 3, 14, 5, 0, 0)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.daily
+    # each occurrence MUST occur at 5pm, then we win
+    dates = schedule.occurrences(start_date + 20 * ONE_DAY)
+    last = start_date
+    dates.each do |date|
+      date.hour.should == 5
+      last = date
+    end
+  end
+
 end

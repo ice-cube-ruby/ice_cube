@@ -19,16 +19,16 @@ module DayOfMonthValidation
     
   def validate_day_of_month(date)
     return true if !@days_of_month || @days_of_month.empty?
-    @days_of_month.include?(date.mday) || @days_of_month.include?(date.mday - date.days_in_month - 1)
+    @days_of_month.include?(date.mday) || @days_of_month.include?(date.mday - TimeUtil.days_in_month(date) - 1)
   end
   
   def closest_day_of_month(date)
     return nil if !@days_of_month || @days_of_month.empty?
     #get some variables we need
-    days_in_month = date.days_in_month
+    days_in_month = TimeUtil.days_in_month(date)
     days_left_in_this_month = days_in_month - date.mday
     next_month, next_year = date.month == 12 ? [1, date.year + 1] : [date.month + 1, date.year] #clean way to wrap over years
-    days_in_next_month = Time.utc(next_year, next_month, 1).days_in_month
+    days_in_next_month = TimeUtil.days_in_month(Time.utc(next_year, next_month, 1))
     # create a list of distances
     distances = []
     @days_of_month.each do |d|

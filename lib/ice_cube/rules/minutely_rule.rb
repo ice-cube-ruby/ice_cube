@@ -23,10 +23,6 @@ module IceCube
       date + ONE_MINUTE
     end
         
-    private
-        
-    ONE_MINUTE = 60
-        
   end
 
 end

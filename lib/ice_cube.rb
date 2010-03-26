@@ -1,6 +1,8 @@
 require 'yaml.rb'
 require 'set.rb'
 
+require 'ice_cube/time_util'
+
 require 'ice_cube/validations/month_of_year'
 require 'ice_cube/validations/day_of_year'
 require 'ice_cube/validations/day_of_month'
@@ -27,28 +29,14 @@ module IceCube
   VERSION = '0.1'
 
   ONE_DAY = 24 * 60 * 60
+  ONE_HOUR = 60 * 60
+  ONE_MINUTE = 60
+  ONE_SECOND = 1
 
   ICAL_DAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
   DAYS = { :sunday => 0, :monday => 1, :tuesday => 2, :wednesday => 3, :thursday => 4, :friday => 5, :saturday => 6 }
   MONTHS = { :january => 1, :february => 2, :march => 3, :april => 4, :may => 5, :june => 6, :july => 7, :august => 8, 
              :september => 9, :october => 10, :november => 11, :december => 12 }
-end
-
-class Time
-   
-  LeapYearMonthDays	=	[31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-  CommonYearMonthDays	=	[31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-
-  def is_leap?
-    (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
-  end
-
-  def days_in_year
-    is_leap? ? 366 : 365
-  end
-
-  def days_in_month
-    is_leap? ? LeapYearMonthDays[month - 1] : CommonYearMonthDays[month - 1]
-  end
-
+  
+  include TimeUtil
 end

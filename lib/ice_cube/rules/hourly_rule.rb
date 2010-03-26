@@ -23,10 +23,6 @@ module IceCube
       date + ONE_HOUR * @interval
     end
         
-    private
-        
-    ONE_HOUR = 60 * 60
-        
   end
 
 end
