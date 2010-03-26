@@ -37,6 +37,12 @@ module IceCube
       Time.utc(date.year + @interval, date.month, date.day, date.hour, date.min, date.sec)
     end
     
+    private
+
+    def initialize(interval)
+      super(interval)
+    end
+    
   end
     
 end

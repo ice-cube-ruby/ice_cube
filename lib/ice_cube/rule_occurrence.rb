@@ -21,13 +21,6 @@ module IceCube
     def upto(end_date)
       find_occurrences { |roc| roc.to_date > end_date }
     end
-      
-    def initialize(rule, start_date, date = nil, index = 0)
-      @rule = rule
-      @date = date
-      @start_date = start_date
-      @index = index
-    end
 
     #TODO - write this a bit cleaner - no do..while
     #TODO - change name of occurs_on? to something like in_interval?
@@ -61,6 +54,13 @@ module IceCube
         include_dates << roc.to_date
       end while roc = roc.succ
       include_dates
+    end
+      
+    def initialize(rule, start_date, date = nil, index = 0)
+      @rule = rule
+      @date = date
+      @start_date = start_date
+      @index = index
     end
       
   end

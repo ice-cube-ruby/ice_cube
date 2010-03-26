@@ -18,11 +18,17 @@ module IceCube
     end
         
     protected
-    
+           
     def default_jump(date)
       date + 1
     end
-        
+
+    private
+
+    def initialize(interval)
+      super(interval)
+    end
+             
   end
 
 end

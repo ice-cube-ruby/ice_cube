@@ -22,6 +22,12 @@ module IceCube
     def default_jump(date)
       date + ONE_MINUTE
     end
+
+    private
+
+    def initialize(interval)
+      super(interval)
+    end
         
   end
 

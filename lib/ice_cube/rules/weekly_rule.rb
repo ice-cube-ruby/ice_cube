@@ -30,7 +30,13 @@ module IceCube
     def default_jump(date)
       date + 7 * ONE_DAY * @interval
     end
-    
+
+    private
+
+    def initialize(interval)
+      super(interval)
+    end
+     
   end
 
 end

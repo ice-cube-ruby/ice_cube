@@ -23,6 +23,12 @@ module IceCube
       date + ONE_HOUR * @interval
     end
         
+    private
+    
+    def initialize(interval)
+      super(interval)
+    end  
+      
   end
 
 end

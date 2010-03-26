@@ -40,7 +40,13 @@ module IceCube
       end
       date
     end
-    
+ 
+    private
+
+    def initialize(interval)
+      super(interval)
+    end
+       
   end
 
 end
