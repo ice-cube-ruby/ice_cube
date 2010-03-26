@@ -26,14 +26,17 @@ module IceCube
       YearlyRule.new(interval)
     end
     
+    # create a new hourly rule
     def self.hourly(interval = 1)
       HourlyRule.new(interval)
     end
     
+    # create a new minutely rule
     def self.minutely(interval = 1)
       MinutelyRule.new(interval)
     end
     
+    # create a new secondly rule
     def self.secondly(interval = 1)
       SecondlyRule.new(interval)
     end
@@ -156,7 +159,7 @@ module IceCube
       end
     end
     
-    # The key
+    # The key - extremely educated guesses
     # This spidering behavior will go through look for the next suggestion
     # by constantly moving the farthest back value forward
     def next_suggestion(date)
@@ -193,7 +196,6 @@ module IceCube
     
     #TODO utc to local
     #TODO look for some way not to duplicate code, or move into modules in sub-folder
-    #TODO implement the rest of the RFC examples (time-based & set-pos)
     
     def validate_minute_of_hour(date)
       return true if !@minutes_of_hour || @minutes_of_hour.empty?
@@ -211,7 +213,6 @@ module IceCube
       # go to the closest distance away, the beginning of that minute
       closest_minute = minutes.min
       goal = date + closest_minute * 60
-      Time.utc(goal.year, goal.month, goal.day, goal.hour, goal.min)
     end
     
     def validate_second_of_minute(date)
@@ -247,8 +248,7 @@ module IceCube
       hours.compact!
       # go to the closest distance away, the start of that hour
       closest_hour = hours.min
-      goal = date + 60 * 60 * closest_hour
-      Time.utc(goal.year, goal.month, goal.day, goal.hour)
+      date + 60 * 60 * closest_hour
     end
     
     def validate_day_of_week(date)
@@ -286,7 +286,8 @@ module IceCube
       months.compact!
       # go to the closest distance away
       closest_month = months.min
-      closest_month < 12 ? Time.utc(date.year, closest_month, date.day) : Time.utc(date.year + 1, closest_month - 12, date.day)
+      closest_month < 12 ? Time.utc(date.year, closest_month, date.day, date.hour, date.min, date.sec) : 
+                           Time.utc(date.year + 1, closest_month - 12, date.day, date.hour, date.min, date.sec)
     end
     
     def validate_day_of_month(date)
@@ -316,8 +317,7 @@ module IceCube
       distances = distances.select { |d| d > 0 }
       return nil if distances.empty?
       # return the start of the proper day
-      goal = date + distances.min * ONE_DAY
-      Time.utc(goal.year, goal.month, goal.day)
+      date + distances.min * ONE_DAY
     end
       
     def validate_day_of_year(date)
@@ -347,8 +347,7 @@ module IceCube
       distances = distances.select { |d| d > 0 }
       return nil if distances.empty?
       # return the start of the proper day
-      goal = date + distances.min * ONE_DAY
-      Time.utc(goal.year, goal.month, goal.day)
+      date + distances.min * ONE_DAY
     end
 
     def validate_day(date)
@@ -364,8 +363,7 @@ module IceCube
       end
       days.compact!
       # go to the closest distance away, the start of that day
-      goal = date + days.min * ONE_DAY
-      Time.utc(goal.year, goal.month, goal.day)
+      date + days.min * ONE_DAY
     end
     
     #TODO - add new time rules into to_ical_base
