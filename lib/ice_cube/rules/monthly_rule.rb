@@ -30,12 +30,15 @@ module IceCube
     
     protected
     
-    #TODO make this jump @interval months
     def default_jump(date)
-      next_month = date.month + 1
-      next_year = next_month > 12 ? date.year + 1 : date.year
-      next_month = next_month > 12 ? next_month - 12 : next_month
-      Time.utc(next_year, next_month, date.day, date.hour, date.min, date.sec)
+      date = date.dup
+      @interval.times do 
+        next_month = date.month + 1
+        next_year = next_month > 12 ? date.year + 1 : date.year
+        next_month = next_month > 12 ? next_month - 12 : next_month
+        date = Time.utc(next_year, next_month, date.day, date.hour, date.min, date.sec)
+      end
+      date
     end
     
   end
