@@ -3,7 +3,7 @@ module IceCube
   class SecondlyRule < Rule
 
     # Determine whether this rule occurs on a give date.
-    def occurs_on?(date, start_date)
+    def in_interval?(date, start_date)
       #make sure we're in a proper interval
       day_count = date - start_date
       day_count % @interval == 0
