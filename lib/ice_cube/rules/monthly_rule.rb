@@ -24,7 +24,6 @@ module IceCube
     protected
     
     def default_jump(date)
-      date = date.dup
       @interval.times do 
         next_month = date.month + 1
         next_year = next_month > 12 ? date.year + 1 : date.year

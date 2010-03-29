@@ -31,9 +31,8 @@ module DayOfWeekValidation
   #note - temporary implementation
   def closest_day_of_week(date)
     return nil if !@days_of_week || @days_of_week.empty?
-    tdate = date.dup
-    while tdate += ONE_DAY
-      return tdate if validate_day_of_week(tdate)
+    while date += ONE_DAY
+      return date if validate_day_of_week(date)
     end
   end
   
