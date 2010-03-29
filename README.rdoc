@@ -33,6 +33,9 @@ EX: Specifying a exception/recurrence date:
 
     # or check just a single day
     schedule.occurs_on?(Time.now) # [Time.now]
+    
+    # or the first (n) occurrences
+    schedule.first(n) # [Time.now]
 
 ---
 
