@@ -127,4 +127,24 @@ describe Schedule, 'occurs_on?' do
     end
   end
 
+  it 'should be able to be schedules at 1:st:st and 2:st:st every day' do
+    start_date = Time.utc(2007, 9, 2, 9, 15, 25)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.daily.hour_of_day(1, 2).count(6)
+    dates = schedule.all_occurrences
+    dates.should == [Time.utc(2007, 9, 3, 1, 15, 25), Time.utc(2007, 9, 3, 2, 15, 25),
+                     Time.utc(2007, 9, 4, 1, 15, 25), Time.utc(2007, 9, 4, 2, 15, 25), 
+                     Time.utc(2007, 9, 5, 1, 15, 25), Time.utc(2007, 9, 5, 2, 15, 25)]
+  end
+
+  it 'should be able to be schedules at 1:0:st and 2:0:st every day' do
+    start_date = Time.utc(2007, 9, 2, 9, 15, 25)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.daily.hour_of_day(1, 2).minute_of_hour(0).count(6)
+    dates = schedule.all_occurrences
+    dates.should == [Time.utc(2007, 9, 3, 1, 0, 25), Time.utc(2007, 9, 3, 2, 0, 25),
+                     Time.utc(2007, 9, 4, 1, 0, 25), Time.utc(2007, 9, 4, 2, 0, 25), 
+                     Time.utc(2007, 9, 5, 1, 0, 25), Time.utc(2007, 9, 5, 2, 0, 25)]
+  end
+
 end
