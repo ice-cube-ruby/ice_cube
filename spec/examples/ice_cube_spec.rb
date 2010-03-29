@@ -147,4 +147,17 @@ describe Schedule, 'occurs_on?' do
                      Time.utc(2007, 9, 5, 1, 0, 25), Time.utc(2007, 9, 5, 2, 0, 25)]
   end
 
+  it 'crosses a daylight savings time boundary with a recurrence rule in local time, by utc conversion' do
+    start_date = Time.local(2010, 3, 14, 5, 0, 0)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.daily.count(20)
+    dates = schedule.all_occurrences
+    #check assumption - also make sure all dates get same offset as the start_date
+    start_offset = start_date.utc_offset
+    dates.each do |date|
+      date.hour.should == 5
+      date.utc_offset.should == start_offset
+    end  
+  end
+
 end
