@@ -41,7 +41,6 @@ module DayOfYearValidation
       end
     end
     #return the lowest distance
-    #TODO - use inject in here and day_of_month
     distances = distances.select { |d| d > 0 }
     return nil if distances.empty?
     # return the start of the proper day

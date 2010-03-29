@@ -173,4 +173,12 @@ describe Schedule, 'occurs_on?' do
     end  
   end
 
+  it 'will only return count# if you specify a count and use .first' do
+    start_date = Time.now
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.daily.count(10)
+    dates = schedule.first(200)
+    dates.count.should == 10
+  end
+
 end

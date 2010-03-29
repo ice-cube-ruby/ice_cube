@@ -27,9 +27,6 @@ module IceCube
       find_occurrences { |roc| count += 1; count > n }
     end
 
-    #TODO - write this a bit cleaner - no do..while
-    #TODO - change name of occurs_on? to something like in_interval?
-    
     #get the next occurrence of this rule
     def succ
       return nil if @rule.occurrence_count && @index >= @rule.occurrence_count # count check
