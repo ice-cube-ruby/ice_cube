@@ -44,7 +44,7 @@ Individual rules may optionally specify an until date, which is a date that that
 
 ---
 
-There are 6 types of recurrence rules that can be added to a schedule:
+There are many types of recurrence rules that can be added to a schedule:
 
 ===Daily
 
