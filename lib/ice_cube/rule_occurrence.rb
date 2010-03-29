@@ -49,6 +49,13 @@ module IceCube
    
     private
     
+    def adjust(date)
+      local = date.getlocal
+      diff = @start_date_offset - local.utc_offset
+      return date if date.utc_offset == @start_date_offset || diff == 0
+      local + diff
+    end
+    
     def find_occurrences
       include_dates = []
       roc = self
@@ -56,7 +63,7 @@ module IceCube
         break if roc.nil? #go until we run out of dates
         next if roc.to_date.nil? #handle the case where start_date is not a valid occurrence
         break if yield(roc) #recurrence condition
-        include_dates << roc.to_date
+        include_dates << adjust(roc.to_date)
       end while roc = roc.succ
       include_dates
     end
@@ -66,6 +73,8 @@ module IceCube
       @date = date
       @start_date = start_date
       @index = index
+      #start date offset
+      @start_date_offset = @start_date.utc_offset
     end
       
   end

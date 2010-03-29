@@ -147,17 +147,29 @@ describe Schedule, 'occurs_on?' do
                      Time.utc(2007, 9, 5, 1, 0, 25), Time.utc(2007, 9, 5, 2, 0, 25)]
   end
 
+  # DST in 2010 is March 14th at 2am
   it 'crosses a daylight savings time boundary with a recurrence rule in local time, by utc conversion' do
-    start_date = Time.local(2010, 3, 14, 5, 0, 0)
+    start_date = Time.local(2010, 3, 13, 5, 0, 0)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.daily.count(20)
     dates = schedule.first(20)
     dates.count.should == 20
-    #check assumption - also make sure all dates get same offset as the start_date
-    start_offset = start_date.utc_offset
+    #check assumptions
     dates.each do |date|
       date.hour.should == 5
-      date.utc_offset.should == start_offset
+    end  
+  end
+
+  # DST in 2010 is November 7th at 2am
+  it 'crosses a daylight savings time boundary (in the other direction) with a recurrence rule in local time, by utc conversion' do
+    start_date = Time.local(2010, 11, 6, 5, 0, 0)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.daily.count(20)
+    dates = schedule.first(20)
+    dates.count.should == 20
+    #check assumptions
+    dates.each do |date|
+      date.hour.should == 5
     end  
   end
 
