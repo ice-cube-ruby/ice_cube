@@ -47,9 +47,9 @@ module IceCube
     private
     
     def adjust(date)
+      return date if @start_date_offset == 0
       local = date.getlocal
       diff = @start_date_offset - local.utc_offset
-      return date if date.utc_offset == @start_date_offset || diff == 0
       local + diff
     end
     
@@ -66,12 +66,13 @@ module IceCube
     end
       
     def initialize(rule, start_date, date = nil, index = 0)
+      #record the start date offset
+      @start_date_offset = start_date.utc_offset
+      #set some variables
       @rule = rule
       @date = date
-      @start_date = start_date
+      @start_date = start_date.getutc
       @index = index
-      #start date offset
-      @start_date_offset = @start_date.utc_offset
     end
       
   end

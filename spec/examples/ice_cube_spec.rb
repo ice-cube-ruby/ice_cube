@@ -156,6 +156,7 @@ describe Schedule, 'occurs_on?' do
     dates.count.should == 20
     #check assumptions
     dates.each do |date|
+      date.utc?.should_not == true
       date.hour.should == 5
     end  
   end
@@ -169,6 +170,7 @@ describe Schedule, 'occurs_on?' do
     dates.count.should == 20
     #check assumptions
     dates.each do |date|
+      date.utc?.should_not == true
       date.hour.should == 5
     end  
   end
@@ -179,6 +181,66 @@ describe Schedule, 'occurs_on?' do
     schedule.add_recurrence_rule Rule.daily.count(10)
     dates = schedule.first(200)
     dates.count.should == 10
+  end
+
+  it 'occurs yearly' do
+    start_date = Time.now
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.yearly
+    dates = schedule.first(10)
+    dates.each do |date|
+      date.month.should == start_date.month
+      date.day.should == start_date.day
+      date.hour.should == start_date.hour
+      date.min.should == start_date.min
+      date.sec.should == start_date.sec
+    end
+  end
+
+  it 'occurs monthly' do
+    start_date = Time.now
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.monthly
+    dates = schedule.first(10)
+    dates.each do |date|
+      date.day.should == start_date.day
+      date.hour.should == start_date.hour
+      date.min.should == start_date.min
+      date.sec.should == start_date.sec
+    end
+  end
+  
+  it 'occurs daily' do
+    start_date = Time.now
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.daily
+    dates = schedule.first(10)
+    dates.each do |date|
+      date.hour.should == start_date.hour
+      date.min.should == start_date.min
+      date.sec.should == start_date.sec
+    end
+  end
+  
+  it 'occurs hourly' do
+    start_date = Time.now
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.hourly
+    dates = schedule.first(10)
+    dates.each do |date|
+      date.min.should == start_date.min
+      date.sec.should == start_date.sec
+    end
+  end
+  
+  it 'occurs minutely' do
+    start_date = Time.now
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.minutely
+    dates = schedule.first(10)
+    dates.each do |date|
+      date.sec.should == start_date.sec
+    end
   end
 
 end
