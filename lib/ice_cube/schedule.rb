@@ -27,6 +27,11 @@ module IceCube
     def occurrences(end_date)
       find_occurrences { |head| head.upto(end_date) }
     end
+          
+    def first(n)
+      dates = find_occurrences { |head| head.first(n) }
+      dates.slice(0, n)
+    end
              
     # Add a rule of any type as an recurrence in this schedule
     def add_recurrence_rule(rule)

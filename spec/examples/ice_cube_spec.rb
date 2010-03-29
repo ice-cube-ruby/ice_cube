@@ -151,7 +151,8 @@ describe Schedule, 'occurs_on?' do
     start_date = Time.local(2010, 3, 14, 5, 0, 0)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.daily.count(20)
-    dates = schedule.all_occurrences
+    dates = schedule.first(20)
+    dates.count.should == 20
     #check assumption - also make sure all dates get same offset as the start_date
     start_offset = start_date.utc_offset
     dates.each do |date|

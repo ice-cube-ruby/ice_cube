@@ -22,6 +22,11 @@ module IceCube
       find_occurrences { |roc| roc.to_date > end_date }
     end
 
+    def first(n)
+      count = 0
+      find_occurrences { |roc| count += 1; count > n }
+    end
+
     #TODO - write this a bit cleaner - no do..while
     #TODO - change name of occurs_on? to something like in_interval?
     
