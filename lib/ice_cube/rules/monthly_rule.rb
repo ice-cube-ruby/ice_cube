@@ -1,6 +1,6 @@
 module IceCube
 
-  class MonthlyRule < WeeklyRule
+  class MonthlyRule < Rule
 
     # Determine for a given date/start_date if this rule occurs or not.
     # Month rules occur if we're in a valid interval

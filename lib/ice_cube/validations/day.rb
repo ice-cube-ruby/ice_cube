@@ -8,23 +8,23 @@ module DayValidation
   # ie: Schedule.weekly.day_of_week(:monday) would create a rule that
   # occurs every monday.
   def day(*days)
-    @days ||= []
+    @validations[:day] ||= []
     days.each do |day|
       raise ArgumentError.new('Argument must be a valid day of the week') unless DAYS.has_key?(day)
-      @days << DAYS[day]
+      @validations[:day] << DAYS[day]
     end
     self
   end
   
   def validate_day(date)
-    return true if !@days || @days.empty?
-    @days.include?(date.wday)
+    return true if !@validations[:day] || @validations[:day].empty?
+    @validations[:day].include?(date.wday)
   end
   
   def closest_day(date)
-    return nil if !@days || @days.empty?
+    return nil if !@validations[:day] || @validations[:day].empty?
     # turn days into distances
-    days = @days.map do |d| 
+    days = @validations[:day].map do |d| 
       d > date.wday ? (d - date.wday) : (7 - date.wday + d)
     end
     days.compact!

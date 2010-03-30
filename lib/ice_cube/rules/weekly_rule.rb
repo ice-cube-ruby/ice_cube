@@ -1,6 +1,6 @@
 module IceCube
 
-  class WeeklyRule < DailyRule
+  class WeeklyRule < Rule
     
     # Determine whether or not this rule occurs on a given date.
     # Weekly rules occurs if we're in one of the interval weeks,

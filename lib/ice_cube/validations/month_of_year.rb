@@ -9,24 +9,24 @@ module MonthOfYearValidation
   # rule which occurs every january and march, every other year
   # Note: you cannot combine day_of_year and month_of_year in the same rule.
   def month_of_year(*months)
-    @months_of_year ||= []
+    @validations[:month_of_year] ||= []
     months.each do |month|
       raise ArgumentError.new('Argument must be a valid month') unless MONTHS.has_key?(month)
-      @months_of_year << MONTHS[month]
+      @validations[:month_of_year] << MONTHS[month]
     end
     self
   end
   
   def validate_month_of_year(date)
-    return true if !@months_of_year || @months_of_year.empty?
-    @months_of_year.include?(date.month)
+    return true if !@validations[:month_of_year] || @validations[:month_of_year].empty?
+    @validations[:month_of_year].include?(date.month)
   end
   
   def closest_month_of_year(date)
-    return nil if !@months_of_year || @months_of_year.empty?
+    return nil if !@validations[:month_of_year] || @validations[:month_of_year].empty?
     # turn months into month of year
     # month > 12 should fall into the next year
-    months = @months_of_year.map do |m|
+    months = @validations[:month_of_year].map do |m|
       m > date.month ? m : m + 12
     end
     months.compact!

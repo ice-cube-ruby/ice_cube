@@ -8,22 +8,22 @@ module DayOfMonthValidation
   # occur on.  ie: rule.day_of_month(1, -1) would mean that
   # this rule should occur on the first and last day of every month.
   def day_of_month(*days)
-    @days_of_month ||= []
+    @validations[:day_of_month] ||= []
     days.each do |day|
       raise ArgumentError.new('Argument must be a valid date') if day.abs > 31 
       raise ArgumentError.new('Argument must be non-zero') if day == 0
-      @days_of_month << day
+      @validations[:day_of_month] << day
     end
     self
   end
     
   def validate_day_of_month(date)
-    return true if !@days_of_month || @days_of_month.empty?
-    @days_of_month.include?(date.mday) || @days_of_month.include?(date.mday - TimeUtil.days_in_month(date) - 1)
+    return true if !@validations[:day_of_month] || @validations[:day_of_month].empty?
+    @validations[:day_of_month].include?(date.mday) || @validations[:day_of_month].include?(date.mday - TimeUtil.days_in_month(date) - 1)
   end
   
   def closest_day_of_month(date)
-    return nil if !@days_of_month || @days_of_month.empty?
+    return nil if !@validations[:day_of_month] || @validations[:day_of_month].empty?
     #get some variables we need
     days_in_month = TimeUtil.days_in_month(date)
     days_left_in_this_month = days_in_month - date.mday
@@ -31,7 +31,7 @@ module DayOfMonthValidation
     days_in_next_month = TimeUtil.days_in_month(Time.utc(next_year, next_month, 1))
     # create a list of distances
     distances = []
-    @days_of_month.each do |d|
+    @validations[:day_of_month].each do |d|
       if d > 0
         distances << d - date.mday #today is 1, we want 20 (19)
         distances << days_left_in_this_month + d #(364 + 20)

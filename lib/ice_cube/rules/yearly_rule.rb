@@ -1,6 +1,6 @@
 module IceCube
 
-  class YearlyRule < MonthlyRule
+  class YearlyRule < Rule
     
     # Determine whether or not the rule, given a start_date,
     # occurs on a given date.

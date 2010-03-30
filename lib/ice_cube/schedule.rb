@@ -10,6 +10,33 @@ module IceCube
       @start_date = start_date
     end
 
+    def to_hash
+      hash = Hash.new
+      hash[:start_date] = @start_date
+      hash[:rrules] = @rrule_occurrence_heads.map { |rr| rr.rule.to_hash }
+      hash[:exrules] = @exrule_occurrence_heads.map { |ex| ex.rule.to_hash }
+      hash[:rdates] = @rdates
+      hash[:exdates] = @exdates
+      hash
+    end
+    
+    def to_yaml
+      to_hash.to_yaml
+    end
+    
+    def self.from_hash(hash)
+      schedule = Schedule.new(hash[:start_date])
+      hash[:rrules].each { |rr| schedule.add_recurrence_rule Rule.from_hash(rr) }
+      hash[:exrules].each { |ex| schedule.add_exception_rule Rule.from_hash(ex) }
+      hash[:rdates].each { |rd| schedule.add_recurrence_date rd }
+      hash[:exdates].each { |ed| schedule.add_exception_date ed }
+      schedule
+    end
+    
+    def self.from_yaml(str)
+      from_hash(YAML::load(str))
+    end
+
     # Determine whether a given date adheres to the ruleset of this schedule.
     def occurs_on?(date)
       dates = occurrences(date)
@@ -55,10 +82,6 @@ module IceCube
     def add_exception_date(date)
       raise ArgumentError.new('Argument must be a valid Time') unless date.class == Time
       @exdates << date
-    end
-    
-    def self.from_yaml(str)
-      YAML::load(str)
     end
    
     private

@@ -8,6 +8,24 @@ module IceCube
     include MonthOfYearValidation, DayOfYearValidation, DayOfMonthValidation, DayOfWeekValidation, DayValidation
     include HourOfDayValidation, MinuteOfHourValidation, SecondOfMinuteValidation
     
+    def to_hash
+      hash = Hash.new
+      hash[:rule_type] = self.class.name
+      hash[:interval] = @interval
+      hash[:until] = @until_date
+      hash[:count] = @occurrence_count
+      hash[:validations] = @validations
+      hash
+    end
+    
+    def self.from_hash(hash)
+      rule = hash[:rule_type].split('::').inject(Object) { |namespace, const_name| namespace.const_get(const_name) }.new(hash[:interval])
+      rule.count(hash[:count]) if hash[:count]
+      rule.until(hash[:until]) if hash[:until]
+      rule.validations = hash[:validations]
+      rule
+    end
+    
     # create a new daily rule
     def self.daily(interval = 1)
       DailyRule.new(interval)
@@ -98,35 +116,39 @@ module IceCube
       to_ical
     end
     
+    attr_accessor :validations
+    
     private
     
+    #TODO - until date formatting is not iCalendar here
+    #TODO - move into validations
     #get the icalendar representation of this rule logic
     def to_ical_base
       representation = ''
       representation << ";INTERVAL=#{@interval}" if @interval > 1
-      representation << ';BYMONTH=' << @months_of_year.join(',') if @months_of_year
-      representation << ';BYYEARDAY=' << @days_of_year.join(',') if @days_of_year
-      representation << ';BYMONTHDAY=' << @days_of_month.join(',') if @days_of_month
-      if @days || @days_of_week
+      representation << ';BYMONTH=' << @validations[:month_of_year].join(',') if @validations[:month_of_year]
+      representation << ';BYYEARDAY=' << @validations[:day_of_year].join(',') if @validations[:day_of_year]
+      representation << ';BYMONTHDAY=' << @validations[:day_of_month].join(',') if @validations[:day_of_month]
+      if @validations[:day] || @validations[:day_of_week]
         representation << ';BYDAY='
-        days_of_week_dedup = @days_of_week.dup if @days_of_week
+        days_of_week_dedup = @validations[:day_of_week].dup if @validations[:day_of_week]
         #put days on the string, remove all occurrences in days from days_of_week
-        if @days
-          @days.each { |day| days_of_week_dedup.delete(day) } if days_of_week_dedup
-          representation << (@days.map { |d| ICAL_DAYS[d]} ).join(',')
+        if @validations[:day]
+          @validations[:day].each { |day| days_of_week_dedup.delete(day) } if days_of_week_dedup
+          representation << (@validations[:day].map { |d| ICAL_DAYS[d]} ).join(',')
         end 
-        representation << ',' if @days && @days_of_week
+        representation << ',' if @validations[:day] && @validations[:day_of_week]
         #put days_of_week on string representation
         representation << days_of_week_dedup.inject([]) do |day_rules, pair|
           day, occ = *pair
           day_rules.concat(occ.map {|v| v.to_s + ICAL_DAYS[day]})
         end.flatten.join(',') if days_of_week_dedup
       end
-      representation << ';BYHOUR=' << @hours_of_day.join(',') if @hours_of_day
-      representation << ';BYMINUTE=' << @minutes_of_hour.join(',') if @minutes_of_hour
-      representation << ';BYSECOND=' << @seconds_of_minute.join(',') if @seconds_of_minute
-      representation << ";COUNT=#{@count}" if @count
-      representation << ";UNTIL=#{@until}" if @until_date
+      representation << ';BYHOUR=' << @validations[:hour_of_day].join(',') if @validations[:hour_of_day]
+      representation << ';BYMINUTE=' << @validations[:minute_of_hour].join(',') if @validations[:minute_of_hour]
+      representation << ';BYSECOND=' << @validations[:second_of_minute].join(',') if @validations[:second_of_minute]
+      representation << ";COUNT=#{@occurrence_count}" if @occurrence_count
+      representation << ";UNTIL=#{@until_date}" if @until_date
       representation
     end
     
@@ -134,6 +156,7 @@ module IceCube
     # interval means every (n) weeks, months, etc. starting on the start_date's
     def initialize(interval = 1)
       throw ArgumentError.new('Interval must be > 0') unless interval > 0
+      @validations = {}
       @interval = interval
     end
     

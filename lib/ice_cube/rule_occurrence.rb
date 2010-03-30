@@ -43,6 +43,8 @@ module IceCube
         return RuleOccurrence.new(@rule, @start_date, date, @index + 1) if @rule.in_interval?(date, @start_date)
       end while date = @rule.next_suggestion(date)
     end
+    
+    attr_reader :rule
    
     private
     

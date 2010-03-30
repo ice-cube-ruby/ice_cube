@@ -5,24 +5,24 @@ module HourOfDayValidation
   end
   
   def hour_of_day(*hours)
-    @hours_of_day ||= []
+    @validations[:hour_of_day] ||= []
     hours.each do |hour| 
       raise ArgumentError.new('Argument must be a valid hour') unless hour < 24 && hour >= 0
-      @hours_of_day << hour
+      @validations[:hour_of_day] << hour
     end
     self
   end
   
   def validate_hour_of_day(date)
-    return true if !@hours_of_day || @hours_of_day.empty?
-    @hours_of_day.include?(date.hour)
+    return true if !@validations[:hour_of_day] || @validations[:hour_of_day].empty?
+    @validations[:hour_of_day].include?(date.hour)
   end
   
   def closest_hour_of_day(date)
-    return nil if !@hours_of_day || @hours_of_day.empty?
+    return nil if !@validations[:hour_of_day] || @validations[:hour_of_day].empty?
     # turn hours into hour of day
     # hour >= 24 should fall into the next day
-    hours = @hours_of_day.map do |h|
+    hours = @validations[:hour_of_day].map do |h|
       h > date.hour ? h - date.hour : 24 - date.hour + h
     end
     hours.compact!
