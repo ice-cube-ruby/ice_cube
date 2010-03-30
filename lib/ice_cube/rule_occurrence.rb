@@ -6,10 +6,10 @@ module IceCube
     
     #allow to be compared to dates
     def <=>(other)
-      to_date <=> other.to_date
+      to_time <=> other
     end
     
-    def to_date
+    def to_time
       @date
     end
        
@@ -19,7 +19,7 @@ module IceCube
     end
    
     def upto(end_date)
-      find_occurrences { |roc| roc.to_date > end_date }
+      find_occurrences { |roc| roc > end_date }
     end
 
     def first(n)
@@ -58,9 +58,9 @@ module IceCube
       roc = self
       begin
         break if roc.nil? #go until we run out of dates
-        next if roc.to_date.nil? #handle the case where start_date is not a valid occurrence
+        next if roc.to_time.nil? #handle the case where start_date is not a valid occurrence
         break if yield(roc) #recurrence condition
-        include_dates << adjust(roc.to_date)
+        include_dates << adjust(roc.to_time)
       end while roc = roc.succ
       include_dates
     end

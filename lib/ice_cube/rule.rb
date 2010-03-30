@@ -136,10 +136,6 @@ module IceCube
       throw ArgumentError.new('Interval must be > 0') unless interval > 0
       @interval = interval
     end
-  
-    def has_obscure_validations?
-      !!(@months_of_year || @days_of_year || @days || @days_of_week || @days_of_month || @hours_of_day || @minutes_of_hour || @seconds_of_minute)
-    end
     
   end
 

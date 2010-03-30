@@ -243,4 +243,17 @@ describe Schedule, 'occurs_on?' do
     end
   end
 
+  it 'occurs every second for an hour' do
+    start_date = Time.now
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.secondly.count(60)
+    # build the expectation list
+    expectation = []
+    0.upto(59) { |i| expectation << start_date + i }
+    # compare with what we get
+    dates = schedule.all_occurrences
+    dates.count.should == 60
+    schedule.all_occurrences.should == expectation
+  end
+
 end

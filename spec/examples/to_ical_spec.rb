@@ -37,4 +37,49 @@ describe IceCube, 'to_ical' do
     rule.to_ical.should == "FREQ=SECONDLY"
   end
   
+  it 'should return the to_ical representation of a rule when calling to_s' do
+    rule = Rule.daily
+    rule.to_ical.should == rule.to_s
+  end
+  
+  it 'should be able to serialize a .day rule to_ical' do
+    rule = Rule.daily.day(:monday, :tuesday)
+    rule.to_ical.should == "FREQ=DAILY;BYDAY=MO,TU"
+  end
+  
+  it 'should be able to serialize a .day_of_week rule to_ical' do
+    rule = Rule.daily.day_of_week(:tuesday => [-1, -2])
+    rule.to_ical.should == "FREQ=DAILY;BYDAY=-1TU,-2TU"
+  end
+  
+  it 'should be able to serialize a .day_of_month rule to_ical' do
+    rule = Rule.daily.day_of_month(23)
+    rule.to_ical.should == "FREQ=DAILY;BYMONTHDAY=23"
+  end
+  
+  it 'should be able to serialize a .day_of_year rule to_ical' do
+    rule = Rule.daily.day_of_year(100,200)
+    rule.to_ical.should == "FREQ=DAILY;BYYEARDAY=100,200"
+  end
+  
+  it 'should be able to serialize a .month_of_year rule to_ical' do
+    rule = Rule.daily.month_of_year(:january, :april)
+    rule.to_ical.should == "FREQ=DAILY;BYMONTH=1,4"
+  end
+  
+  it 'should be able to serialize a .hour_of_day rule to_ical' do
+    rule = Rule.daily.hour_of_day(10, 20)
+    rule.to_ical.should == "FREQ=DAILY;BYHOUR=10,20"
+  end
+  
+  it 'should be able to serialize a .minute_of_hour rule to_ical' do
+    rule = Rule.daily.minute_of_hour(5, 55)
+    rule.to_ical.should == "FREQ=DAILY;BYMINUTE=5,55"
+  end
+  
+  it 'should be able to serialize a .second_of_minute rule to_ical' do
+    rule = Rule.daily.second_of_minute(0, 15, 30, 45)
+    rule.to_ical.should == "FREQ=DAILY;BYSECOND=0,15,30,45"
+  end
+    
 end
