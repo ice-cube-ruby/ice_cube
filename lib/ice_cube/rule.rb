@@ -94,6 +94,10 @@ module IceCube
       end
     end
     
+    def to_s
+      to_ical
+    end
+    
     private
     
     #get the icalendar representation of this rule logic
