@@ -126,7 +126,6 @@ module IceCube
     end
     
     #TODO - until date formatting is not iCalendar here
-    #TODO - move into validations
     #get the icalendar representation of this rule logic
     def to_ical_base
       representation = ''
@@ -136,18 +135,18 @@ module IceCube
       representation << ';BYMONTHDAY=' << @validations[:day_of_month].join(',') if @validations[:day_of_month]
       if @validations[:day] || @validations[:day_of_week]
         representation << ';BYDAY='
-        days_of_week_dedup = @validations[:day_of_week].dup if @validations[:day_of_week]
+        days_dedup = @validations[:day].dup if @validations[:day]
         #put days on the string, remove all occurrences in days from days_of_week
-        if @validations[:day]
-          @validations[:day].each { |day| days_of_week_dedup.delete(day) } if days_of_week_dedup
-          representation << (@validations[:day].map { |d| ICAL_DAYS[d]} ).join(',')
+        if days_dedup
+          @validations[:day_of_week].keys.each { |day| days_dedup.delete(day) } if @validations[:day_of_week]
+          representation << (days_dedup.map { |d| ICAL_DAYS[d]} ).join(',')
         end 
-        representation << ',' if @validations[:day] && @validations[:day_of_week]
+        representation << ',' if days_dedup && @validations[:day_of_week]
         #put days_of_week on string representation
-        representation << days_of_week_dedup.inject([]) do |day_rules, pair|
+        representation << @validations[:day_of_week].inject([]) do |day_rules, pair|
           day, occ = *pair
           day_rules.concat(occ.map {|v| v.to_s + ICAL_DAYS[day]})
-        end.flatten.join(',') if days_of_week_dedup
+        end.flatten.join(',') if @validations[:day_of_week]
       end
       representation << ';BYHOUR=' << @validations[:hour_of_day].join(',') if @validations[:hour_of_day]
       representation << ';BYMINUTE=' << @validations[:minute_of_hour].join(',') if @validations[:minute_of_hour]
