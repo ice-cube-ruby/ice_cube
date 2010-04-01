@@ -28,7 +28,8 @@ module HourOfDayValidation
     hours.compact!
     # go to the closest distance away, the start of that hour
     closest_hour = hours.min
-    date + 60 * 60 * closest_hour
+    goal = date + ONE_HOUR * closest_hour
+    adjust(goal, date)
   end
   
 end

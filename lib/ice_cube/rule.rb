@@ -120,6 +120,10 @@ module IceCube
     
     private
     
+    def adjust(goal, date)
+     goal - goal.utc_offset + date.utc_offset
+    end
+    
     #TODO - until date formatting is not iCalendar here
     #TODO - move into validations
     #get the icalendar representation of this rule logic

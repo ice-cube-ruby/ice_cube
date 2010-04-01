@@ -18,7 +18,8 @@ module IceCube
     protected
     
     def default_jump(date)
-      date + 7 * ONE_DAY * @interval
+      goal = date + 7 * ONE_DAY * @interval
+      adjust(goal, date)
     end
 
     private

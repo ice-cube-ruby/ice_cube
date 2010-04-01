@@ -19,8 +19,10 @@ module IceCube
     
     protected
     
+    # one year from now, the same month and day of the year
     def default_jump(date)
-      Time.utc(date.year + @interval, date.month, date.day, date.hour, date.min, date.sec)
+      date_type = date.utc? ? :utc : :local
+      Time.send(date_type, date.year + @interval, date.month, date.day, date.hour, date.min, date.sec)
     end
     
     private

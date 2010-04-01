@@ -6,8 +6,8 @@ describe YearlyRule, 'occurs_on?' do
     start_date = Time.now
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.yearly.month_of_year(:april).day_of_week(:monday => [1, -1])
-    #check assumption - over 2 years should be 4
-    schedule.occurrences(start_date + 366 * 2 * ONE_DAY).count.should == 4
+    #check assumption - over 1 year should be 2
+    schedule.occurrences(start_date + TimeUtil.days_in_year(start_date) * ONE_DAY).count.should == 2
   end
   
   it 'should produce the correct number of days for @interval = 1' do

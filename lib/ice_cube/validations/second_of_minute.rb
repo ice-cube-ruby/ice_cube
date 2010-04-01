@@ -28,7 +28,8 @@ module SecondOfMinuteValidation
     seconds.compact!
     # go to the closest distance away
     closest_second = seconds.min
-    date + closest_second
+    goal = date + closest_second
+    adjust(goal, date)
   end
   
 end

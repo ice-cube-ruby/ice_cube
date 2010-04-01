@@ -27,13 +27,13 @@ module MonthOfYearValidation
     # turn months into month of year
     # month > 12 should fall into the next year
     months = @validations[:month_of_year].map do |m|
-      m > date.month ? m : m + 12
+      m > date.month ? m - date.month : 12 - date.month + m
     end
     months.compact!
     # go to the closest distance away
-    closest_month = months.min
-    closest_month < 12 ? Time.utc(date.year, closest_month, date.day, date.hour, date.min, date.sec) : 
-                         Time.utc(date.year + 1, closest_month - 12, date.day, date.hour, date.min, date.sec)
+    goal = date
+    months.min.times { goal += TimeUtil.days_in_month(goal) * ONE_DAY }
+    adjust(goal, date)
   end
   
 end

@@ -89,19 +89,6 @@ describe Schedule, 'occurs_on?' do
     schedule.all_occurrences.should == []
   end
 
-  it 'cross a daylight savings time boundary with a recurrence rule in local time' do
-    start_date = Time.local(2010, 3, 14, 5, 0, 0)
-    schedule = Schedule.new(start_date)
-    schedule.add_recurrence_rule Rule.daily
-    # each occurrence MUST occur at 5pm, then we win
-    dates = schedule.occurrences(start_date + 20 * ONE_DAY)
-    last = start_date
-    dates.each do |date|
-      date.hour.should == 5
-      last = date
-    end
-  end
-
   it 'should be able to be schedules at 1:st:st and 2:st:st every day' do
     start_date = Time.utc(2007, 9, 2, 9, 15, 25)
     schedule = Schedule.new(start_date)
@@ -120,34 +107,6 @@ describe Schedule, 'occurs_on?' do
     dates.should == [Time.utc(2007, 9, 3, 1, 0, 25), Time.utc(2007, 9, 3, 2, 0, 25),
                      Time.utc(2007, 9, 4, 1, 0, 25), Time.utc(2007, 9, 4, 2, 0, 25), 
                      Time.utc(2007, 9, 5, 1, 0, 25), Time.utc(2007, 9, 5, 2, 0, 25)]
-  end
-
-  # DST in 2010 is March 14th at 2am
-  it 'crosses a daylight savings time boundary with a recurrence rule in local time, by utc conversion' do
-    start_date = Time.local(2010, 3, 13, 5, 0, 0)
-    schedule = Schedule.new(start_date)
-    schedule.add_recurrence_rule Rule.daily.count(20)
-    dates = schedule.first(20)
-    dates.count.should == 20
-    #check assumptions
-    dates.each do |date|
-      date.utc?.should_not == true
-      date.hour.should == 5
-    end  
-  end
-
-  # DST in 2010 is November 7th at 2am
-  it 'crosses a daylight savings time boundary (in the other direction) with a recurrence rule in local time, by utc conversion' do
-    start_date = Time.local(2010, 11, 6, 5, 0, 0)
-    schedule = Schedule.new(start_date)
-    schedule.add_recurrence_rule Rule.daily.count(20)
-    dates = schedule.first(20)
-    dates.count.should == 20
-    #check assumptions
-    dates.each do |date|
-      date.utc?.should_not == true
-      date.hour.should == 5
-    end  
   end
 
   it 'will only return count# if you specify a count and use .first' do
@@ -229,6 +188,20 @@ describe Schedule, 'occurs_on?' do
     dates = schedule.all_occurrences
     dates.count.should == 60
     schedule.all_occurrences.should == expectation
+  end
+
+  it 'perform a every day UTC and make sure we get back UTC' do
+    start_date = Time.local(2010, 9, 2, 5, 0, 0)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.daily
+    schedule.first(10).each { |d| d.utc?.should == false }
+  end
+
+  it 'perform a every day LOCAL and make sure we get back LOCAL' do
+    start_date = Time.utc(2010, 9, 2, 5, 0, 0)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.daily
+    schedule.first(10).each { |d| d.utc?.should == true }    
   end
 
 end
