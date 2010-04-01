@@ -204,4 +204,33 @@ describe Schedule, 'occurs_on?' do
     schedule.first(10).each { |d| d.utc?.should == true }    
   end
 
+  # here we purposely put a UTC time that is before the range ends, to
+  # verify ice_cube is properly checking until bounds
+  it 'works with a until date that is UTC, but the start date is local' do
+    start_date = Time.local(2010, 11, 6, 5, 0, 0)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.daily.until(Time.utc(2010, 11, 10, 8, 0, 0)) #4 o clocal local
+    #check assumptions
+    dates = schedule.all_occurrences
+    dates.each { |d| d.utc?.should == false }
+    dates.should == [Time.local(2010, 11, 6, 5, 0, 0), 
+      Time.local(2010, 11, 7, 5, 0, 0), Time.local(2010, 11, 8, 5, 0, 0), 
+      Time.local(2010, 11, 9, 5, 0, 0)]
+  end
+
+  # here we purposely put a local time that is before the range ends, to
+  # verify ice_cube is properly checking until bounds
+  it 'works with a until date that is local, but the start date is UTC' do
+    start_date = Time.utc(2010, 11, 6, 5, 0, 0)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.daily.until(Time.local(2010, 11, 9, 23, 0, 0)) #4 o UTC time
+    #check assumptions
+    dates = schedule.all_occurrences
+    dates.each { |d| d.utc?.should == true }
+    dates.should == [Time.utc(2010, 11, 6, 5, 0, 0), 
+      Time.utc(2010, 11, 7, 5, 0, 0), Time.utc(2010, 11, 8, 5, 0, 0), 
+      Time.utc(2010, 11, 9, 5, 0, 0)]
+  end
+
+
 end
