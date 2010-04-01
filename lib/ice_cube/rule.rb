@@ -121,7 +121,8 @@ module IceCube
     private
     
     def adjust(goal, date)
-     goal - goal.utc_offset + date.utc_offset
+      return goal if goal.utc_offset == date.utc_offset
+      goal - goal.utc_offset + date.utc_offset
     end
     
     #TODO - until date formatting is not iCalendar here
