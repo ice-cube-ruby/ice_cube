@@ -81,5 +81,10 @@ describe IceCube, 'to_ical' do
     rule = Rule.daily.second_of_minute(0, 15, 30, 45)
     rule.to_ical.should == "FREQ=DAILY;BYSECOND=0,15,30,45"
   end
+  
+  it 'should be able to collapse a combination day_of_week and day' do
+    rule = Rule.daily.day(:monday, :tuesday).day_of_week(:monday => [1, -1])
+    rule.to_ical.should == "FREQ=DAILY;BYDAY=TU,1MO,-1MO"
+  end
     
 end
