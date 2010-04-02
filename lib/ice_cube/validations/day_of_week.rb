@@ -32,7 +32,7 @@ module DayOfWeekValidation
   def closest_day_of_week(date)
     return nil if !@validations[:day_of_week] || @validations[:day_of_week].empty?
     goal = date
-    while goal += ONE_DAY
+    while goal += IceCube::ONE_DAY
       test = adjust(goal, date)
       return test if validate_day_of_week(test)
     end

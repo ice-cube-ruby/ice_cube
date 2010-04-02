@@ -29,7 +29,7 @@ module DayValidation
     end
     days.compact!
     # go to the closest distance away, the start of that day
-    goal = date + days.min * ONE_DAY
+    goal = date + days.min * IceCube::ONE_DAY
     adjust(goal, date)
   end
   

@@ -35,7 +35,7 @@ describe Schedule, 'occurs_on?' do
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.daily
     # each occurrence MUST occur at 5pm, then we win
-    dates = schedule.occurrences(start_date + 20 * ONE_DAY)
+    dates = schedule.occurrences(start_date + 20 * IceCube::ONE_DAY)
     last = start_date
     dates.each do |date|
       date.hour.should == 5
@@ -51,7 +51,7 @@ describe Schedule, 'occurs_on?' do
     #check assumption
     distance_in_hours = 0
     dates.each do |d|
-      d.should == start_date + ONE_HOUR * distance_in_hours
+      d.should == start_date + IceCube::ONE_HOUR * distance_in_hours
       distance_in_hours += 2
     end
   end
@@ -64,7 +64,7 @@ describe Schedule, 'occurs_on?' do
     #check assumption
     distance_in_minutes = 0
     dates.each do |d|
-      d.should == start_date + ONE_MINUTE * distance_in_minutes
+      d.should == start_date + IceCube::ONE_MINUTE * distance_in_minutes
       distance_in_minutes += 30
     end
   end

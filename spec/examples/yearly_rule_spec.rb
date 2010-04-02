@@ -7,7 +7,7 @@ describe YearlyRule, 'occurs_on?' do
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.yearly.month_of_year(:april).day_of_week(:monday => [1, -1])
     #check assumption - over 1 year should be 2
-    schedule.occurrences(start_date + TimeUtil.days_in_year(start_date) * ONE_DAY).count.should == 2
+    schedule.occurrences(start_date + TimeUtil.days_in_year(start_date) * IceCube::ONE_DAY).count.should == 2
   end
   
   it 'should produce the correct number of days for @interval = 1' do
@@ -15,7 +15,7 @@ describe YearlyRule, 'occurs_on?' do
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.yearly
     #check assumption
-    schedule.occurrences(start_date + 370 * ONE_DAY).count.should == 2
+    schedule.occurrences(start_date + 370 * IceCube::ONE_DAY).count.should == 2
   end
 
   it 'should produce the correct number of days for @interval = 2' do
@@ -23,7 +23,7 @@ describe YearlyRule, 'occurs_on?' do
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.yearly(2)
     #check assumption
-    schedule.occurrences(start_date + 370 * ONE_DAY).count.should == 1
+    schedule.occurrences(start_date + 370 * IceCube::ONE_DAY).count.should == 1
   end
 
   it 'should produce the correct number of days for @interval = 1 when you specify months' do

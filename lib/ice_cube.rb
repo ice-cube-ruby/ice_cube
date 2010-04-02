@@ -29,10 +29,10 @@ module IceCube
 
   VERSION = '0.2.3'
 
-  ONE_DAY = 24 * 60 * 60
-  ONE_HOUR = 60 * 60
-  ONE_MINUTE = 60
-  ONE_SECOND = 1
+  IceCube::ONE_DAY = 24 * 60 * 60
+  IceCube::ONE_HOUR = 60 * 60
+  IceCube::ONE_MINUTE = 60
+  IceCube::ONE_SECOND = 1
 
   ICAL_DAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
   DAYS = { :sunday => 0, :monday => 1, :tuesday => 2, :wednesday => 3, :thursday => 4, :friday => 5, :saturday => 6 }

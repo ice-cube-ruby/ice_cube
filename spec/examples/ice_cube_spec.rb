@@ -32,7 +32,7 @@ describe Schedule, 'occurs_on?' do
     schedule.add_recurrence_date(start_date + 2)
     schedule.add_exception_date(start_date + 2)
     #check assumption
-    schedule.occurrences(start_date + 50 * ONE_DAY).count.should == 0
+    schedule.occurrences(start_date + 50 * IceCube::ONE_DAY).count.should == 0
   end
 
   it 'should return properly with a combination of a recurrence and exception rule' do
@@ -40,18 +40,18 @@ describe Schedule, 'occurs_on?' do
     schedule.add_recurrence_rule Rule.daily # every day
     schedule.add_exception_rule Rule.weekly.day(:monday, :tuesday, :wednesday) # except these
     #check assumption - in 2 weeks, we should have 8 days
-    schedule.occurrences(DAY + 13 * ONE_DAY).count.should == 8
+    schedule.occurrences(DAY + 13 * IceCube::ONE_DAY).count.should == 8
   end
 
   it 'should be able to exclude a certain date from a range' do
     start_date = Time.now
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.daily
-    schedule.add_exception_date(start_date + 1 * ONE_DAY) # all days except tomorrow
+    schedule.add_exception_date(start_date + 1 * IceCube::ONE_DAY) # all days except tomorrow
     # check assumption
-    dates = schedule.occurrences(start_date + 13 * ONE_DAY) # 2 weeks
+    dates = schedule.occurrences(start_date + 13 * IceCube::ONE_DAY) # 2 weeks
     dates.count.should == 13 # 2 weeks minus 1 day
-    dates.should_not include(start_date + 1 * ONE_DAY)
+    dates.should_not include(start_date + 1 * IceCube::ONE_DAY)
   end
 
   it 'make a schedule with a start_date not included in a rule, and make sure that count behaves properly' do
@@ -65,13 +65,13 @@ describe Schedule, 'occurs_on?' do
   end
 
   it 'make a schedule with a start_date included in a rule, and make sure that count behaves properly' do
-    start_date = WEDNESDAY + ONE_DAY
+    start_date = WEDNESDAY + IceCube::ONE_DAY
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.weekly.day(:thursday).count(5)
     dates = schedule.all_occurrences
     dates.uniq.count.should == 5
     dates.each { |d| d.wday == 4 }
-    dates.should include(WEDNESDAY + ONE_DAY)
+    dates.should include(WEDNESDAY + IceCube::ONE_DAY)
   end
 
   it 'should work as expected with a second_of_minute rule specified' do
