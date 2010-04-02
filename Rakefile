@@ -6,6 +6,10 @@ task :build => :test do
 end
 
 task :release => :build do
+  # tag and push
+  system "git tag v#{IceCube::VERSION}"
+  system "git push origin --tags"
+  # push the gem
   system "gem push ice_cube-#{IceCube::VERSION}.gem"
 end
  
