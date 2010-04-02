@@ -6,7 +6,7 @@ task :build => :test do
 end
 
 task :release => :build do
-  system "gem push ice_cube-#{IceCube::VERSION}"
+  system "gem push ice_cube-#{IceCube::VERSION}.gem"
 end
  
 Spec::Rake::SpecTask.new(:test) do |t|
