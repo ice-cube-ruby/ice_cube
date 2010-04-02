@@ -10,9 +10,9 @@ module DayOfWeekValidation
   def day_of_week(days)
     @validations[:day_of_week] ||= {}
     days.each do |day, occurrences|
-      raise ArgumentError.new('Argument must be a valid day') unless DAYS.has_key?(day)
-      @validations[:day_of_week][DAYS[day]] ||= []
-      @validations[:day_of_week][DAYS[day]].concat(occurrences)
+      raise ArgumentError.new('Argument must be a valid day') unless IceCube::DAYS.has_key?(day)
+      @validations[:day_of_week][IceCube::DAYS[day]] ||= []
+      @validations[:day_of_week][IceCube::DAYS[day]].concat(occurrences)
     end
     self
   end

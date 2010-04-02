@@ -10,8 +10,8 @@ module DayValidation
   def day(*days)
     @validations[:day] ||= []
     days.each do |day|
-      raise ArgumentError.new('Argument must be a valid day of the week') unless DAYS.has_key?(day)
-      @validations[:day] << DAYS[day]
+      raise ArgumentError.new('Argument must be a valid day of the week') unless IceCube::DAYS.has_key?(day)
+      @validations[:day] << IceCube::DAYS[day]
     end
     self
   end

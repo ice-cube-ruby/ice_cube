@@ -139,13 +139,13 @@ module IceCube
         #put days on the string, remove all occurrences in days from days_of_week
         if days_dedup
           @validations[:day_of_week].keys.each { |day| days_dedup.delete(day) } if @validations[:day_of_week]
-          representation << (days_dedup.map { |d| ICAL_DAYS[d]} ).join(',')
+          representation << (days_dedup.map { |d| IceCube::ICAL_DAYS[d]} ).join(',')
         end 
         representation << ',' if days_dedup && @validations[:day_of_week]
         #put days_of_week on string representation
         representation << @validations[:day_of_week].inject([]) do |day_rules, pair|
           day, occ = *pair
-          day_rules.concat(occ.map {|v| v.to_s + ICAL_DAYS[day]})
+          day_rules.concat(occ.map {|v| v.to_s + IceCube::ICAL_DAYS[day]})
         end.flatten.join(',') if @validations[:day_of_week]
       end
       representation << ';BYHOUR=' << @validations[:hour_of_day].join(',') if @validations[:hour_of_day]

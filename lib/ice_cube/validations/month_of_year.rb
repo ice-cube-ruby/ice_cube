@@ -11,8 +11,8 @@ module MonthOfYearValidation
   def month_of_year(*months)
     @validations[:month_of_year] ||= []
     months.each do |month|
-      raise ArgumentError.new('Argument must be a valid month') unless MONTHS.has_key?(month)
-      @validations[:month_of_year] << MONTHS[month]
+      raise ArgumentError.new('Argument must be a valid month') unless IceCube::MONTHS.has_key?(month)
+      @validations[:month_of_year] << IceCube::MONTHS[month]
     end
     self
   end
