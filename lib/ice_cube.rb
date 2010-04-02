@@ -27,7 +27,7 @@ module IceCube
   autoload :MinutelyRule, 'ice_cube/rules/minutely_rule'
   autoload :SecondlyRule, 'ice_cube/rules/secondly_rule'
 
-  VERSION = '0.2.2'
+  VERSION = '0.2.3'
 
   ONE_DAY = 24 * 60 * 60
   ONE_HOUR = 60 * 60
