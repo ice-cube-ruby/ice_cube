@@ -12,6 +12,6 @@ spec = Gem::Specification.new do |s|
   s.require_paths = ['lib']
   s.summary = 'Ruby Date Recurrence Library'
   s.test_files = Dir.glob('spec/*.rb')
-  s.version = '0.2'
+  s.version = '0.2.2'
 
 end
