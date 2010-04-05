@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/spec_helper'
 describe YearlyRule, 'occurs_on?' do
 
   it 'should be able to specify complex yearly rules' do
-    start_date = Time.now
+    start_date = Time.local(2010, 7, 12, 5, 0, 0)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.yearly.month_of_year(:april).day_of_week(:monday => [1, -1])
     #check assumption - over 1 year should be 2

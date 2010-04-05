@@ -190,20 +190,28 @@ describe Schedule, 'occurs_on?' do
     schedule.all_occurrences.should == expectation
   end
 
-  it 'perform a every day UTC and make sure we get back UTC' do
+  it 'perform a every day LOCAL and make sure we get back LOCAL' do
     start_date = Time.local(2010, 9, 2, 5, 0, 0)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.daily
-    schedule.first(10).each { |d| d.utc?.should == false }
+    schedule.first(10).each do |d| 
+      d.utc?.should == false
+      d.hour.should == 5
+      (d.utc_offset == -5 * ONE_HOUR || d.utc_offset == -4 * ONE_HOUR).should be true
+    end
   end
 
   it 'perform a every day LOCAL and make sure we get back LOCAL' do
     start_date = Time.utc(2010, 9, 2, 5, 0, 0)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.daily
-    schedule.first(10).each { |d| d.utc?.should == true }    
+    schedule.first(10).each do |d| 
+      d.utc?.should == true
+      d.utc_offset.should == 0
+      d.hour.should == 5
+    end    
   end
-
+  
   # here we purposely put a UTC time that is before the range ends, to
   # verify ice_cube is properly checking until bounds
   it 'works with a until date that is UTC, but the start date is local' do

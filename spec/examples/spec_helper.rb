@@ -1,6 +1,8 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'lib', 'ice_cube')
 include IceCube
 
+require 'date' # used to build some dates
+
 #some custom dates
 DAY = Time.utc(2010, 3, 1)
 
