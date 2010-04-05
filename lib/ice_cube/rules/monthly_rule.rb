@@ -22,7 +22,7 @@ module IceCube
     def default_jump(date)
       date_type = date.utc? ? :utc : :local
       next_month = date.month + @interval
-      Time.send(date_type, date.year + next_month / 12, (next_month - 1) % 12 + 1, date.day, date.hour, date.min, date.sec)
+      Time.send(date_type, date.year + (next_month - 1) / 12, (next_month - 1) % 12 + 1, date.day, date.hour, date.min, date.sec)
     end
  
     private
