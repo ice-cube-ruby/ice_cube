@@ -40,5 +40,16 @@ describe Schedule, 'occurs_on?' do
                      Time.utc(2010, 1, 29, 0, 30, 0),   Time.utc(2010, 3, 1, 0, 30, 0),   Time.utc(2010, 3, 28, 23, 30, 0),
                      Time.utc(2010, 4, 28, 23, 30, 0)]
   end
+  
+  it 'can make a round trip to yaml with TimeWithZone' do
+    Time.zone = "Pacific Time (US & Canada)"
+    start_date = Time.zone.parse("2010-02-05 05:00:00")
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_date start_date
+    # create a schedule out of round trip
+    schedule2 = Schedule.from_yaml(schedule.to_yaml)
+    #compare results
+    schedule.all_occurrences.should == schedule2.all_occurrences
+  end
    
 end
