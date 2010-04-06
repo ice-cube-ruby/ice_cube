@@ -240,5 +240,18 @@ describe Schedule, 'occurs_on?' do
       Time.utc(2010, 11, 9, 5, 0, 0)]
   end
 
+  it 'works with a monthly rule iterating on UTC' do
+    start_date = Time.utc(2010, 4, 24, 15, 45, 0)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.monthly
+    dates = schedule.first(10)
+    dates.each do |d|
+      d.day.should == 24
+      d.hour.should == 15
+      d.min.should == 45
+      d.sec.should == 0
+      d.utc?.should be true
+    end
+  end
 
 end
