@@ -1,7 +1,10 @@
 require File.dirname(__FILE__) + '/spec_helper'
-require 'active_support'
 
 describe Schedule, 'occurs_on?' do
+
+  require 'rubygems'
+  gem 'activesupport'
+  require 'active_support'
 
   it 'works with a single recurrence date in a TimeWithZone timezone' do
     Time.zone = "Pacific Time (US & Canada)"
