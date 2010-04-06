@@ -20,10 +20,11 @@ module IceCube
     protected
     
     def default_jump(date)
-      date_utc = date.getutc
-      next_month = date_utc.month + @interval
-      difference = Time.utc(date_utc.year + (next_month - 1) / 12, (next_month - 1) % 12 + 1, date_utc.day, date_utc.hour, date_utc.min, date_utc.sec) - date
-      adjust(date + difference, date)
+      goal = date
+      @interval.times do
+        goal += TimeUtil.days_in_month(goal) * ONE_DAY
+      end
+      adjust(goal, date)
     end
  
     private

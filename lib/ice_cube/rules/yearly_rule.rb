@@ -21,10 +21,12 @@ module IceCube
     
     # one year from now, the same month and day of the year
     def default_jump(date)
-      # calculate the difference in seconds of @interval years away and now
-      date_utc = date.getutc
-      difference = Time.utc(date_utc.year + @interval, date_utc.month, date_utc.day, date_utc.hour, date_utc.min, date_utc.sec) - date_utc
-      adjust(date + difference, date)
+      #jump by months since there's no reliable way to jump by year
+      goal = date
+      (@interval * 12).times do
+        goal += TimeUtil.days_in_month(goal) * ONE_DAY
+      end
+      adjust(goal, date)
     end
     
     private

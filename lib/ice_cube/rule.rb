@@ -64,7 +64,6 @@ module IceCube
     # Set the time when this rule will no longer be effective
     def until(until_date)
       raise ArgumentError.new('Cannot specify until and count on the same rule') if @count #as per rfc
-      raise ArgumentError.new('Argument must be a valid Time') unless until_date.class == Time
       @until_date = until_date
       self
     end
