@@ -66,10 +66,18 @@ module IceCube
       @rrule_occurrence_heads << RuleOccurrence.new(rule, @start_date)
     end
 
+    def rrules
+      @rrule_occurrence_heads.map { |h| h.rule }
+    end
+
     # Add a rule of any type as an exception to this schedule
     def add_exception_rule(rule)
       raise ArgumentError.new('Argument must be a valid rule') unless rule.class < Rule
       @exrule_occurrence_heads << RuleOccurrence.new(rule, @start_date)
+    end
+
+    def exrules 
+      @exrule_occurrence_heads.map { |h| h.rule }
     end
 
     # Add an individual date to this schedule
@@ -81,6 +89,8 @@ module IceCube
     def add_exception_date(date)
       @exdates << date
     end
+   
+    attr_reader :rdates, :exdates
    
     private
     

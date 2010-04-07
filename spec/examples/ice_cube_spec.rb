@@ -254,4 +254,36 @@ describe Schedule, 'occurs_on?' do
     end
   end
 
+  it 'can retrieve rrules from a schedule' do
+    schedule = Schedule.new(Time.now)
+    rules = [Rule.daily, Rule.monthly, Rule.yearly]
+    rules.each { |r| schedule.add_recurrence_rule(r) }
+    # pull the rules back out of the schedule and compare
+    schedule.rrules.should == rules
+  end
+
+  it 'can retrieve exrules from a schedule' do
+    schedule = Schedule.new(Time.now)
+    rules = [Rule.daily, Rule.monthly, Rule.yearly]
+    rules.each { |r| schedule.add_exception_rule(r) }
+    # pull the rules back out of the schedule and compare
+    schedule.exrules.should == rules
+  end
+
+  it 'can retrieve rdates from a schedule' do
+    schedule = Schedule.new(Time.now)
+    dates = [Time.now, Time.now + 5, Time.now + 10]
+    dates.each { |d| schedule.add_recurrence_date(d) }
+    # pull the dates back out of the schedule and compare
+    schedule.rdates.should == dates
+  end
+  
+  it 'can retrieve exdates from a schedule' do
+    schedule = Schedule.new(Time.now)
+    dates = [Time.now, Time.now + 5, Time.now + 10]
+    dates.each { |d| schedule.add_exception_date(d) }
+    # pull the dates back out of the schedule and compare
+    schedule.exdates.should == dates
+  end
+
 end
