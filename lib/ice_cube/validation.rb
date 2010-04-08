@@ -10,13 +10,15 @@ module IceCube
     end
     
     def nice_numbers(array)
-      array.map { |num| nice_number(num) }.join(', ')
+      array.map { |d| nice_number(d) }.join(', ')
     end
     
     private
     
     def nice_number(number)
-      if number < 0
+      if number == -1
+        'last'
+      elsif number < -1
         number.abs.to_s << NUMBER_SUFFIX[number.abs % 10] << ' to last'
       else
         number.to_s << NUMBER_SUFFIX[number % 10]  

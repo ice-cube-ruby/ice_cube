@@ -125,9 +125,7 @@ module IceCube
     def to_s_base(singular, plural)
       representation = ''
       representation = 'Every ' << ((@interval == 1) ? singular : "#{@interval} #{plural}")
-      @validation_types.values.each do |v|
-        representation << ', ' << v.send(:to_s)
-      end
+      representation << @validation_types.values.map { |v| ' ' + v.send(:to_s) }.join()
       representation
     end
     

@@ -29,9 +29,9 @@ module IceCube
     def to_s
       representation = ''
       representation << 'on the '
-      @days_of_week.each do |day, occ| 
-        representation << nice_numbers(occ) << ' ' << Date::DAYNAMES[day] << (occ.count != 1 ? 's' : '') unless @days_of_week.empty?
-      end
+      representation << @days_of_week.map do |day, occ| 
+        nice_numbers(occ) << ' ' << Date::DAYNAMES[day] << (occ.count != 1 ? 's' : '') unless @days_of_week.empty?
+      end.join(' and the ')
       representation
     end
   
