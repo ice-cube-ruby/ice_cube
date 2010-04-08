@@ -7,6 +7,8 @@ module ValidationTypes
       raise ArgumentError.new('Argument must be a valid second') unless second < 60 && second >= 0
       @validations[:second_of_minute] << second
     end
+    # enforce uniqueness
+    @validations[:second_of_minute].uniq!
     self
   end
   
@@ -27,6 +29,8 @@ module ValidationTypes
         @validations[:day] << IceCube::DAYS[day]
       end
     end
+    # enforce uniqueness
+    @validations[:day].uniq!
     self
   end
   
@@ -42,6 +46,8 @@ module ValidationTypes
       raise ArgumentError.new('Argument must be non-zero') if day == 0
       @validations[:day_of_year] << day
     end
+    # enforce uniqueness
+    @validations[:day_of_year].uniq!
     self
   end
   
@@ -63,8 +69,12 @@ module ValidationTypes
         @validations[:month_of_year] << IceCube::MONTHS[month]
       end
     end
+    # enforce uniqueness
+    @validations[:month_of_year].uniq!
     self
   end
+  
+  #TODO condense
   
   # Specify the day(s) of the week that this rule should occur
   # on.  ie: rule.day_of_week(:monday => [1, -1]) would mean
@@ -79,11 +89,13 @@ module ValidationTypes
         raise ArgumentError.new('Argument must be a valid day of week (0-6)') unless day >= 0 && day <= 6
         @validations[:day_of_week][day] ||= []
         @validations[:day_of_week][day].concat(occurrences)
+        @validations[:day_of_week][day].uniq!
       else 
         # symbol type argument      
         raise ArgumentError.new('Argument must be a valid day of week') unless IceCube::DAYS.has_key?(day)
         @validations[:day_of_week][IceCube::DAYS[day]] ||= []
         @validations[:day_of_week][IceCube::DAYS[day]].concat(occurrences)
+        @validations[:day_of_week][IceCube::DAYS[day]].uniq!
       end
     end
     self
@@ -96,6 +108,8 @@ module ValidationTypes
       raise ArgumentError.new('Argument must be a valid hour') unless hour < 24 && hour >= 0
       @validations[:hour_of_day] << hour
     end
+    # enforce uniqueness
+    @validations[:hour_of_day].uniq!
     self
   end
   
@@ -110,6 +124,8 @@ module ValidationTypes
       raise ArgumentError.new('Argument must be non-zero') if day == 0
       @validations[:day_of_month] << day
     end
+    # enforce uniqueness
+    @validations[:day_of_month].uniq!
     self
   end
 
@@ -120,6 +136,8 @@ module ValidationTypes
       raise ArgumentError.new('Argument must be a valid minute') unless minute < 60 && minute >= 0
       @validations[:minute_of_hour] << minute
     end
+    # enforce uniqueness
+    @validations[:minute_of_hour].uniq!
     self
   end
 
