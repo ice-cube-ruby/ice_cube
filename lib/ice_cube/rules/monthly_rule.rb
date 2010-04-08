@@ -17,6 +17,10 @@ module IceCube
       'FREQ=MONTHLY' << to_ical_base
     end
     
+    def to_s
+      to_s_base 'month', 'months'
+    end
+    
     protected
     
     def default_jump(date)

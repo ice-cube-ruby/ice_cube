@@ -13,6 +13,10 @@ module IceCube
       'FREQ=SECONDLY' << to_ical_base
     end
         
+    def to_s
+      to_s_base 'second', 'seconds'
+    end
+        
     protected
            
     def default_jump(date)

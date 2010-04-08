@@ -17,6 +17,10 @@ module IceCube
       'FREQ=YEARLY' << to_ical_base
     end
     
+    def to_s
+      to_s_base 'year', 'years'
+    end
+    
     protected
     
     # one year from now, the same month and day of the year

@@ -3,11 +3,9 @@ module IceCube
   class Rule
     
     attr_reader :occurrence_count, :until_date
-
-    SuggestionTypes = []
-    include MonthOfYearValidation, DayOfYearValidation, DayOfMonthValidation, DayOfWeekValidation, DayValidation
-    include HourOfDayValidation, MinuteOfHourValidation, SecondOfMinuteValidation
     
+    include ValidationTypes
+
     def to_hash
       hash = Hash.new
       hash[:rule_type] = self.class.name
@@ -22,7 +20,9 @@ module IceCube
       rule = hash[:rule_type].split('::').inject(Object) { |namespace, const_name| namespace.const_get(const_name) }.new(hash[:interval])
       rule.count(hash[:count]) if hash[:count]
       rule.until(hash[:until]) if hash[:until]
-      rule.validations = hash[:validations]
+      hash[:validations].each do |validation, data|
+        data.is_a?(Array) ? rule.send(validation, *data) : rule.send(validation, data)
+      end
       rule
     end
     
@@ -76,8 +76,8 @@ module IceCube
     end
     
     def validate_single_date(date)
-      SuggestionTypes.all? do |s|
-        response = send("validate_#{s}", date)
+      @validation_types.values.all? do |validation|
+        response = validation.send(:validate, date)
         response.nil? || response
       end
     end
@@ -87,8 +87,9 @@ module IceCube
     # by constantly moving the farthest back value forward
     def next_suggestion(date)
       # get the next date recommendation set
-      suggestions = SuggestionTypes.map { |r| send("closest_#{r}", date) }
-      compact_suggestions = suggestions.compact
+      suggestions = {}; 
+      @validation_types.each { |k, validation| suggestions[k] = validation.send(:closest, date) }
+      compact_suggestions = suggestions.values.compact
       # find the next date to go to
       if compact_suggestions.empty?
         next_date = date
@@ -99,23 +100,19 @@ module IceCube
         end
       else  
         loop do
-          compact_suggestions = suggestions.compact
+          compact_suggestions = suggestions.values.compact
           min_suggestion = compact_suggestions.min
           # validate all against the minimum
           return min_suggestion if validate_single_date(min_suggestion)
           # move anything that is the minimum to its next closest
-          SuggestionTypes.each_with_index do |r, index|
-            suggestions[index] = send("closest_#{r}", min_suggestion) if min_suggestion == suggestions[index]
+          @validation_types.each do |k, validation|
+            suggestions[k] = validation.send(:closest, min_suggestion) if min_suggestion == suggestions[k]
           end
         end
       end
     end
     
-    def to_s
-      to_ical
-    end
-    
-    attr_accessor :validations
+    attr_reader :validations
     
     private
     
@@ -124,32 +121,24 @@ module IceCube
       goal - goal.utc_offset + date.utc_offset
     end
     
+    # get a very meaningful string representation of this rule
+    def to_s_base(singular, plural)
+      representation = ''
+      representation = 'Every ' << ((@interval == 1) ? singular : "#{@interval} #{plural}")
+      @validation_types.values.each do |v|
+        representation << ', ' << v.send(:to_s)
+      end
+      representation
+    end
+    
     #TODO - until date formatting is not iCalendar here
     #get the icalendar representation of this rule logic
     def to_ical_base
       representation = ''
       representation << ";INTERVAL=#{@interval}" if @interval > 1
-      representation << ';BYMONTH=' << @validations[:month_of_year].join(',') if @validations[:month_of_year]
-      representation << ';BYYEARDAY=' << @validations[:day_of_year].join(',') if @validations[:day_of_year]
-      representation << ';BYMONTHDAY=' << @validations[:day_of_month].join(',') if @validations[:day_of_month]
-      if @validations[:day] || @validations[:day_of_week]
-        representation << ';BYDAY='
-        days_dedup = @validations[:day].dup if @validations[:day]
-        #put days on the string, remove all occurrences in days from days_of_week
-        if days_dedup
-          @validations[:day_of_week].keys.each { |day| days_dedup.delete(day) } if @validations[:day_of_week]
-          representation << (days_dedup.map { |d| IceCube::ICAL_DAYS[d]} ).join(',')
-        end 
-        representation << ',' if days_dedup && @validations[:day_of_week]
-        #put days_of_week on string representation
-        representation << @validations[:day_of_week].inject([]) do |day_rules, pair|
-          day, occ = *pair
-          day_rules.concat(occ.map {|v| v.to_s + IceCube::ICAL_DAYS[day]})
-        end.flatten.join(',') if @validations[:day_of_week]
-      end
-      representation << ';BYHOUR=' << @validations[:hour_of_day].join(',') if @validations[:hour_of_day]
-      representation << ';BYMINUTE=' << @validations[:minute_of_hour].join(',') if @validations[:minute_of_hour]
-      representation << ';BYSECOND=' << @validations[:second_of_minute].join(',') if @validations[:second_of_minute]
+      @validation_types.values.each do |v|
+        representation << ';' << v.send(:to_ical)
+      end      
       representation << ";COUNT=#{@occurrence_count}" if @occurrence_count
       representation << ";UNTIL=#{@until_date}" if @until_date
       representation
@@ -160,6 +149,7 @@ module IceCube
     def initialize(interval = 1)
       throw ArgumentError.new('Interval must be > 0') unless interval > 0
       @validations = {}
+      @validation_types = {}
       @interval = interval
     end
     

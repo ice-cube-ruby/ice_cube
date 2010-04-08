@@ -1,36 +1,39 @@
-module DayValidation
+module IceCube
+
+  class DayValidation < Validation
   
-  def self.included(base)
-    base::SuggestionTypes << :day
-  end
-  
-  # Specify what days of the week this rule should occur on.
-  # ie: Schedule.weekly.day_of_week(:monday) would create a rule that
-  # occurs every monday.
-  def day(*days)
-    @validations[:day] ||= []
-    days.each do |day|
-      raise ArgumentError.new('Argument must be a valid day of the week') unless IceCube::DAYS.has_key?(day)
-      @validations[:day] << IceCube::DAYS[day]
+    def initialize(rule)
+      @days = rule.validations[:day]
+      @rule = rule
     end
-    self
-  end
   
-  def validate_day(date)
-    return true if !@validations[:day] || @validations[:day].empty?
-    @validations[:day].include?(date.wday)
-  end
-  
-  def closest_day(date)
-    return nil if !@validations[:day] || @validations[:day].empty?
-    # turn days into distances
-    days = @validations[:day].map do |d| 
-      d > date.wday ? (d - date.wday) : (7 - date.wday + d)
+    def validate(date)
+      return true if !@days || @days.empty?
+      @days.include?(date.wday)
     end
-    days.compact!
-    # go to the closest distance away, the start of that day
-    goal = date + days.min * IceCube::ONE_DAY
-    adjust(goal, date)
-  end
   
+    def closest(date)
+      return nil if !@days || @days.empty?
+      # turn days into distances
+      days = @days.map do |d| 
+        d > date.wday ? (d - date.wday) : (7 - date.wday + d)
+      end
+      days.compact!
+      # go to the closest distance away, the start of that day
+      goal = date + days.min * IceCube::ONE_DAY
+      adjust(goal, date)
+    end
+  
+    def to_s
+      days_dup = (@days - @rule.validations[:day_of_week].keys if @rule.validations[:day_of_week]) || @days # don't list twice
+      'on every ' << days_dup.map { |d| Date::DAYNAMES[d] }.join(', ') unless days_dup.empty?
+    end
+
+    def to_ical
+      days_dup = (@days - @rule.validations[:day_of_week].keys if @rule.validations[:day_of_week]) || @days # don't list twice
+      'BYDAY=' << days_dup.map { |d| IceCube::ICAL_DAYS[d] }.join(',') unless days_dup.empty?
+    end
+  
+  end
+
 end

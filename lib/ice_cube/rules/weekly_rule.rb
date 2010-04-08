@@ -15,6 +15,10 @@ module IceCube
       'FREQ=WEEKLY' << to_ical_base
     end
     
+    def to_s
+      to_s_base 'week', 'weeks'
+    end
+    
     protected
     
     def default_jump(date)

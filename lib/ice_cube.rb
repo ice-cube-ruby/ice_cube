@@ -1,17 +1,11 @@
 require 'yaml.rb'
 require 'set.rb'
+require 'date'
 
 require 'ice_cube/time_util'
 
-require 'ice_cube/validations/month_of_year'
-require 'ice_cube/validations/day_of_year'
-require 'ice_cube/validations/day_of_month'
-require 'ice_cube/validations/day_of_week'
-require 'ice_cube/validations/day'
-require 'ice_cube/validations/hour_of_day'
-require 'ice_cube/validations/minute_of_hour'
-require 'ice_cube/validations/second_of_minute'
-
+require 'ice_cube/validation'
+require 'ice_cube/validation_types'
 require 'ice_cube/rule'
 require 'ice_cube/schedule'
 require 'ice_cube/rule_occurrence'
@@ -26,6 +20,15 @@ module IceCube
   autoload :HourlyRule, 'ice_cube/rules/hourly_rule'
   autoload :MinutelyRule, 'ice_cube/rules/minutely_rule'
   autoload :SecondlyRule, 'ice_cube/rules/secondly_rule'
+
+  autoload :DayValidation, 'ice_cube/validations/day'
+  autoload :DayOfMonthValidation, 'ice_cube/validations/day_of_month'
+  autoload :DayOfWeekValidation, 'ice_cube/validations/day_of_week'
+  autoload :DayOfYearValidation, 'ice_cube/validations/day_of_year'
+  autoload :HourOfDayValidation, 'ice_cube/validations/hour_of_day'
+  autoload :MinuteOfHourValidation, 'ice_cube/validations/minute_of_hour'
+  autoload :MonthOfYearValidation, 'ice_cube/validations/month_of_year'
+  autoload :SecondOfMinuteValidation, 'ice_cube/validations/second_of_minute'
 
   VERSION = '0.2.3'
 

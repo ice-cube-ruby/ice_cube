@@ -13,6 +13,10 @@ module IceCube
       'FREQ=HOURLY' << to_ical_base
     end
         
+    def to_s
+      to_s_base 'hour', 'hours'
+    end
+        
     protected
     
     def default_jump(date)

@@ -12,6 +12,10 @@ module IceCube
     def to_ical 
       'FREQ=DAILY' << to_ical_base
     end
+       
+    def to_s
+      to_s_base 'day', 'days'
+    end
         
     protected
     

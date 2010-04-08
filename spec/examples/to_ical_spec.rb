@@ -37,11 +37,6 @@ describe IceCube, 'to_ical' do
     rule.to_ical.should == "FREQ=SECONDLY"
   end
   
-  it 'should return the to_ical representation of a rule when calling to_s' do
-    rule = Rule.daily
-    rule.to_ical.should == rule.to_s
-  end
-  
   it 'should be able to serialize a .day rule to_ical' do
     rule = Rule.daily.day(:monday, :tuesday)
     rule.to_ical.should == "FREQ=DAILY;BYDAY=MO,TU"
@@ -84,7 +79,7 @@ describe IceCube, 'to_ical' do
   
   it 'should be able to collapse a combination day_of_week and day' do
     rule = Rule.daily.day(:monday, :tuesday).day_of_week(:monday => [1, -1])
-    rule.to_ical.should == "FREQ=DAILY;BYDAY=TU,1MO,-1MO"
+    rule.to_ical.should == "FREQ=DAILY;BYDAY=TU;BYDAY=1MO,-1MO"
   end
     
 end
