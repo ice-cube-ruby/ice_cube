@@ -74,8 +74,6 @@ module ValidationTypes
     self
   end
   
-  #TODO condense
-  
   # Specify the day(s) of the week that this rule should occur
   # on.  ie: rule.day_of_week(:monday => [1, -1]) would mean
   # that this rule should occur on the first and last mondays of each month.
@@ -84,19 +82,15 @@ module ValidationTypes
     @validations[:day_of_week] ||= {}
     @validation_types[:day_of_week] ||= DayOfWeekValidation.new(self)
     days.each do |day, occurrences|
-      if day.is_a?(Integer)
-        # integer type argument
-        raise ArgumentError.new('Argument must be a valid day of week (0-6)') unless day >= 0 && day <= 6
-        @validations[:day_of_week][day] ||= []
-        @validations[:day_of_week][day].concat(occurrences)
-        @validations[:day_of_week][day].uniq!
-      else 
-        # symbol type argument      
+      unless day.is_a?(Integer)
         raise ArgumentError.new('Argument must be a valid day of week') unless IceCube::DAYS.has_key?(day)
-        @validations[:day_of_week][IceCube::DAYS[day]] ||= []
-        @validations[:day_of_week][IceCube::DAYS[day]].concat(occurrences)
-        @validations[:day_of_week][IceCube::DAYS[day]].uniq!
+        day = IceCube::DAYS[day]
       end
+      raise ArgumentError.new('Argument must be a valid day of week (0-6)') unless day >= 0 && day <= 6
+      # add the day
+      @validations[:day_of_week][day] ||= []
+      @validations[:day_of_week][day].concat(occurrences)
+      @validations[:day_of_week][day].uniq!
     end
     self
   end
