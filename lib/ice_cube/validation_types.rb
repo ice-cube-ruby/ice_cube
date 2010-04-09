@@ -2,7 +2,7 @@ module ValidationTypes
   
   def second_of_minute(*seconds)
     @validations[:second_of_minute] ||= []
-    @validation_types[:second_of_minute] ||= SecondOfMinuteValidation.new(self)
+    @validation_types[:second_of_minute] ||= IceCube::SecondOfMinuteValidation.new(self)
     seconds.each do |second|
       raise ArgumentError.new('Argument must be a valid second') unless second < 60 && second >= 0
       @validations[:second_of_minute] << second
@@ -17,7 +17,7 @@ module ValidationTypes
   # occurs every monday.
   def day(*days)
     @validations[:day] ||= []
-    @validation_types[:day] ||= DayValidation.new(self)
+    @validation_types[:day] ||= IceCube::DayValidation.new(self)
     days.each do |day|
       if day.is_a?(Integer)
         # integer type argument
@@ -40,7 +40,7 @@ module ValidationTypes
   # Note: you cannot combine month_of_year and day_of_year in the same rule.
   def day_of_year(*days)
     @validations[:day_of_year] ||= []
-    @validation_types[:day_of_year] ||= DayOfYearValidation.new(self)
+    @validation_types[:day_of_year] ||= IceCube::DayOfYearValidation.new(self)
     days.each do |day|
       raise ArgumentError.new('Argument must be a valid day') if day.abs > 366
       raise ArgumentError.new('Argument must be non-zero') if day == 0
@@ -57,7 +57,7 @@ module ValidationTypes
   # Note: you cannot combine day_of_year and month_of_year in the same rule.
   def month_of_year(*months)
     @validations[:month_of_year] ||= []
-    @validation_types[:month_of_year] ||= MonthOfYearValidation.new(self)
+    @validation_types[:month_of_year] ||= IceCube::MonthOfYearValidation.new(self)
     months.each do |month|
       if month.is_a?(Integer)
         # integer type argument
@@ -80,7 +80,7 @@ module ValidationTypes
   def day_of_week(days)
     puts days[0].to_s
     @validations[:day_of_week] ||= {}
-    @validation_types[:day_of_week] ||= DayOfWeekValidation.new(self)
+    @validation_types[:day_of_week] ||= IceCube::DayOfWeekValidation.new(self)
     days.each do |day, occurrences|
       unless day.is_a?(Integer)
         raise ArgumentError.new('Argument must be a valid day of week') unless IceCube::DAYS.has_key?(day)
@@ -97,7 +97,7 @@ module ValidationTypes
   
   def hour_of_day(*hours)
     @validations[:hour_of_day] ||= []
-    @validation_types[:hour_of_day] ||= HourOfDayValidation.new(self)
+    @validation_types[:hour_of_day] ||= IceCube::HourOfDayValidation.new(self)
     hours.each do |hour| 
       raise ArgumentError.new('Argument must be a valid hour') unless hour < 24 && hour >= 0
       @validations[:hour_of_day] << hour
@@ -112,7 +112,7 @@ module ValidationTypes
   # this rule should occur on the first and last day of every month.
   def day_of_month(*days)
     @validations[:day_of_month] ||= []
-    @validation_types[:day_of_month] ||= DayOfMonthValidation.new(self)
+    @validation_types[:day_of_month] ||= IceCube::DayOfMonthValidation.new(self)
     days.each do |day|
       raise ArgumentError.new('Argument must be a valid date') if day.abs > 31 
       raise ArgumentError.new('Argument must be non-zero') if day == 0
@@ -125,7 +125,7 @@ module ValidationTypes
 
   def minute_of_hour(*minutes)
     @validations[:minute_of_hour] ||= []
-    @validation_types[:minute_of_hour] ||= MinuteOfHourValidation.new(self)
+    @validation_types[:minute_of_hour] ||= IceCube::MinuteOfHourValidation.new(self)
     minutes.each do |minute|
       raise ArgumentError.new('Argument must be a valid minute') unless minute < 60 && minute >= 0
       @validations[:minute_of_hour] << minute
