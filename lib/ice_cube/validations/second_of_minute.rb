@@ -26,7 +26,7 @@ module IceCube
     end
 
     def to_s
-      'on the ' << nice_numbers(@seconds_of_minute.sort) << (@seconds_of_minute.count == 1 ? ' second' : ' seconds') << ' of the minute' unless @seconds_of_minute.empty?
+      'on the ' << nice_numbers(@seconds_of_minute) << (@seconds_of_minute.count == 1 ? ' second' : ' seconds') << ' of the minute' unless @seconds_of_minute.empty?
     end
 
     def to_ical

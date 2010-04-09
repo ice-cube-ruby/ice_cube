@@ -38,7 +38,7 @@ module IceCube
     end
     
     def to_s
-      'on the ' << nice_numbers(@days_of_month.sort) << (@days_of_month.count == 1 ? ' day' : ' days') << ' of the month' unless @days_of_month.empty?
+      'on the ' << nice_numbers(@days_of_month) << (@days_of_month.count == 1 ? ' day' : ' days') << ' of the month' unless @days_of_month.empty?
     end
   
     def to_ical

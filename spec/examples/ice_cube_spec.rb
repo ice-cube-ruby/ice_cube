@@ -286,4 +286,14 @@ describe Schedule, 'occurs_on?' do
     schedule.exdates.should == dates
   end
 
+  it 'can reuse the same rule' do
+    schedule = Schedule.new(Time.now)
+    rule = Rule.daily
+    schedule.add_recurrence_rule rule
+    result1 = schedule.first(10)
+    rule.day(:monday)
+    # check to make sure the change affected the rule
+    schedule.first(10).should_not == result1
+  end
+
 end

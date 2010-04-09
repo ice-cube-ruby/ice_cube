@@ -15,11 +15,12 @@ module IceCube
       when 0 ; ''
       when 1 ; array[0].to_s
       when 2 ; "#{array[0]} and #{array[1]}"
-      when 3 ; "#{array[0...-1].join(', ')} and #{array[-1]}"
+      else ; "#{array[0...-1].join(', ')}, and #{array[-1]}"
       end
     end
     
     def nice_numbers(array)
+      array.sort!
       sentence array.map { |d| nice_number(d) }
     end
     

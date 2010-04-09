@@ -37,12 +37,11 @@ describe Schedule, 'to_s' do
     Rule.yearly(2).to_s.should == 'Every 2 years'
   end
   
-  it 'check the three base cases' do
-    Rule.daily.to_s.should == 'Daily'
-    Rule.monthly.to_s.should == 'Monthly'
+  it 'should work with various sentence types properly' do
+    Rule.weekly.to_s.should == 'Weekly'
     Rule.weekly.day(:monday).to_s.should == 'Weekly on Mondays'
     Rule.weekly.day(:monday, :tuesday).to_s.should == 'Weekly on Mondays and Tuesdays'
-    Rule.monthly.day_of_week(:monday => [1, -1], :tuesday => [1, -1]).to_s.should == 'Monthly on the 1st and last Mondays and the 1st and last Tuesdays'
+    Rule.weekly.day(:monday, :tuesday, :wednesday).to_s.should == 'Weekly on Mondays, Tuesdays, and Wednesdays'
   end
 
 end
