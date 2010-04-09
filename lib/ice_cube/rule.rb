@@ -124,7 +124,7 @@ module IceCube
     # get a very meaningful string representation of this rule
     def to_s_base(singular, plural)
       representation = ''
-      representation = 'Every ' << ((@interval == 1) ? singular : "#{@interval} #{plural}")
+      representation = (@interval == 1 ? singular : plural)
       representation << @validation_types.values.map { |v| ' ' + v.send(:to_s) }.join()
       representation
     end

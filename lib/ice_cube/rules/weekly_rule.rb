@@ -16,7 +16,7 @@ module IceCube
     end
     
     def to_s
-      to_s_base 'week', 'weeks'
+      to_s_base 'Weekly', "Every #{@interval} weeks"
     end
     
     protected

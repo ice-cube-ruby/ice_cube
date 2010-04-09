@@ -14,7 +14,7 @@ module IceCube
     end
         
     def to_s
-      to_s_base 'hour', 'hours'
+      to_s_base 'Hourly', "Every #{@interval} hours"
     end
         
     protected

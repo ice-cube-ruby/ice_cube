@@ -14,7 +14,7 @@ module IceCube
     end
        
     def to_s
-      to_s_base 'day', 'days'
+      to_s_base 'Daily', "Every #{@interval} days"
     end
         
     protected

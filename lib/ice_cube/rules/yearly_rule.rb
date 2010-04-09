@@ -18,7 +18,7 @@ module IceCube
     end
     
     def to_s
-      to_s_base 'year', 'years'
+      to_s_base 'Yearly', "Every #{@interval} years"
     end
     
     protected

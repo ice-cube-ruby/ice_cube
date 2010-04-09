@@ -18,7 +18,7 @@ module IceCube
     end
     
     def to_s
-      to_s_base 'month', 'months'
+      to_s_base 'Monthly', "Every #{@interval} months"
     end
     
     protected

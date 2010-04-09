@@ -14,7 +14,7 @@ module IceCube
     end
         
     def to_s
-      to_s_base 'second', 'seconds'
+      to_s_base 'Secondly', "Every #{@interval} seconds"
     end
         
     protected
