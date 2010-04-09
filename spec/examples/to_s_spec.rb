@@ -41,7 +41,8 @@ describe Schedule, 'to_s' do
     Rule.daily.to_s.should == 'Daily'
     Rule.monthly.to_s.should == 'Monthly'
     Rule.weekly.day(:monday).to_s.should == 'Weekly on Mondays'
-    Rule.weekly.day(:monday, :tuesday).to_s.should == 'Weekly on Mondays, Tuesdays'
+    Rule.weekly.day(:monday, :tuesday).to_s.should == 'Weekly on Mondays and Tuesdays'
+    Rule.monthly.day_of_week(:monday => [1, -1], :tuesday => [1, -1]).to_s.should == 'Monthly on the 1st and last Mondays and the 1st and last Tuesdays'
   end
 
 end

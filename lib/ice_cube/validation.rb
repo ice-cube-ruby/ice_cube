@@ -9,8 +9,18 @@ module IceCube
       goal - goal.utc_offset + date.utc_offset
     end
     
+    # influences by ActiveSupport's to_sentence
+    def sentence(array)
+      case array.length
+      when 0 ; ''
+      when 1 ; array[0].to_s
+      when 2 ; "#{array[0]} and #{array[1]}"
+      when 3 ; "#{array[0...-1].join(', ')} and #{array[-1]}"
+      end
+    end
+    
     def nice_numbers(array)
-      array.map { |d| nice_number(d) }.join(', ')
+      sentence array.map { |d| nice_number(d) }
     end
     
     private
