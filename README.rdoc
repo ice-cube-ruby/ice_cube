@@ -143,17 +143,6 @@ There are many types of recurrence rules that can be added to a schedule:
 
 ---
 
-===TODO
-
-* Add BYWEEKNO
-* Add BYSETPOS
-* Add WEEKST
-* Rollover dates - as implemented by RFC
-* Import to iCalendar format
-* to_ical and to_s for schedules
-
----
-
 ===Contributors
 
 * Mat Brown - mat@patch.com
