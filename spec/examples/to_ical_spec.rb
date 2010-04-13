@@ -79,12 +79,12 @@ describe IceCube, 'to_ical' do
   
   it 'should be able to collapse a combination day_of_week and day' do
     rule = Rule.daily.day(:monday, :tuesday).day_of_week(:monday => [1, -1])
-    rule.to_ical.should == "FREQ=DAILY;BYDAY=TU;BYDAY=1MO,-1MO"
+    ['FREQ=DAILY;BYDAY=TU;BYDAY=1MO,-1MO', 'FREQ=DAILY;BYDAY=1MO,-1MO;BYDAY=TU'].include?(rule.to_ical).should be true
   end
   
   it 'shoult be able to serialize of .day_of_week rule to_ical with multiple days' do
     rule = Rule.daily.day_of_week(:monday => [1, -1], :tuesday => [2]).day(:wednesday)
-    rule.to_ical.should == 'FREQ=DAILY;BYDAY=WE;BYDAY=1MO,-1MO,2TU'
+    ['FREQ=DAILY;BYDAY=WE;BYDAY=1MO,-1MO,2TU', 'FREQ=DAILY;BYDAY=1MO,-1MO,2TU;BYDAY=WE'].include?(rule.to_ical).should be true
   end
     
 end

@@ -1,5 +1,7 @@
 module IceCube
 
+  require 'active_record'
+
   class Schedule
 
     def initialize(start_date)

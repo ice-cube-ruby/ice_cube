@@ -41,6 +41,18 @@ EX: Specifying a exception/recurrence date:
 
 ---
 
+===Using your words
+
+ice_cube can provide ical or string representations of individual rules.
+  
+    rule = Rule.daily(2).day_of_week(:tuesday => [1, -1], :wednesday => [2])
+
+    rule.to_ical  # 'FREQ=DAILY;INTERVAL=2;BYDAY=1TU,-1TU,2WE'
+    
+    rule.to_s     # 'Every 2 days on the last and 1st Tuesdays and the 2nd Wednesday'
+
+---
+
 All rules are based off of the schedule's start date. 
 Individual rules may optionally specify an until date, which is a date that that individual rule is no longer effective, or a count (which is how many times maximum you want the rule to be effective)
 
@@ -62,7 +74,10 @@ There are many types of recurrence rules that can be added to a schedule:
     schedule.add_recurrence_rule Rule.weekly
 
     # every other week on monday and tuesday
-    schedule.add_recurrence_rule Rule.weekly(2).day_of_week(:monday, :tuesday) 
+    schedule.add_recurrence_rule Rule.weekly(2).day(:monday, :tuesday) 
+
+    # for programatic convenience (same as above)
+    schedule.add_recurrence_rule Rule.weekly(2).day(1, 2)
 
 ===Monthly (by day of month)
 
@@ -80,6 +95,9 @@ There are many types of recurrence rules that can be added to a schedule:
     # every other month on the first monday and last tuesday
     schedule.add_recurrence_rule Rule.monthly(2).day_of_week(:monday => [1], :tuesday => [-1])
 
+    # for programatic convenience (same as above)
+    schedule.add_recurrence_rule Rule.monthly(2).day_of_week(1 => [1], 2 => [-1])
+
 ===Yearly (by day of year)
 
     # every year on the 100th day from the beginning and end of the year
@@ -95,6 +113,9 @@ There are many types of recurrence rules that can be added to a schedule:
 
     # every third year in march
     schedule.add_recurrence_rule Rule.yearly(3).month_of_year(:march)
+
+    # for programatic convenience (same as above)
+    schedule.add_recurrence_rule Rule.yearly(3).month_of_year(3)
 
 ===Hourly (by hour of day)
 
@@ -129,6 +150,7 @@ There are many types of recurrence rules that can be added to a schedule:
 * Add WEEKST
 * Rollover dates - as implemented by RFC
 * Import to iCalendar format
+* to_ical and to_s for schedules
 
 ---
 

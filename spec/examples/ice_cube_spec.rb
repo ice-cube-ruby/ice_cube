@@ -296,4 +296,24 @@ describe Schedule, 'occurs_on?' do
     schedule.first(10).should_not == result1
   end
 
+  it 'ensures that month of year (3) is march' do
+    schedule = Schedule.new(DAY)
+    schedule.add_recurrence_rule Rule.daily.month_of_year(:march)
+    
+    schedule2 = Schedule.new(DAY)
+    schedule2.add_recurrence_rule Rule.daily.month_of_year(3)
+    
+    schedule.first(10).should == schedule2.first(10)
+  end
+
+  it 'ensures that day of week (1) is monday' do
+    schedule = Schedule.new(DAY)
+    schedule.add_recurrence_rule Rule.daily.day(:monday)
+    
+    schedule2 = Schedule.new(DAY)
+    schedule2.add_recurrence_rule Rule.daily.day(1)
+    
+    schedule.first(10).should == schedule2.first(10)
+  end
+
 end
