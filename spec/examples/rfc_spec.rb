@@ -292,9 +292,6 @@ describe Schedule, 'occurs_on?' do
     dates = schedule.occurrences(Time.utc(2004, 11, 2))
     expectation = [Time.utc(1996, 11, 5), Time.utc(2000, 11, 7), Time.utc(2004, 11, 2)]
     dates.should == expectation
-    # for fun
-    puts schedule.rrules
-    
   end
   
   it 'should ~ every 3 hours from 9am to 5pm on a specific day' do

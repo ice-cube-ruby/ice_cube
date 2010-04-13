@@ -37,9 +37,9 @@ module IceCube
   
     def to_ical
       representation = 'BYDAY='
-      @days_of_week.each do |day, occ|
-        representation << occ.map { |o| o.to_s + IceCube::ICAL_DAYS[day] }.join(',')
-      end
+      representation << @days_of_week.map do |day, occ|
+        occ.map { |o| o.to_s + IceCube::ICAL_DAYS[day] }.join(',')
+      end.join(',')
       representation
     end
 
