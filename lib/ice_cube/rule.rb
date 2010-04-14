@@ -26,6 +26,14 @@ module IceCube
       rule
     end
     
+    def to_yaml
+      to_hash.to_yaml
+    end
+
+    def self.from_yaml(str)
+      from_hash(YAML::load(str))
+    end
+    
     # create a new daily rule
     def self.daily(interval = 1)
       DailyRule.new(interval)
