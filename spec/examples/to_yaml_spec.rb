@@ -120,7 +120,6 @@ describe Schedule, 'to_yaml' do
     schedule = IceCube::Schedule.new(Time.now)
     schedule.add_recurrence_rule IceCube::Rule.daily.day_of_week(:monday => [1, -1]).month_of_year(:april)
     schedule.to_yaml.include?('object').should be false
-    puts schedule.to_yaml
   end
 
 end
