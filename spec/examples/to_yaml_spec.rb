@@ -111,5 +111,16 @@ describe Schedule, 'to_yaml' do
     schedule.first(10).should == schedule2.first(10)
   end
 
+  it 'should have a to_yaml representation of a rule that does not contain ruby objects' do
+    rule = IceCube::Rule.daily.day_of_week(:monday => [1, -1]).month_of_year(:april)
+    rule.to_yaml.include?('object').should be false
+  end
+
+  it 'should have a to_yaml representation of a schedule that does not contain ruby objects' do
+    schedule = IceCube::Schedule.new(Time.now)
+    schedule.add_recurrence_rule IceCube::Rule.daily.day_of_week(:monday => [1, -1]).month_of_year(:april)
+    schedule.to_yaml.include?('object').should be false
+    puts schedule.to_yaml
+  end
 
 end
