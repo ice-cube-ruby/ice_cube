@@ -324,4 +324,18 @@ describe Schedule, 'occurs_on?' do
     dates.should == [start_time + ONE_DAY * 2, start_time + ONE_DAY * 3, start_time + ONE_DAY * 4]
   end
 
+  it 'should be able to determine whether a given rule falls on a Date (rather than a time) - happy path' do
+    start_time = Time.local(2010, 7, 2, 10, 0, 0)
+    schedule = Schedule.new(start_time)
+    schedule.add_recurrence_rule Rule.daily.count(10)
+    schedule.occurs_on?(Date.new(2010, 7, 4)).should be true
+  end
+  
+  it 'should be able to determine whether a given rule falls on a Date (rather than a time)' do
+    start_time = Time.local(2010, 7, 2, 10, 0, 0)
+    schedule = Schedule.new(start_time)
+    schedule.add_recurrence_rule Rule.daily.count(10)
+    schedule.occurs_on?(Date.new(2010, 7, 1)).should_not be true
+  end
+
 end

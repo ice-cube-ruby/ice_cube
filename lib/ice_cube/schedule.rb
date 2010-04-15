@@ -37,10 +37,17 @@ module IceCube
       from_hash(YAML::load(str))
     end
 
-    # Determine whether a given date adheres to the ruleset of this schedule.
+    # Determine whether a given time adheres to the ruleset of this schedule.
     def occurs_at?(date)
       dates = occurrences(date)
       dates.last == date
+    end
+    
+    # Determine whether a given date appears in the times returned by the schedule
+    # Required activeSupport
+    def occurs_on?(date)
+      time = date.to_time
+      occurrences_between(time.beginning_of_day, time.end_of_day).any?
     end
     
     def occurrences_between(begin_time, end_time)
