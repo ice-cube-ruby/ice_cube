@@ -43,6 +43,10 @@ module IceCube
       dates.last == date
     end
     
+    def occurrences_between(begin_time, end_time)
+      find_occurrences { |head| head.between(begin_time, end_time) }
+    end
+    
     # Return all possible occurrences 
     # In order to make this call, all rules in the schedule must have
     # either an until date or an occurrence count

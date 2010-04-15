@@ -316,4 +316,12 @@ describe Schedule, 'occurs_on?' do
     schedule.first(10).should == schedule2.first(10)
   end
 
+  it 'should be able to find occurrences between two dates which are both in the future' do
+    start_time = Time.now
+    schedule = Schedule.new(start_time)
+    schedule.add_recurrence_rule Rule.daily
+    dates = schedule.occurrences_between(start_time + ONE_DAY * 2, start_time + ONE_DAY * 4)
+    dates.should == [start_time + ONE_DAY * 2, start_time + ONE_DAY * 3, start_time + ONE_DAY * 4]
+  end
+
 end
