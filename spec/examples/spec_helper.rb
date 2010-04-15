@@ -19,6 +19,6 @@ def test_expectations(schedule, dates_array)
   expectation.sort!
   schedule.occurrences(expectation.last).should == expectation
   expectation.each do |date|
-    schedule.should be_occurs_on(date)
+    schedule.should be_occurs_at(date)
   end
 end

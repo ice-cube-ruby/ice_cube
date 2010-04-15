@@ -38,7 +38,7 @@ module IceCube
     end
 
     # Determine whether a given date adheres to the ruleset of this schedule.
-    def occurs_on?(date)
+    def occurs_at?(date)
       dates = occurrences(date)
       dates.last == date
     end
