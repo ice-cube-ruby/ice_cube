@@ -22,7 +22,7 @@ describe MonthlyRule, 'occurs_on?' do
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.monthly.day_of_month(1, 15)
     #check assumption (1) (15) (1) (15)
-    schedule.occurrences(start_date + 50 * IceCube::ONE_DAY)
+    schedule.occurrences(start_date + 50 * IceCube::ONE_DAY).count.should == 4
   end
 
   it 'should produce the correct number of days for @interval = 1 with only the 1st and last' do
@@ -30,7 +30,7 @@ describe MonthlyRule, 'occurs_on?' do
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.monthly.day_of_month(1, -1)
     #check assumption (1) (31) (1)
-    schedule.occurrences(start_date + 50 * IceCube::ONE_DAY)
+    schedule.occurrences(start_date + 50 * IceCube::ONE_DAY).count.should == 3
   end
 
   it 'should produce the correct number of days for @interval = 1 with only the first mondays' do
@@ -40,7 +40,7 @@ describe MonthlyRule, 'occurs_on?' do
     #check assumption (month 1 monday) (month 2 monday)
     schedule.occurrences(start_date + 50 * IceCube::ONE_DAY).count.should == 2
   end
-
+  
   it 'should produce the correct number of days for @interval = 1 with only the last mondays' do
     start_date = Time.utc(2010, 1, 1)
     schedule = Schedule.new(start_date)
