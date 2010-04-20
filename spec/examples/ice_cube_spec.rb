@@ -338,4 +338,18 @@ describe Schedule, 'occurs_on?' do
     schedule.occurs_on?(Date.new(2010, 7, 1)).should_not be true
   end
 
+  it 'should be able to get back rdates from an ice_cube schedule' do
+    schedule = Schedule.new DAY
+    schedule.add_recurrence_date DAY
+    schedule.add_recurrence_date(DAY + 2)
+    schedule.rdates.should == [DAY, DAY + 2]
+  end
+
+  it 'should be able to get back exdates from an ice_cube schedule' do
+    schedule = Schedule.new DAY
+    schedule.add_exception_date DAY
+    schedule.add_exception_date(DAY + 2)
+    schedule.exdates.should == [DAY, DAY + 2]
+  end
+  
 end

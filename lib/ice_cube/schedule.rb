@@ -2,6 +2,8 @@ module IceCube
 
   class Schedule
 
+    attr_reader :rdates, :exdates
+    
     def initialize(start_date)
       @rrule_occurrence_heads = []
       @exrule_occurrence_heads = []
