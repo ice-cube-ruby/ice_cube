@@ -51,11 +51,7 @@ module IceCube
       time = date.to_time
       occurrences_between(time.beginning_of_day, time.end_of_day).any?
     end
-    
-    def occurrences_between(begin_time, end_time)
-      find_occurrences { |head| head.between(begin_time, end_time) }
-    end
-    
+        
     # Return all possible occurrences 
     # In order to make this call, all rules in the schedule must have
     # either an until date or an occurrence count
@@ -104,7 +100,20 @@ module IceCube
     end
    
     attr_reader :rdates, :exdates
-   
+
+    def occurrences_between(begin_time, end_time)
+      exclude_dates, include_dates = Set.new(@exdates), SortedSet.new(@rdates)
+      @rrule_occurrence_heads.each do |rrule_occurrence_head|
+        include_dates.merge(rrule_occurrence_head.between(begin_time, end_time))
+      end
+      @exrule_occurrence_heads.each do |exrule_occurrence_head|
+        exclude_dates.merge(exrule_occurrence_head.between(begin_time, end_time))
+      end
+      # reject all of the ones outside of the range
+      include_dates.reject! { |date| exclude_dates.include?(date) || date < begin_time || date > end_time }
+      include_dates.to_a
+    end
+    
     private
     
     # Find all occurrences (following rules and exceptions) from the schedule's start date to end_date.

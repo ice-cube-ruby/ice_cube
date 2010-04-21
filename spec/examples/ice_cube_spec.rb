@@ -351,5 +351,13 @@ describe Schedule, 'occurs_on?' do
     schedule.add_exception_date(DAY + 2)
     schedule.exdates.should == [DAY, DAY + 2]
   end
+
+  it 'occurs_on? works for a single date recurrence' do
+    schedule = Schedule.new Time.utc(2009, 9, 2, 13, 0, 0)
+    schedule.add_recurrence_date Time.utc(2009, 9, 2, 13, 0, 0)
+    schedule.occurs_on?(Date.new(2009, 9, 2)).should be true
+    schedule.occurs_on?(Date.new(2009, 9, 1)).should_not be true
+    schedule.occurs_on?(Date.new(2009, 9, 3)).should_not be true
+  end
   
 end
