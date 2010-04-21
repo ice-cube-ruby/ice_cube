@@ -359,5 +359,14 @@ describe Schedule, 'occurs_on?' do
     schedule.occurs_on?(Date.new(2009, 9, 1)).should_not be true
     schedule.occurs_on?(Date.new(2009, 9, 3)).should_not be true
   end
+
+  it 'occurs_on? should only be true for the single day of a certain event' do
+    Time.zone = "Pacific Time (US & Canada)"
+    schedule = Schedule.new Time.zone.parse("2010/5/13 02:00:00")
+    schedule.add_recurrence_date Time.zone.parse("2010/5/13 02:00:00")
+    schedule.occurs_on?(Date.new(2010, 5, 13)).should be true
+    schedule.occurs_on?(Date.new(2010, 5, 14)).should_not be true
+    schedule.occurs_on?(Date.new(2010, 5, 15)).should_not be true
+  end
   
 end
