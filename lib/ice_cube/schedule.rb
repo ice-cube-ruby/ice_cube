@@ -12,6 +12,7 @@ module IceCube
       @start_date = start_date
     end
 
+    # Convert the schedule to a hash, reverse of Schedule.from_hash
     def to_hash
       hash = Hash.new
       hash[:start_date] = @start_date
@@ -21,11 +22,13 @@ module IceCube
       hash[:exdates] = @exdates
       hash
     end
-    
+
+    # Convert the schedule to yaml, reverse of Schedule.from_yaml
     def to_yaml
       to_hash.to_yaml
     end
-    
+
+    # Create a schedule from a hash created by instance.to_hash
     def self.from_hash(hash)
       schedule = Schedule.new(hash[:start_date])
       hash[:rrules].each { |rr| schedule.add_recurrence_rule Rule.from_hash(rr) }
@@ -34,7 +37,8 @@ module IceCube
       hash[:exdates].each { |ed| schedule.add_exception_date ed }
       schedule
     end
-    
+
+    # Create a schedule from a yaml string created by instance.to_yaml
     def self.from_yaml(str)
       from_hash(YAML::load(str))
     end
@@ -63,7 +67,9 @@ module IceCube
     def occurrences(end_date)
       find_occurrences { |head| head.upto(end_date) }
     end
-          
+
+    # Retrieve the first (n) occurrences of the schedule.  May return less than
+    # n results, if the rules end before n results are reached.
     def first(n)
       dates = find_occurrences { |head| head.first(n) }
       dates.slice(0, n)
@@ -91,12 +97,12 @@ module IceCube
 
     # Add an individual date to this schedule
     def add_recurrence_date(date)
-      @rdates << date
+      @rdates << date unless date.nil?
     end
 
     # Add an individual date exception to this schedule
     def add_exception_date(date)
-      @exdates << date
+      @exdates << date unless date.nil?
     end
    
     attr_reader :rdates, :exdates
