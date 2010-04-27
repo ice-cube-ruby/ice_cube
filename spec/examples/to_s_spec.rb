@@ -72,5 +72,11 @@ describe Schedule, 'to_s' do
     schedule.add_exception_date Time.local(2010, 3, 21)
     schedule.to_s.should == 'Weekly / not on March 20, 2010 / not on March 21, 2010'
   end
+
+  it 'should work with a single rrule' do
+    schedule = Schedule.new Time.local(2010, 3, 20)
+    schedule.add_recurrence_rule Rule.weekly.day_of_week(:monday => [1])
+    schedule.to_s.should == schedule.rrules[0].to_s
+  end
   
 end
