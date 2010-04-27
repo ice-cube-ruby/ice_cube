@@ -43,6 +43,33 @@ module IceCube
       from_hash(YAML::load(str))
     end
 
+    TIME_FORMAT = '%B %e, %Y'
+    SEPARATOR = ' / '
+    
+    # use with caution
+    # incomplete and not entirely tested - no time representation in dates
+    # there's a lot that can happen here
+    def to_s
+      representation = ''
+      inc_dates = @rdates - @exdates
+      if inc_dates && !inc_dates.empty?
+        representation << inc_dates.map { |d| d.strftime(TIME_FORMAT) }.join(SEPARATOR)
+      end
+      if @rrule_occurrence_heads && !@rrule_occurrence_heads.empty?
+        representation << SEPARATOR unless representation.empty?
+        representation << @rrule_occurrence_heads.map{ |r| r.rule.to_s }.join(SEPARATOR)
+      end
+      if @exrule_occurrence_heads && !@exrule_occurrence_heads.empty?
+        representation << SEPARATOR unless representation.empty?
+        representation << @exrule_occurrence_heads.map { |r| 'not ' << r.to_s }.join(SEPARATOR)
+      end
+      if @exdates && !@exdates.empty?
+        representation << SEPARATOR unless representation.empty?
+        representation << @exdates.map { |d| 'not on ' << d.strftime(TIME_FORMAT) }.join(SEPARATOR)
+      end
+      representation
+    end
+    
     # Determine whether a given time adheres to the ruleset of this schedule.
     def occurs_at?(date)
       dates = occurrences(date)

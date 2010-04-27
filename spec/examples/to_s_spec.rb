@@ -44,4 +44,33 @@ describe Schedule, 'to_s' do
     Rule.weekly.day(:monday, :tuesday, :wednesday).to_s.should == 'Weekly on Mondays, Tuesdays, and Wednesdays'
   end
 
+  it 'should work with a single date' do
+    schedule = Schedule.new Time.local(2010, 3, 20)
+    schedule.add_recurrence_date Time.local(2010, 3, 20)
+    schedule.to_s.should == "March 20, 2010"
+  end
+  
+  it 'should work with additional dates' do
+    schedule = Schedule.new Time.local(2010, 3, 20)
+    schedule.add_recurrence_date Time.local(2010, 3, 20)
+    schedule.add_recurrence_date Time.local(2010, 3, 21)
+    schedule.to_s.should == 'March 20, 2010 / March 21, 2010'
+  end
+
+  it 'should work with rules and dates' do
+    schedule = Schedule.new Time.local(2010, 3, 20)
+    schedule.add_recurrence_date Time.local(2010, 3, 20)
+    schedule.add_recurrence_rule Rule.weekly
+    schedule.to_s.should == 'March 20, 2010 / Weekly'
+  end
+
+  it 'should work with rules and dates and exdates' do
+    schedule = Schedule.new Time.local(2010, 3, 20)
+    schedule.add_recurrence_rule Rule.weekly
+    schedule.add_recurrence_date Time.local(2010, 3, 20)
+    schedule.add_exception_date Time.local(2010, 3, 20) # ignored
+    schedule.add_exception_date Time.local(2010, 3, 21)
+    schedule.to_s.should == 'Weekly / not on March 20, 2010 / not on March 21, 2010'
+  end
+  
 end
