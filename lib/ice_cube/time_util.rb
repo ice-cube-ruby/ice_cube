@@ -3,6 +3,19 @@ module TimeUtil
   LeapYearMonthDays	=	[31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
   CommonYearMonthDays	=	[31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
+  # this method exists because ActiveSupport will serialize
+  # TimeWithZone's in collections in UTC time instead of
+  # their local time.  if +time+ is a TimeWithZone, we move
+  # it to a DateTime
+  # Note: When converting to datetime, you microseconds get set to 0
+  def self.serializable_time(time)
+    if time.respond_to?(:to_datetime)
+      time.to_datetime
+    else
+      time
+    end
+  end
+  
   def self.is_leap?(date)
     (date.year % 4 == 0 && date.year % 100 != 0) || (date.year % 400 == 0)
   end

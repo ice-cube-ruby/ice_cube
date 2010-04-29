@@ -15,11 +15,11 @@ module IceCube
     # Convert the schedule to a hash, reverse of Schedule.from_hash
     def to_hash
       hash = Hash.new
-      hash[:start_date] = @start_date
+      hash[:start_date] = TimeUtil.serializable_time(@start_date)
       hash[:rrules] = @rrule_occurrence_heads.map { |rr| rr.rule.to_hash }
       hash[:exrules] = @exrule_occurrence_heads.map { |ex| ex.rule.to_hash }
-      hash[:rdates] = @rdates
-      hash[:exdates] = @exdates
+      hash[:rdates] = @rdates.map { |t| TimeUtil.serializable_time(t) }
+      hash[:exdates] = @exdates.map { |t| TimeUtil.serializable_time(t) }
       hash
     end
 
@@ -132,7 +132,7 @@ module IceCube
       @exdates << date unless date.nil?
     end
    
-    attr_reader :rdates, :exdates
+    attr_reader :rdates, :exdates, :start_date
 
     def occurrences_between(begin_time, end_time)
       exclude_dates, include_dates = Set.new(@exdates), SortedSet.new(@rdates)

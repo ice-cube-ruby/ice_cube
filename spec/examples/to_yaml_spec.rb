@@ -19,8 +19,8 @@ describe Schedule, 'to_yaml' do
     schedule2 = Schedule.from_yaml(yaml_string)
     result2 = schedule2.all_occurrences
     
-    #make sure they both have the same result
-    result1.should == result2
+    # compare without usecs
+    result1.map { |r| r.to_s }.should == result2.map { |r| r.to_s }    
   end
 
   it 'should be able to make a round-trip to YAML with .day' do
@@ -30,8 +30,8 @@ describe Schedule, 'to_yaml' do
     yaml_string = schedule.to_yaml
     schedule2 = Schedule.from_yaml(yaml_string)
     
-    #make sure they both have the same result
-    schedule.first(10).should == schedule2.first(10)
+    # compare without usecs
+    schedule.first(10).map { |r| r.to_s }.should == schedule2.first(10).map { |r| r.to_s }    
   end
 
   it 'should be able to make a round-trip to YAML with .day_of_month' do
@@ -40,9 +40,9 @@ describe Schedule, 'to_yaml' do
     
     yaml_string = schedule.to_yaml
     schedule2 = Schedule.from_yaml(yaml_string)
-    
-    #make sure they both have the same result
-    schedule.first(10).should == schedule2.first(10)
+
+    # compare without usecs
+    schedule.first(10).map { |r| r.to_s }.should == schedule2.first(10).map { |r| r.to_s }    
   end
 
   it 'should be able to make a round-trip to YAML with .day_of_week' do
@@ -51,9 +51,9 @@ describe Schedule, 'to_yaml' do
     
     yaml_string = schedule.to_yaml
     schedule2 = Schedule.from_yaml(yaml_string)
-    
-    #make sure they both have the same result
-    schedule.first(10).should == schedule2.first(10)
+
+    # compare without usecs
+    schedule.first(10).map { |r| r.to_s }.should == schedule2.first(10).map { |r| r.to_s }    
   end
 
   it 'should be able to make a round-trip to YAML with .day_of_year' do
@@ -63,8 +63,8 @@ describe Schedule, 'to_yaml' do
     yaml_string = schedule.to_yaml
     schedule2 = Schedule.from_yaml(yaml_string)
     
-    #make sure they both have the same result
-    schedule.first(10).should == schedule2.first(10)
+    # compare without usecs
+    schedule.first(10).map { |r| r.to_s }.should == schedule2.first(10).map { |r| r.to_s }    
   end
 
   it 'should be able to make a round-trip to YAML with .hour_of_day' do
@@ -73,9 +73,9 @@ describe Schedule, 'to_yaml' do
     
     yaml_string = schedule.to_yaml
     schedule2 = Schedule.from_yaml(yaml_string)
-    
-    #make sure they both have the same result
-    schedule.first(10).should == schedule2.first(10)
+
+    # compare without usecs
+    schedule.first(10).map { |r| r.to_s }.should == schedule2.first(10).map { |r| r.to_s }    
   end
 
   it 'should be able to make a round-trip to YAML with .minute_of_hour' do
@@ -84,9 +84,9 @@ describe Schedule, 'to_yaml' do
     
     yaml_string = schedule.to_yaml
     schedule2 = Schedule.from_yaml(yaml_string)
-    
-    #make sure they both have the same result
-    schedule.first(10).should == schedule2.first(10)
+
+    # compare without usecs
+    schedule.first(10).map { |r| r.to_s }.should == schedule2.first(10).map { |r| r.to_s }    
   end
 
   it 'should be able to make a round-trip to YAML with .month_of_year' do
@@ -95,9 +95,9 @@ describe Schedule, 'to_yaml' do
     
     yaml_string = schedule.to_yaml
     schedule2 = Schedule.from_yaml(yaml_string)
-    
-    #make sure they both have the same result
-    schedule.first(10).should == schedule2.first(10)
+
+    # compare without usecs
+    schedule.first(10).map { |r| r.to_s }.should == schedule2.first(10).map { |r| r.to_s }    
   end
 
   it 'should be able to make a round-trip to YAML with .second_of_minute' do
@@ -106,9 +106,9 @@ describe Schedule, 'to_yaml' do
     
     yaml_string = schedule.to_yaml
     schedule2 = Schedule.from_yaml(yaml_string)
-    
-    #make sure they both have the same result
-    schedule.first(10).should == schedule2.first(10)
+
+    # compare without usecs
+    schedule.first(10).map { |r| r.to_s }.should == schedule2.first(10).map { |r| r.to_s }    
   end
 
   it 'should have a to_yaml representation of a rule that does not contain ruby objects' do
@@ -122,4 +122,25 @@ describe Schedule, 'to_yaml' do
     schedule.to_yaml.include?('object').should be false
   end
 
+  it 'should be able to roll forward times and get back times in an array - TimeWithZone' do
+    Time.zone = "Eastern Time (US & Canada)"
+    start_date = Time.zone.now
+    schedule = IceCube::Schedule.new(start_date)
+    schedule = IceCube::Schedule.from_yaml(schedule.to_yaml) # round trip
+    ice_cube_start_date = schedule.start_date
+    ice_cube_start_date.to_datetime.to_s.should == start_date.to_datetime.to_s
+    ice_cube_start_date.class.should == Time
+    ice_cube_start_date.utc_offset.should == start_date.utc_offset
+  end
+  
+  it 'should be able to roll forward times and get back times in an array - Time' do
+    start_date = Time.now
+    schedule = IceCube::Schedule.new(start_date)
+    schedule = IceCube::Schedule.from_yaml(schedule.to_yaml) # round trip
+    ice_cube_start_date = schedule.start_date
+    ice_cube_start_date.to_s.should == start_date.to_s
+    ice_cube_start_date.class.should == Time
+    ice_cube_start_date.utc_offset.should == start_date.utc_offset
+  end
+  
 end

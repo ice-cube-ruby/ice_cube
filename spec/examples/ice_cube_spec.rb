@@ -118,7 +118,7 @@ describe Schedule, 'occurs_on?' do
   end
 
   it 'occurs yearly' do
-    start_date = Time.now
+    start_date = DAY
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.yearly
     dates = schedule.first(10)
