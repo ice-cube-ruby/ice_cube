@@ -8,7 +8,7 @@ describe Schedule, 'occurs_on?' do
     schedule.add_recurrence_rule Rule.yearly(2).day(:wednesday).month_of_year(:april)
     #check assumptions
     dates = schedule.occurrences(Time.utc(2011, 12, 31)) #two years
-    dates.count.should == 4
+    dates.size.should == 4
     dates.each do |date|
       date.wday.should == 3
       date.month.should == 4
@@ -22,7 +22,7 @@ describe Schedule, 'occurs_on?' do
     schedule.add_recurrence_date(start_date + 2)
     #check assumptions
     dates = schedule.occurrences(start_date + 50)
-    dates.count.should == 1
+    dates.size.should == 1
     dates[0].should == start_date + 2
   end
 
@@ -32,7 +32,7 @@ describe Schedule, 'occurs_on?' do
     schedule.add_recurrence_date(start_date + 2)
     schedule.add_exception_date(start_date + 2)
     #check assumption
-    schedule.occurrences(start_date + 50 * IceCube::ONE_DAY).count.should == 0
+    schedule.occurrences(start_date + 50 * IceCube::ONE_DAY).size.should == 0
   end
 
   it 'should return properly with a combination of a recurrence and exception rule' do
@@ -40,7 +40,7 @@ describe Schedule, 'occurs_on?' do
     schedule.add_recurrence_rule Rule.daily # every day
     schedule.add_exception_rule Rule.weekly.day(:monday, :tuesday, :wednesday) # except these
     #check assumption - in 2 weeks, we should have 8 days
-    schedule.occurrences(DAY + 13 * IceCube::ONE_DAY).count.should == 8
+    schedule.occurrences(DAY + 13 * IceCube::ONE_DAY).size.should == 8
   end
 
   it 'should be able to exclude a certain date from a range' do
@@ -50,7 +50,7 @@ describe Schedule, 'occurs_on?' do
     schedule.add_exception_date(start_date + 1 * IceCube::ONE_DAY) # all days except tomorrow
     # check assumption
     dates = schedule.occurrences(start_date + 13 * IceCube::ONE_DAY) # 2 weeks
-    dates.count.should == 13 # 2 weeks minus 1 day
+    dates.size.should == 13 # 2 weeks minus 1 day
     dates.should_not include(start_date + 1 * IceCube::ONE_DAY)
   end
 
@@ -59,7 +59,7 @@ describe Schedule, 'occurs_on?' do
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.weekly.day(:thursday).count(5)
     dates = schedule.all_occurrences
-    dates.uniq.count.should == 5
+    dates.uniq.size.should == 5
     dates.each { |d| d.wday == 4 }
     dates.should_not include(WEDNESDAY)
   end
@@ -69,7 +69,7 @@ describe Schedule, 'occurs_on?' do
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.weekly.day(:thursday).count(5)
     dates = schedule.all_occurrences
-    dates.uniq.count.should == 5
+    dates.uniq.size.should == 5
     dates.each { |d| d.wday == 4 }
     dates.should include(WEDNESDAY + IceCube::ONE_DAY)
   end
@@ -114,7 +114,7 @@ describe Schedule, 'occurs_on?' do
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.daily.count(10)
     dates = schedule.first(200)
-    dates.count.should == 10
+    dates.size.should == 10
   end
 
   it 'occurs yearly' do
@@ -186,7 +186,7 @@ describe Schedule, 'occurs_on?' do
     0.upto(59) { |i| expectation << start_date + i }
     # compare with what we get
     dates = schedule.all_occurrences
-    dates.count.should == 60
+    dates.size.should == 60
     schedule.all_occurrences.should == expectation
   end
 
@@ -197,7 +197,7 @@ describe Schedule, 'occurs_on?' do
     schedule.first(10).each do |d| 
       d.utc?.should == false
       d.hour.should == 5
-      (d.utc_offset == -5 * ONE_HOUR || d.utc_offset == -4 * ONE_HOUR).should be true
+      (d.utc_offset == -5 * ONE_HOUR || d.utc_offset == -4 * ONE_HOUR).should be(true)
     end
   end
 
@@ -250,7 +250,7 @@ describe Schedule, 'occurs_on?' do
       d.hour.should == 15
       d.min.should == 45
       d.sec.should == 0
-      d.utc?.should be true
+      d.utc?.should be(true)
     end
   end
 
@@ -328,14 +328,14 @@ describe Schedule, 'occurs_on?' do
     start_time = Time.local(2010, 7, 2, 10, 0, 0)
     schedule = Schedule.new(start_time)
     schedule.add_recurrence_rule Rule.daily.count(10)
-    schedule.occurs_on?(Date.new(2010, 7, 4)).should be true
+    schedule.occurs_on?(Date.new(2010, 7, 4)).should be(true)
   end
   
   it 'should be able to determine whether a given rule falls on a Date (rather than a time)' do
     start_time = Time.local(2010, 7, 2, 10, 0, 0)
     schedule = Schedule.new(start_time)
     schedule.add_recurrence_rule Rule.daily.count(10)
-    schedule.occurs_on?(Date.new(2010, 7, 1)).should_not be true
+    schedule.occurs_on?(Date.new(2010, 7, 1)).should_not be(true)
   end
 
   it 'should be able to get back rdates from an ice_cube schedule' do
@@ -355,18 +355,18 @@ describe Schedule, 'occurs_on?' do
   it 'occurs_on? works for a single date recurrence' do
     schedule = Schedule.new Time.utc(2009, 9, 2, 13, 0, 0)
     schedule.add_recurrence_date Time.utc(2009, 9, 2, 13, 0, 0)
-    schedule.occurs_on?(Date.new(2009, 9, 2)).should be true
-    schedule.occurs_on?(Date.new(2009, 9, 1)).should_not be true
-    schedule.occurs_on?(Date.new(2009, 9, 3)).should_not be true
+    schedule.occurs_on?(Date.new(2009, 9, 2)).should be(true)
+    schedule.occurs_on?(Date.new(2009, 9, 1)).should_not be(true)
+    schedule.occurs_on?(Date.new(2009, 9, 3)).should_not be(true)
   end
 
-  it 'occurs_on? should only be true for the single day of a certain event' do
+  it 'occurs_on? should only be(true) for the single day of a certain event' do
     Time.zone = "Pacific Time (US & Canada)"
     schedule = Schedule.new Time.zone.parse("2010/5/13 02:00:00")
     schedule.add_recurrence_date Time.zone.parse("2010/5/13 02:00:00")
-    schedule.occurs_on?(Date.new(2010, 5, 13)).should be true
-    schedule.occurs_on?(Date.new(2010, 5, 14)).should_not be true
-    schedule.occurs_on?(Date.new(2010, 5, 15)).should_not be true
+    schedule.occurs_on?(Date.new(2010, 5, 13)).should be(true)
+    schedule.occurs_on?(Date.new(2010, 5, 14)).should_not be(true)
+    schedule.occurs_on?(Date.new(2010, 5, 15)).should_not be(true)
   end
   
 end

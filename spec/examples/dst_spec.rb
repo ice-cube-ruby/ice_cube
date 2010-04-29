@@ -8,7 +8,7 @@ describe Schedule, 'occurs_on?' do
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.daily.count(20)
     dates = schedule.first(20)
-    dates.count.should == 20
+    dates.size.should == 20
     #check assumptions
     dates.each do |date|
       date.utc?.should_not == true
@@ -22,7 +22,7 @@ describe Schedule, 'occurs_on?' do
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.daily.count(20)
     dates = schedule.first(20)
-    dates.count.should == 20
+    dates.size.should == 20
     #check assumptions
     dates.each do |date|
       date.utc?.should_not == true

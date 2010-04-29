@@ -113,13 +113,13 @@ describe Schedule, 'to_yaml' do
 
   it 'should have a to_yaml representation of a rule that does not contain ruby objects' do
     rule = IceCube::Rule.daily.day_of_week(:monday => [1, -1]).month_of_year(:april)
-    rule.to_yaml.include?('object').should be false
+    rule.to_yaml.include?('object').should be(false)
   end
 
   it 'should have a to_yaml representation of a schedule that does not contain ruby objects' do
     schedule = IceCube::Schedule.new(Time.now)
     schedule.add_recurrence_rule IceCube::Rule.daily.day_of_week(:monday => [1, -1]).month_of_year(:april)
-    schedule.to_yaml.include?('object').should be false
+    schedule.to_yaml.include?('object').should be(false)
   end
 
   it 'should be able to roll forward times and get back times in an array - TimeWithZone' do
@@ -141,6 +141,13 @@ describe Schedule, 'to_yaml' do
     ice_cube_start_date.to_s.should == start_date.to_s
     ice_cube_start_date.class.should == Time
     ice_cube_start_date.utc_offset.should == start_date.utc_offset
+  end
+
+  it 'should be able to go back and forth to yaml and then call occurrences' do
+    start_date = Time.now
+    schedule = IceCube::Schedule.new(start_date)
+    schedule = IceCube::Schedule.from_yaml(schedule.to_yaml) # round trip
+    schedule.occurrences(Time.now + ONE_DAY)
   end
   
 end

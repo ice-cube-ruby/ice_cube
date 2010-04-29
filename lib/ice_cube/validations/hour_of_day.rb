@@ -26,7 +26,7 @@ module IceCube
     end
 
     def to_s
-      'on the ' << nice_numbers(@hours_of_day) << (@hours_of_day.count == 1 ? ' hour' : ' hours') << ' of the day' unless @hours_of_day.empty?
+      'on the ' << nice_numbers(@hours_of_day) << (@hours_of_day.size == 1 ? ' hour' : ' hours') << ' of the day' unless @hours_of_day.empty?
     end
 
     def to_ical

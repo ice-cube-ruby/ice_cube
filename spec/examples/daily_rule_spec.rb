@@ -8,7 +8,7 @@ describe DailyRule, 'occurs_on?' do
     schedule.add_recurrence_rule Rule.daily
     #check assumption
     dates = schedule.occurrences(start_date + 2 * IceCube::ONE_DAY)
-    dates.count.should == 3
+    dates.size.should == 3
     dates.should == [DAY, DAY + 1 * IceCube::ONE_DAY, DAY + 2 * IceCube::ONE_DAY]
   end
 
@@ -18,7 +18,7 @@ describe DailyRule, 'occurs_on?' do
     schedule.add_recurrence_rule Rule.daily(2)
     #check assumption (3) -- (1) 2 (3) 4 (5) 6 
     dates = schedule.occurrences(start_date + 5 * IceCube::ONE_DAY)
-    dates.count.should == 3
+    dates.size.should == 3
     dates.should == [DAY, DAY + 2 * IceCube::ONE_DAY, DAY + 4 * IceCube::ONE_DAY]
   end
     

@@ -37,7 +37,7 @@ module IceCube
     end
   
     def to_s
-      'on the ' << nice_numbers(@days_of_year) << (@days_of_year.count == 1 ? ' day' : ' days') << ' of the year' unless @days_of_year.empty?
+      'on the ' << nice_numbers(@days_of_year) << (@days_of_year.size == 1 ? ' day' : ' days') << ' of the year' unless @days_of_year.empty?
     end
   
     def to_ical

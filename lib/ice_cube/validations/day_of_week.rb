@@ -30,7 +30,7 @@ module IceCube
       representation = ''
       representation << 'on the '
       representation << @days_of_week.map do |day, occ| 
-        nice_numbers(occ) << ' ' << Date::DAYNAMES[day] << (occ.count != 1 ? 's' : '') unless @days_of_week.empty?
+        nice_numbers(occ) << ' ' << Date::DAYNAMES[day] << (occ.size != 1 ? 's' : '') unless @days_of_week.empty?
       end.join(' and the ')
       representation
     end
