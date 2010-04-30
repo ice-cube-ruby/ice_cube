@@ -78,7 +78,6 @@ module ValidationTypes
   # on.  ie: rule.day_of_week(:monday => [1, -1]) would mean
   # that this rule should occur on the first and last mondays of each month.
   def day_of_week(days)
-    puts days[0].to_s
     @validations[:day_of_week] ||= {}
     @validation_types[:day_of_week] ||= IceCube::DayOfWeekValidation.new(self)
     days.each do |day, occurrences|
