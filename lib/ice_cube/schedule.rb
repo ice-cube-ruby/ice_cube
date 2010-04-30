@@ -15,17 +15,21 @@ module IceCube
     # Convert the schedule to a hash, reverse of Schedule.from_hash
     def to_hash
       hash = Hash.new
-      hash[:start_date] = TimeUtil.serializable_time(@start_date)
+      hash[:start_date] = @start_date
       hash[:rrules] = @rrule_occurrence_heads.map { |rr| rr.rule.to_hash }
       hash[:exrules] = @exrule_occurrence_heads.map { |ex| ex.rule.to_hash }
-      hash[:rdates] = @rdates.map { |t| TimeUtil.serializable_time(t) }
-      hash[:exdates] = @exdates.map { |t| TimeUtil.serializable_time(t) }
+      hash[:rdates] = @rdates
+      hash[:exdates] = @exdates
       hash
     end
 
     # Convert the schedule to yaml, reverse of Schedule.from_yaml
     def to_yaml
-      to_hash.to_yaml
+      hash = to_hash
+      hash[:start_date] = TimeUtil.serializable_time(hash[:start_date])
+      hash[:rdates] = hash[:rdates].map { |t| TimeUtil.serializable_time(t) }
+      hash[:exdates] = hash[:exdates].map { |t| TimeUtil.serializable_time(t) }
+      hash.to_yaml
     end
 
     # Create a schedule from a hash created by instance.to_hash

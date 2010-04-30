@@ -144,10 +144,27 @@ describe Schedule, 'to_yaml' do
   end
 
   it 'should be able to go back and forth to yaml and then call occurrences' do
-    start_date = Time.now
+    start_date = Time.zone.now
     schedule = IceCube::Schedule.new(start_date)
+    schedule.add_recurrence_date start_date
     schedule = IceCube::Schedule.from_yaml(schedule.to_yaml) # round trip
-    schedule.occurrences(Time.now + ONE_DAY)
+    dates = schedule.occurrences(Time.now + ONE_DAY)
+
+    schedule.start_date.class.should == Time
+    dates[0].class.should == Time
+  end
+
+  it 'crazy shit' do
+    start_date = Time.zone.now
+    schedule = IceCube::Schedule.new(start_date)
+    
+    schedule.add_recurrence_rule IceCube::Rule.weekly.day(:wednesday)
+    schedule.add_recurrence_date start_date
+
+    schedule = IceCube::Schedule.from_hash(schedule.to_hash)
+    schedule = IceCube::Schedule.from_yaml(schedule.to_yaml)
+
+    schedule.occurrences(start_date + ONE_DAY * 14)
   end
   
 end
