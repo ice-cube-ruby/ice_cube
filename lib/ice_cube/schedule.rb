@@ -55,7 +55,7 @@ module IceCube
     # there's a lot that can happen here
     def to_s
       representation = ''
-      inc_dates = (@rdates - @exdates).compact
+      inc_dates = (@rdates - @exdates).uniq
       if inc_dates && !inc_dates.empty?
         representation << inc_dates.sort.map { |d| d.strftime(TIME_FORMAT) }.join(SEPARATOR)
       end

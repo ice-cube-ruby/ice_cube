@@ -57,6 +57,20 @@ describe Schedule, 'to_s' do
     schedule.to_s.should == 'March 20, 2010 / March 21, 2010'
   end
 
+  it 'should order dates that are out of order' do
+    schedule = Schedule.new Time.now
+    schedule.add_recurrence_date Time.local(2010, 3, 20)
+    schedule.add_recurrence_date Time.local(2010, 3, 19)
+    schedule.to_s.should == 'March 19, 2010 / March 20, 2010'
+  end
+
+  it 'should remove duplicate rdates' do
+    schedule = Schedule.new Time.now
+    schedule.add_recurrence_date Time.local(2010, 3, 20)
+    schedule.add_recurrence_date Time.local(2010, 3, 20)
+    schedule.to_s.should == 'March 20, 2010'
+  end
+  
   it 'should work with rules and dates' do
     schedule = Schedule.new Time.local(2010, 3, 20)
     schedule.add_recurrence_date Time.local(2010, 3, 20)
