@@ -55,9 +55,9 @@ module IceCube
     # there's a lot that can happen here
     def to_s
       representation = ''
-      inc_dates = @rdates - @exdates
+      inc_dates = (@rdates - @exdates).compact
       if inc_dates && !inc_dates.empty?
-        representation << inc_dates.map { |d| d.strftime(TIME_FORMAT) }.join(SEPARATOR)
+        representation << inc_dates.sort.map { |d| d.strftime(TIME_FORMAT) }.join(SEPARATOR)
       end
       if @rrule_occurrence_heads && !@rrule_occurrence_heads.empty?
         representation << SEPARATOR unless representation.empty?
@@ -69,7 +69,7 @@ module IceCube
       end
       if @exdates && !@exdates.empty?
         representation << SEPARATOR unless representation.empty?
-        representation << @exdates.map { |d| 'not on ' << d.strftime(TIME_FORMAT) }.join(SEPARATOR)
+        representation << @exdates.uniq.sort.map { |d| 'not on ' << d.strftime(TIME_FORMAT) }.join(SEPARATOR)
       end
       representation
     end
