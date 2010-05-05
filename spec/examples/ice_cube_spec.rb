@@ -368,5 +368,12 @@ describe Schedule, 'occurs_on?' do
     schedule.occurs_on?(Date.new(2010, 5, 14)).should_not be(true)
     schedule.occurs_on?(Date.new(2010, 5, 15)).should_not be(true)
   end
+
+  it 'should allow calling of .first on a schedule with no arguments' do
+    start_time = Time.now
+    schedule = Schedule.new(start_time)
+    schedule.add_recurrence_date start_time
+    schedule.first.should == [start_time]
+  end
   
 end
