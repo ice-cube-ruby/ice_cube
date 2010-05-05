@@ -375,5 +375,23 @@ describe Schedule, 'occurs_on?' do
     schedule.add_recurrence_date start_time
     schedule.first.should == [start_time]
   end
-  
+
+  it 'should be able to ignore nil dates that are inserted as part of a collection to add_recurrence_date' do
+    start_time = Time.now
+    schedule = Schedule.new(start_time)
+    schedule.add_recurrence_date start_time
+    schedule.add_recurrence_date start_time + ONE_DAY
+    schedule.add_recurrence_date nil
+    schedule.all_occurrences.should == [start_time, start_time + ONE_DAY]
+  end
+
+  it 'should be able to use all_occurrences with no rules' do
+    start_time = Time.now
+    schedule = Schedule.new(start_time)
+    schedule.add_recurrence_date start_time
+    lambda do
+      schedule.all_occurrences.should == [start_time]
+    end.should_not raise_error
+  end
+    
 end

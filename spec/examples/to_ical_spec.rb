@@ -86,14 +86,5 @@ describe IceCube, 'to_ical' do
     rule = Rule.daily.day_of_week(:monday => [1, -1], :tuesday => [2]).day(:wednesday)
     ['FREQ=DAILY;BYDAY=WE;BYDAY=1MO,-1MO,2TU', 'FREQ=DAILY;BYDAY=1MO,-1MO,2TU;BYDAY=WE'].include?(rule.to_ical).should be(true)
   end
-
-  it 'should be able to ignore nil dates that are inserted as part of a collection to add_recurrence_date' do
-    start_time = Time.now
-    schedule = Schedule.new(start_time)
-    schedule.add_recurrence_date start_time
-    schedule.add_recurrence_date start_time + ONE_DAY
-    schedule.add_recurrence_date nil
-    schedule.all_occurrences.should == [start_time, start_time + ONE_DAY]
-  end
   
 end
