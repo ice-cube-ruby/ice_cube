@@ -41,6 +41,12 @@ EX: Specifying a exception/recurrence date:
 
 ---
 
+===Persistence
+
+ice_cube implements its own hash-based .to_yaml, so you can quickly (and safely) serialize schedule objects in and out of your data store
+
+---
+
 ===Using your words
 
 ice_cube can provide ical or string representations of individual rules.
