@@ -45,6 +45,12 @@ EX: Specifying a exception/recurrence date:
 
 ice_cube implements its own hash-based .to_yaml, so you can quickly (and safely) serialize schedule objects in and out of your data store
 
+    yaml = schedule.to_yaml
+    hash = schedule.to_hash
+
+    Schedule.from_yaml(yaml)
+    Schedule.from_hash(hash)
+
 ---
 
 ===Using your words
