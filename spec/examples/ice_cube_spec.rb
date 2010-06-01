@@ -393,5 +393,41 @@ describe Schedule, 'occurs_on?' do
       schedule.all_occurrences.should == [start_time]
     end.should_not raise_error
   end
-    
+
+  it 'should be able to specify a duration on a schedule use occurring_at? on the schedule
+      to find out if a given time is included' do
+    start_time = Time.local 2010, 5, 6, 10, 0, 0
+    schedule = Schedule.new(start_time, :duration => 3600)
+    schedule.add_recurrence_rule Rule.daily
+    schedule.occurring_at?(Time.local(2010, 5, 6, 10, 30, 0)).should be(true) #true
+  end
+
+  it 'should be able to specify a duration on a schedule and use occurring_at? on that schedule
+      to make sure a time is not included' do
+    start_time = Time.local 2010, 5, 6, 10, 0, 0
+    schedule = Schedule.new(start_time, :duration => 3600)
+    schedule.add_recurrence_rule Rule.daily
+    schedule.occurring_at?(Time.local(2010, 5, 6, 9, 59, 0)).should be(false)
+    schedule.occurring_at?(Time.local(2010, 5, 6, 11, 0, 1)).should be(false)
+  end
+
+  it 'should be able to specify a duration on a schedule and use occurring_at? on that schedule
+      to make sure the outer bounds are included' do
+    start_time = Time.local 2010, 5, 6, 10, 0, 0
+    schedule = Schedule.new(start_time, :duration => 3600)
+    schedule.add_recurrence_rule Rule.daily
+    schedule.occurring_at?(Time.local(2010, 5, 6, 10, 0, 0)).should be(true)
+    schedule.occurring_at?(Time.local(2010, 5, 6, 11, 0, 0)).should be(true)
+  end
+
+  it 'should be able to explicity remove a certain minute from a duration' do
+    start_time = Time.local 2010, 5, 6, 10, 0, 0
+    schedule = Schedule.new(start_time, :duration => 3600)
+    schedule.add_recurrence_rule Rule.daily
+    schedule.add_exception_date Time.local(2010, 5, 6, 10, 21, 30)
+    schedule.occurring_at?(Time.local(2010, 5, 6, 10, 21, 29)).should be(true)
+    schedule.occurring_at?(Time.local(2010, 5, 6, 10, 21, 30)).should be(false)
+    schedule.occurring_at?(Time.local(2010, 5, 6, 10, 21, 31)).should be(true)
+  end
+  
 end

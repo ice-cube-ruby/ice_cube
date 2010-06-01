@@ -33,11 +33,20 @@ EX: Specifying a exception/recurrence date:
     # or all of the occurrences
     occurrences = schedule.all_occurrences # [Time.now]
 
-    # or check just a single day
-    schedule.occurs_at?(Time.now) # [Time.now]
+    # or check just a single time
+    schedule.occurs_at?(Time.now) # true
     
+    # or check just a single day
+    schedule.occurs_on?(Date.new) # true
+
     # or the first (n) occurrences
     schedule.first(n) # [Time.now]
+
+    # or give the schedule a duration and ask if occurring_at?
+    schedule = Schedule.new(start_date, :duration => 3600)
+    schedule.occurring_at?(Time.now + 1800) # true
+
+*The reason that schedules have durations and not individual rules, is to maintain compatability with iCal ({RFC}[link:http://www.kanzaki.com/docs/ical/rrule.html])*
 
 ---
 

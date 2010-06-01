@@ -166,5 +166,15 @@ describe Schedule, 'to_yaml' do
 
     schedule.occurrences(start_date + ONE_DAY * 14)
   end
+
+  it 'should be able to make a round trip to hash with a duration' do
+    schedule = Schedule.new Time.now, :duration => 3600
+    Schedule.from_hash(schedule.to_hash).duration.should == 3600
+  end
+
+  it 'should be able to make a round trip to yaml with a duration' do
+    schedule = Schedule.new Time.now, :duration => 3600
+    Schedule.from_yaml(schedule.to_yaml).duration.should == 3600
+  end
   
 end

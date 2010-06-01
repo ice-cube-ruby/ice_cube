@@ -21,7 +21,11 @@ module IceCube
     def between(begin_time, end_time)
       find_occurrences { |roc| roc > end_time }.select { |d| d >= begin_time }
     end
-   
+
+    def occurring_at?(time)
+      
+    end
+    
     def upto(end_date)
       find_occurrences { |roc| roc > end_date }
     end
