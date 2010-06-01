@@ -46,7 +46,7 @@ EX: Specifying a exception/recurrence date:
     schedule = Schedule.new(start_date, :duration => 3600)
     schedule.occurring_at?(Time.now + 1800) # true
 
-The reason that schedules have durations and not individual rules, is to maintain compatability with iCal (RFC[link:http://www.kanzaki.com/docs/ical/rrule.html])
+The reason that schedules have durations and not individual rules, is to maintain compatability with the ical RFC: http://www.kanzaki.com/docs/ical/rrule.html
 
 ---
 
