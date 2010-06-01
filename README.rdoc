@@ -170,6 +170,15 @@ There are many types of recurrence rules that can be added to a schedule:
 
 ---
 
+===Contributing
+
+* Contributions are welcome - I use github's Issue tracker for bug fixes (accompanying failing tests are awesome) and feature requests
+* Submit via fork and pull request (include tests)
+* Stick with my code style, and don't get mad if I make style changes to your code (consistency is a key to readability)
+* If you're working on something major, shoot me a message beforehand
+
+---
+
 ===License
 
 (The MIT License)
