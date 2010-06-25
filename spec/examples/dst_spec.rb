@@ -217,35 +217,35 @@ describe Schedule, 'occurs_on?' do
     schedule.first(3).should == [Time.local(2010, 3, 12, 19, 0, 0), Time.local(2012, 3, 12, 19, 0, 0), Time.local(2014, 3, 12, 19, 0, 0)]
   end
 
-  it "local - should make dates on monthly (day of week) inverval over dst" do
+  it "local - should make dates on monthly (day of week) inverval over dst - github issue 5" do
     start_date = Time.local(2010, 3, 7, 12, 0, 0)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.monthly.day_of_week(:sunday => [1])
     schedule.first(3).should == [Time.local(2010, 3, 7, 12, 0, 0), Time.local(2010, 4, 4, 12, 0, 0), Time.local(2010, 5, 2, 12, 0, 0)]
   end
 
-  it "local - should make dates on monthly (day of month) inverval over dst" do
+  it "local - should make dates on monthly (day of month) inverval over dst - github issue 5" do
     start_date = Time.local(2010, 3, 1, 12, 0, 0)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.monthly.day_of_month(1)
     schedule.first(3).should == [Time.local(2010, 3, 1, 12, 0, 0), Time.local(2010, 4, 1, 12, 0, 0), Time.local(2010, 5, 1, 12, 0, 0)]
   end
 
-  it "local - should make dates on weekly (day) inverval over dst" do
+  it "local - should make dates on weekly (day) inverval over dst - github issue 5" do
     start_date = Time.local(2010, 3, 7, 12, 0, 0)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.weekly.day(:sunday)
     schedule.first(3).should == [Time.local(2010, 3, 7, 12, 0, 0), Time.local(2010, 3, 14, 12, 0, 0), Time.local(2010, 3, 21, 12, 0, 0)]
   end
 
-  it "local - should make dates on monthly (day of year) inverval over dst" do
+  it "local - should make dates on monthly (day of year) inverval over dst - github issue 5" do
     start_date = Time.local(2010, 3, 7, 12, 0, 0)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.monthly.day_of_year(1)
     schedule.first(3).should == [Time.local(2011, 1, 1, 12, 0, 0), Time.local(2012, 1, 1, 12, 0, 0), Time.local(2013, 1, 1, 12, 0, 0)]
   end
 
-  it "local - should make dates on monthly (month_of_year) inverval over dst" do
+  it "local - should make dates on monthly (month_of_year) inverval over dst - github issue 5" do
     start_date = Time.local(2010, 3, 7, 12, 0, 0)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.yearly.month_of_year(:april).day_of_month(10)
