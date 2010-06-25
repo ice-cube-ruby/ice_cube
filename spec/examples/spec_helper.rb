@@ -5,6 +5,7 @@ require 'date' # used to build some dates
 
 #some custom dates
 DAY = Time.utc(2010, 3, 1)
+WEDNESDAY = Time.utc(2010, 6, 23, 5, 0, 0)
 
 def test_expectations(schedule, dates_array)
   expectation = []

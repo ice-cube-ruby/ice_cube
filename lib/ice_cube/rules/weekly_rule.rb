@@ -7,6 +7,7 @@ module IceCube
     # and we're in a valid day of the week.
     def in_interval?(date, start_date)
       #make sure we're in the right interval
+      date = adjust(date, start_date)
       week_of_year = Date.civil(date.year, date.month, date.day).cweek
       week_of_year % @interval == 0
     end

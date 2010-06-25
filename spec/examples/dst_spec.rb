@@ -195,5 +195,27 @@ describe Schedule, 'occurs_on?' do
     #make sure we end on the proper time
     schedule.occurrences(end_date).last.should == end_date
   end
+
+  it 'local - should make dates on interval over dst - github issue 4' do
+    start_date = Time.local(2010, 3, 12, 19, 0, 0)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.daily(3)
+    schedule.first(3).should == [Time.local(2010, 3, 12, 19, 0, 0), Time.local(2010, 3, 15, 19, 0, 0), Time.local(2010, 3, 18, 19, 0, 0)]
+  end
+
+  it 'local - should make dates on monthly interval over dst - github issue 4' do
+    start_date = Time.local(2010, 3, 12, 19, 0, 0)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.monthly(2)
+    schedule.first(3).should == [Time.local(2010, 3, 12, 19, 0, 0), Time.local(2010, 5, 12, 19, 0, 0), Time.local(2010, 7, 12, 19, 0, 0)]
+  end
+
+  it 'local - should make dates on yearly interval over dst - github issue 4' do
+    start_date = Time.local(2010, 3, 12, 19, 0, 0)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.yearly(2)
+    schedule.first(3).should == [Time.local(2010, 3, 12, 19, 0, 0), Time.local(2012, 3, 12, 19, 0, 0), Time.local(2014, 3, 12, 19, 0, 0)]
+  end
+
   
 end

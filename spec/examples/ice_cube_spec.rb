@@ -60,7 +60,7 @@ describe Schedule, 'occurs_on?' do
     schedule.add_recurrence_rule Rule.weekly.day(:thursday).count(5)
     dates = schedule.all_occurrences
     dates.uniq.size.should == 5
-    dates.each { |d| d.wday == 4 }
+    dates.each { |d| d.wday.should == 4 }
     dates.should_not include(WEDNESDAY)
   end
 
@@ -70,7 +70,7 @@ describe Schedule, 'occurs_on?' do
     schedule.add_recurrence_rule Rule.weekly.day(:thursday).count(5)
     dates = schedule.all_occurrences
     dates.uniq.size.should == 5
-    dates.each { |d| d.wday == 4 }
+    dates.each { |d| d.wday.should == 4 }
     dates.should include(WEDNESDAY + IceCube::ONE_DAY)
   end
 
@@ -79,7 +79,7 @@ describe Schedule, 'occurs_on?' do
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.weekly.second_of_minute(30)
     dates = schedule.occurrences(start_date + 30 * 60)
-    dates.each { |date| date.sec == 30 }
+    dates.each { |date| date.sec.should == 30 }
   end
 
   it 'ensure that when count on a rule is set to 0, 0 occurrences come back' do
@@ -429,5 +429,76 @@ describe Schedule, 'occurs_on?' do
     schedule.occurring_at?(Time.local(2010, 5, 6, 10, 21, 30)).should be(false)
     schedule.occurring_at?(Time.local(2010, 5, 6, 10, 21, 31)).should be(true)
   end
-  
+
+  it 'should be able to specify an end time for the schedule' do
+    start_time = DAY
+    schedule = Schedule.new(start_time, :end_time => DAY + ONE_DAY * 2)
+    schedule.add_recurrence_rule Rule.daily
+    schedule.all_occurrences.should == [DAY, DAY + 1*ONE_DAY, DAY + 2*ONE_DAY]
+  end
+
+  it 'should be able to specify an end time for the schedule and only get those on .first' do
+    start_time = DAY
+    # ensure proper response without the end time
+    schedule = Schedule.new(start_time)
+    schedule.add_recurrence_rule Rule.daily
+    schedule.first(5).should == [DAY, DAY + 1*ONE_DAY, DAY + 2*ONE_DAY, DAY + 3*ONE_DAY, DAY + 4*ONE_DAY]
+    # and then ensure that with the end time it stops it at the right day
+    schedule = Schedule.new(start_time, :end_time => DAY + ONE_DAY * 2 + 1)
+    schedule.add_recurrence_rule Rule.daily
+    schedule.first(5).should == [DAY, DAY + 1 * ONE_DAY, DAY + 2 * ONE_DAY]
+  end
+
+  it 'should be able to specify an end date and go to/from yaml' do
+    start_time = DAY
+    end_time = DAY + ONE_DAY * 2
+    schedule = Schedule.new(start_time, :end_time => end_time)
+    schedule.add_recurrence_rule Rule.daily
+    schedule2 = Schedule.from_yaml schedule.to_yaml
+    schedule2.end_time.should == end_time
+  end
+
+  it 'should be able to specify an end date for the schedule and only get those on .occurrences_between' do
+    start_time = DAY
+    end_time = DAY + ONE_DAY * 2
+    schedule = Schedule.new(start_time, :end_time => end_time)
+    schedule.add_recurrence_rule Rule.daily
+    expectation = [DAY, DAY + ONE_DAY, DAY + 2*ONE_DAY]
+    schedule.occurrences_between(start_time - ONE_DAY, start_time + 4 * ONE_DAY).should == expectation
+  end
+
+  it 'should be able to specify an end date for the schedule and only get those on .occurrences' do
+    start_time = DAY
+    end_time = DAY + ONE_DAY * 2
+    schedule = Schedule.new(start_time, :end_time => end_time)
+    schedule.add_recurrence_rule Rule.daily
+    expectation = [DAY, DAY + ONE_DAY, DAY + 2*ONE_DAY]
+    schedule.occurrences(start_time + 4 * ONE_DAY).should == expectation
+  end
+
+  it 'should be able to work with an end date and .occurs_at' do
+    start_time = DAY
+    end_time = DAY + ONE_DAY * 2
+    schedule = Schedule.new(start_time, :end_time => end_time)
+    schedule.add_recurrence_rule Rule.daily
+    schedule.occurs_at?(DAY + 4*ONE_DAY).should be(false) # out of range
+  end
+
+  it 'should be able to work with an end date and .occurs_at' do
+    start_time = DAY
+    end_time = DAY + ONE_DAY * 2
+    schedule = Schedule.new(start_time, :end_time => end_time)
+    schedule.add_recurrence_rule Rule.daily
+    schedule.occurs_on?((DAY + 4*ONE_DAY).to_date).should be(false) # out of range
+  end
+
+  it 'should be able to work with an end date and .occurring_at' do
+    start_time = DAY
+    end_time = DAY + ONE_DAY * 2
+    schedule = Schedule.new(start_time, :end_time => end_time, :duration => 20)
+    schedule.add_recurrence_rule Rule.daily
+    schedule.occurring_at?((DAY + 2*ONE_DAY + 10).to_date).should be(true) # in range
+    schedule.occurring_at?((DAY + 4*ONE_DAY + 10).to_date).should be(false) # out of range
+  end
+
 end

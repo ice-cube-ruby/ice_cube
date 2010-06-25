@@ -14,7 +14,7 @@ module IceCube
     end
        
     def all_occurrences
-      raise ArgumentError.new("Rule must specify either an until date or a count to use 'all_occurrences'") unless @rule.occurrence_count || @rule.until_date
+      raise ArgumentError.new("Rule must specify either an until date or a count to use 'all_occurrences'") unless @rule.occurrence_count || @rule.until_date || @end_time
       find_occurrences { |roc| false }
     end
    
@@ -47,15 +47,16 @@ module IceCube
       end
       #walk through all of the successive dates, looking for the next occurrence (interval-valid), then return it.
       begin
+        return nil if @end_time && date > @end_time
         return nil if @rule.until_date && date > @rule.until_date # until check
-        return RuleOccurrence.new(@rule, @start_date, date, @index + 1) if @rule.in_interval?(date, @start_date)
+        return RuleOccurrence.new(@rule, @start_date, @end_time, date, @index + 1) if @rule.in_interval?(date, @start_date)
       end while date = @rule.next_suggestion(date)
     end
     
     attr_reader :rule
    
     private
-    
+
     def find_occurrences
       include_dates = []
       roc = self
@@ -68,11 +69,12 @@ module IceCube
       include_dates
     end
       
-    def initialize(rule, start_date, date = nil, index = 0)
+    def initialize(rule, start_date, end_time, date = nil, index = 0)
       #set some variables
       @rule = rule
-      @date = date
       @start_date = start_date
+      @end_time = end_time
+      @date = date
       @index = index
     end
       

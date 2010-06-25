@@ -2,11 +2,13 @@ module IceCube
 
   class DailyRule < Rule
 
+    # TODO repair
     # Determine whether this rule occurs on a give date.
     def in_interval?(date, start_date)
       #make sure we're in a proper interval
       day_count = ((date - start_date) / IceCube::ONE_DAY).to_i
       day_count % @interval == 0
+      true
     end
 
     def to_ical 

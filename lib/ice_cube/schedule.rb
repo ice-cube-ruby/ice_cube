@@ -2,7 +2,8 @@ module IceCube
 
   class Schedule
 
-    attr_reader :rdates, :exdates, :start_date, :duration
+    attr_reader :rdates, :exdates, :start_date, :duration, :end_time
+    alias :start_time :start_date
     
     def initialize(start_date, options = {})
       @rrule_occurrence_heads = []
@@ -12,6 +13,8 @@ module IceCube
       @start_date = start_date
       raise ArgumentError.new('Duration cannot be negative') if options[:duration] && options[:duration] < 0
       @duration = options[:duration]
+      raise ArgumentError.new('Start time must be before end time') if options[:end_time] && options[:end_time] < @start_date
+      @end_time = options[:end_time]
     end
 
     # Convert the schedule to a hash, reverse of Schedule.from_hash
@@ -23,6 +26,7 @@ module IceCube
       hash[:rdates] = @rdates
       hash[:exdates] = @exdates
       hash[:duration] = @duration
+      hash[:end_time] = @end_time
       hash
     end
 
@@ -32,6 +36,7 @@ module IceCube
       hash[:start_date] = TimeUtil.serializable_time(hash[:start_date])
       hash[:rdates] = hash[:rdates].map { |t| TimeUtil.serializable_time(t) }
       hash[:exdates] = hash[:exdates].map { |t| TimeUtil.serializable_time(t) }
+      hash[:end_time] = TimeUtil.serializable_time(hash[:end_time])
       hash.to_yaml
     end
 
@@ -39,7 +44,7 @@ module IceCube
     def self.from_hash(hash)
       options = {}
       options[:duration] = hash[:duration] if hash.has_key?(:duration)
-      
+      options[:end_time] = hash[:end_time] if hash.has_key?(:end_time)
       schedule = Schedule.new(hash[:start_date], options)
       hash[:rrules].each { |rr| schedule.add_recurrence_rule Rule.from_hash(rr) }
       hash[:exrules].each { |ex| schedule.add_exception_rule Rule.from_hash(ex) }
@@ -77,6 +82,9 @@ module IceCube
         representation << SEPARATOR unless representation.empty?
         representation << @exdates.uniq.sort.map { |d| 'not on ' << d.strftime(TIME_FORMAT) }.join(SEPARATOR)
       end
+      if @end_time
+        representation << "until #{end_time.strftime(TIME_FORMAT)}"
+      end
       representation
     end
 
@@ -89,14 +97,16 @@ module IceCube
 
     # Determine whether a given time adheres to the ruleset of this schedule.
     def occurs_at?(date)
+      return false if @end_time && date > @end_time
       dates = occurrences(date)
       dates.last == date
     end
     
     # Determine whether a given date appears in the times returned by the schedule
     # Required activeSupport
-    def occurs_on?(date)
+    def occurs_on?(date)      
       time = date.to_time
+      return false if @end_time && time > @end_time
       occurrences_between(time.beginning_of_day, time.end_of_day).any?
     end
         
@@ -109,6 +119,7 @@ module IceCube
     
     # Find all occurrences until a certain date
     def occurrences(end_date)
+      end_date = @end_time if @end_time && @end_time < end_date
       find_occurrences { |head| head.upto(end_date) }
     end
 
@@ -122,7 +133,7 @@ module IceCube
     # Add a rule of any type as an recurrence in this schedule
     def add_recurrence_rule(rule)
       raise ArgumentError.new('Argument must be a valid rule') unless rule.class < Rule
-      @rrule_occurrence_heads << RuleOccurrence.new(rule, @start_date)
+      @rrule_occurrence_heads << RuleOccurrence.new(rule, @start_date, @end_time)
     end
 
     def rrules
@@ -132,7 +143,7 @@ module IceCube
     # Add a rule of any type as an exception to this schedule
     def add_exception_rule(rule)
       raise ArgumentError.new('Argument must be a valid rule') unless rule.class < Rule
-      @exrule_occurrence_heads << RuleOccurrence.new(rule, @start_date)
+      @exrule_occurrence_heads << RuleOccurrence.new(rule, @start_date, @end_time)
     end
 
     def exrules 
@@ -150,6 +161,9 @@ module IceCube
     end   
 
     def occurrences_between(begin_time, end_time)
+      # adjust to the propert end date
+      end_time = @end_time if @end_time && @end_time < end_time
+      # collect the occurrences
       exclude_dates, include_dates = Set.new(@exdates), SortedSet.new(@rdates)
       @rrule_occurrence_heads.each do |rrule_occurrence_head|
         include_dates.merge(rrule_occurrence_head.between(begin_time, end_time))
@@ -166,7 +180,7 @@ module IceCube
 
     # tell if, from a list of rule_occurrence heads, a certain time is occurring
     def any_occurring_at?(what, time)
-      return false if @start_time && itime < @start_time
+      return false if @start_time && time < @start_time
       what.any? do |occurrence_head|
         # time is less than now and duration is less than that distance
         possibilities = occurrence_head.between(@start_date, time)

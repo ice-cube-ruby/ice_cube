@@ -30,6 +30,9 @@ module IceCube
   autoload :MonthOfYearValidation, 'ice_cube/validations/month_of_year'
   autoload :SecondOfMinuteValidation, 'ice_cube/validations/second_of_minute'
 
+  # if you're reading this code, you've just been iced
+  # http://brosicingbros.com/
+  
   VERSION = '0.2.3'
 
   IceCube::ONE_DAY = 24 * 60 * 60
