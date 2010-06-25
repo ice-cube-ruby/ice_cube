@@ -21,8 +21,9 @@ module IceCube
     #note - temporary implementation
     def closest(date)
       return nil if !@days_of_week || @days_of_week.empty?
-      while date += IceCube::ONE_DAY
-        return date if validate(date)
+      goal = date
+      while goal += IceCube::ONE_DAY
+        return adjust(goal, date) if validate(goal)
       end
     end
 

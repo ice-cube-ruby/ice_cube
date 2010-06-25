@@ -2,8 +2,6 @@ require File.dirname(__FILE__) + '/spec_helper'
 
 describe WeeklyRule, 'occurs_on?' do
 
-  WEDNESDAY = Time.utc(2010, 3, 10)
-  
   it 'should produce the correct number of days for @interval = 1 with no weekdays specified' do
     start_date = Time.now
     schedule = Schedule.new(start_date)
