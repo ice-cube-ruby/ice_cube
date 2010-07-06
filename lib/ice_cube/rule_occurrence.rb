@@ -22,10 +22,6 @@ module IceCube
       find_occurrences { |roc| roc > end_time }.select { |d| d >= begin_time }
     end
 
-    def occurring_at?(time)
-      
-    end
-    
     def upto(end_date)
       find_occurrences { |roc| roc > end_date }
     end
@@ -47,6 +43,7 @@ module IceCube
       end
       #walk through all of the successive dates, looking for the next occurrence (interval-valid), then return it.
       begin
+        return nil if yield(date)
         return nil if @end_time && date > @end_time
         return nil if @rule.until_date && date > @rule.until_date # until check
         return RuleOccurrence.new(@rule, @start_date, @end_time, date, @index + 1) if @rule.in_interval?(date, @start_date)
@@ -57,15 +54,14 @@ module IceCube
    
     private
 
-    def find_occurrences
+    def find_occurrences(&block)
       include_dates = []
       roc = self
       begin
         break if roc.nil? #go until we run out of dates
         next if roc.to_time.nil? #handle the case where start_date is not a valid occurrence
-        break if yield(roc) #recurrence condition
         include_dates << roc.to_time
-      end while roc = roc.succ
+      end while roc = roc.succ(&block)
       include_dates
     end
       

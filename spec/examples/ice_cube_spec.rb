@@ -501,4 +501,10 @@ describe Schedule, 'occurs_on?' do
     schedule.occurring_at?((DAY + 4*ONE_DAY + 10).to_date).should be(false) # out of range
   end
 
+  it 'should not create an infinite loop crossing over february - github issue 6' do
+    schedule = Schedule.new(Time.parse('2010-08-30'))
+    schedule.add_recurrence_rule Rule.monthly(6)
+    schedule.occurrences_between(Time.parse('2010-07-01'), Time.parse('2010-09-01'))
+  end
+  
 end
