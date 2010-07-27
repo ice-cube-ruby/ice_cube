@@ -60,34 +60,34 @@ module IceCube
 
     TIME_FORMAT = '%B %e, %Y'
     SEPARATOR = ' / '
+    NEWLINE = "\n"
     
     # use with caution
     # incomplete and not entirely tested - no time representation in dates
     # there's a lot that can happen here
     def to_s
-      representation = ''
+      representation_pieces = []
       inc_dates = (@rdates - @exdates).uniq
-      if inc_dates && !inc_dates.empty?
-        representation << inc_dates.sort.map { |d| d.strftime(TIME_FORMAT) }.join(SEPARATOR)
-      end
-      if @rrule_occurrence_heads && !@rrule_occurrence_heads.empty?
-        representation << SEPARATOR unless representation.empty?
-        representation << @rrule_occurrence_heads.map{ |r| r.rule.to_s }.join(SEPARATOR)
-      end
-      if @exrule_occurrence_heads && !@exrule_occurrence_heads.empty?
-        representation << SEPARATOR unless representation.empty?
-        representation << @exrule_occurrence_heads.map { |r| 'not ' << r.to_s }.join(SEPARATOR)
-      end
-      if @exdates && !@exdates.empty?
-        representation << SEPARATOR unless representation.empty?
-        representation << @exdates.uniq.sort.map { |d| 'not on ' << d.strftime(TIME_FORMAT) }.join(SEPARATOR)
-      end
-      if @end_time
-        representation << "until #{end_time.strftime(TIME_FORMAT)}"
-      end
-      representation
+      representation_pieces.concat inc_dates.sort.map { |d| d.strftime(TIME_FORMAT) } unless inc_dates.empty?
+      representation_pieces.concat @rrule_occurrence_heads.map{ |r| r.rule.to_s } if @rrule_occurrence_heads
+      representation_pieces.concat @exrule_occurrence_heads.map { |r| 'not ' << r.rule.to_s } if @exrule_occurrence_heads
+      representation_pieces.concat @exdates.uniq.sort.map { |d| 'not on ' << d.strftime(TIME_FORMAT) } if @exdates
+      representation_pieces << "until #{end_time.strftime(TIME_FORMAT)}" if @end_time
+      representation_pieces.join(SEPARATOR)
     end
 
+    def to_ical
+      representation_pieces = ["DTSTART#{TimeUtil.ical_format(@start_date)}"]
+      representation_pieces << "DURATION:#{TimeUtil.ical_duration(@duration)}" if @duration
+      inc_dates = (@rdates - @exdates).uniq
+      representation_pieces.concat inc_dates.sort.map { |d| "RDATE#{TimeUtil.ical_format(d)}" } if inc_dates.any?
+      representation_pieces.concat @exdates.uniq.sort.map { |d| "EXDATE#{TimeUtil.ical_format(d)}" } if @exdates
+      representation_pieces.concat @rrule_occurrence_heads.map { |r| "RRULE:#{r.rule.to_ical}" } if @rrule_occurrence_heads
+      representation_pieces.concat @exrule_occurrence_heads.map { |r| "EXRULE:#{r.rule.to_ical}" } if @exrule_occurrence_heads
+      representation_pieces << "DTEND#{TimeUtil.ical_format(@end_time)}" if @end_time
+      representation_pieces.join(NEWLINE)      
+    end
+    
     def occurring_at?(time)
       return false if @exdates.include?(time)
       return true if @rdates.include?(time)

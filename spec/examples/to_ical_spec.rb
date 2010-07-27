@@ -86,5 +86,103 @@ describe IceCube, 'to_ical' do
     rule = Rule.daily.day_of_week(:monday => [1, -1], :tuesday => [2]).day(:wednesday)
     ['FREQ=DAILY;BYDAY=WE;BYDAY=1MO,-1MO,2TU', 'FREQ=DAILY;BYDAY=1MO,-1MO,2TU;BYDAY=WE'].include?(rule.to_ical).should be(true)
   end
+
+  it 'should be able to serialize a base schedule to ical in local time' do
+    Time.zone = "Eastern Time (US & Canada)"
+    schedule = Schedule.new(Time.zone.local(2010, 5, 10, 9, 0, 0))
+    schedule.to_ical.should == "DTSTART;TZID=EDT:20100510T090000"
+  end
+
+  it 'should be able to serialize a base schedule to ical in UTC time' do
+    schedule = Schedule.new(Time.utc(2010, 5, 10, 9, 0, 0))
+    schedule.to_ical.should == "DTSTART:20100510T090000Z"
+  end
+
+  it 'should be able to serialize a schedule with one rrule' do
+    Time.zone = 'Pacific Time (US & Canada)'
+    schedule = Schedule.new(Time.zone.local(2010, 5, 10, 9, 0, 0))
+    schedule.add_recurrence_rule Rule.weekly
+    # test equality
+    expectation = "DTSTART;TZID=PDT:20100510T090000\n"
+    expectation << 'RRULE:FREQ=WEEKLY'
+    schedule.to_ical.should == expectation
+  end
+
+  it 'should be able to serialize a schedule with multiple rrules' do
+    Time.zone = 'Eastern Time (US & Canada)'
+    schedule = Schedule.new(Time.zone.local(2010, 10, 20, 4, 30, 0))
+    schedule.add_recurrence_rule Rule.weekly.day_of_week(:monday => [2, -1])
+    schedule.add_recurrence_rule Rule.hourly
+    expectation = "DTSTART;TZID=EDT:20101020T043000\n"
+    expectation << "RRULE:FREQ=WEEKLY;BYDAY=2MO,-1MO\n"
+    expectation << "RRULE:FREQ=HOURLY"
+    schedule.to_ical.should == expectation
+  end
+  
+  it 'should be able to serialize a schedule with one exrule' do
+    Time.zone ='Pacific Time (US & Canada)'
+    schedule = Schedule.new(Time.zone.local(2010, 5, 10, 9, 0, 0))
+    schedule.add_exception_rule Rule.weekly
+    # test equality
+    expectation= "DTSTART;TZID=PDT:20100510T090000\n"
+    expectation<< 'EXRULE:FREQ=WEEKLY'
+    schedule.to_ical.should == expectation
+  end
+  
+  it 'should be able to serialize a schedule with multiple exrules' do
+    Time.zone ='Eastern Time (US & Canada)'
+    schedule = Schedule.new(Time.zone.local(2010, 10, 20, 4, 30, 0))
+    schedule.add_exception_rule Rule.weekly.day_of_week(:monday => [2, -1])
+    schedule.add_exception_rule Rule.hourly
+    expectation = "DTSTART;TZID=EDT:20101020T043000\n"
+    expectation<< "EXRULE:FREQ=WEEKLY;BYDAY=2MO,-1MO\n"
+    expectation<< "EXRULE:FREQ=HOURLY"
+    schedule.to_ical.should == expectation
+  end
+ 
+  it 'should be able to serialize a schedule with an rdate' do
+    schedule = Schedule.new(Time.utc(2010, 5, 10, 10, 0, 0))
+    schedule.add_recurrence_date Time.utc(2010, 6, 20, 5, 0, 0)
+    # test equality
+    expectation = "DTSTART:20100510T100000Z\n"
+    expectation << "RDATE:20100620T050000Z"
+    schedule.to_ical.should == expectation
+  end
+
+  it 'should be able to serialize a schedule with an exdate' do
+    schedule = Schedule.new(Time.utc(2010, 5, 10, 10, 0, 0))
+    schedule.add_exception_date Time.utc(2010, 6, 20, 5, 0, 0)
+    # test equality
+    expectation = "DTSTART:20100510T100000Z\n"
+    expectation << "EXDATE:20100620T050000Z"
+    schedule.to_ical.should == expectation
+  end
+
+  it 'should be able to serialize a schedule with a duration' do
+    schedule = Schedule.new(Time.utc(2010, 5, 10, 10), :duration => 3600)
+    expectation = "DTSTART:20100510T100000Z\n"
+    expectation << 'DURATION:PT1H'
+    schedule.to_ical.should == expectation
+  end
+  
+  it 'should be able to serialize a schedule with a duration - more odd duration' do
+    schedule = Schedule.new(Time.utc(2010, 5, 10, 10), :duration => 3665)
+    expectation = "DTSTART:20100510T100000Z\n"
+    expectation << 'DURATION:PT1H1M5S'
+    schedule.to_ical.should == expectation
+  end
+
+  it 'should be able to serialize a schedule with an end time' do
+    schedule = Schedule.new(Time.utc(2010, 5, 10, 10), :end_time => Time.utc(2010, 5, 10, 20))
+    expectation = "DTSTART:20100510T100000Z\n"
+    expectation << "DTEND:20100510T200000Z"
+    schedule.to_ical.should == expectation
+  end
+
+  it 'should not modify the duration when running to_ical' do
+    schedule = Schedule.new(Time.now, :duration => 3600)
+    schedule.to_ical
+    schedule.duration.should == 3600
+  end
   
 end

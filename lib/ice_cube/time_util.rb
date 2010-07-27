@@ -27,5 +27,23 @@ module TimeUtil
   def self.days_in_month(date)
     is_leap?(date) ? LeapYearMonthDays[date.month - 1] : CommonYearMonthDays[date.month - 1]
   end
+
+  def self.ical_format(time)
+    if time.utc?
+      ":#{time.strftime('%Y%m%dT%H%M%SZ')}" # utc time
+    else
+      ";TZID=#{time.strftime('%Z:%Y%m%dT%H%M%S')}" # local time specified
+    end
+  end
+
+  def self.ical_duration(duration)
+    hours = duration / 3600; duration %= 3600
+    minutes = duration / 60; duration %= 60
+    repr = ''
+    repr << "#{hours}H" if hours > 0
+    repr << "#{minutes}M" if minutes > 0
+    repr << "#{duration}S" if duration > 0
+    "PT#{repr}"
+  end
   
 end
