@@ -506,5 +506,5 @@ describe Schedule, 'occurs_on?' do
     schedule.add_recurrence_rule Rule.monthly(6)
     schedule.occurrences_between(Time.parse('2010-07-01'), Time.parse('2010-09-01'))
   end
-  
+
 end
