@@ -8,8 +8,15 @@ module IceCube
     def in_interval?(date, start_date)
       #make sure we're in the right interval
       date = adjust(date, start_date)
-      week_of_year = Date.civil(date.year, date.month, date.day).cweek
-      week_of_year % @interval == 0
+
+      date = Date.civil(date.year, date.month, date.day)
+      start_date = Date.civil(start_date.year, start_date.month, start_date.day)
+
+      #Move both to the start of their respective weeks,
+      #and find the number of full weeks between them
+      no_weeks = ((date - date.wday) - (start_date - start_date.wday)) / 7
+
+      no_weeks % @interval == 0
     end
     
     def to_ical 
