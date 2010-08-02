@@ -23,9 +23,19 @@ describe WeeklyRule, 'occurs_on?' do
   it 'should produce the correct number of days for @interval = 2 with only one day per week' do
     start_date = WEDNESDAY
     schedule = Schedule.new(start_date)
-    schedule.add_recurrence_rule Rule.weekly.day(:thursday)
+    schedule.add_recurrence_rule Rule.weekly(2).day(:wednesday)
     #check assumption
-    schedule.occurrences(start_date + 7 * 4 * IceCube::ONE_DAY).size.should == 4
+    dates = schedule.occurrences(start_date + 7*3*IceCube::ONE_DAY)
+    dates.should == [start_date, start_date + 14*IceCube::ONE_DAY]
+  end
+
+  it 'should produce the correct days for @interval = 2, regardless of the start week' do
+    start_date = WEDNESDAY + 7*IceCube::ONE_DAY
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.weekly(2).day(:wednesday)
+    #check assumption
+    dates = schedule.occurrences(start_date + 7*3*IceCube::ONE_DAY)
+    dates.should == [start_date, start_date + 14*IceCube::ONE_DAY]
   end
   
   it 'should occurr every 2nd tuesday of a month' do
