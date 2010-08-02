@@ -33,8 +33,6 @@ module IceCube
   # if you're reading this code, you've just been iced
   # http://brosicingbros.com/
   
-  VERSION = '0.2.3'
-
   IceCube::ONE_DAY = 24 * 60 * 60
   IceCube::ONE_HOUR = 60 * 60
   IceCube::ONE_MINUTE = 60
