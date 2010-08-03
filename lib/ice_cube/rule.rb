@@ -90,7 +90,7 @@ module IceCube
       end
     end
     
-    # The key - extremely educated guesses
+    # The key to speed - extremely educated guesses
     # This spidering behavior will go through look for the next suggestion
     # by constantly moving the farthest back value forward
     def next_suggestion(date)
@@ -100,13 +100,13 @@ module IceCube
       compact_suggestions = suggestions.values.compact
       # find the next date to go to
       if compact_suggestions.empty?
-        next_date = date
+        attempt_count = 0
         loop do
           # keep going through rule suggestions
-          next_date = self.default_jump(next_date)
-          return next_date if validate_single_date(next_date)
+          next_date = self.default_jump(date, attempt_count += 1)
+          return next_date if !next_date.nil? && validate_single_date(next_date)
         end
-      else  
+      else
         loop do
           compact_suggestions = suggestions.values.compact
           min_suggestion = compact_suggestions.min

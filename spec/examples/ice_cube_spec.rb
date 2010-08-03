@@ -532,9 +532,9 @@ describe Schedule, 'occurs_on?' do
   end
 
   it 'should deal with a yearly rule that has februaries with different mdays' do
-    schedule = Schedule.new(Time.local(2010, 2, 29))
+    schedule = Schedule.new(Time.local(2008, 2, 29))
     schedule.add_recurrence_rule Rule.yearly
-    schedule.first.should == Time.local(2012, 2, 29)
+    schedule.first(3).should == [Time.local(2008, 2, 29), Time.local(2012, 2, 29), Time.local(2016, 2, 29)]
   end
 
   it 'should work with every other month even when the day of the month iterating on does not exist' do
@@ -547,6 +547,24 @@ describe Schedule, 'occurs_on?' do
     schedule = Schedule.new(Time.local(2010, 1, 5))
     schedule.add_recurrence_rule Rule.monthly
     schedule.first(2).should == [Time.local(2010, 1, 5), Time.local(2010, 2, 5)]
+  end
+
+  it 'should be able to know when to stop with an end date and a rule that misses a few times' do
+    schedule = Schedule.new(Time.local(2010, 2, 29), :end_time => Time.local(2010, 10, 30))
+    schedule.add_recurrence_rule Rule.yearly
+    schedule.first(10).should == [Time.local(2010, 2, 29)]
+  end
+
+  it 'should be able to know when to stop with an end date and a rule that misses a few times' do
+    schedule = Schedule.new(Time.local(2010, 2, 29))
+    schedule.add_recurrence_rule Rule.yearly.until(Time.local(2010, 10, 30))
+    schedule.first(10).should == [Time.local(2010, 2, 29)]
+  end
+  
+  it 'should be able to know when to stop with an end date and a rule that misses a few times' do
+    schedule = Schedule.new(Time.local(2010, 2, 29))
+    schedule.add_recurrence_rule Rule.yearly.count(1)
+    schedule.first(10).should == [Time.local(2010, 2, 29)]
   end
   
 end

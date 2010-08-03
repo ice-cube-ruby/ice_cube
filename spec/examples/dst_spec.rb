@@ -207,7 +207,18 @@ describe Schedule, 'occurs_on?' do
     start_date = Time.local(2010, 3, 12, 19, 0, 0)
     schedule = Schedule.new(start_date)
     schedule.add_recurrence_rule Rule.monthly(2)
-    schedule.first(3).should == [Time.local(2010, 3, 12, 19, 0, 0), Time.local(2010, 5, 12, 19, 0, 0), Time.local(2010, 7, 12, 19, 0, 0)]
+    schedule.first(6).should == [Time.local(2010, 3, 12, 19, 0, 0), Time.local(2010, 5, 12, 19, 0, 0), Time.local(2010, 7, 12, 19, 0, 0),
+                                 Time.local(2010, 9, 12, 19, 0, 0), Time.local(2010, 11, 12, 19, 0, 0), Time.local(2011, 1, 12, 19, 0, 0)]
+  end
+
+  it 'local - should make dates on monthly interval over dst - github issue 4' do
+    start_date = Time.local(2010, 3, 12, 19, 0, 0)
+    schedule = Schedule.new(start_date)
+    schedule.add_recurrence_rule Rule.monthly
+    schedule.first(10).should == [Time.local(2010, 3, 12, 19, 0, 0), Time.local(2010, 4, 12, 19, 0, 0), Time.local(2010, 5, 12, 19, 0, 0),
+                                  Time.local(2010, 6, 12, 19, 0, 0), Time.local(2010, 7, 12, 19, 0, 0), Time.local(2010, 8, 12, 19, 0, 0),
+                                  Time.local(2010, 9, 12, 19, 0, 0), Time.local(2010, 10, 12, 19, 0, 0), Time.local(2010, 11, 12, 19, 0, 0),
+                                  Time.local(2010, 12, 12, 19, 0, 0)]
   end
 
   it 'local - should make dates on yearly interval over dst - github issue 4' do

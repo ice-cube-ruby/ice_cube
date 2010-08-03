@@ -125,9 +125,9 @@ module IceCube
 
     # Retrieve the first (n) occurrences of the schedule.  May return less than
     # n results, if the rules end before n results are reached.
-    def first(n = 1)
-      dates = find_occurrences { |head| head.first(n) }
-      dates.slice(0, n)
+    def first(n = nil)
+      dates = find_occurrences { |head| head.first(n || 1) }
+      n.nil? ? dates.first : dates.slice(0, n)
     end
              
     # Add a rule of any type as an recurrence in this schedule

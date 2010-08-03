@@ -23,12 +23,8 @@ module IceCube
     
     protected
     
-    def default_jump(date)
-      goal = date
-      @interval.times do
-        goal += TimeUtil.days_in_month(goal) * ONE_DAY
-      end
-      adjust(goal, date)
+    def default_jump(date, attempt_count = 1)
+      TimeUtil.date_in_n_months(date, attempt_count * @interval)
     end
  
     private

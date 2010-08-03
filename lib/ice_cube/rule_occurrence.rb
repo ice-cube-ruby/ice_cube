@@ -41,7 +41,7 @@ module IceCube
       else
         date = @rule.next_suggestion(@date)
       end
-      #walk through all of the successive dates, looking for the next occurrence (interval-valid), then return it.
+      # walk through all of the successive dates, looking for the next occurrence (interval-valid), then return it.
       begin
         return nil if yield(date)
         return nil if @end_time && date > @end_time

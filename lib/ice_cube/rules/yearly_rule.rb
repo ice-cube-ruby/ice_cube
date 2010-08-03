@@ -24,13 +24,9 @@ module IceCube
     protected
     
     # one year from now, the same month and day of the year
-    def default_jump(date)
-      #jump by months since there's no reliable way to jump by year
-      goal = date
-      (@interval * 12).times do
-        goal += TimeUtil.days_in_month(goal) * ONE_DAY
-      end
-      adjust(goal, date)
+    def default_jump(date, attempt_count = 1)
+      # jump by months since there's no reliable way to jump by year
+      TimeUtil.date_in_n_months(date, attempt_count * @interval * 12)
     end
     
     private

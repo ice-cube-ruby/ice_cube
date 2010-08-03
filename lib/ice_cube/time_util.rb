@@ -16,6 +16,44 @@ module TimeUtil
     end
   end
   
+  # TODO can we improve this more?
+  def self.date_in_n_months(date, month_distance)
+
+    next_mark = date
+    days_in_month_of_next_mark = days_in_month(next_mark)
+    
+    month_distance.times do
+
+      prev_mark = next_mark
+      next_mark = next_mark + days_in_month_of_next_mark * ONE_DAY
+      
+      months_covered = next_mark.month - prev_mark.month
+
+      # step back to the end of the previous month of months_covered went too far
+      if months_covered == 2
+        next_mark -= next_mark.mday * ONE_DAY
+      end
+
+      days_in_month_of_next_mark = days_in_month(next_mark)
+      
+    end
+
+    # at the end, there's a chance we're not on the correct day,
+    # but if we're not - we will always be behind it in the correct month
+    # if there exists no proper day in the month for us, return nil - otherwise, return that date
+
+    if days_in_month_of_next_mark >= date.mday
+      next_mark += (date.mday - next_mark.mday) * ONE_DAY
+      adjust(next_mark, date)
+    end
+    
+  end
+
+  def adjust(goal, date)
+    return goal if goal.utc_offset == date.utc_offset
+    goal - goal.utc_offset + date.utc_offset
+  end
+  
   def self.is_leap?(date)
     (date.year % 4 == 0 && date.year % 100 != 0) || (date.year % 400 == 0)
   end
