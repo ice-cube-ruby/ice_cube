@@ -373,7 +373,7 @@ describe Schedule, 'occurs_on?' do
     start_time = Time.now
     schedule = Schedule.new(start_time)
     schedule.add_recurrence_date start_time
-    schedule.first.should == [start_time]
+    schedule.first.should == start_time
   end
 
   it 'should be able to ignore nil dates that are inserted as part of a collection to add_recurrence_date' do
@@ -507,4 +507,46 @@ describe Schedule, 'occurs_on?' do
     schedule.occurrences_between(Time.parse('2010-07-01'), Time.parse('2010-09-01'))
   end
 
+  it 'should be able to exist on the 28th of each month crossing over february - github issue 6a' do
+    schedule = Schedule.new(Time.local(2010, 1, 28))
+    schedule.add_recurrence_rule Rule.monthly
+    schedule.first(3).should == [Time.local(2010, 1, 28), Time.local(2010, 2, 28), Time.local(2010, 3, 28)]
+  end
+
+  it 'should be able to exist on the 29th of each month crossing over february - github issue 6a' do
+    schedule = Schedule.new(Time.local(2010, 1, 29))
+    schedule.add_recurrence_rule Rule.monthly
+    schedule.first(3).should == [Time.local(2010, 1, 29), Time.local(2010, 3, 29), Time.local(2010, 4, 29)]
+  end
+
+  it 'should be able to exist on the 30th of each month crossing over february - github issue 6a' do
+    schedule = Schedule.new(Time.local(2010, 1, 30))
+    schedule.add_recurrence_rule Rule.monthly
+    schedule.first(3).should == [Time.local(2010, 1, 30), Time.local(2010, 3, 30), Time.local(2010, 4, 30)]
+  end
+
+  it 'should be able to exist ont he 31st of each month crossing over february - github issue 6a' do
+    schedule = Schedule.new(Time.local(2010, 1, 31))
+    schedule.add_recurrence_rule Rule.monthly
+    schedule.first(3).should == [Time.local(2010, 1, 31), Time.local(2010, 3, 31), Time.local(2010, 5, 31)]
+  end
+
+  it 'should deal with a yearly rule that has februaries with different mdays' do
+    schedule = Schedule.new(Time.local(2010, 2, 29))
+    schedule.add_recurrence_rule Rule.yearly
+    schedule.first.should == Time.local(2012, 2, 29)
+  end
+
+  it 'should work with every other month even when the day of the month iterating on does not exist' do
+    schedule = Schedule.new(Time.local(2010, 1, 31))
+    schedule.add_recurrence_rule Rule.monthly(2)
+    schedule.first(6).should == [Time.local(2010, 1, 31), Time.local(2010, 3, 31), Time.local(2010, 5, 31), Time.local(2010, 7, 31), Time.local(2011, 1, 31), Time.local(2011, 3, 31)]
+  end
+
+  it 'should be able to go into february and stay on the same day' do
+    schedule = Schedule.new(Time.local(2010, 1, 5))
+    schedule.add_recurrence_rule Rule.monthly
+    schedule.first(2).should == [Time.local(2010, 1, 5), Time.local(2010, 2, 5)]
+  end
+  
 end
