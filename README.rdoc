@@ -176,6 +176,10 @@ There are many types of recurrence rules that can be added to a schedule:
 
 ---
 
+===Issues?
+
+Lighthouse: http://github.com/seejohnrun/ice_cube
+
 ===Contributing
 
 * Contributions are welcome - I use github's Issue tracker for bug fixes (accompanying failing tests are awesome) and feature requests
