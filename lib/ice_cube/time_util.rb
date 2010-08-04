@@ -21,20 +21,23 @@ module TimeUtil
 
     next_mark = date
     days_in_month_of_next_mark = days_in_month(next_mark)
-    
+
     month_distance.times do
-
-      prev_mark = next_mark
-      next_mark = next_mark + days_in_month_of_next_mark * ONE_DAY
       
+      prev_mark = next_mark
+      next_mark += days_in_month_of_next_mark * ONE_DAY
+      
+      # only moving one day at a time, so this suffices
       months_covered = next_mark.month - prev_mark.month
-
+      months_covered += 12 if months_covered < 0
+            
       # step back to the end of the previous month of months_covered went too far
       if months_covered == 2
         next_mark -= next_mark.mday * ONE_DAY
       end
 
       days_in_month_of_next_mark = days_in_month(next_mark)
+      next_mark = adjust(next_mark, prev_mark)
       
     end
 
@@ -44,7 +47,6 @@ module TimeUtil
 
     if days_in_month_of_next_mark >= date.mday
       next_mark += (date.mday - next_mark.mday) * ONE_DAY
-      adjust(next_mark, date)
     end
     
   end
@@ -54,16 +56,16 @@ module TimeUtil
     goal - goal.utc_offset + date.utc_offset
   end
   
-  def self.is_leap?(date)
-    (date.year % 4 == 0 && date.year % 100 != 0) || (date.year % 400 == 0)
+  def self.is_leap?(year)
+    (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
   end
 
   def self.days_in_year(date)
-    is_leap?(date) ? 366 : 365
+    is_leap?(date.year) ? 366 : 365
   end
 
   def self.days_in_month(date)
-    is_leap?(date) ? LeapYearMonthDays[date.month - 1] : CommonYearMonthDays[date.month - 1]
+    is_leap?(date.year) ? LeapYearMonthDays[date.month - 1] : CommonYearMonthDays[date.month - 1]
   end
 
   def self.ical_format(time)

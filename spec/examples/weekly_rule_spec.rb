@@ -47,5 +47,11 @@ describe WeeklyRule, 'occurs_on?' do
       d.wday.should == 2
     end
   end
+
+  it 'should be able to start on sunday but repeat on wednesdays' do
+    schedule = Schedule.new(Time.local(2010, 8, 1))
+    schedule.add_recurrence_rule Rule.weekly.day(:monday)
+    schedule.first(3).should == [Time.local(2010, 8, 2), Time.local(2010, 8, 9), Time.local(2010, 8, 16)]
+  end
   
 end

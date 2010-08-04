@@ -566,5 +566,26 @@ describe Schedule, 'occurs_on?' do
     schedule.add_recurrence_rule Rule.yearly.count(1)
     schedule.first(10).should == [Time.local(2010, 2, 29)]
   end
+
+  it 'should be able to go through a year of every month on a day that does not exist' do
+    schedule = Schedule.new(Time.local(2010, 1, 31), :end_time => Time.local(2011, 2, 5))
+    schedule.add_recurrence_rule Rule.monthly
+    schedule.all_occurrences.should == [Time.local(2010, 1, 31), Time.local(2010, 3, 31), Time.local(2010, 5, 31),
+                                 Time.local(2010, 7, 31), Time.local(2010, 8, 31), Time.local(2010, 10, 31),
+                                 Time.local(2010, 12, 31), Time.local(2011, 1, 31)]
+  end
+
+  it 'should be able to go through a year of every 2 months on a day that does not exist' do
+    schedule = Schedule.new(Time.local(2010, 1, 31), :end_time => Time.local(2011, 2, 5))
+    schedule.add_recurrence_rule Rule.monthly(2)
+    schedule.all_occurrences.should == [Time.local(2010, 1, 31), Time.local(2010, 3, 31), Time.local(2010, 5, 31),
+                                 Time.local(2010, 7, 31), Time.local(2011, 1, 31)]
+  end
+
+  it 'should be able to go through a year of every 3 months on a day that does not exist' do
+    schedule = Schedule.new(Time.local(2010, 1, 31), :end_time => Time.local(2011, 2, 5))
+    schedule.add_recurrence_rule Rule.monthly(3)
+    schedule.all_occurrences.should == [Time.local(2010, 1, 31), Time.local(2010, 7, 31), Time.local(2010, 10, 31), Time.local(2011, 1, 31)]
+  end
   
 end

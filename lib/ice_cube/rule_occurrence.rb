@@ -43,10 +43,11 @@ module IceCube
       end
       # walk through all of the successive dates, looking for the next occurrence (interval-valid), then return it.
       begin
-        return nil if yield(date)
         return nil if @end_time && date > @end_time
         return nil if @rule.until_date && date > @rule.until_date # until check
-        return RuleOccurrence.new(@rule, @start_date, @end_time, date, @index + 1) if @rule.in_interval?(date, @start_date)
+        next unless @rule.in_interval?(date, @start_date) 
+        return nil if yield(date)
+        return RuleOccurrence.new(@rule, @start_date, @end_time, date, @index + 1)
       end while date = @rule.next_suggestion(date)
     end
     
