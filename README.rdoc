@@ -178,7 +178,7 @@ There are many types of recurrence rules that can be added to a schedule:
 
 ===Issues?
 
-Lighthouse: http://github.com/seejohnrun/ice_cube
+Lighthouse: http://ice_cube.lighthouseapp.com/projects/57433-ice_cube-ruby/overview
 
 ===Contributing
 
