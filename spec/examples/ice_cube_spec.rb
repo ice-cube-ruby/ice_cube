@@ -587,5 +587,23 @@ describe Schedule, 'occurs_on?' do
     schedule.add_recurrence_rule Rule.monthly(3)
     schedule.all_occurrences.should == [Time.local(2010, 1, 31), Time.local(2010, 7, 31), Time.local(2010, 10, 31), Time.local(2011, 1, 31)]
   end
+
+  it 'should be able to work with occurs_on? at an odd time - start of day' do
+    schedule = Schedule.new(Time.local(2010, 1, 31, 0, 0, 0).in_time_zone('Pacific Time (US & Canada)'))
+    schedule.add_recurrence_rule Rule.weekly
+    schedule.occurs_on?(Date.new(2010, 1, 31)).should be(true)
+    schedule.occurs_on?(Date.new(2010, 1, 30)).should be(false)
+    schedule.occurs_on?(Date.new(2010, 2, 1)).should be(false)
+    schedule.occurs_on?(Date.new(2010, 2, 7)).should be(true)
+  end
+
+  it 'should be able to work with occurs_on? at an odd time - end of day' do
+    schedule = Schedule.new(Time.local(2010, 1, 31, 23, 59, 59).in_time_zone('Pacific Time (US & Canada)'))
+    schedule.add_recurrence_rule Rule.weekly
+    schedule.occurs_on?(Date.new(2010, 1, 31)).should be(true)
+    schedule.occurs_on?(Date.new(2010, 1, 30)).should be(false)
+    schedule.occurs_on?(Date.new(2010, 2, 1)).should be(false)
+    schedule.occurs_on?(Date.new(2010, 2, 7)).should be(true)
+  end
   
 end
