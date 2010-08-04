@@ -41,6 +41,7 @@ EX: Specifying a exception/recurrence date:
 
     # or the first (n) occurrences
     schedule.first(n) # [Time.now]
+    schedule.first # Time.now
 
     # or give the schedule a duration and ask if occurring_at?
     schedule = Schedule.new(Time.now, :duration => 3600)
