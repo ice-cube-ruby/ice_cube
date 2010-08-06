@@ -635,5 +635,54 @@ describe Schedule, 'occurs_on?' do
     schedule.occurs_on?(date + 1).should be(false)
     schedule.occurs_on?(date - 1).should be(false)
   end
+
+  it 'should work with occurs_on? with multiple rdates' do
+    schedule = Schedule.new(Time.local(2010, 7, 10, 16))
+    schedule.add_recurrence_date(Time.local(2010, 7, 11, 16))
+    schedule.add_recurrence_date(Time.local(2010, 7, 12, 16))
+    schedule.add_recurrence_date(Time.local(2010, 7, 13, 16))
+    # test
+    schedule.occurs_on?(Date.new(2010, 7, 11)).should be(true)
+    schedule.occurs_on?(Date.new(2010, 7, 12)).should be(true)
+    schedule.occurs_on?(Date.new(2010, 7, 13)).should be(true)
+  end
+
+  it 'should have some convenient aliases' do
+    start_time = Time.now
+    schedule = Schedule.new(start_time)
+
+    schedule.start_date.should == schedule.start_time
+    schedule.end_date.should == schedule.end_time
+  end
+
+  it 'should have some convenient alias for rrules' do
+    schedule = Schedule.new(Time.now)
+    daily = Rule.daily; monthly = Rule.monthly
+    schedule.add_recurrence_rule daily
+    schedule.rrule monthly
+    schedule.rrules.should == [daily, monthly]
+  end
+  
+  it 'should have some convenient alias for exrules' do
+    schedule = Schedule.new(Time.now)
+    daily = Rule.daily; monthly = Rule.monthly
+    schedule.add_exception_rule daily
+    schedule.exrule monthly
+    schedule.exrules.should == [daily, monthly]
+  end
+  
+  it 'should have some convenient alias for rdates' do
+    schedule = Schedule.new(Time.now)
+    schedule.add_recurrence_date Time.local(2010, 8, 13)
+    schedule.rdate Time.local(2010, 8, 14)
+    schedule.rdates.should == [Time.local(2010, 8, 13), Time.local(2010, 8, 14)]
+  end
+  
+  it 'should have some convenient alias for exdates' do
+    schedule = Schedule.new(Time.now)
+    schedule.add_exception_date Time.local(2010, 8, 13)
+    schedule.exdate Time.local(2010, 8, 14)
+    schedule.exdates.should == [Time.local(2010, 8, 13), Time.local(2010, 8, 14)]
+  end
   
 end

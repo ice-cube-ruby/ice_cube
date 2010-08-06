@@ -3,8 +3,10 @@ module IceCube
   class Schedule
 
     attr_reader :rdates, :exdates, :start_date, :duration, :end_time
+
+    alias :end_date :end_time
     alias :start_time :start_date
-    
+      
     def initialize(start_date, options = {})
       @rrule_occurrence_heads = []
       @exrule_occurrence_heads = []
@@ -104,9 +106,8 @@ module IceCube
     
     # Determine whether a given date appears in the times returned by the schedule
     # Required activeSupport
-    def occurs_on?(date)      
+    def occurs_on?(date)
       time = date.to_time
-      return false if @end_time && time > @end_time
       occurrences_between(time.beginning_of_day, time.end_of_day).any?
     end
         
@@ -129,7 +130,7 @@ module IceCube
       dates = find_occurrences { |head| head.first(n || 1) }
       n.nil? ? dates.first : dates.slice(0, n)
     end
-             
+
     # Add a rule of any type as an recurrence in this schedule
     def add_recurrence_rule(rule)
       raise ArgumentError.new('Argument must be a valid rule') unless rule.class < Rule
@@ -164,7 +165,7 @@ module IceCube
       # adjust to the propert end date
       end_time = @end_time if @end_time && @end_time < end_time
       # collect the occurrences
-      exclude_dates, include_dates = Set.new(@exdates), SortedSet.new(@rdates)
+      include_dates = SortedSet.new(@rdates)
       @rrule_occurrence_heads.each do |rrule_occurrence_head|
         include_dates.merge(rrule_occurrence_head.between(begin_time, end_time))
       end
@@ -172,9 +173,15 @@ module IceCube
         exclude_dates.merge(exrule_occurrence_head.between(begin_time, end_time))
       end
       # reject all of the ones outside of the range
-      include_dates.reject! { |date| exclude_dates.include?(date) || date < begin_time || date > end_time }
+      include_dates.reject! { |date| (@exdates && @exdates.include?(date)) || date < begin_time || date > end_time }
       include_dates.to_a
     end
+
+    alias :rdate :add_recurrence_date
+    alias rrule add_recurrence_rule
+    alias exdate add_exception_date
+    alias exrule add_exception_rule
+
     
     private
 

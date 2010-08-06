@@ -1,12 +1,18 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
+require 'active_support'
+
 describe Schedule, 'occurs_on?' do
 
-  it 'local - should make dates on interval over dst - github issue 4' do
-    start_date = Time.local(2010, 3, 12, 19, 0, 0)
-    schedule = Schedule.new(start_date)
-    schedule.add_recurrence_rule Rule.daily(3)
-    schedule.first(3).should == [Time.local(2010, 3, 12, 19, 0, 0), Time.local(2010, 3, 15, 19, 0, 0), Time.local(2010, 3, 18, 19, 0, 0)]
+  it 'should work with occurs_on? with multiple rdates' do
+    schedule = Schedule.new(Time.local(2010, 7, 10, 16))
+    schedule.add_recurrence_date(Time.local(2010, 7, 11, 16))
+    schedule.add_recurrence_date(Time.local(2010, 7, 12, 16))
+    schedule.add_recurrence_date(Time.local(2010, 7, 13, 16))
+    # test
+    schedule.occurs_on?(Date.new(2010, 7, 11)).should be(true)
+    schedule.occurs_on?(Date.new(2010, 7, 12)).should be(true)
+    schedule.occurs_on?(Date.new(2010, 7, 13)).should be(true)
   end
   
 end
