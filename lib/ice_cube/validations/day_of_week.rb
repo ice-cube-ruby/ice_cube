@@ -18,7 +18,10 @@ module IceCube
       @days_of_week[date.wday].include?(nth_occurrence_of_weekday) || @days_of_week[date.wday].include?(nth_occurrence_of_weekday - this_weekday_in_month_count - 1)
     end
   
-    #note - temporary implementation
+
+    # note - temporary implementation
+    # instead - once we know what weekday starts the month, we should be able to figure out
+    # the rest with basic math
     def closest(date)
       return nil if !@days_of_week || @days_of_week.empty?
       goal = date
