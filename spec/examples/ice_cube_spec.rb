@@ -230,8 +230,9 @@ describe IceCube::Schedule, 'occurs_on?' do
   # verify ice_cube is properly checking until bounds
   it 'works with a until date that is local, but the start date is UTC' do
     start_date = Time.utc(2010, 11, 6, 5, 0, 0)
+    Time.zone = 'Eastern Time (US & Canada)'
     schedule = IceCube::Schedule.new(start_date)
-    schedule.add_recurrence_rule IceCube::Rule.daily.until(Time.local(2010, 11, 9, 23, 0, 0)) #4 o UTC time
+    schedule.add_recurrence_rule IceCube::Rule.daily.until(Time.zone.local(2010, 11, 9, 23, 0, 0)) #4 o UTC time
     #check assumptions
     dates = schedule.all_occurrences
     dates.each { |d| d.utc?.should == true }
