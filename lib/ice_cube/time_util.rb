@@ -53,7 +53,7 @@ module IceCube
       
     end
     
-    def adjust(goal, date)
+    def self.adjust(goal, date)
       return goal if goal.utc_offset == date.utc_offset
       goal - goal.utc_offset + date.utc_offset
     end
