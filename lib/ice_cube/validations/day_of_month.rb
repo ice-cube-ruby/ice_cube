@@ -34,11 +34,11 @@ module IceCube
       return nil if distances.empty?
       # return the start of the proper day
       goal = date + distances.min * IceCube::ONE_DAY
-      adjust(goal, date)
+      self.class.adjust(goal, date)
     end
     
     def to_s
-      'on the ' << nice_numbers(@days_of_month) << (@days_of_month.size == 1 ? ' day' : ' days') << ' of the month' unless @days_of_month.empty?
+      'on the ' << self.class.nice_numbers(@days_of_month) << (@days_of_month.size == 1 ? ' day' : ' days') << ' of the month' unless @days_of_month.empty?
     end
   
     def to_ical

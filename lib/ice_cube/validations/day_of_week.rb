@@ -26,7 +26,7 @@ module IceCube
       return nil if !@days_of_week || @days_of_week.empty?
       goal = date
       while goal += IceCube::ONE_DAY
-        return adjust(goal, date) if validate(goal)
+        return self.class.adjust(goal, date) if validate(goal)
       end
     end
 
@@ -34,7 +34,7 @@ module IceCube
       representation = ''
       representation << 'on the '
       representation << @days_of_week.map do |day, occ| 
-        nice_numbers(occ) << ' ' << Date::DAYNAMES[day] << (occ.size != 1 ? 's' : '') unless @days_of_week.empty?
+        self.class.nice_numbers(occ) << ' ' << Date::DAYNAMES[day] << (occ.size != 1 ? 's' : '') unless @days_of_week.empty?
       end.join(' and the ')
       representation
     end

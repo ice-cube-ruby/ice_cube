@@ -22,11 +22,11 @@ module IceCube
       # go to the closest distance away
       goal = date
       months.min.times { goal += TimeUtil.days_in_month(goal) * IceCube::ONE_DAY }
-      adjust(goal, date)
+      self.class.adjust(goal, date)
     end
 
     def to_s
-      'in ' << sentence(@months_of_year.map { |m| Date::MONTHNAMES[m] }) unless @months_of_year.empty?
+      'in ' << self.class.sentence(@months_of_year.map { |m| Date::MONTHNAMES[m] }) unless @months_of_year.empty?
     end
 
     def to_ical

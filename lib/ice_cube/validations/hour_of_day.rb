@@ -22,11 +22,11 @@ module IceCube
       # go to the closest distance away, the start of that hour
       closest_hour = hours.min
       goal = date + IceCube::ONE_HOUR * closest_hour
-      adjust(goal, date)
+      self.class.adjust(goal, date)
     end
 
     def to_s
-      'on the ' << nice_numbers(@hours_of_day) << (@hours_of_day.size == 1 ? ' hour' : ' hours') << ' of the day' unless @hours_of_day.empty?
+      'on the ' << self.class.nice_numbers(@hours_of_day) << (@hours_of_day.size == 1 ? ' hour' : ' hours') << ' of the day' unless @hours_of_day.empty?
     end
 
     def to_ical

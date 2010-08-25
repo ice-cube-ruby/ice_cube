@@ -21,12 +21,12 @@ module IceCube
       days.compact!
       # go to the closest distance away, the start of that day
       goal = date + days.min * IceCube::ONE_DAY
-      adjust(goal, date)
+      self.class.adjust(goal, date)
     end
   
     def to_s
       days_dup = (@days - @rule.validations[:day_of_week].keys if @rule.validations[:day_of_week]) || @days # don't list twice
-      'on ' << sentence(days_dup.map { |d| Date::DAYNAMES[d] + 's' }) unless days_dup.empty?
+      'on ' << self.class.sentence(days_dup.map { |d| Date::DAYNAMES[d] + 's' }) unless days_dup.empty?
     end
 
     def to_ical

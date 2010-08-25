@@ -22,11 +22,11 @@ module IceCube
       # go to the closest distance away
       closest_second = seconds.min
       goal = date + closest_second
-      adjust(goal, date)
+      self.class.adjust(goal, date)
     end
 
     def to_s
-      'on the ' << nice_numbers(@seconds_of_minute) << (@seconds_of_minute.size == 1 ? ' second' : ' seconds') << ' of the minute' unless @seconds_of_minute.empty?
+      'on the ' << self.class.nice_numbers(@seconds_of_minute) << (@seconds_of_minute.size == 1 ? ' second' : ' seconds') << ' of the minute' unless @seconds_of_minute.empty?
     end
 
     def to_ical

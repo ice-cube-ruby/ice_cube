@@ -5,13 +5,13 @@ module IceCube
     NUMBER_SUFFIX = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th']
     SPECIAL_SUFFIX = { 11 => 'th', 12 => 'th', 13 => 'th', 14 => 'th' } 
     
-    def adjust(goal, date)
+    def self.adjust(goal, date)
       return goal if goal.utc_offset == date.utc_offset
       goal - goal.utc_offset + date.utc_offset
     end
     
     # influences by ActiveSupport's to_sentence
-    def sentence(array)
+    def self.sentence(array)
       case array.length
       when 0 ; ''
       when 1 ; array[0].to_s
@@ -20,14 +20,14 @@ module IceCube
       end
     end
     
-    def nice_numbers(array)
+    def self.nice_numbers(array)
       array.sort!
-      sentence array.map { |d| nice_number(d) }
+      self.sentence array.map { |d| nice_number(d) }
     end
     
     private
     
-    def nice_number(number)
+    def self.nice_number(number)
       if number == -1
         'last'
       elsif number < -1
