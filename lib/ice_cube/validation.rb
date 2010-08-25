@@ -3,7 +3,8 @@ module IceCube
   class Validation
      
     NUMBER_SUFFIX = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th']
-     
+    SPECIAL_SUFFIX = { 11 => 'th', 12 => 'th', 13 => 'th', 14 => 'th' } 
+    
     def adjust(goal, date)
       return goal if goal.utc_offset == date.utc_offset
       goal - goal.utc_offset + date.utc_offset
@@ -30,9 +31,11 @@ module IceCube
       if number == -1
         'last'
       elsif number < -1
-        number.abs.to_s << NUMBER_SUFFIX[number.abs % 10] << ' to last'
+        suffix = SPECIAL_SUFFIX.include?(number) ? SPECIAL_SUFFIX[number] : NUMBER_SUFFIX[number.abs % 10]
+        number.abs.to_s << suffix << ' to last'
       else
-        number.to_s << NUMBER_SUFFIX[number % 10]  
+        suffix = SPECIAL_SUFFIX.include?(number) ? SPECIAL_SUFFIX[number] : NUMBER_SUFFIX[number.abs % 10]
+        number.to_s << suffix  
       end
     end
     

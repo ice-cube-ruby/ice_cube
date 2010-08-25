@@ -1,13 +1,12 @@
 module IceCube
   
   class RuleOccurrence
-   
-    include Comparable
-    
-    #allow to be compared to dates
-    def <=>(other)
-      to_time <=> other
-    end
+
+    # allow to be compared to dates (awesome but not used anymore)
+    # include Comparable
+#    def <=>(other)
+#      to_time <=> other
+#    end
     
     def to_time
       @date

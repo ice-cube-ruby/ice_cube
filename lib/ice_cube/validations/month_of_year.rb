@@ -26,7 +26,7 @@ module IceCube
     end
 
     def to_s
-      'in ' << @months_of_year.map { |m| Date::MONTHNAMES[m] }.join(', ') unless @months_of_year.empty?
+      'in ' << sentence(@months_of_year.map { |m| Date::MONTHNAMES[m] }) unless @months_of_year.empty?
     end
 
     def to_ical

@@ -2,6 +2,12 @@ require File.dirname(__FILE__) + '/spec_helper'
 
 describe IceCube::Schedule, 'to_yaml' do
 
+  it 'should be able to let rules take round trips to yaml' do
+    rule = IceCube::Rule.monthly
+    rule = IceCube::Rule.from_yaml(rule.to_yaml) # Round trip
+    rule.to_hash[:rule_type].should == 'IceCube::MonthlyRule'
+  end
+  
   it 'should respond to .to_yaml' do
     schedule = IceCube::Schedule.new(Time.now)
     schedule.add_recurrence_rule IceCube::Rule.daily.until(Time.now)
