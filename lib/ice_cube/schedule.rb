@@ -165,7 +165,7 @@ module IceCube
       # adjust to the propert end date
       end_time = @end_time if @end_time && @end_time < end_time
       # collect the occurrences
-      include_dates = SortedSet.new(@rdates)
+      include_dates, exclude_dates = SortedSet.new(@rdates), Set.new(@exdates)
       @rrule_occurrence_heads.each do |rrule_occurrence_head|
         include_dates.merge(rrule_occurrence_head.between(begin_time, end_time))
       end
@@ -173,7 +173,7 @@ module IceCube
         exclude_dates.merge(exrule_occurrence_head.between(begin_time, end_time))
       end
       # reject all of the ones outside of the range
-      include_dates.reject! { |date| (@exdates && @exdates.include?(date)) || date < begin_time || date > end_time }
+      include_dates.reject! { |date| exclude_dates.include?(date) || date < begin_time || date > end_time }
       include_dates.to_a
     end
 
