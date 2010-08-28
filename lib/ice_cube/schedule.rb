@@ -105,10 +105,10 @@ module IceCube
     end
     
     # Determine whether a given date appears in the times returned by the schedule
-    # Required activeSupport
     def occurs_on?(date)
-      time = date.to_time
-      occurrences_between(time.beginning_of_day, time.end_of_day).any?
+      return active_support_occurs_on?(date) if date.respond_to?(:to_time)
+      time_format = @start_date.utc? ? :utc : :local
+      self.occurrences_between(Time.send(time_format, date.year, date.month, date.day, 0, 0, 0), Time.send(time_format, date.year, date.month, date.day, 23, 59, 59)).any?
     end
         
     # Return all possible occurrences 
@@ -184,7 +184,12 @@ module IceCube
 
     
     private
-
+      
+    def active_support_occurs_on?(date)
+      time = date.to_time
+      occurrences_between(time.beginning_of_day, time.end_of_day).any?
+    end
+        
     # tell if, from a list of rule_occurrence heads, a certain time is occurring
     def any_occurring_at?(what, time)
       return false if @start_time && time < @start_time
