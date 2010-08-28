@@ -690,8 +690,8 @@ describe IceCube::Schedule, 'occurs_on?' do
     schedule = IceCube::Schedule.new(Time.local(2010, 8, 27, 10))
     schedule.rrule IceCube::Rule.daily
     schedule.exrule IceCube::Rule.daily.day(:friday)
-    schedule.occurs_on?(Date.today).should be(false)
-    schedule.occurs_on?(Date.today + 1).should be(true)
+    schedule.occurs_on?(Date.new(2010, 8, 27)).should be(false)
+    schedule.occurs_on?(Date.new(2010, 8, 28)).should be(true)
   end
     
 end
