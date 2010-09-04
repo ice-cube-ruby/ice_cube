@@ -124,6 +124,16 @@ module IceCube
       find_occurrences { |head| head.upto(end_date) }
     end
 
+    # Find remaining occurrences
+    def remaining_occurrences(from = Time.now)
+      occurrences_between(from, @end_time)
+    end
+    
+    # Find next scheduled occurrence
+    def next_occurrence(from = Time.now)
+      remaining_occurrences(from).first
+    end
+
     # Retrieve the first (n) occurrences of the schedule.  May return less than
     # n results, if the rules end before n results are reached.
     def first(n = nil)
