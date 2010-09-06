@@ -126,6 +126,7 @@ module IceCube
 
     # Find remaining occurrences
     def remaining_occurrences(from = Time.now)
+      raise ArgumentError.new('Schedule must have an end_time to use remaining_occurrences') unless @end_time
       occurrences_between(from, @end_time)
     end
     
