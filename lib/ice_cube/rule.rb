@@ -25,7 +25,7 @@ module IceCube
       end
       rule
     end
-    
+        
     def to_yaml
       to_hash.to_yaml
     end
