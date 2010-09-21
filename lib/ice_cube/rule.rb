@@ -26,8 +26,8 @@ module IceCube
       rule
     end
         
-    def to_yaml
-      to_hash.to_yaml
+    def to_yaml(options = {})
+      to_hash.to_yaml(options)
     end
 
     def self.from_yaml(str)

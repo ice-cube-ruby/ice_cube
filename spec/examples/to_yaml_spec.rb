@@ -185,4 +185,12 @@ describe IceCube::Schedule, 'to_yaml' do
     IceCube::Schedule.from_yaml(schedule.to_yaml).duration.should == 3600
   end
   
+  it 'should be able to be serialized to yaml as part of a hash' do
+    schedule = IceCube::Schedule.new Time.now
+    hash = { :schedule => schedule }
+    lambda do
+      hash.to_yaml
+    end.should_not raise_error
+  end
+
 end

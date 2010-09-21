@@ -33,13 +33,13 @@ module IceCube
     end
 
     # Convert the schedule to yaml, reverse of Schedule.from_yaml
-    def to_yaml
+    def to_yaml(options = {})
       hash = to_hash
       hash[:start_date] = TimeUtil.serializable_time(hash[:start_date])
       hash[:rdates] = hash[:rdates].map { |t| TimeUtil.serializable_time(t) }
       hash[:exdates] = hash[:exdates].map { |t| TimeUtil.serializable_time(t) }
       hash[:end_time] = TimeUtil.serializable_time(hash[:end_time])
-      hash.to_yaml
+      hash.to_yaml(options)
     end
 
     # Create a schedule from a hash created by instance.to_hash
