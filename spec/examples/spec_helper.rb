@@ -1,4 +1,5 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'lib', 'ice_cube')
+require 'rubygems'
 require 'active_support'
 
 #some custom dates
