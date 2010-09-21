@@ -191,7 +191,8 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'perform a every day LOCAL and make sure we get back LOCAL' do
-    start_date = Time.local(2010, 9, 2, 5, 0, 0)
+    Time.zone = 'Eastern Time (US & Canada)'
+    start_date = Time.zone.local(2010, 9, 2, 5, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.daily
     schedule.first(10).each do |d| 
@@ -215,15 +216,16 @@ describe IceCube::Schedule, 'occurs_on?' do
   # here we purposely put a UTC time that is before the range ends, to
   # verify ice_cube is properly checking until bounds
   it 'works with a until date that is UTC, but the start date is local' do
-    start_date = Time.local(2010, 11, 6, 5, 0, 0)
+    Time.zone = 'Eastern Time (US & Canada)'
+    start_date = Time.zone.local(2010, 11, 6, 5, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.daily.until(Time.utc(2010, 11, 10, 8, 0, 0)) #4 o clocal local
     #check assumptions
     dates = schedule.all_occurrences
     dates.each { |d| d.utc?.should == false }
-    dates.should == [Time.local(2010, 11, 6, 5, 0, 0), 
-      Time.local(2010, 11, 7, 5, 0, 0), Time.local(2010, 11, 8, 5, 0, 0), 
-      Time.local(2010, 11, 9, 5, 0, 0)]
+    dates.should == [Time.zone.local(2010, 11, 6, 5, 0, 0), 
+      Time.zone.local(2010, 11, 7, 5, 0, 0), Time.zone.local(2010, 11, 8, 5, 0, 0), 
+      Time.zone.local(2010, 11, 9, 5, 0, 0)]
   end
 
   # here we purposely put a local time that is before the range ends, to
@@ -515,21 +517,21 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'should be able to exist on the 29th of each month crossing over february - github issue 6a' do
-    schedule = IceCube::Schedule.new(Time.local(2010, 1, 29))
+    schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 29))
     schedule.add_recurrence_rule IceCube::Rule.monthly
-    schedule.first(3).should == [Time.local(2010, 1, 29), Time.local(2010, 3, 29), Time.local(2010, 4, 29)]
+    schedule.first(3).should == [Time.zone.local(2010, 1, 29), Time.zone.local(2010, 3, 29), Time.zone.local(2010, 4, 29)]
   end
 
   it 'should be able to exist on the 30th of each month crossing over february - github issue 6a' do
-    schedule = IceCube::Schedule.new(Time.local(2010, 1, 30))
+    schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 30))
     schedule.add_recurrence_rule IceCube::Rule.monthly
-    schedule.first(3).should == [Time.local(2010, 1, 30), Time.local(2010, 3, 30), Time.local(2010, 4, 30)]
+    schedule.first(3).should == [Time.zone.local(2010, 1, 30), Time.zone.local(2010, 3, 30), Time.zone.local(2010, 4, 30)]
   end
 
   it 'should be able to exist ont he 31st of each month crossing over february - github issue 6a' do
-    schedule = IceCube::Schedule.new(Time.local(2010, 1, 31))
+    schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 31))
     schedule.add_recurrence_rule IceCube::Rule.monthly
-    schedule.first(3).should == [Time.local(2010, 1, 31), Time.local(2010, 3, 31), Time.local(2010, 5, 31)]
+    schedule.first(3).should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 3, 31), Time.zone.local(2010, 5, 31)]
   end
 
   it 'should deal with a yearly rule that has februaries with different mdays' do
@@ -539,9 +541,9 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'should work with every other month even when the day of the month iterating on does not exist' do
-    schedule = IceCube::Schedule.new(Time.local(2010, 1, 31))
+    schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 31))
     schedule.add_recurrence_rule IceCube::Rule.monthly(2)
-    schedule.first(6).should == [Time.local(2010, 1, 31), Time.local(2010, 3, 31), Time.local(2010, 5, 31), Time.local(2010, 7, 31), Time.local(2011, 1, 31), Time.local(2011, 3, 31)]
+    schedule.first(6).should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 3, 31), Time.zone.local(2010, 5, 31), Time.zone.local(2010, 7, 31), Time.zone.local(2011, 1, 31), Time.zone.local(2011, 3, 31)]
   end
 
   it 'should be able to go into february and stay on the same day' do
@@ -569,18 +571,18 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'should be able to go through a year of every month on a day that does not exist' do
-    schedule = IceCube::Schedule.new(Time.local(2010, 1, 31), :end_time => Time.local(2011, 2, 5))
+    schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 31), :end_time => Time.zone.local(2011, 2, 5))
     schedule.add_recurrence_rule IceCube::Rule.monthly
-    schedule.all_occurrences.should == [Time.local(2010, 1, 31), Time.local(2010, 3, 31), Time.local(2010, 5, 31),
-                                 Time.local(2010, 7, 31), Time.local(2010, 8, 31), Time.local(2010, 10, 31),
-                                 Time.local(2010, 12, 31), Time.local(2011, 1, 31)]
+    schedule.all_occurrences.should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 3, 31), Time.zone.local(2010, 5, 31),
+                                 Time.zone.local(2010, 7, 31), Time.zone.local(2010, 8, 31), Time.zone.local(2010, 10, 31),
+                                 Time.zone.local(2010, 12, 31), Time.zone.local(2011, 1, 31)]
   end
 
   it 'should be able to go through a year of every 2 months on a day that does not exist' do
-    schedule = IceCube::Schedule.new(Time.local(2010, 1, 31), :end_time => Time.local(2011, 2, 5))
+    schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 31), :end_time => Time.zone.local(2011, 2, 5))
     schedule.add_recurrence_rule IceCube::Rule.monthly(2)
-    schedule.all_occurrences.should == [Time.local(2010, 1, 31), Time.local(2010, 3, 31), Time.local(2010, 5, 31),
-                                 Time.local(2010, 7, 31), Time.local(2011, 1, 31)]
+    schedule.all_occurrences.should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 3, 31), Time.zone.local(2010, 5, 31),
+                                        Time.zone.local(2010, 7, 31), Time.zone.local(2011, 1, 31)]
   end
 
   it 'should be able to go through a year of every 3 months on a day that does not exist' do
