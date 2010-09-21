@@ -693,6 +693,16 @@ describe IceCube::Schedule, 'occurs_on?' do
     schedule.occurs_on?(Date.new(2010, 8, 27)).should be(false)
     schedule.occurs_on?(Date.new(2010, 8, 28)).should be(true)
   end
-    
+
+  it 'should always generate the correct number of days for .first' do
+    s = IceCube::Schedule.new(Time.zone.parse('1-1-1985'))
+    r = IceCube::Rule.weekly(3).day(:monday, :wednesday, :friday)
+    s.add_recurrence_rule(r)
+    # test sizes
+    s.first(3).size.should == 3
+    s.first(4).size.should == 4
+    s.first(5).size.should == 5
+  end
+  
 end
 
