@@ -2,10 +2,6 @@ require File.dirname(__FILE__) + '/spec_helper'
 
 describe IceCube::Schedule, 'occurs_on?' do
 
-  require 'rubygems'
-  gem 'activesupport'
-  require 'active_support'
-
   it 'works with a single recurrence date in a TimeWithZone timezone' do
     Time.zone = "Pacific Time (US & Canada)"
     start_date = Time.zone.parse("2010-02-05 05:00:00")

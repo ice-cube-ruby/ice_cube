@@ -1,6 +1,7 @@
 require File.join(File.dirname(__FILE__), '..', '..', 'lib', 'ice_cube')
+
 require 'rubygems'
-require 'active_support'
+require 'active_support/all'
 
 #some custom dates
 DAY = Time.utc(2010, 3, 1)
