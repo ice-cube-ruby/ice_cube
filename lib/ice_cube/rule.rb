@@ -134,6 +134,7 @@ module IceCube
       representation = ''
       representation = (@interval == 1 ? singular : plural)
       representation << @validation_types.values.map { |v| ' ' + v.send(:to_s) }.join()
+      representation << " #{occurrence_count} #{@occurrence_count == 1 ? 'time' : 'times'}" if @occurrence_count
       representation
     end
     
