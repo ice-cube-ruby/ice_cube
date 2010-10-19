@@ -7,7 +7,7 @@ module IceCube
     
     def self.serialize_time(time)
       if time.is_a?(ActiveSupport::TimeWithZone)
-        { :time => time, :zone => time.time_zone }
+        { :time => time, :zone => time.zone.is_a?(ActiveSupport::TimeZone)? time.time_zone.name : time.time_zone }
       elsif time.is_a?(Time)
         time
       end

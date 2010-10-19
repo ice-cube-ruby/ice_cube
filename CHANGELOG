@@ -2,3 +2,6 @@
   * [#8] Changed how time serialization is done to preserve TimeWithZone when appropriate.
     Backward compatibility is intact, but bumping the minor version for the YAML format change.
   * [#11] Fixed next occurrence to work on never-ending schedules
+
+0.6.1
+  * Lessen the amount of info we store in haml on the time zone
