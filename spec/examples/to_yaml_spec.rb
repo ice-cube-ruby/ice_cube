@@ -216,4 +216,9 @@ describe IceCube::Schedule, 'to_yaml' do
     schedule.to_yaml.length.should be < 200
   end
 
+  it 'should work to_yaml with non-TimeWithZone' do
+    schedule = IceCube::Schedule.new(Time.now)
+    schedule.to_yaml.should be < 200
+  end
+
 end
