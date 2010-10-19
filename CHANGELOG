@@ -4,4 +4,4 @@
   * [#11] Fixed next occurrence to work on never-ending schedules
 
 0.6.1
-  * Lessen the amount of info we store in haml on the time zone
+  * Lessen the amount of info we store in yaml on the time zone
