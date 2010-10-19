@@ -137,7 +137,7 @@ describe IceCube::Schedule, 'to_yaml' do
     schedule = IceCube::Schedule.from_yaml(schedule.to_yaml) # round trip
     ice_cube_start_date = schedule.start_date
     ice_cube_start_date.to_datetime.to_s.should == start_date.to_datetime.to_s
-    ice_cube_start_date.class.should == Time
+    ice_cube_start_date.class.should == ActiveSupport::TimeWithZone
     ice_cube_start_date.utc_offset.should == start_date.utc_offset
   end
   
@@ -158,8 +158,8 @@ describe IceCube::Schedule, 'to_yaml' do
     schedule = IceCube::Schedule.from_yaml(schedule.to_yaml) # round trip
     dates = schedule.occurrences(Time.now + IceCube::ONE_DAY)
 
-    schedule.start_date.class.should == Time
-    dates[0].class.should == Time
+    schedule.start_date.class.should == ActiveSupport::TimeWithZone
+    dates[0].class.should == ActiveSupport::TimeWithZone
   end
 
   it 'crazy shit' do
@@ -191,6 +191,21 @@ describe IceCube::Schedule, 'to_yaml' do
     lambda do
       hash.to_yaml
     end.should_not raise_error
+  end
+
+  it 'should be able to roll forward and back in time' do
+    pacific_time = 'Pacific Time (US & Canada)'
+    schedule = IceCube::Schedule.new(Time.now.in_time_zone(pacific_time))
+    rt_schedule = IceCube::Schedule.from_yaml(schedule.to_yaml)
+    rt_schedule.start_time.should be_a(ActiveSupport::TimeWithZone)
+    rt_schedule.start_time.time_zone.name.should == pacific_time 
+  end
+
+  it 'should be backward compatible with old yaml Time format' do
+    pacific_time = 'Pacific Time (US & Canada)'
+    yaml = "---\n:end_time:\n:rdates: []\n:rrules: []\n:duration:\n:exdates: []\n:exrules: []\n:start_date: 2010-10-18T14:35:47-07:00"
+    schedule = IceCube::Schedule.from_yaml(yaml)
+    schedule.start_time.should be_a(Time)
   end
 
 end

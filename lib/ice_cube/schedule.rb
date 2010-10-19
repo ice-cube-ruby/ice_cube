@@ -35,10 +35,10 @@ module IceCube
     # Convert the schedule to yaml, reverse of Schedule.from_yaml
     def to_yaml(options = {})
       hash = to_hash
-      hash[:start_date] = TimeUtil.serializable_time(hash[:start_date])
-      hash[:rdates] = hash[:rdates].map { |t| TimeUtil.serializable_time(t) }
-      hash[:exdates] = hash[:exdates].map { |t| TimeUtil.serializable_time(t) }
-      hash[:end_time] = TimeUtil.serializable_time(hash[:end_time])
+      hash[:start_date] = TimeUtil.serialize_time(hash[:start_date])
+      hash[:rdates] = hash[:rdates].map { |t| TimeUtil.serialize_time(t) }
+      hash[:exdates] = hash[:exdates].map { |t| TimeUtil.serialize_time(t) }
+      hash[:end_time] = TimeUtil.serialize_time(hash[:end_time])
       hash.to_yaml(options)
     end
 
@@ -46,12 +46,12 @@ module IceCube
     def self.from_hash(hash)
       options = {}
       options[:duration] = hash[:duration] if hash.has_key?(:duration)
-      options[:end_time] = hash[:end_time] if hash.has_key?(:end_time)
-      schedule = Schedule.new(hash[:start_date], options)
+      options[:end_time] = TimeUtil.deserialize_time(hash[:end_time]) if hash.has_key?(:end_time)
+      schedule = Schedule.new(TimeUtil.deserialize_time(hash[:start_date]), options)
       hash[:rrules].each { |rr| schedule.add_recurrence_rule Rule.from_hash(rr) }
       hash[:exrules].each { |ex| schedule.add_exception_rule Rule.from_hash(ex) }
-      hash[:rdates].each { |rd| schedule.add_recurrence_date rd }
-      hash[:exdates].each { |ed| schedule.add_exception_date ed }
+      hash[:rdates].each { |rd| schedule.add_recurrence_date TimeUtil.deserialize_time(rd) }
+      hash[:exdates].each { |ed| schedule.add_exception_date TimeUtil.deserialize_time(ed) }
       schedule
     end
 

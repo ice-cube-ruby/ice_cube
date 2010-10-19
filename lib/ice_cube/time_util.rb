@@ -5,19 +5,21 @@ module IceCube
     LeapYearMonthDays	=	[31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     CommonYearMonthDays	=	[31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     
-    # this method exists because ActiveSupport will serialize
-    # TimeWithZone's in collections in UTC time instead of
-    # their local time.  if +time+ is a TimeWithZone, we move
-    # it to a DateTime
-    # Note: When converting to datetime, you microseconds get set to 0
-    def self.serializable_time(time)
-      if time.respond_to?(:to_datetime)
-        time.to_datetime
-      else
+    def self.serialize_time(time)
+      if time.is_a?(ActiveSupport::TimeWithZone)
+        { :time => time, :zone => time.time_zone }
+      elsif time.is_a?(Time)
         time
       end
     end
     
+    def self.deserialize_time(time_or_hash) 
+      return time_or_hash if time_or_hash.is_a?(Time) # for backward-compat
+      if time_or_hash.is_a?(Hash)
+        time_or_hash[:time].in_time_zone(time_or_hash[:zone])
+      end
+    end
+
     # TODO can we improve this more?
     def self.date_in_n_months(date, month_distance)
       
