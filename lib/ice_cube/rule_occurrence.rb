@@ -25,6 +25,17 @@ module IceCube
       find_occurrences { |roc| roc > end_date }
     end
 
+    # Break after the first occurrence after now
+    def next_occurrence(from)
+      found_one = false
+      find_occurrences do |roc| 
+        find = roc > from
+        success = found_one
+        found_one = find
+        success
+      end
+    end
+
     def first(n)
       count = 0
       find_occurrences { |roc| count += 1; count > n }

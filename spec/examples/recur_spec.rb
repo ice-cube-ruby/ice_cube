@@ -32,4 +32,10 @@ describe Schedule, :next_occurrence do
     schedule.next_occurrence(schedule.end_time + 1.year).should == nil
   end
 
+  it 'should be able to use next_occurrence on a never-ending schedule' do
+    schedule = Schedule.new(Time.now)
+    schedule.add_recurrence_rule Rule.hourly
+    schedule.next_occurrence(schedule.start_time).should == schedule.start_time + 1.hour
+  end
+
 end
