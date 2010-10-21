@@ -218,7 +218,37 @@ describe IceCube::Schedule, 'to_yaml' do
 
   it 'should work to_yaml with non-TimeWithZone' do
     schedule = IceCube::Schedule.new(Time.now)
-    schedule.to_yaml.should be < 200
+    schedule.to_yaml.length.should be < 200
+  end
+
+  it 'should work with occurs_on and TimeWithZone' do
+    pacific_time = 'Pacific Time (US & Canada)'
+    Time.zone = pacific_time
+    schedule = IceCube::Schedule.new(Time.zone.now)
+    schedule.add_recurrence_rule Rule.weekly
+    schedule.occurs_on?(schedule.start_date.to_date + 6).should be(false)
+    schedule.occurs_on?(schedule.start_date.to_date + 7).should be(true)
+    schedule.occurs_on?(schedule.start_date.to_date + 8).should be(false)
+  end
+
+  it 'should work with occurs_on and TimeWithZone' do
+    pacific_time = 'Pacific Time (US & Canada)'
+    Time.zone = pacific_time
+    schedule = IceCube::Schedule.new(Time.zone.now)
+    schedule.add_recurrence_date Time.zone.now + 7 * IceCube::ONE_DAY
+    schedule.occurs_on?(schedule.start_date.to_date + 6).should be(false)
+    schedule.occurs_on?(schedule.start_date.to_date + 7).should be(true)
+    schedule.occurs_on?(schedule.start_date.to_date + 8).should be(false)
+  end
+
+  it 'should crazy patch' do
+    Time.zone = 'Pacific Time (US & Canada)'
+    day = Time.zone.parse('21 Oct 2010 21:00:00')
+    schedule = IceCube::Schedule.new(day)
+    schedule.add_recurrence_date(day)
+    schedule.occurs_on?(Date.new(2010, 10, 20)).should be(false)
+    schedule.occurs_on?(Date.new(2010, 10, 21)).should be(true)
+    schedule.occurs_on?(Date.new(2010, 10, 22)).should be(false)
   end
 
 end

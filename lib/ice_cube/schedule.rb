@@ -106,7 +106,10 @@ module IceCube
     
     # Determine whether a given date appears in the times returned by the schedule
     def occurs_on?(date)
-      return active_support_occurs_on?(date) if date.respond_to?(:to_time)
+      if defined?(ActiveSupport::TimeWithZone) && @start_date.is_a?(ActiveSupport::TimeWithZone)
+        return active_support_occurs_on?(date)
+      end
+      # fall back to our own way of doing things
       time_format = @start_date.utc? ? :utc : :local
       self.occurrences_between(Time.send(time_format, date.year, date.month, date.day, 0, 0, 0), Time.send(time_format, date.year, date.month, date.day, 23, 59, 59)).any?
     end
@@ -197,8 +200,10 @@ module IceCube
     
     private
       
+    # We know that start_date is a time with zone - so check referencing
+    # The date in that time zone
     def active_support_occurs_on?(date)
-      time = date.to_time
+      time = Time.zone.parse(date.to_s) # date.to_time.in_time_zone(@start_date.time_zone)
       occurrences_between(time.beginning_of_day, time.end_of_day).any?
     end
         

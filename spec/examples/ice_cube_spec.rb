@@ -368,8 +368,8 @@ describe IceCube::Schedule, 'occurs_on?' do
     schedule = IceCube::Schedule.new Time.zone.parse("2010/5/13 02:00:00")
     schedule.add_recurrence_date Time.zone.parse("2010/5/13 02:00:00")
     schedule.occurs_on?(Date.new(2010, 5, 13)).should be(true)
-    schedule.occurs_on?(Date.new(2010, 5, 14)).should_not be(true)
-    schedule.occurs_on?(Date.new(2010, 5, 15)).should_not be(true)
+    schedule.occurs_on?(Date.new(2010, 5, 14)).should be(false)
+    schedule.occurs_on?(Date.new(2010, 5, 15)).should be(false)
   end
 
   it 'should allow calling of .first on a schedule with no arguments' do
@@ -592,7 +592,7 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'should be able to work with occurs_on? at an odd time - start of day' do
-    schedule = IceCube::Schedule.new(Time.local(2010, 8, 10, 0, 0, 0).in_time_zone('Pacific Time (US & Canada)'))
+    schedule = IceCube::Schedule.new(Time.local(2010, 8, 10, 12, 0, 0).in_time_zone('Pacific Time (US & Canada)'))
     schedule.add_recurrence_rule IceCube::Rule.weekly
     schedule.occurs_on?(Date.new(2010, 8, 10)).should be(true)
     schedule.occurs_on?(Date.new(2010, 8, 11)).should be(false)
@@ -610,12 +610,14 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'should be able to work with occurs_on? at an odd time - start of day' do
-    schedule = IceCube::Schedule.new(Time.local(2010, 8, 10, 0, 0, 0).in_time_zone('Pacific Time (US & Canada)'))
+    schedule = IceCube::Schedule.new(Time.local(2010, 8, 10, 0, 0, 0))
     schedule.add_recurrence_date Time.local(2010, 8, 20, 0, 0, 0)
     schedule.add_recurrence_rule IceCube::Rule.weekly
     schedule.occurs_on?(Date.new(2010, 8, 20)).should be(true)
-    schedule.occurs_on?(Date.new(2010, 8, 21)).should be(false)
-    schedule.occurs_on?(Date.new(2010, 8, 19)).should be(false)
+    schedule.occurs_on?(Date.new(2010, 8, 10)).should be(true)
+    schedule.occurs_on?(Date.new(2010, 8, 11)).should be(false)
+    schedule.occurs_on?(Date.new(2010, 8, 17)).should be(true)
+    schedule.occurs_on?(Date.new(2010, 8, 18)).should be(false)
   end
 
   it 'should be able to work with occurs_on? at an odd time - end of day' do
