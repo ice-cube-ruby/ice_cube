@@ -11,3 +11,10 @@
 
 0.6.3
   * Change how active_support_occurs_on works
+  * Fixed bug where next_occurrence wouldn't work if no end_date was set
+
+0.6.4
+  * Fixed bug where next_occurrence wouldn't actually grab the correct next occurrence with
+    schedules that had more than one recurrence rule and/or a recurrence rule and a recurrence date
+  * Added next_occurrences function to schedule, allowing you to get the next N occurrences after a
+    given date

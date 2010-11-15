@@ -135,8 +135,14 @@ module IceCube
     
     # Find next scheduled occurrence
     def next_occurrence(from = Time.now)
-      nexts = find_occurrences { |head| head.next_occurrence(from) }
-      nexts.empty? ? nil : (nexts.last if nexts.last > from)
+      next_occurrences(1, from).first
+    end
+
+    def next_occurrences(n, from = Time.now)
+      nexts = find_occurrences { |head| head.next_occurrences(n, from) }
+      #Grabs the first n occurrences after the from date, remembering that there is still a
+      #possibility that recurrence dates before the from time could be in the array
+      nexts.select{|occurrence| occurrence > from}.first(n)
     end
 
     # Retrieve the first (n) occurrences of the schedule.  May return less than

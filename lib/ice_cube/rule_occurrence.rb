@@ -27,13 +27,23 @@ module IceCube
 
     # Break after the first occurrence after now
     def next_occurrence(from)
-      found_one = false
-      find_occurrences do |roc| 
+      next_occurrences(1, from).first
+    end
+
+    # Break after the first n occurrences after now
+    def next_occurrences(n, from)
+      found_all = false
+      num_found = 0
+      nexts = find_occurrences do |roc|
         find = roc > from
-        success = found_one
-        found_one = find
+        num_found += 1 if find
+        success = found_all
+        found_all = num_found == n
         success
       end
+      #Since the above returns all up to and including the next N that were requested, we need
+      #to grab the last n, making sure to prune out ones that were actually before the from time
+      nexts.last(n).select{|occurrence| occurrence > from}
     end
 
     def first(n)
