@@ -492,7 +492,7 @@ describe IceCube::Schedule, 'occurs_on?' do
     end_time = DAY + IceCube::ONE_DAY * 2
     schedule = IceCube::Schedule.new(start_time, :end_time => end_time)
     schedule.add_recurrence_rule IceCube::Rule.daily
-    schedule.occurs_on?((DAY + 4*IceCube::ONE_DAY).to_date).should be(false) # out of range
+    schedule.occurs_on?((DAY + 4*IceCube::ONE_DAY)).should be(false) # out of range
   end
 
   it 'should be able to work with an end date and .occurring_at' do
@@ -500,8 +500,8 @@ describe IceCube::Schedule, 'occurs_on?' do
     end_time = DAY + IceCube::ONE_DAY * 2
     schedule = IceCube::Schedule.new(start_time, :end_time => end_time, :duration => 20)
     schedule.add_recurrence_rule IceCube::Rule.daily
-    schedule.occurring_at?((DAY + 2*IceCube::ONE_DAY + 10).to_date).should be(true) # in range
-    schedule.occurring_at?((DAY + 4*IceCube::ONE_DAY + 10).to_date).should be(false) # out of range
+    schedule.occurring_at?((DAY + 2*IceCube::ONE_DAY + 10)).should be(true) # in range
+    schedule.occurring_at?((DAY + 4*IceCube::ONE_DAY + 10)).should be(false) # out of range
   end
 
   it 'should not create an infinite loop crossing over february - github issue 6' do
