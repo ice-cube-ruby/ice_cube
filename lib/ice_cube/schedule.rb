@@ -43,11 +43,12 @@ module IceCube
     end
 
     # Create a schedule from a hash created by instance.to_hash
-    def self.from_hash(hash)
+    def self.from_hash(hash, sd_override=nil)
       options = {}
       options[:duration] = hash[:duration] if hash.has_key?(:duration)
       options[:end_time] = TimeUtil.deserialize_time(hash[:end_time]) if hash.has_key?(:end_time)
-      schedule = Schedule.new(TimeUtil.deserialize_time(hash[:start_date]), options)
+      start_date = sd_override ||= TimeUtil.deserialize_time(hash[:start_date])
+      schedule = Schedule.new(start_date, options)
       hash[:rrules].each { |rr| schedule.add_recurrence_rule Rule.from_hash(rr) }
       hash[:exrules].each { |ex| schedule.add_exception_rule Rule.from_hash(ex) }
       hash[:rdates].each { |rd| schedule.add_recurrence_date TimeUtil.deserialize_time(rd) }
@@ -56,8 +57,8 @@ module IceCube
     end
 
     # Create a schedule from a yaml string created by instance.to_yaml
-    def self.from_yaml(str)
-      from_hash(YAML::load(str))
+    def self.from_yaml(str,sd_override=nil)
+      from_hash(YAML::load(str), sd_override)
     end
 
     TIME_FORMAT = '%B %e, %Y'
