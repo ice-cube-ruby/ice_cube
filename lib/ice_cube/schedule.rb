@@ -6,7 +6,7 @@ module IceCube
 
     alias :end_date :end_time
     alias :start_time :start_date
-      
+
     def initialize(start_date, options = {})
       @rrule_occurrence_heads = []
       @exrule_occurrence_heads = []
@@ -63,7 +63,7 @@ module IceCube
     TIME_FORMAT = '%B %e, %Y'
     SEPARATOR = ' / '
     NEWLINE = "\n"
-    
+
     # use with caution
     # incomplete and not entirely tested - no time representation in dates
     # there's a lot that can happen here
@@ -87,9 +87,9 @@ module IceCube
       representation_pieces.concat @rrule_occurrence_heads.map { |r| "RRULE:#{r.rule.to_ical}" } if @rrule_occurrence_heads
       representation_pieces.concat @exrule_occurrence_heads.map { |r| "EXRULE:#{r.rule.to_ical}" } if @exrule_occurrence_heads
       representation_pieces << "DTEND#{TimeUtil.ical_format(@end_time)}" if @end_time
-      representation_pieces.join(NEWLINE)      
+      representation_pieces.join(NEWLINE)
     end
-    
+
     def occurring_at?(time)
       return false if @exdates.include?(time)
       return true if @rdates.include?(time)
@@ -103,7 +103,7 @@ module IceCube
       dates = occurrences(date)
       dates.last == date
     end
-    
+
     # Determine whether a given date appears in the times returned by the schedule
     def occurs_on?(date)
       if defined?(ActiveSupport::TimeWithZone) && @start_date.is_a?(ActiveSupport::TimeWithZone)
@@ -113,14 +113,14 @@ module IceCube
       time_format = @start_date.utc? ? :utc : :local
       self.occurrences_between(Time.send(time_format, date.year, date.month, date.day, 0, 0, 0), Time.send(time_format, date.year, date.month, date.day, 23, 59, 59)).any?
     end
-        
-    # Return all possible occurrences 
+
+    # Return all possible occurrences
     # In order to make this call, all rules in the schedule must have
     # either an until date or an occurrence count
     def all_occurrences
       find_occurrences { |head| head.all_occurrences }
     end
-    
+
     # Find all occurrences until a certain date
     def occurrences(end_date)
       end_date = @end_time if @end_time && @end_time < end_date
@@ -132,7 +132,7 @@ module IceCube
       raise ArgumentError.new('Schedule must have an end_time to use remaining_occurrences') unless @end_time
       occurrences_between(from, @end_time)
     end
-    
+
     # Find next scheduled occurrence
     def next_occurrence(from = Time.now)
       next_occurrences(1, from).first
@@ -168,7 +168,7 @@ module IceCube
       @exrule_occurrence_heads << RuleOccurrence.new(rule, @start_date, @end_time)
     end
 
-    def exrules 
+    def exrules
       @exrule_occurrence_heads.map { |h| h.rule }
     end
 
@@ -180,7 +180,7 @@ module IceCube
     # Add an individual date exception to this schedule
     def add_exception_date(date)
       @exdates << date unless date.nil?
-    end   
+    end
 
     def occurrences_between(begin_time, end_time)
       # adjust to the propert end date
@@ -203,16 +203,16 @@ module IceCube
     alias exdate add_exception_date
     alias exrule add_exception_rule
 
-    
+
     private
-      
+
     # We know that start_date is a time with zone - so check referencing
     # The date in that time zone
     def active_support_occurs_on?(date)
       time = Time.zone.parse(date.to_s) # date.to_time.in_time_zone(@start_date.time_zone)
       occurrences_between(time.beginning_of_day, time.end_of_day).any?
     end
-        
+
     # tell if, from a list of rule_occurrence heads, a certain time is occurring
     def any_occurring_at?(what, time)
       return false if @start_time && time < @start_time
@@ -224,7 +224,7 @@ module IceCube
         end
       end
     end
-      
+
     # Find all occurrences (following rules and exceptions) from the schedule's start date to end_date.
     # Use custom methods to say when to end
     def find_occurrences
@@ -241,7 +241,7 @@ module IceCube
       include_dates.reject! { |date| exclude_dates.include?(date) }
       include_dates.to_a
     end
-   
+
   end
 
 end
