@@ -18,3 +18,6 @@
     schedules that had more than one recurrence rule and/or a recurrence rule and a recurrence date
   * Added next_occurrences function to schedule, allowing you to get the next N occurrences after a
     given date
+
+0.6.5
+  * Added a :start_date_override option to from_hash / from_yaml (@sakrafd)

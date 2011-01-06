@@ -70,6 +70,8 @@ ice_cube implements its own hash-based .to_yaml, so you can quickly (and safely)
     hash = schedule.to_hash
     Schedule.from_hash(hash)
 
+		Schedule.from_hash(hash, :start_date_override => Time.now)
+
 ---
 
 ===Using your words
@@ -178,6 +180,7 @@ There are many types of recurrence rules that can be added to a schedule:
 
 * Mat Brown - mat@patch.com
 * Philip Roberts
+* @sakrafd
 
 ---
 
