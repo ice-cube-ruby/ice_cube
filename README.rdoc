@@ -70,7 +70,8 @@ ice_cube implements its own hash-based .to_yaml, so you can quickly (and safely)
     hash = schedule.to_hash
     Schedule.from_hash(hash)
 
-		Schedule.from_hash(hash, :start_date_override => Time.now)
+    Schedule.from_yaml(yaml, :start_date_override => Time.now)
+    Schedule.from_hash(hash, :start_date_override => Time.now)
 
 ---
 
