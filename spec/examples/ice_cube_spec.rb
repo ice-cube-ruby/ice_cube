@@ -717,7 +717,7 @@ describe IceCube::Schedule, 'occurs_on?' do
 
     start_date_override = DAY + 20
 
-    schedule2 = IceCube::Schedule.from_yaml( schedule.to_yaml, start_date_override)
+    schedule2 = IceCube::Schedule.from_yaml(schedule.to_yaml, :start_date_override => start_date_override)
     dates = schedule2.first(10)
     dates.each do |date|
       date.sec.should == start_date_override.sec
@@ -731,7 +731,7 @@ describe IceCube::Schedule, 'occurs_on?' do
 
     start_date_override = DAY + 20
 
-    schedule2 = IceCube::Schedule.from_hash( schedule.to_hash, start_date_override)
+    schedule2 = IceCube::Schedule.from_hash(schedule.to_hash, :start_date_override => start_date_override)
     dates = schedule2.first(10)
     dates.each do |date|
       date.sec.should == start_date_override.sec
