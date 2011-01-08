@@ -73,6 +73,8 @@ ice_cube implements its own hash-based .to_yaml, so you can quickly (and safely)
     Schedule.from_yaml(yaml, :start_date_override => Time.now)
     Schedule.from_hash(hash, :start_date_override => Time.now)
 
+note: If you're using IceCube with Rails - you may want to check out https://github.com/ablegray/schedule-attributes
+
 ---
 
 ===Using your words
