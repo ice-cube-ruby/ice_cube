@@ -138,7 +138,7 @@ module IceCube
       representation
     end
     
-    #TODO - until date formatting is not iCalendar here
+    #TODO - until date formatting fixed but ice_cube doesn't store tz info for until dates
     #get the icalendar representation of this rule logic
     def to_ical_base
       representation = ''
@@ -147,7 +147,7 @@ module IceCube
         representation << ';' << v.send(:to_ical)
       end      
       representation << ";COUNT=#{@occurrence_count}" if @occurrence_count
-      representation << ";UNTIL=#{@until_date}" if @until_date
+      representation << ";UNTIL=#{@until_date.strftime("%Y%m%dT%H%M%SZ")}" if @until_date
       representation
     end
     
