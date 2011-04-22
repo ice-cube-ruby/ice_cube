@@ -79,15 +79,15 @@ module IceCube
       representation_pieces.join(SEPARATOR)
     end
 
-    def to_ical
-      representation_pieces = ["DTSTART#{TimeUtil.ical_format(@start_date)}"]
+    def to_ical(force_utc = false)
+      representation_pieces = ["DTSTART#{TimeUtil.ical_format(@start_date, force_utc)}"]
       representation_pieces << "DURATION:#{TimeUtil.ical_duration(@duration)}" if @duration
       inc_dates = (@rdates - @exdates).uniq
-      representation_pieces.concat inc_dates.sort.map { |d| "RDATE#{TimeUtil.ical_format(d)}" } if inc_dates.any?
-      representation_pieces.concat @exdates.uniq.sort.map { |d| "EXDATE#{TimeUtil.ical_format(d)}" } if @exdates
+      representation_pieces.concat inc_dates.sort.map { |d| "RDATE#{TimeUtil.ical_format(d, force_utc)}" } if inc_dates.any?
+      representation_pieces.concat @exdates.uniq.sort.map { |d| "EXDATE#{TimeUtil.ical_format(d, force_utc)}" } if @exdates
       representation_pieces.concat @rrule_occurrence_heads.map { |r| "RRULE:#{r.rule.to_ical}" } if @rrule_occurrence_heads
       representation_pieces.concat @exrule_occurrence_heads.map { |r| "EXRULE:#{r.rule.to_ical}" } if @exrule_occurrence_heads
-      representation_pieces << "DTEND#{TimeUtil.ical_format(@end_time)}" if @end_time
+      representation_pieces << "DTEND#{TimeUtil.ical_format(@end_time, force_utc)}" if @end_time
       representation_pieces.join(NEWLINE)
     end
 
