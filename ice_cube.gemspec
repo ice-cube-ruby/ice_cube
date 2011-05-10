@@ -1,4 +1,4 @@
-require 'lib/ice_cube/version'
+require File.dirname(__FILE__) + '/lib/ice_cube/version'
 
 spec = Gem::Specification.new do |s|
   
