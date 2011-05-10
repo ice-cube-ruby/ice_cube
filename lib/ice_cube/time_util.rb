@@ -72,6 +72,11 @@ module IceCube
       is_leap?(date.year) ? LeapYearMonthDays[date.month - 1] : CommonYearMonthDays[date.month - 1]
     end
     
+    def self.ical_utc_format(time)
+      time = time.dup.utc
+      "#{time.strftime('%Y%m%dT%H%M%SZ')}" # utc time
+    end
+ 
     def self.ical_format(time, force_utc)
       time = time.dup.utc if force_utc
       if time.utc?

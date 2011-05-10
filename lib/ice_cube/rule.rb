@@ -138,8 +138,8 @@ module IceCube
       representation
     end
     
-    #TODO - until date formatting is not iCalendar here
-    #get the icalendar representation of this rule logic
+    # get the icalendar representation of this rule logic
+    # Note: UNTIL dates are always in UTC as per iCalendar
     def to_ical_base
       representation = ''
       representation << ";INTERVAL=#{@interval}" if @interval > 1
@@ -147,7 +147,7 @@ module IceCube
         representation << ';' << v.send(:to_ical)
       end      
       representation << ";COUNT=#{@occurrence_count}" if @occurrence_count
-      representation << ";UNTIL=#{@until_date}" if @until_date
+      representation << ";UNTIL=#{TimeUtil.ical_utc_format(@until_date)}" if @until_date
       representation
     end
     

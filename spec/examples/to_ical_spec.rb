@@ -198,5 +198,10 @@ describe IceCube, 'to_ical' do
     schedule.to_ical(false).should == "DTSTART;TZID=EDT:#{time.strftime('%Y%m%dT%H%M%S')}"
     schedule.to_ical(true).should  == "DTSTART:#{time.utc.strftime('%Y%m%dT%H%M%S')}Z"
   end
+
+  it 'should be able to serialize to ical with an until date' do
+    rule = Rule.weekly.until Time.now
+    rule.to_ical.should match /^FREQ=WEEKLY;UNTIL=\d{8}T\d{6}Z$/
+  end
   
 end
