@@ -737,5 +737,10 @@ describe IceCube::Schedule, 'occurs_on?' do
       date.sec.should == start_date_override.sec
     end
   end
+
+  it 'should use current date as start date when invoked with a nil parameter' do
+    schedule = IceCube::Schedule.new nil
+    schedule.start_date.strftime('%d.%m.%Y').should == Time.now.strftime('%d.%m.%Y')
+  end
 end
 
