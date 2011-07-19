@@ -12,7 +12,7 @@ module IceCube
       @exrule_occurrence_heads = []
       @rdates = []
       @exdates = []
-      @start_date = start_date
+      @start_date = start_date || Time.now
       raise ArgumentError.new('Duration cannot be negative') if options[:duration] && options[:duration] < 0
       @duration = options[:duration]
       raise ArgumentError.new('Start time must be before end time') if options[:end_time] && options[:end_time] < @start_date
