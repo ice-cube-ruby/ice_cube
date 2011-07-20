@@ -334,11 +334,11 @@ describe IceCube::Schedule, 'occurs_on?' do
     true.should == schedule.occurs_between?(start_date, start_date + IceCube::ONE_DAY * 3)
   end
 
-  it 'should be able to tell us when there is at no occurrence between two dates' do
+  it 'should be able to tell us when there is no occurrence between two dates' do
     start_date = WEDNESDAY
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.weekly.day(:friday)
-    true.should == schedule.occurs_between?(start_date, start_date + IceCube::ONE_DAY)
+    false.should == schedule.occurs_between?(start_date, start_date + IceCube::ONE_DAY)
   end
 
   it 'should be able to determine whether a given rule falls on a Date (rather than a time) - happy path' do
