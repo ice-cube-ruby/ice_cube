@@ -115,6 +115,15 @@ module IceCube
       self.occurrences_between(Time.send(time_format, date.year, date.month, date.day, 0, 0, 0), Time.send(time_format, date.year, date.month, date.day, 23, 59, 59)).any?
     end
 
+    def occurs_between?(begin_time, end_time)
+      if defined?(ActiveSupport::TimeWithZone) && @start_date.is_a?(ActiveSupport::TimeWithZone)
+        return active_support_occurs_between?(begin_time, end_time)
+      end
+      # fall back to our own way of doing things
+      time_format = @start_date.utc? ? :utc : :local
+      self.occurrences_between(Time.send(time_format, begin_time.year, begin_time.month, begin_time.day, 0, 0, 0), Time.send(time_format, end_time.year, end_time.month, end_time.day, 23, 59, 59)).any?
+    end
+
     # Return all possible occurrences
     # In order to make this call, all rules in the schedule must have
     # either an until date or an occurrence count
@@ -212,6 +221,13 @@ module IceCube
     def active_support_occurs_on?(date)
       time = Time.zone.parse(date.to_s) # date.to_time.in_time_zone(@start_date.time_zone)
       occurrences_between(time.beginning_of_day, time.end_of_day).any?
+    end
+
+    def active_support_occurs_between(start_time, end_time)
+      time_start = Time.zone.parse(start_time.to_s) # date.to_time.in_time_zone(@start_date.time_zone)
+      time_end = Time.zone.parse(end_time.to_s) # date.to_time.in_time_zone(@end_date.time_zone)
+
+      occurrences_between(time_start.beginning_of_day, time_end.end_of_day).any?
     end
 
     # tell if, from a list of rule_occurrence heads, a certain time is occurring
