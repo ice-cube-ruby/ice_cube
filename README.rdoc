@@ -39,6 +39,10 @@ EX: Specifying a exception/recurrence date:
     # or check just a single day
     schedule.occurs_on?(Date.new) # true
 
+    # or check whether it occurs between two dates
+    schedule.occurs_between?(Time.now, Time.now + 30.days) # true
+    schedule.occurs_between?(Time.now + 3.days, Time.now + 30.days) # false
+
     # or the first (n) occurrences
     schedule.first(n) # [Time.now]
     schedule.first # Time.now
