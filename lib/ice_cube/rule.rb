@@ -5,6 +5,12 @@ module IceCube
     attr_reader :occurrence_count, :until_date
     
     include ValidationTypes
+    include Comparable
+
+    # Compare based on hash representations
+    def <=>(other)
+      to_hash <=> other.to_hash
+    end
 
     def to_hash
       hash = Hash.new

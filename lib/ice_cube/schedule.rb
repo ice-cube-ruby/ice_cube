@@ -168,6 +168,14 @@ module IceCube
       @rrule_occurrence_heads << RuleOccurrence.new(rule, @start_date, @end_time)
     end
 
+    # Remove a recurrence rule, returns the removed rules, or nil
+    def remove_recurrence_rule(rule)
+      raise ArgumentError.new('Argument must be a valid rule') unless rule.class < Rule
+      deletions = []
+      @rrule_occurrence_heads.delete_if { |h| deletions << h.rule if h.rule == rule }
+      deletions
+    end
+
     def rrules
       @rrule_occurrence_heads.map { |h| h.rule }
     end
@@ -176,6 +184,14 @@ module IceCube
     def add_exception_rule(rule)
       raise ArgumentError.new('Argument must be a valid rule') unless rule.class < Rule
       @exrule_occurrence_heads << RuleOccurrence.new(rule, @start_date, @end_time)
+    end
+
+    # Remove an exception rule, returns the removed rule, or nil
+    def remove_exception_rule(rule)
+      raise ArgumentError.new('Argument must be a valid rule') unless rule.class < Rule
+      deletions = []
+      @exrule_occurrence_heads.delete_if { |h| deletions << h.rule if h.rule == rule }
+      deletions
     end
 
     def exrules
@@ -187,9 +203,21 @@ module IceCube
       @rdates << date unless date.nil?
     end
 
+    # Remove an individual date from this schedule's recurrence dates
+    # return date that was removed, nil otherwise
+    def remove_recurrence_date(date)
+      @rdates.delete(date)
+    end
+
     # Add an individual date exception to this schedule
     def add_exception_date(date)
       @exdates << date unless date.nil?
+    end
+
+    # Remove an individual date exception from this schedule's exception dates
+    # return date that was removed, nil otherwise
+    def remove_exception_date(date)
+      @exdates.delete(date)
     end
 
     def occurrences_between(begin_time, end_time)
@@ -209,10 +237,15 @@ module IceCube
     end
 
     alias :rdate :add_recurrence_date
-    alias rrule add_recurrence_rule
-    alias exdate add_exception_date
-    alias exrule add_exception_rule
-
+    alias :rrule :add_recurrence_rule
+    alias :exdate :add_exception_date
+    alias :exrule :add_exception_rule
+    alias :recurrence_dates :rdates
+    alias :exception_dates :exdates
+    alias :remove_rdate :remove_recurrence_date
+    alias :remove_exdate :remove_exception_date
+    alias :remove_rrule :remove_recurrence_rule
+    alias :remove_exrule :remove_exception_rule
 
     private
 
