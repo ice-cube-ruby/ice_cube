@@ -10,7 +10,7 @@ module IceCube
       hash = Hash.new
       hash[:rule_type] = self.class.name
       hash[:interval] = @interval
-      hash[:until] = @until_date
+      hash[:until] = @until_date ? TimeUtil.serialize_time(@until_date) : @until_date
       hash[:count] = @occurrence_count
       hash[:validations] = @validations
       hash
