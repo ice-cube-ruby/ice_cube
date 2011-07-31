@@ -21,3 +21,12 @@
 
 0.6.5
   * Added a :start_date_override option to from_hash / from_yaml (@sakrafd)
+
+0.6.9
+  * Added support for Schedule#occurs_between?
+
+0.6.10
+  * UNTIL date now serialized with time information
+
+0.6.11
+  * Added the ability to add and remove rdates, rrules, exdates, and exrules from a schedule
