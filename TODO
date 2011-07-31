@@ -2,3 +2,4 @@
 * Add BYSETPOS (ref RFC)
 * Add WEEKST (ref RFC)
 * Import to iCalendar format
+* Schedule#conflicts_with?
