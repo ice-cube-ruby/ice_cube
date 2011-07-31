@@ -1,3 +1,5 @@
 coverage/*
 _site/*
 *.gem
+*.swp
+*.swo
