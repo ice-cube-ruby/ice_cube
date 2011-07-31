@@ -251,4 +251,13 @@ describe IceCube::Schedule, 'to_yaml' do
     schedule.occurs_on?(Date.new(2010, 10, 22)).should be(false)
   end
 
+  it 'should be able to bring a Rule to_yaml and back with a timezone' do
+    Time.zone = 'Pacific Time (US & Canada)'
+    time = Time.now
+    offset = time.utc_offset
+    rule = Rule.daily.until(time)
+    rule = Rule.from_yaml(rule.to_yaml)
+    rule.until_date.utc_offset.should == offset
+  end
+
 end
