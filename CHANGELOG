@@ -30,3 +30,6 @@
 
 0.6.11
   * Added the ability to add and remove rdates, rrules, exdates, and exrules from a schedule
+
+0.6.12
+  * Be able to set the start_date and duration after creating a schedule
