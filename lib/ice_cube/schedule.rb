@@ -2,7 +2,8 @@ module IceCube
 
   class Schedule
 
-    attr_reader :rdates, :exdates, :start_date, :duration, :end_time
+    attr_reader :rdates, :exdates, :start_date
+    attr_accessor :start_date, :duration, :end_time
 
     alias :end_date :end_time
     alias :start_time :start_date
