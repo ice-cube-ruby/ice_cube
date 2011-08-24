@@ -33,3 +33,7 @@
 
 0.6.12
   * Be able to set the start_date and duration after creating a schedule
+
+---
+
+* Fix by Ben Fyvie for daily rule crossing over a year boundary
