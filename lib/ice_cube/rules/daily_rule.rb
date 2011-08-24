@@ -5,8 +5,8 @@ module IceCube
     # TODO repair
     # Determine whether this rule occurs on a give date.
     def in_interval?(date, start_date)
-      #make sure we're in a proper interval
-      day_count = date.yday - start_date.yday
+      #make sure we're in a proper interval      
+      day_count = date.to_date - start_date.to_date      
       day_count % @interval == 0
     end
 
