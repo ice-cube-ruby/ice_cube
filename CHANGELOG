@@ -39,3 +39,4 @@
 * Fix by Ben Fyvie for daily rule crossing over a year boundary
 * Additional accessor methods on validations and rules for easy use in microformats (thanks @jamesarosen)
 * Fix for changing start date affecting schedules without reloading
+* Fix for typo in active_support_occurs_between? causing load issues with ActiveSupport (thanks @carlthuringer)
