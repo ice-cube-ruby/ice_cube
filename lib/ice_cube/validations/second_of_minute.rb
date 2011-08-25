@@ -1,6 +1,8 @@
 module IceCube
 
   class SecondOfMinuteValidation < Validation
+
+    attr_reader :seconds_of_minute
   
     def initialize(rule)
       @seconds_of_minute = rule.validations[:second_of_minute]

@@ -1,6 +1,8 @@
 module IceCube
 
   class MinuteOfHourValidation < Validation
+
+    attr_reader :minutes_of_hour
   
     def initialize(rule)
       @minutes_of_hour = rule.validations[:minute_of_hour]

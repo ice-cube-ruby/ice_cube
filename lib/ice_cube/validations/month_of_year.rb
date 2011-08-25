@@ -1,6 +1,8 @@
 module IceCube
 
   class MonthOfYearValidation < Validation
+
+    attr_reader :months_of_year
   
     def initialize(rule)
       @months_of_year = rule.validations[:month_of_year]

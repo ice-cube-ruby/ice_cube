@@ -2,6 +2,8 @@ module IceCube
 
   class DayOfWeekValidation < Validation
 
+    attr_reader :days_of_week
+
     def initialize(rule)
       @days_of_week = rule.validations[:day_of_week]
       @rule = rule

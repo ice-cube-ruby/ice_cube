@@ -1,6 +1,8 @@
 module IceCube
 
   class DayValidation < Validation
+
+    attr_reader :days
   
     def initialize(rule)
       @days = rule.validations[:day]

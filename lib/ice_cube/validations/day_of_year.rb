@@ -1,6 +1,8 @@
 module IceCube
   
   class DayOfYearValidation < Validation
+
+    attr_reader :days_of_year
     
     def initialize(rule)
       @days_of_year = rule.validations[:day_of_year]

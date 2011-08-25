@@ -3,6 +3,8 @@ module IceCube
   class Rule
     
     attr_reader :occurrence_count, :until_date
+    attr_reader :interval
+    attr_reader :validations
     
     include ValidationTypes
     include Comparable

@@ -1,6 +1,8 @@
 module IceCube
 
   class DayOfMonthValidation < Validation
+
+    attr_reader :days_of_month
     
     def initialize(rule)
       @days_of_month = rule.validations[:day_of_month]
