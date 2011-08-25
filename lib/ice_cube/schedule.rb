@@ -3,7 +3,7 @@ module IceCube
   class Schedule
 
     attr_reader :rdates, :exdates, :start_date
-    attr_accessor :start_date, :duration, :end_time
+    attr_accessor :duration, :end_time
 
     alias :end_date :end_time
     alias :start_time :start_date
@@ -19,6 +19,15 @@ module IceCube
       raise ArgumentError.new('Start time must be before end time') if options[:end_time] && options[:end_time] < @start_date
       @end_time = options[:end_time]
     end
+
+    # Change the current start date
+    def start_date=(start_date)
+      @start_date = start_date
+      @rrule_occurrence_heads.each { |ro| ro.start_date = start_date }
+      @exrule_occurrence_heads.each { |ro| ro.start_date = start_date }
+      start_date
+    end
+    alias :start_time= :start_date=
 
     # Convert the schedule to a hash, reverse of Schedule.from_hash
     def to_hash
@@ -266,7 +275,7 @@ module IceCube
 
     # tell if, from a list of rule_occurrence heads, a certain time is occurring
     def any_occurring_at?(what, time)
-      return false if @start_time && time < @start_time
+      return false if @start_date && time < @start_date
       what.any? do |occurrence_head|
         # time is less than now and duration is less than that distance
         possibilities = occurrence_head.between(@start_date, time)

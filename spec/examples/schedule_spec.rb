@@ -2,6 +2,28 @@ require File.dirname(__FILE__) + '/spec_helper'
 
 describe IceCube::Schedule do
 
+  describe :start_date= do
+
+    it 'should modify start date in rrule_occurrence_heads when changed' do
+      schedule = Schedule.new (Time.now - 1000)
+      schedule.rrule Rule.daily
+      schedule.start_date = (start_date = Time.now)
+      schedule.instance_variable_get(:@rrule_occurrence_heads).each do |rrule|
+        rrule.instance_variable_get(:@start_date).should == start_date
+      end
+    end
+
+    it 'should modify start date in exrule_occurrence_heads when changed' do
+      schedule = Schedule.new (Time.now - 1000)
+      schedule.exrule Rule.daily
+      schedule.start_date = (start_date = Time.now)
+      schedule.instance_variable_get(:@exrule_occurrence_heads).each do |rrule|
+        rrule.instance_variable_get(:@start_date).should == start_date
+      end
+    end
+
+  end
+
   describe :remove_recurrence_rule do
 
     it 'should be able to one rule based on the comparator' do

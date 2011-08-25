@@ -2,12 +2,6 @@ module IceCube
   
   class RuleOccurrence
 
-    # allow to be compared to dates (awesome but not used anymore)
-    # include Comparable
-#    def <=>(other)
-#      to_time <=> other
-#    end
-    
     def to_time
       @date
     end
@@ -72,6 +66,7 @@ module IceCube
     end
     
     attr_reader :rule
+    attr_accessor :start_date
    
     private
 
@@ -85,7 +80,7 @@ module IceCube
       end while roc = roc.succ(&block)
       include_dates
     end
-      
+
     def initialize(rule, start_date, end_time, date = nil, index = 0)
       #set some variables
       @rule = rule
