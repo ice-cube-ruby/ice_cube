@@ -38,3 +38,4 @@
 
 * Fix by Ben Fyvie for daily rule crossing over a year boundary
 * Additional accessor methods on validations and rules for easy use in microformats (thanks @jamesarosen)
+* Fix for changing start date affecting schedules without reloading
