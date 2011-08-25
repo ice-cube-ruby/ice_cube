@@ -266,7 +266,7 @@ module IceCube
       occurrences_between(time.beginning_of_day, time.end_of_day).any?
     end
 
-    def active_support_occurs_between(start_time, end_time)
+    def active_support_occurs_between?(start_time, end_time)
       time_start = Time.zone.parse(start_time.to_s) # date.to_time.in_time_zone(@start_date.time_zone)
       time_end = Time.zone.parse(end_time.to_s) # date.to_time.in_time_zone(@end_date.time_zone)
 
