@@ -5,6 +5,11 @@ require 'active_support/all'
 
 Time.zone = 'Eastern Time (US & Canada)'
 
+# RSpec Configuration
+RSpec.configure do |c|
+  c.treat_symbols_as_metadata_keys_with_true_values = true
+end
+
 #some custom dates
 DAY = Time.utc(2010, 3, 1)
 WEDNESDAY = Time.utc(2010, 6, 23, 5, 0, 0)
