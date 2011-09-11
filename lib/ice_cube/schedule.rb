@@ -159,7 +159,9 @@ module IceCube
     end
 
     def next_occurrences(n, from = Time.now)
-      nexts = find_occurrences { |head| head.next_occurrences(n, from) }
+      nexts = find_occurrences do |head, exclude_dates|
+        head.next_occurrences(n, from, exclude_dates)
+      end
       #Grabs the first n occurrences after the from date, remembering that there is still a
       #possibility that recurrence dates before the from time could be in the array
       nexts.select{|occurrence| occurrence > from}.first(n)
@@ -289,13 +291,13 @@ module IceCube
     # Use custom methods to say when to end
     def find_occurrences
       exclude_dates, include_dates = Set.new(@exdates), SortedSet.new(@rdates)
-      # walk through each rule, adding it to dates
-      @rrule_occurrence_heads.each do |rrule_occurrence_head|
-        include_dates.merge(yield(rrule_occurrence_head))
-      end
-      # walk through each exrule, removing it from dates
+      # walk through each exrule, adding it to the exclude dates
       @exrule_occurrence_heads.each do |exrule_occurrence_head|
         exclude_dates.merge(yield(exrule_occurrence_head))
+      end
+       # walk through each rule, adding it to dates
+      @rrule_occurrence_heads.each do |rrule_occurrence_head|
+        include_dates.merge(yield(rrule_occurrence_head, exclude_dates))
       end
       #return a unique list of dates
       include_dates.reject! { |date| exclude_dates.include?(date) }

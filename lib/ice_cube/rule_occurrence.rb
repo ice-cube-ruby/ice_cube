@@ -25,12 +25,11 @@ module IceCube
     end
 
     # Break after the first n occurrences after now
-    def next_occurrences(n, from)
+    def next_occurrences(n, from, exclude_dates)
       found_all = false
       num_found = 0
       nexts = find_occurrences do |roc|
-        find = roc > from
-        num_found += 1 if find
+        num_found += 1 if roc > from && !exclude_dates.include?(roc.to_time)
         success = found_all
         found_all = num_found == n
         success

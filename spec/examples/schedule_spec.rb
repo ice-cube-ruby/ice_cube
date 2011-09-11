@@ -2,6 +2,37 @@ require File.dirname(__FILE__) + '/spec_helper'
 
 describe IceCube::Schedule do
 
+  include IceCube
+
+  describe :next_occurrences do
+
+    it 'should be able to calculate next occurrences ignoring exclude_dates' do
+      start_time = Time.now
+      schedule = Schedule.new start_time
+      schedule.rrule Rule.daily(1)
+      schedule.exdate start_time + ONE_DAY
+      occurrences = schedule.next_occurrences(2, start_time) # 3 occurrences in the next year
+      occurrences.should == [
+        start_time + ONE_DAY * 2,
+        start_time + ONE_DAY * 3
+      ]
+    end
+
+  end
+
+  describe :next_occurrence do
+
+    it 'should be able to calculate the next occurrence past an exdate' do
+      start_time = Time.now
+      schedule = Schedule.new start_time
+      schedule.rrule Rule.daily(1)
+      schedule.exdate start_time + ONE_DAY
+      occurrence = schedule.next_occurrence(start_time) # 3 occurrences in the next year
+      occurrence.should == start_time + ONE_DAY * 2
+    end
+
+  end
+
   describe :start_date= do
 
     it 'should modify start date in rrule_occurrence_heads when changed' do
