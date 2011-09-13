@@ -47,6 +47,24 @@ describe IceCube::WeeklyRule, 'occurs_on?' do
     end
   end
 
+  it 'should occur on every first monday of a month at midnight and not skip months when Daylights Savings Time ends' do
+    start_date = Time.local(2011, 8, 1)
+    schedule = IceCube::Schedule.new(start_date)
+    schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_week(:monday => [1])
+    last_date = nil
+    schedule.first(100).each do |current_date|
+      current_date.wday.should == 1
+      if last_date then
+        month_interval = (current_date.year * 12 + current_date.month) - (last_date.year * 12 + last_date.month)
+        #puts "month_interval = #{month_interval}"
+        month_interval.should == 1
+      end
+      current_date.hour.should == 0
+      current_date.wday.should == 1
+      last_date = current_date
+    end
+  end
+
   it 'should be able to start on sunday but repeat on wednesdays' do
     schedule = IceCube::Schedule.new(Time.local(2010, 8, 1))
     schedule.add_recurrence_rule IceCube::Rule.weekly.day(:monday)
