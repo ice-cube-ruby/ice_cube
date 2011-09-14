@@ -27,8 +27,15 @@ module IceCube
     def closest(date)
       return nil if !@days_of_week || @days_of_week.empty?
       goal = date
-      while goal += IceCube::ONE_DAY
-        return self.class.adjust(goal, date) if validate(goal)
+      while ( next_date = goal + IceCube::ONE_DAY )
+        # DST hack.  If our day starts at midnight, when DST ends it will be pushed to 11 PM on the previous day.
+        check_date = if next_date.day == goal.day
+                       next_date + IceCube::ONE_HOUR
+                     else
+                       next_date
+                     end
+        return self.class.adjust(next_date, date) if validate(check_date)
+        goal = next_date
       end
     end
 
