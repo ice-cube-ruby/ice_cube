@@ -27,7 +27,7 @@ module IceCube
     def self.from_hash(hash)
       rule = hash[:rule_type].split('::').inject(Object) { |namespace, const_name| namespace.const_get(const_name) }.new(hash[:interval])
       rule.count(hash[:count]) if hash[:count]
-      rule.until(hash[:until]) if hash[:until]
+      rule.until(TimeUtil.deserialize_time(hash[:until])) if hash[:until]
       hash[:validations].each do |validation, data|
         data.is_a?(Array) ? rule.send(validation, *data) : rule.send(validation, data)
       end
