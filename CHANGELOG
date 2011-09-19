@@ -42,3 +42,6 @@
 
 0.6.14
   * Fixed a skipping issue around DST ending
+
+0.6.15
+  * Deserialize until_date properly in #to_hash and #to_yaml (thanks @promisedlandt)
