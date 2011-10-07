@@ -46,22 +46,25 @@ describe IceCube::WeeklyRule, 'occurs_on?' do
       d.wday.should == 2
     end
   end
-
-  it 'should occur on every first monday of a month at midnight and not skip months when Daylights Savings Time ends' do
+  
+  it 'should occur on every first day of a month at midnight and not skip months when DST ends' do
     start_date = Time.local(2011, 8, 1)
-    schedule = IceCube::Schedule.new(start_date)
-    schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_week(:monday => [1])
-    last_date = nil
-    schedule.first(100).each do |current_date|
-      current_date.wday.should == 1
-      if last_date then
-        month_interval = (current_date.year * 12 + current_date.month) - (last_date.year * 12 + last_date.month)
-        #puts "month_interval = #{month_interval}"
-        month_interval.should == 1
+    [:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday].each_with_index do |day, index|
+      schedule = IceCube::Schedule.new(start_date)
+      schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_week(day => [1])
+      last_date = nil
+      schedule.first(100).each do |current_date|
+        # should be the correct day of week
+        current_date.wday.should == index
+        # should be midnight
+        current_date.hour.should == 0
+        if last_date then
+          month_interval = (current_date.year * 12 + current_date.month) - (last_date.year * 12 + last_date.month)
+          # should not skip months
+          month_interval.should == 1
+        end
+        last_date = current_date
       end
-      current_date.hour.should == 0
-      current_date.wday.should == 1
-      last_date = current_date
     end
   end
 
