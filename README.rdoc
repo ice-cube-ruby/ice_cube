@@ -14,6 +14,13 @@ You would write:
 
 ---
 
+=== Quick Introductions
+
+* Presentation from Lone Star Ruby Conf - http://seejohncode.com/ice_cube/static/ice_cube_ruby_nyc.pdf
+* Quick Introduction - http://seejohncode.com/ice_cube/
+
+---
+
 With ice_cube, you can specify (in order of precendence)
 
 * Exception Dates - To specifically exclude from a schedule
