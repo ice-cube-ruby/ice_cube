@@ -30,7 +30,11 @@ module IceCube
       while (next_date = goal + IceCube::ONE_DAY)
         # DST hack.  If our day starts at midnight, when DST ends it will be pushed to 11 PM on the previous day.
         check_date = next_date.day == goal.day ? next_date + IceCube::ONE_HOUR : next_date
-        return self.class.adjust(next_date, date) if validate(check_date)
+        if validate(check_date)
+          date_adj = self.class.adjust(next_date, date)
+          # Check date might have forced us to skip forward a day.
+          return date_adj.wday == check_date.wday ? date_adj : date_adj - IceCube::ONE_DAY
+        end
         goal = next_date
       end
     end
