@@ -188,14 +188,14 @@ describe IceCube, 'to_ical' do
   it 'should default to to_ical using local time' do
     time = Time.now
     schedule = IceCube::Schedule.new(Time.now)
-    schedule.to_ical.should == "DTSTART;TZID=EDT:#{time.strftime('%Y%m%dT%H%M%S')}" # default false
+    schedule.to_ical.should == "DTSTART;TZID=#{time.zone}:#{time.strftime('%Y%m%dT%H%M%S')}" # default false
   end
 
   it 'should be able to receive a to_ical in utc time' do
     time = Time.now
     schedule = IceCube::Schedule.new(Time.now)
-    schedule.to_ical.should == "DTSTART;TZID=EDT:#{time.strftime('%Y%m%dT%H%M%S')}" # default false
-    schedule.to_ical(false).should == "DTSTART;TZID=EDT:#{time.strftime('%Y%m%dT%H%M%S')}"
+    schedule.to_ical.should == "DTSTART;TZID=#{time.zone}:#{time.strftime('%Y%m%dT%H%M%S')}" # default false
+    schedule.to_ical(false).should == "DTSTART;TZID=#{time.zone}:#{time.strftime('%Y%m%dT%H%M%S')}"
     schedule.to_ical(true).should  == "DTSTART:#{time.utc.strftime('%Y%m%dT%H%M%S')}Z"
   end
 
