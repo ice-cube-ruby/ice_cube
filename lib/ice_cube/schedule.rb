@@ -233,7 +233,7 @@ module IceCube
     end
 
     def occurrences_between(begin_time, end_time)
-      # adjust to the propert end date
+      # adjust to the proper end date
       end_time = @end_time if @end_time && @end_time < end_time
       # collect the occurrences
       include_dates, exclude_dates = SortedSet.new(@rdates), Set.new(@exdates)
