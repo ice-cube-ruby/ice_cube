@@ -39,9 +39,19 @@ module IceCube
       nexts.last(n).select{|occurrence| occurrence > from}
     end
 
-    def first(n)
+    def first(n, exclude_dates)
+      rocs = []
       count = 0
-      find_occurrences { |roc| count += 1; count > n }
+      nexts = find_occurrences do |roc|
+        unless exclude_dates.include?(roc.to_time)
+          count += 1
+          rocs << roc
+        end
+
+        count > n
+      end
+
+      rocs
     end
 
     #get the next occurrence of this rule
