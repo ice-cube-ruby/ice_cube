@@ -28,7 +28,11 @@ module IceCube
   
     def to_s
       days_dup = (@days - @rule.validations[:day_of_week].keys if @rule.validations[:day_of_week]) || @days # don't list twice
-      'on ' << self.class.sentence(days_dup.map { |d| Date::DAYNAMES[d] + 's' }) unless days_dup.empty?
+      if days_dup.sort == [1,2,3,4,5]
+        'on all Weekdays'
+      elsif days_dup.present?
+        'on ' << self.class.sentence(days_dup.map { |d| Date::DAYNAMES[d] + 's' })
+      end
     end
 
     def to_ical
