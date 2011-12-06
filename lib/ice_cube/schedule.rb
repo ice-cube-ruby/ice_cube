@@ -3,8 +3,9 @@ module IceCube
   class Schedule
 
     # Get the start time
-    attr_reader :start_time
+    attr_accessor :start_time
     alias :start_date :start_time
+    alias :start_date= :start_time=
     
     # Get the duration
     attr_reader :duration
@@ -56,23 +57,61 @@ module IceCube
     end
     alias :rrule :add_recurrence_rule
 
+    # Remove a recurrence rule
+    def remove_recurrence_rule(rule)
+      deletions = []
+      recurrence_rules.delete_if { |r| deletions << r if rule == r }
+      deletions
+    end
+
     # Add an exception rule to the schedule
     def add_exception_rule(rule)
       @exception_rules << rule
     end
     alias :exrule :add_exception_rule
 
+    # Remove an exception rule
+    def remove_exception_rule(rule)
+      deletions = []
+      exception_rules.delete_if { |r| deletions << r if rule == r }
+      deletions
+    end
+
     # Get the recurrence times that are on the schedule
     def recurrence_times
       recurrence_rules.select { |r| r.is_a?(SingleOccurrenceRule) }.map(&:time)
     end
     alias :rdates :recurrence_times
+    alias :recurrence_dates :recurrence_times
+
+    # TODO re-implement
+    def remove_recurrence_time(time)
+      found = false
+      recurrence_rules.delete_if do |rule|
+        found = true if rule.is_a?(SingleOccurrenceRule) && rule.time == time
+      end
+      time if found
+    end
+    alias :remove_recurrence_date :remove_recurrence_time
+    alias :remove_rdate :remove_recurrence_time
 
     # Get the exception times that are on the schedule
     def exception_times
       exception_rules.select { |r| r.is_a?(SingleOccurrenceRule) }.map(&:time)
     end
     alias :exdates :exception_times
+    alias :exception_dates :exception_times
+
+    # TODO re-implement
+    def remove_exception_time(time)
+      found = false
+      exception_rules.delete_if do |rule|
+        found = true if rule.is_a?(SingleOccurrenceRule) && rule.time == time
+      end
+      time if found
+    end
+    alias :remove_exception_date :remove_exception_time
+    alias :remove_exdate :remove_exception_time
 
     # Get all of the occurrences from the start_time up until a
     # given Time
