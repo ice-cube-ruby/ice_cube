@@ -14,21 +14,13 @@ module IceCube
     attr_accessor :end_time
     alias :end_date :end_time
 
-    # Get the recurrence rules
-    attr_reader :recurrence_rules
-    alias :rrules :recurrence_rules
-
-    # Get the exception rules
-    attr_reader :exception_rules
-    alias :exrules :exception_rules
-
     # Create a new schedule
     def initialize(start_time = nil, options = {})
       @start_time = start_time || Time.now
       @end_time = options[:end_time]
       @duration = options[:duration]
-      @recurrence_rules = []
-      @exception_rules = []
+      @all_recurrence_rules = []
+      @all_exception_rules = []
     end
 
     # Add a recurrence time to the schedule
@@ -53,33 +45,45 @@ module IceCube
 
     # Add a recurrence rule to the schedule
     def add_recurrence_rule(rule)
-      @recurrence_rules << rule
+      @all_recurrence_rules << rule
     end
     alias :rrule :add_recurrence_rule
 
     # Remove a recurrence rule
     def remove_recurrence_rule(rule)
       deletions = []
-      recurrence_rules.delete_if { |r| deletions << r if rule == r }
+      @all_recurrence_rules.delete_if { |r| deletions << r if rule == r }
       deletions
     end
 
     # Add an exception rule to the schedule
     def add_exception_rule(rule)
-      @exception_rules << rule
+      @all_exception_rules << rule
     end
     alias :exrule :add_exception_rule
 
     # Remove an exception rule
     def remove_exception_rule(rule)
       deletions = []
-      exception_rules.delete_if { |r| deletions << r if rule == r }
+      @all_exception_rules.delete_if { |r| deletions << r if rule == r }
       deletions
     end
 
+    # Get the recurrence rules
+    def recurrence_rules
+      @all_recurrence_rules.reject { |r| r.is_a?(SingleOccurrenceRule) }
+    end
+    alias :rrules :recurrence_rules
+
+    # Get the exception rules
+    def exception_rules
+      @all_exception_rules.reject { |r| r.is_a?(SingleOccurrenceRule) }
+    end
+    alias :exrules :exception_rules
+
     # Get the recurrence times that are on the schedule
     def recurrence_times
-      recurrence_rules.select { |r| r.is_a?(SingleOccurrenceRule) }.map(&:time)
+      @all_recurrence_rules.select { |r| r.is_a?(SingleOccurrenceRule) }.map(&:time)
     end
     alias :rdates :recurrence_times
     alias :recurrence_dates :recurrence_times
@@ -87,7 +91,7 @@ module IceCube
     # TODO re-implement
     def remove_recurrence_time(time)
       found = false
-      recurrence_rules.delete_if do |rule|
+      @all_recurrence_rules.delete_if do |rule|
         found = true if rule.is_a?(SingleOccurrenceRule) && rule.time == time
       end
       time if found
@@ -97,7 +101,7 @@ module IceCube
 
     # Get the exception times that are on the schedule
     def exception_times
-      exception_rules.select { |r| r.is_a?(SingleOccurrenceRule) }.map(&:time)
+      @all_exception_rules.select { |r| r.is_a?(SingleOccurrenceRule) }.map(&:time)
     end
     alias :exdates :exception_times
     alias :exception_dates :exception_times
@@ -105,7 +109,7 @@ module IceCube
     # TODO re-implement
     def remove_exception_time(time)
       found = false
-      exception_rules.delete_if do |rule|
+      @all_exception_rules.delete_if do |rule|
         found = true if rule.is_a?(SingleOccurrenceRule) && rule.time == time
       end
       time if found
@@ -182,8 +186,8 @@ module IceCube
 
     # Reset all rules for another run
     def reset
-      recurrence_rules.each(&:reset)
-      exception_rules.each(&:reset)
+      @all_recurrence_rules.each(&:reset)
+      @all_exception_rules.each(&:reset)
     end
 
     # Find all of the occurrences for the schedule between opening_time
@@ -214,7 +218,7 @@ module IceCube
     def next_time(time)
       min_time = nil
       loop do
-        recurrence_rules.each do |rule|
+        @all_recurrence_rules.each do |rule|
           begin
             if res = rule.next_time(time, self)
               if min_time.nil? || res < min_time
@@ -244,7 +248,7 @@ module IceCube
     # Return a boolean indicating whether or not a specific time
     # is excluded from the schedule
     def exception_time?(time)
-      exception_rules.any? do |rule|
+      @all_exception_rules.any? do |rule|
         rule.on?(time, self)
       end
     end

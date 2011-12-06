@@ -44,6 +44,16 @@ describe IceCube::Schedule do
 
   end
 
+  describe :recurrence_rules do
+
+    it 'should not include rules for single occurrences' do
+      schedule = IceCube::Schedule.new Time.now
+      schedule.add_recurrence_time Time.now
+      schedule.rrules.should be_empty
+    end
+
+  end
+
   describe :remove_recurrence_rule do
 
     it 'should be able to one rule based on the comparator' do
