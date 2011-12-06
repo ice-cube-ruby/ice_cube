@@ -64,11 +64,11 @@ module IceCube
     # Number of days to n years
     def self.days_in_n_years(time, year_distance)
       sum = 0
-      next_mark = time
+      wrapper = TimeWrapper.new(time)
       year_distance.times do
-        diy = days_in_year(next_mark)
+        diy = days_in_year(wrapper.to_time)
         sum += diy
-        next_mark += diy * ONE_DAY
+        wrapper.add(:day, diy)
       end
       sum
     end
@@ -80,15 +80,16 @@ module IceCube
       time -= IceCube::ONE_DAY * (time.day - 27) if time.day >= 28
       # move n months ahead
       sum = 0
-      next_mark = time
+      wrapper = TimeWrapper.new(time)
       month_distance.times do
-        dim = days_in_month(next_mark)
+        dim = days_in_month(wrapper.to_time)
         sum += dim
-        next_mark += dim * ONE_DAY
+        wrapper.add(:day, dim)
       end
       # now we can move to the desired day
-      if desired_day > days_in_month(next_mark)
-        sum -= desired_day - days_in_month(next_mark)
+      dim = days_in_month(wrapper.to_time)
+      if desired_day > dim
+        sum -= desired_day - dim
       end
       sum
     end
@@ -106,6 +107,13 @@ module IceCube
         @time = time
       end
 
+      def adjust(&block)
+        off = @time.utc_offset
+        yield
+        diff = off - @time.utc_offset
+        # @time += diff
+      end
+
       # Get the wrapper time back
       def to_time
         @time
@@ -114,13 +122,15 @@ module IceCube
       # DST-safely add an interval of time to the wrapped time
       def add(type, val)
         type = :day if type == :wday
-        @time += case type
-        when :year then TimeUtil.days_in_n_years(@time, val) * ONE_DAY
-        when :month then TimeUtil.days_in_n_months(@time, val) * ONE_DAY
-        when :day  then val * ONE_DAY
-        when :hour then val * ONE_HOUR
-        when :min  then val * ONE_MINUTE
-        when :sec  then val
+        adjust do
+          @time += case type
+          when :year then TimeUtil.days_in_n_years(@time, val) * ONE_DAY
+          when :month then TimeUtil.days_in_n_months(@time, val) * ONE_DAY
+          when :day  then val * ONE_DAY
+          when :hour then val * ONE_HOUR
+          when :min  then val * ONE_MINUTE
+          when :sec  then val
+          end
         end
       end
 
@@ -130,7 +140,9 @@ module IceCube
         type = :day if type == :wday
         CLEAR_ORDER.each do |ptype|
           break if ptype == type
-          send(:"clear_#{ptype}")
+          adjust do
+            send(:"clear_#{ptype}")
+          end
         end
       end
 

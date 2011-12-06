@@ -25,6 +25,7 @@ module IceCube
 
       def validate(time, schedule)
         days = (time.to_i - schedule.start_time.to_i) / ONE_DAY
+        days += 1 if (time.to_i % ONE_DAY - schedule.start_time.to_i % ONE_DAY) > 0 # bucket 
         unless days % interval === 0
           interval - (days % interval)
         end

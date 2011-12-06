@@ -21,9 +21,9 @@ module IceCube
       end
 
       def validate(time, schedule)
-        seconds = time.sec - schedule.start_time.sec
+        seconds = time.to_i - schedule.start_time.to_i
         unless seconds % interval == 0
-          seconds - (seconds % interval)
+          interval - (seconds % interval)
         end
       end
 

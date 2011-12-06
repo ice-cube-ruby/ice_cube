@@ -44,7 +44,6 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'every two hours over a daylight savings time boundary, checking interval' do
-    pending
     start_date = Time.local(2010, 11, 6, 5, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.hourly(2)
@@ -71,7 +70,6 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
   
   it 'every 120 seconds over a daylight savings time boundary, checking interval' do
-    pending
     start_date = Time.local(2010, 11, 6, 23, 50, 0)
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.secondly(120)
@@ -85,7 +83,6 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
   
   it 'every other day over a daylight savings time boundary, checking hour/min/sec' do
-    pending
     start_date = Time.local(2010, 11, 6, 20, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.daily(2)
@@ -200,7 +197,6 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'local - should make dates on interval over dst - github issue 4' do
-    pending
     start_date = Time.local(2010, 3, 12, 19, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.daily(3)
@@ -247,7 +243,6 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it "local - should make dates on weekly (day) inverval over dst - github issue 5" do
-    pending
     start_date = Time.local(2010, 3, 7, 12, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.weekly.day(:sunday)

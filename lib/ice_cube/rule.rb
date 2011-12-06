@@ -33,7 +33,7 @@ module IceCube
               wrapper = TimeUtil::TimeWrapper.new(time)
               wrapper.add(type, fwd)
               wrapper.clear_below(type)
-              # puts "fail - #{time} - #{name} - #{type}"
+              # puts "fail - #{time} - #{name} - #{type} - #{res} - #{wrapper.to_time}"
               time = wrapper.to_time
             end
             false

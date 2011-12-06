@@ -21,7 +21,8 @@ module IceCube
       end
 
       def validate(time, schedule)
-        minutes = time.min - schedule.start_time.min
+        minutes = (time.to_i - schedule.start_time.to_i) / IceCube::ONE_MINUTE
+        minutes +=1 if (time.to_i % ONE_MINUTE - schedule.start_time.to_i % ONE_MINUTE) > 0 # bucket
         unless minutes % interval == 0
           interval - (minutes % interval)
         end
