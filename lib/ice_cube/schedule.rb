@@ -8,10 +8,10 @@ module IceCube
     alias :start_date= :start_time=
     
     # Get the duration
-    attr_reader :duration
+    attr_accessor :duration
 
     # Get the end time
-    attr_reader :end_time
+    attr_accessor :end_time
     alias :end_date :end_time
 
     # Get the recurrence rules
