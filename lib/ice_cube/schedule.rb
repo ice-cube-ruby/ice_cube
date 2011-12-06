@@ -85,6 +85,21 @@ module IceCube
       find_occurrences(start_time)
     end
 
+    # The next n occurrences after now
+    def next_occurrences(num, from = Time.now)
+      find_occurrences(from + 1, nil, num)
+    end
+
+    # The next occurrence after now (overridable)
+    def next_occurrence(from = Time.now)
+      find_occurrences(from + 1, nil, 1).first
+    end
+
+    # The remaining occurrences (same requirements as all_occurrences)
+    def remaining_occurrences(from = Time.now)
+      find_occurrences(from)
+    end
+
     # Occurrences between two times
     def occurrences_between(begin_time, closing_time)
       find_occurrences(begin_time, closing_time)
