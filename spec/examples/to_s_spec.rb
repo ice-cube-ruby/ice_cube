@@ -42,6 +42,7 @@ describe IceCube::Schedule, 'to_s' do
     IceCube::Rule.weekly.day(:monday).to_s.should == 'Weekly on Mondays'
     IceCube::Rule.weekly.day(:monday, :tuesday).to_s.should == 'Weekly on Mondays and Tuesdays'
     IceCube::Rule.weekly.day(:monday, :tuesday, :wednesday).to_s.should == 'Weekly on Mondays, Tuesdays, and Wednesdays'
+    IceCube::Rule.weekly.day(:monday, :tuesday, :wednesday, :thursday, :friday).to_s.should == 'Weekly on Weekdays'
   end
 
   it 'should work with a single date' do
