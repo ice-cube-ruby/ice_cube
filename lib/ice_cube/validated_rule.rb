@@ -11,6 +11,7 @@ module IceCube
     include Validations::DayOfWeek
     include Validations::Day
     include Validations::MonthOfYear
+    include Validations::DayOfYear
 
     include Validations::Count
     include Validations::Until
