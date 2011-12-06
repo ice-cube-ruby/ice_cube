@@ -312,7 +312,6 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'should ~ every hour and a half for 4 occurrences' do
-    pending
     start_date = Time.utc(1997, 9, 2, 9, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.minutely(90).count(4)
