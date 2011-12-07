@@ -15,6 +15,10 @@ module IceCube
         :year
       end
 
+      def build_ical(builder)
+        builder['FREQ'] << 'YEARLY'
+      end
+
       def initialize(interval)
         @interval = interval
       end

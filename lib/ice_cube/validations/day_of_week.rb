@@ -21,6 +21,12 @@ module IceCube
         :day
       end
 
+      def build_ical(builder)
+        ical_day = IcalBuilder.fixnum_to_ical_day(day)
+        builder['BYDAY'].delete_if { |d| d == ical_day }
+        builder['BYDAY'] << "#{occ}#{IcalBuilder.fixnum_to_ical_day(day)}"
+      end
+
       def initialize(day, occ)
         @day = day
         @occ = occ

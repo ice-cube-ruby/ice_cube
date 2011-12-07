@@ -16,6 +16,10 @@ module IceCube
         :min
       end
 
+      def build_ical(builder)
+        builder['FREQ'] << 'MINUTELY'
+      end
+
       def initialize(interval)
         @interval = interval
       end

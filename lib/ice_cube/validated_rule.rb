@@ -16,6 +16,16 @@ module IceCube
     include Validations::Count
     include Validations::Until
 
+    def to_ical
+      builder = IcalBuilder.new
+      @validations.each do |name, validations|
+        validations.each do |validation|
+          validation.build_ical(builder)
+        end
+      end
+      builder.to_s
+    end
+
     # Get the collection that contains validations of a certain type
     def validations_for(key)
       @validations ||= {}

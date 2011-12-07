@@ -28,6 +28,10 @@ module IceCube
         :hour
       end
 
+      def build_ical(builder)
+        builder['BYHOUR'] << hour
+      end
+
     end
 
   end

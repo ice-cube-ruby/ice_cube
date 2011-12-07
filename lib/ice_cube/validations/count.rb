@@ -9,17 +9,21 @@ module IceCube
 
     class Validation
 
-      attr_reader :rule, :max
+      attr_reader :rule, :count
 
-      def initialize(max, rule)
-        @max = max
+      def initialize(count, rule)
+        @count = count
         @rule = rule
       end
 
       def validate(time, schedule)
-        if rule.uses && rule.uses >= max
+        if rule.uses && rule.uses >= count
           raise CountExceeded
         end
+      end
+
+      def build_ical(builder)
+        builder['COUNT'] << count
       end
 
     end

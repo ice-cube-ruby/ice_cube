@@ -25,6 +25,10 @@ module IceCube
         :sec
       end
 
+      def build_ical(builder)
+        builder['BYSECOND'] << second
+      end
+
     end
 
   end

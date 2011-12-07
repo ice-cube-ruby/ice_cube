@@ -22,6 +22,10 @@ module IceCube
         @type = type
       end
 
+      # no -op
+      def build_ical(builder)
+      end
+
     end
 
   end

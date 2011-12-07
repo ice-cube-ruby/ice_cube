@@ -182,6 +182,19 @@ module IceCube
       n.nil? ? occurrences.first : occurrences
     end
 
+    # Serialize this schedule to_ical
+    def to_ical(force_utc = false)
+      pieces = []
+      pieces << "DTSTART#{IcalBuilder.ical_format(start_time, force_utc)}"
+      pieces << "DURATION:#{IcalBuilder.ical_duration(duration)}" if duration
+      pieces.concat recurrence_rules.map { |r| "RRULE:#{r.to_ical}" }
+      pieces.concat exception_rules.map { |r| "EXRULE:#{r.to_ical}" }
+      pieces.concat recurrence_times.map { |t| "RDATE#{IcalBuilder.ical_format(t, force_utc)}" }
+      pieces.concat exception_times.map { |t| "EXDATE#{IcalBuilder.ical_format(t, force_utc)}" }
+      pieces << "DTEND#{IcalBuilder.ical_format(end_time, force_utc)}" if end_time
+      pieces.join("\n")
+    end
+
     private
 
     # Reset all rules for another run

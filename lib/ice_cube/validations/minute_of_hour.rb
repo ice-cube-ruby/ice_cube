@@ -27,6 +27,10 @@ module IceCube
         :min
       end
 
+      def build_ical(builder)
+        builder['BYMINUTE'] << minute
+      end
+
     end
 
   end

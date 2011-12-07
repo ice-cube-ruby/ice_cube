@@ -17,6 +17,10 @@ module IceCube
         :day
       end
 
+      def build_ical(builder)
+        builder['FREQ'] << 'WEEKLY'
+      end
+
       def initialize(interval)
         @interval = interval
       end

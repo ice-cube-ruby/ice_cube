@@ -22,6 +22,10 @@ module IceCube
         @day = day
       end
 
+      def build_ical(builder)
+        builder['BYDAY'] << IcalBuilder.fixnum_to_ical_day(day)
+      end
+
       def type
         :wday
       end

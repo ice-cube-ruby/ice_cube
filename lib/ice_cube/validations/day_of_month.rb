@@ -23,6 +23,10 @@ module IceCube
         @day = day
       end
 
+      def build_ical(builder)
+        builder['BYMONTHDAY'] << day
+      end
+
       def type
         :day
       end

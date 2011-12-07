@@ -22,6 +22,10 @@ module IceCube
         @month = month
       end
 
+      def build_ical(builder)
+        builder['BYMONTH'] << month
+      end
+
       def type
         :month
       end

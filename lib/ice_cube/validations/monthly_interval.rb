@@ -16,6 +16,10 @@ module IceCube
         :month
       end
 
+      def build_ical(builder)
+        builder['FREQ'] << 'MONTHLY'
+      end
+
       def initialize(interval)
         @interval = interval
       end

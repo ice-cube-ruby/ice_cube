@@ -16,6 +16,10 @@ module IceCube
         :sec
       end
 
+      def build_ical(builder)
+        builder['FREQ'] << 'SECONDLY'
+      end
+
       def initialize(interval)
         @interval = interval
       end

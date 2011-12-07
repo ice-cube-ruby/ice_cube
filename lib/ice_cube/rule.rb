@@ -4,6 +4,11 @@ module IceCube
 
     attr_reader :uses
 
+    # Expected to be overridden by subclasses
+    def to_ical
+      nil
+    end
+
     # Reset the uses on the rule to 0
     def reset
       @uses = 0

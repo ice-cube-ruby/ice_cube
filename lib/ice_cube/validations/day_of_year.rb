@@ -22,6 +22,10 @@ module IceCube
         :day
       end
 
+      def build_ical(builder)
+        builder['BYYEARDAY'] << day
+      end
+
       def validate(time, schedule)
         days_in_year = TimeUtil.days_in_year(time)
         the_day = day < 0 ? day + days_in_year : day
