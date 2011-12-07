@@ -2,6 +2,8 @@ require 'date'
 
 module IceCube
 
+  autoload :VERSION, 'ice_cube/version'
+
   autoload :TimeUtil, 'ice_cube/time_util'
 
   autoload :Rule, 'ice_cube/rule'
