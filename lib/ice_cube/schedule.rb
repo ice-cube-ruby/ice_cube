@@ -206,7 +206,7 @@ module IceCube
     # TODO make sure these names are the same
     def to_hash
       data = {}
-      data[:start_date] = start_time
+      data[:start_date] = TimeUtil.serialize_time(start_time)
       data[:end_time] = end_time if end_time
       data[:duration] = duration if duration
       data[:rrules] = recurrence_rules.map(&:to_hash)
@@ -230,10 +230,10 @@ module IceCube
       data[:rrules] && data[:rrules].each { |h| schedule.rrule(IceCube::Rule.from_hash(h)) }  
       data[:exrules] && data[:exrules].each { |h| schedule.exrule(IceCube::Rule.from_hash(h)) }
       data[:rdates] && data[:rdates].each do |t|
-        TimeUtil.deserialize_time schedule.add_recurrence_time(t)
+        schedule.add_recurrence_time TimeUtil.deserialize_time(t)
       end
       data[:exdates] && data[:exdates].each do |t|
-        TimeUtil.deserialize_time schedule.add_exception_time(t)
+        schedule.add_exception_time TimeUtil.deserialize_time(t)
       end
       schedule
     end

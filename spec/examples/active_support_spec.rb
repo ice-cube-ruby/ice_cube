@@ -39,7 +39,6 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
   
   it 'can make a round trip to yaml with TimeWithZone' do
-    pending
     Time.zone = "Pacific Time (US & Canada)"
     start_date = Time.zone.parse("2010-02-05 05:00:00")
     schedule = IceCube::Schedule.new(start_date)

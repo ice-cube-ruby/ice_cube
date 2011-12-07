@@ -136,7 +136,6 @@ describe IceCube::Schedule, 'to_yaml' do
   # This test will fail when not run in Eastern Time
   # This is a bug because to_datetime will always convert to system local time
   it 'should be able to roll forward times and get back times in an array - TimeWithZone' do
-    pending
     Time.zone = "Eastern Time (US & Canada)"
     start_date = Time.zone.now
     schedule = IceCube::Schedule.new(start_date)
@@ -158,7 +157,6 @@ describe IceCube::Schedule, 'to_yaml' do
   end
 
   it 'should be able to go back and forth to yaml and then call occurrences' do
-    pending
     start_date = Time.zone.now
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_date start_date
@@ -201,7 +199,6 @@ describe IceCube::Schedule, 'to_yaml' do
   end
 
   it 'should be able to roll forward and back in time' do
-    pending
     pacific_time = 'Pacific Time (US & Canada)'
     schedule = IceCube::Schedule.new(Time.now.in_time_zone(pacific_time))
     rt_schedule = IceCube::Schedule.from_yaml(schedule.to_yaml)
