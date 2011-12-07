@@ -88,7 +88,7 @@ module IceCube
     alias :rdates :recurrence_times
     alias :recurrence_dates :recurrence_times
 
-    # TODO re-implement
+    # Remove a recurrence time
     def remove_recurrence_time(time)
       found = false
       @all_recurrence_rules.delete_if do |rule|
@@ -106,7 +106,7 @@ module IceCube
     alias :exdates :exception_times
     alias :exception_dates :exception_times
 
-    # TODO re-implement
+    # Remove an exception time
     def remove_exception_time(time)
       found = false
       @all_exception_rules.delete_if do |rule|
