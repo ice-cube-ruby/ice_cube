@@ -182,11 +182,6 @@ module IceCube
         @time -= (@time.hour * ONE_HOUR)
       end
 
-      # Clear the minute segment (and below) of the wrapper time
-      def clear_below_hour
-        @time -= (@time.to_i % IceCube::ONE_HOUR)
-      end
-
       # Move to the first of the month, 0 hours
       def clear_day
         @time -= (@time.day - 1) * IceCube::ONE_DAY
