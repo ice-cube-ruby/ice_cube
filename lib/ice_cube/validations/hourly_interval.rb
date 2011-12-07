@@ -16,6 +16,10 @@ module IceCube
         :hour
       end
 
+      def build_hash(builder)
+        builder.validations[:interval] = interval
+      end
+
       def build_ical(builder)
         builder['FREQ'] << 'HOURLY'
       end

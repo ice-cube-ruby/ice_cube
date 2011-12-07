@@ -57,7 +57,6 @@ describe IceCube::Schedule do
   describe :remove_recurrence_rule do
 
     it 'should be able to one rule based on the comparator' do
-      pending
       schedule = IceCube::Schedule.new Time.now
       schedule.rrule IceCube::Rule.daily
       schedule.rrule IceCube::Rule.daily(2)
@@ -66,7 +65,6 @@ describe IceCube::Schedule do
     end
 
     it 'should be able to remove multiple rules based on the comparator' do
-      pending
       schedule = IceCube::Schedule.new Time.now
       schedule.rrule IceCube::Rule.daily
       schedule.rrule IceCube::Rule.daily
@@ -101,7 +99,6 @@ describe IceCube::Schedule do
     end
 
     it 'should be able to remove multiple rules based on the comparator' do
-      pending
       schedule = IceCube::Schedule.new Time.now
       schedule.exrule IceCube::Rule.daily
       schedule.exrule IceCube::Rule.daily

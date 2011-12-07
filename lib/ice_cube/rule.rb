@@ -6,6 +6,11 @@ module IceCube
 
     attr_reader :uses
 
+    def ==(rule)
+      hash = to_hash
+      hash && hash == rule.to_hash
+    end
+
     # Expected to be overridden by subclasses
     def to_ical
       nil

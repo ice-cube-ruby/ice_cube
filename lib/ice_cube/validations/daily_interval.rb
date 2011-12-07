@@ -20,6 +20,7 @@ module IceCube
       end
 
       def build_hash(builder)
+        builder.validations[:interval] = interval
       end
 
       def build_ical(builder)
