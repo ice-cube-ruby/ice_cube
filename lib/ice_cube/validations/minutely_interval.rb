@@ -16,6 +16,10 @@ module IceCube
         :min
       end
 
+      def build_s(builder)
+        builder.prepend interval == 1 ? 'Minutely' : "Every #{interval} minutes"
+      end
+
       def build_ical(builder)
         builder['FREQ'] << 'MINUTELY'
       end

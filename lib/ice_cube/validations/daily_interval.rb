@@ -19,6 +19,10 @@ module IceCube
         @interval = interval
       end
 
+      def build_s(builder)
+        builder.prepend interval == 1 ? 'Daily' : "Every #{interval} days"
+      end
+
       def build_hash(builder)
         builder.validations[:interval] = interval
       end

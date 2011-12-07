@@ -16,6 +16,16 @@ module IceCube
     include Validations::Count
     include Validations::Until
 
+    def to_s
+      builder = StringBuilder.new
+      @validations.each do |name, validations|
+        validations.each do |validation|
+          validation.build_s(builder)
+        end
+      end
+      builder.to_s
+    end
+
     def to_hash
       builder = HashBuilder.new(self)
       @validations.each do |name, validations|

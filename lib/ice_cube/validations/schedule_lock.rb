@@ -23,6 +23,10 @@ module IceCube
       end
 
       # no -op
+      def build_s(builder)
+      end
+
+      # no -op
       def build_ical(builder)
       end
 

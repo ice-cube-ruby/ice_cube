@@ -16,6 +16,10 @@ module IceCube
         :month
       end
 
+      def build_s(builder)
+        builder.prepend interval == 1 ? 'Monthly' : "Every #{interval} months"
+      end
+
       def build_ical(builder)
         builder['FREQ'] << 'MONTHLY'
       end

@@ -17,6 +17,10 @@ module IceCube
         :day
       end
 
+      def build_s(builder)
+        builder.prepend interval == 1 ? 'Weekly' : "Every #{interval} weeks"
+      end
+
       def build_ical(builder)
         builder['FREQ'] << 'WEEKLY'
       end
