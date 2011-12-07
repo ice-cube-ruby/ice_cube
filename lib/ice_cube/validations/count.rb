@@ -2,7 +2,13 @@ module IceCube
 
   module Validations::Count
 
+    # accessor
+    def occurrence_count
+      @count
+    end
+
     def count(max)
+      @count = max
       replace_validations_for(:count, [Validation.new(max, self)]) # replace
       self
     end

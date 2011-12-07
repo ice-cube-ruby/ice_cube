@@ -26,6 +26,10 @@ module IceCube
       def build_ical(builder)
       end
 
+      # no -op
+      def build_hash(builder)
+      end
+
     end
 
   end

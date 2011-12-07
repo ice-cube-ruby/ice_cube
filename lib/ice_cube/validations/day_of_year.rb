@@ -22,6 +22,10 @@ module IceCube
         :day
       end
 
+      def build_hash(builder)
+        builder.validations_array(:day_of_year) << day
+      end
+
       def build_ical(builder)
         builder['BYYEARDAY'] << day
       end

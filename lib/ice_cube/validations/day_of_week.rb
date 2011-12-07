@@ -27,6 +27,12 @@ module IceCube
         builder['BYDAY'] << "#{occ}#{IcalBuilder.fixnum_to_ical_day(day)}"
       end
 
+      def build_hash(builder)
+        builder.validations[:day_of_week] ||= {}
+        arr = (builder.validations[:day_of_week][day] ||= [])
+        arr << occ
+      end
+
       def initialize(day, occ)
         @day = day
         @occ = occ

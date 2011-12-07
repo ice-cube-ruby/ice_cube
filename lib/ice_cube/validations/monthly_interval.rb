@@ -20,6 +20,9 @@ module IceCube
         builder['FREQ'] << 'MONTHLY'
       end
 
+      def build_hash(builder)
+      end
+
       def initialize(interval)
         @interval = interval
       end

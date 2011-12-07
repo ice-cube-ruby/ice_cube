@@ -15,6 +15,9 @@ module IceCube
         :year
       end
 
+      def build_hash(builder)
+      end
+
       def build_ical(builder)
         builder['FREQ'] << 'YEARLY'
       end

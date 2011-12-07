@@ -477,7 +477,6 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'should be able to specify an end date and go to/from yaml' do
-    pending
     start_time = DAY
     end_time = DAY + IceCube::ONE_DAY * 2
     schedule = IceCube::Schedule.new(start_time, :end_time => end_time)
@@ -736,7 +735,6 @@ describe IceCube::Schedule, 'occurs_on?' do
 
 
   it 'should always generate the date based off the start_date_override when specified in from_yaml' do
-    pending
     start_date = DAY # zero seconds
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.minutely
@@ -751,7 +749,6 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'should always generate the date based off the start_date_override when specified in from_hash' do
-    pending
     start_date = DAY # zero seconds
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.minutely

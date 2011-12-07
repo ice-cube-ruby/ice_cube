@@ -1,3 +1,5 @@
+require 'yaml'
+
 module IceCube
 
   class Schedule
@@ -193,6 +195,52 @@ module IceCube
       pieces.concat exception_times.map { |t| "EXDATE#{IcalBuilder.ical_format(t, force_utc)}" }
       pieces << "DTEND#{IcalBuilder.ical_format(end_time, force_utc)}" if end_time
       pieces.join("\n")
+    end
+
+    # Convert the schedule to yaml
+    def to_yaml(*args)
+      to_hash.to_yaml(*args)
+    end
+
+    # Convert the schedule to a hash
+    # TODO make sure these names are the same
+    def to_hash
+      data = {}
+      data[:start_date] = start_time
+      data[:end_time] = end_time if end_time
+      data[:duration] = duration if duration
+      data[:rrules] = recurrence_rules.map(&:to_hash)
+      data[:exrules] = exception_rules.map(&:to_hash)
+      data[:rdates] = recurrence_times.map do |rt|
+        TimeUtil.serialize_time(rt)
+      end
+      data[:exdates] = exception_times.map do |et|
+        TimeUtil.serialize_time(et)
+      end
+      data
+    end
+
+    # Load the schedule from a hash
+    def self.from_hash(data, options = {})
+      data[:start_date] = options[:start_date_override] if options[:start_date_override]
+      # And then deserialize
+      schedule = IceCube::Schedule.new TimeUtil.deserialize_time(data[:start_date])
+      schedule.duration = data[:duration] if data[:duration]
+      schedule.end_time = TimeUtil.deserialize_time(data[:end_time]) if data[:end_time]
+      data[:rrules] && data[:rrules].each { |h| schedule.rrule(IceCube::Rule.from_hash(h)) }  
+      data[:exrules] && data[:exrules].each { |h| schedule.exrule(IceCube::Rule.from_hash(h)) }
+      data[:rdates] && data[:rdates].each do |t|
+        TimeUtil.deserialize_time schedule.add_recurrence_time(t)
+      end
+      data[:exdates] && data[:exdates].each do |t|
+        TimeUtil.deserialize_time schedule.add_exception_time(t)
+      end
+      schedule
+    end
+
+    # Load the schedule from yaml
+    def self.from_yaml(yaml, options = {})
+      from_hash YAML.load(yaml), options
     end
 
     private

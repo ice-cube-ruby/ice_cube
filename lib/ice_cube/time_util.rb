@@ -18,6 +18,23 @@ module IceCube
       :november => 11, :december => 12
     }
 
+    # Serialize a time appropriate for storing
+    def self.serialize_time(time)
+      if const_defined?('ActiveSupport') && time.is_a?(ActiveSupport::TimeWithZone)
+        { :time => time, :zone => time.time_zone.name }
+      elsif time.is_a?(Time)
+        time
+      end
+    end
+
+    # Deserialize a time serialized with serialize_time
+    def self.deserialize_time(time_or_hash)
+      return time_or_hash if time_or_hash.is_a?(Time) # for backward-compat
+      if time_or_hash.is_a?(Hash)
+        time_or_hash[:time].in_time_zone(time_or_hash[:zone])
+      end
+    end
+
     # Get the beginning of a date
     def self.beginning_of_date(date)
       Time.local(date.year, date.month, date.day, 0, 0, 0)
