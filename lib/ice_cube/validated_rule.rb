@@ -2,7 +2,7 @@ module IceCube
 
   class ValidatedRule < Rule
 
-    include Validations::Lock
+    include Validations::ScheduleLock
 
     include Validations::HourOfDay
     include Validations::MinuteOfHour

@@ -6,10 +6,27 @@ module IceCube
 
     def minute_of_hour(*minutes)
       minutes.each do |minute|
-        add_lock(:minute_of_hour, :min, minute)
+        validations_for(:minute_of_hour) << Validation.new(minute)
       end
       clobber_base_validations(:min)
       self
+    end
+
+    class Validation
+
+      include Validations::Lock
+
+      attr_reader :minute
+      alias :value :minute
+
+      def initialize(minute)
+        @minute = minute
+      end
+
+      def type
+        :min
+      end
+
     end
 
   end
