@@ -251,7 +251,6 @@ describe IceCube::Schedule, 'to_yaml' do
   end
 
   it 'should crazy patch' do
-    pending
     Time.zone = 'Pacific Time (US & Canada)'
     day = Time.zone.parse('21 Oct 2010 21:00:00')
     schedule = IceCube::Schedule.new(day)
