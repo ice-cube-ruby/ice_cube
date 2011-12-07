@@ -766,5 +766,11 @@ describe IceCube::Schedule, 'occurs_on?' do
     schedule = IceCube::Schedule.new nil
     (Time.now - schedule.start_date).should be < 100
   end
+
+  it 'should be able to get the occurrence count for a rule' do
+    rule = IceCube::Rule.daily.count(5)
+    rule.occurrence_count.should == 5
+  end
+
 end
 
