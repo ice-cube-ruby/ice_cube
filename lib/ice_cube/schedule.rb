@@ -1,3 +1,5 @@
+require 'yaml'
+
 module IceCube
 
   class Schedule
@@ -193,6 +195,44 @@ module IceCube
       pieces.concat exception_times.map { |t| "EXDATE#{IcalBuilder.ical_format(t, force_utc)}" }
       pieces << "DTEND#{IcalBuilder.ical_format(end_time, force_utc)}" if end_time
       pieces.join("\n")
+    end
+
+    # Convert the schedule to yaml
+    def to_yaml
+      to_hash.to_yaml
+    end
+
+    # Convert the schedule to a hash
+    # TODO make sure these names are the same
+    def to_hash
+      data = {}
+      data[:start_date] = start_time
+      data[:end_time] = end_time if end_time
+      data[:duration] = duration if duration
+      data[:rrules] = recurrence_rules.map(&:to_hash)
+      data[:exrules] = exception_rules.map(&:to_hash)
+      data[:rdates] = recurrence_times.map(&:time)
+      data[:exdates] = exception_times.map(&:time)
+      data
+    end
+
+    # Load the schedule from a hash
+    # TODO serializable time
+    # TODO throw errors
+    def self.from_hash(data)
+      schedule = IceCube::Schedule.new data[:start_date]
+      schedule.duration = data[:duration] if data[:duration]
+      schedule.end_time = data[:end_time] if data[:end_time]
+      data[:rrules] && data[:rrules].each { |h| schedule.rrule(IceCube::Rule.from_hash(h)) }  
+      data[:exrules] && data[:exrules].each { |h| schedule.exrule(IceCube::Rule.from_hash(h)) }
+      data[:rdates] && data[:rdates].each { |t| schedule.add_recurrence_time(t) }
+      data[:exdates] && data[:exdates].each { |t| schedule.add_exception_time(t) }
+      schedule
+    end
+
+    # Load the schedule from yaml
+    def self.from_yaml(yaml)
+      from_hash YAML.load(yaml)
     end
 
     private
