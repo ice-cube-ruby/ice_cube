@@ -27,6 +27,10 @@ module IceCube
         :min
       end
 
+      def build_hash(builder)
+        builder.validations_array(:minute_of_hour) << minute
+      end
+
       def build_ical(builder)
         builder['BYMINUTE'] << minute
       end

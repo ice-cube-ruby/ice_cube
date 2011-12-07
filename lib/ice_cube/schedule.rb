@@ -198,8 +198,8 @@ module IceCube
     end
 
     # Convert the schedule to yaml
-    def to_yaml
-      to_hash.to_yaml
+    def to_yaml(*args)
+      to_hash.to_yaml(*args)
     end
 
     # Convert the schedule to a hash
@@ -211,22 +211,29 @@ module IceCube
       data[:duration] = duration if duration
       data[:rrules] = recurrence_rules.map(&:to_hash)
       data[:exrules] = exception_rules.map(&:to_hash)
-      data[:rdates] = recurrence_times.map(&:time)
-      data[:exdates] = exception_times.map(&:time)
+      data[:rdates] = recurrence_times.map do |rt|
+        TimeUtil.serialize_time(rt)
+      end
+      data[:exdates] = exception_times.map do |et|
+        TimeUtil.serialize_time(et)
+      end
       data
     end
 
     # Load the schedule from a hash
-    # TODO serializable time
     # TODO throw errors
     def self.from_hash(data)
-      schedule = IceCube::Schedule.new data[:start_date]
+      schedule = IceCube::Schedule.new TimeUtil.deserialize_time(data[:start_date])
       schedule.duration = data[:duration] if data[:duration]
-      schedule.end_time = data[:end_time] if data[:end_time]
+      schedule.end_time = TimeUtil.deserialize_time(data[:end_time]) if data[:end_time]
       data[:rrules] && data[:rrules].each { |h| schedule.rrule(IceCube::Rule.from_hash(h)) }  
       data[:exrules] && data[:exrules].each { |h| schedule.exrule(IceCube::Rule.from_hash(h)) }
-      data[:rdates] && data[:rdates].each { |t| schedule.add_recurrence_time(t) }
-      data[:exdates] && data[:exdates].each { |t| schedule.add_exception_time(t) }
+      data[:rdates] && data[:rdates].each do |t|
+        TimeUtil.deserialize_time schedule.add_recurrence_time(t)
+      end
+      data[:exdates] && data[:exdates].each do |t|
+        TimeUtil.deserialize_time schedule.add_exception_time(t)
+      end
       schedule
     end
 

@@ -1,3 +1,5 @@
+require 'yaml'
+
 module IceCube
 
   class Rule
@@ -7,6 +9,34 @@ module IceCube
     # Expected to be overridden by subclasses
     def to_ical
       nil
+    end
+
+    # Yaml implementation
+    def to_yaml(*args)
+      to_hash.to_yaml(*args)
+    end
+
+    # Expected to be overridden by subclasses
+    def to_hash
+      nil
+    end
+
+    # From yaml
+    def self.from_yaml(yaml)
+      from_hash YAML::load(yaml)
+    end
+
+    # Convert from a hash and create a rule
+    def self.from_hash(hash)
+      return nil unless match = hash[:rule_type].match(/\:\:(.+?)Rule/)
+      rule = IceCube::Rule.send(match[1].downcase.to_sym, hash[:interval] || 1)
+      rule.until(TimeUtil.deserialize_time(hash[:until])) if hash[:until]
+      rule.count(hash[:count]) if hash[:count]
+      hash[:validations] && hash[:validations].each do |key, value|
+        key = key.to_sym unless key.is_a?(Symbol)
+        value.is_a?(Array) ? rule.send(key, *value) : rule.send(key, value)
+      end
+      rule
     end
 
     # Reset the uses on the rule to 0

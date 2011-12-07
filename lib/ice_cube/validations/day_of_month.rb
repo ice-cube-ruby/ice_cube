@@ -23,6 +23,10 @@ module IceCube
         @day = day
       end
 
+      def build_hash(builder)
+        builder.validations_array(:day_of_month) << day
+      end
+
       def build_ical(builder)
         builder['BYMONTHDAY'] << day
       end

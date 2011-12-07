@@ -25,6 +25,10 @@ module IceCube
         :sec
       end
 
+      def build_hash(builder)
+        builder.validations_array(:second_of_minute) << second
+      end
+
       def build_ical(builder)
         builder['BYSECOND'] << second
       end

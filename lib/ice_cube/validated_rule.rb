@@ -17,7 +17,7 @@ module IceCube
     include Validations::Until
 
     def to_hash
-      hash = HashBuilder.new
+      builder = HashBuilder.new(self)
       @validations.each do |name, validations|
         validations.each do |validation|
           validation.build_hash(builder)

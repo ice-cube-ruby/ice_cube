@@ -19,6 +19,9 @@ module IceCube
         @interval = interval
       end
 
+      def build_hash(builder)
+      end
+
       def build_ical(builder)
         builder['FREQ'] << 'DAILY'
       end

@@ -28,6 +28,10 @@ module IceCube
         :hour
       end
 
+      def build_hash(builder)
+        builder.validations_array(:hour_of_day) << hour
+      end
+
       def build_ical(builder)
         builder['BYHOUR'] << hour
       end

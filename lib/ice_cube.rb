@@ -6,6 +6,7 @@ module IceCube
   autoload :Schedule, 'ice_cube/schedule'
 
   autoload :IcalBuilder, 'ice_cube/ical_builder'
+  autoload :HashBuilder, 'ice_cube/hash_builder'
 
   autoload :CountExceeded, 'ice_cube/errors/count_exceeded'
   autoload :UntilExceeded, 'ice_cube/errors/until_exceeded'
