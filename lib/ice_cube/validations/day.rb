@@ -25,7 +25,7 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.piece(:day, 'on') << "#{Date::DAYNAMES[day]}s"
+        builder.piece(:day) << "#{Date::DAYNAMES[day]}s"
       end
 
       def build_hash(builder)
@@ -38,6 +38,10 @@ module IceCube
 
       def type
         :wday
+      end
+
+      StringBuilder.register_formatter(:day) do |segments|
+        "on #{StringBuilder.sentence(segments)}"
       end
 
     end

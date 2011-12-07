@@ -10,24 +10,17 @@ module IceCube
     end
 
     def piece(type, prefix = nil, suffix = nil)
-      @types[type] ||= {
-        :prefix => prefix,
-        :suffix => suffix,
-        :segments => []
-      }
-      @types[type][:segments]
+      @types[type] ||= []
     end
 
     def to_s
       str = @base || ''
-      res = @types.map do |type, entry|
+      res = @types.map do |type, segments|
         if f = self.class.formatter(type)
-          str << ' ' + f.call(entry[:segments])
+          str << ' ' + f.call(segments)
         else
-          next if entry[:segments].empty?
-          str << ' ' + entry[:prefix] if entry[:prefix]
-          str << ' ' + self.class.sentence(entry[:segments])
-          str << ' ' + entry[:suffix] if entry[:suffix]
+          next if segments.empty?
+          str << ' ' + self.class.sentence(segments)
         end
       end
       str

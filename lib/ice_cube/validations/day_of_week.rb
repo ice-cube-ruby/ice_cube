@@ -17,13 +17,16 @@ module IceCube
 
       attr_reader :day, :occ
 
+      StringBuilder.register_formatter(:day_of_week) do |segments|
+        'on the ' + segments.join(' when it is the ')
+      end
+
       def type
         :day
       end
 
       def build_s(builder)
-        builder.piece(:day_of_week, 'on the') <<
-          "#{StringBuilder.nice_number(occ)} #{Date::DAYNAMES[day]}"
+        builder.piece(:day_of_week) << "#{StringBuilder.nice_number(occ)} #{Date::DAYNAMES[day]}"
       end
 
       def build_ical(builder)

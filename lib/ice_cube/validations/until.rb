@@ -30,6 +30,10 @@ module IceCube
         builder[:until] = TimeUtil.serialize_time(time)
       end
 
+      def build_s(builder)
+        builder.piece(:until) << "until #{time.strftime(TO_S_TIME_FORMAT)}"
+      end
+
       def validate(t, schedule)
         raise UntilExceeded if t > time 
       end

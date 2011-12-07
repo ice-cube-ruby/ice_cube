@@ -132,6 +132,12 @@ describe IceCube::Schedule, 'to_s' do
     rule_str = IceCube::Rule.minutely.second_of_minute(10, 11).to_s
     rule_str.should == 'Minutely on the 10th and 11th seconds of the minute'
   end
+
+  it 'should be able to reflect until dates' do
+    schedule = IceCube::Schedule.new(Time.now)
+    schedule.rrule IceCube::Rule.weekly.until(Time.local(2012, 2, 3))
+    schedule.to_s.should == 'Weekly until February  3, 2012'
+  end
   
   it 'should be able to reflect count' do
     schedule = IceCube::Schedule.new(Time.now)

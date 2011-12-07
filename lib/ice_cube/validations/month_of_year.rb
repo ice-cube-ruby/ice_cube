@@ -23,7 +23,7 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.piece(:month_of_year, 'in') << Date::MONTHNAMES[month]
+        builder.piece(:month_of_year) << Date::MONTHNAMES[month]
       end
 
       def build_hash(builder)
@@ -36,6 +36,10 @@ module IceCube
 
       def type
         :month
+      end
+
+      StringBuilder.register_formatter(:month_of_year) do |segments|
+        "in #{StringBuilder.sentence(segments)}"
       end
 
     end
