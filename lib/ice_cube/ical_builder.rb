@@ -18,13 +18,17 @@ module IceCube
     end
 
     # Build for a single rule entry
-    # TODO always take FREQ first
     def to_s
-      @hash.map do |key, value|
+      arr = []
+      if freq = @hash.delete('FREQ')
+        arr << "FREQ=#{freq.join(',')}"
+      end
+      arr.concat(@hash.map do |key, value|
         if value.is_a?(Array)
           "#{key}=#{value.join(',')}"
         end
-      end.compact.join(';')
+      end.compact)
+      arr.join(';')
     end
 
     def self.ical_utc_format(time)
