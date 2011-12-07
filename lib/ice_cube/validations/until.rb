@@ -15,6 +15,10 @@ module IceCube
         @time = time
       end
 
+      def build_ical(builder)
+        builder['UNTIL'] << IcalBuilder.ical_utc_format(time)
+      end
+
       def validate(t, schedule)
         raise UntilExceeded if t > time 
       end

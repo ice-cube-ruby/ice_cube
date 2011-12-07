@@ -107,6 +107,7 @@ module IceCube
         @time = time
       end
 
+      # TODO remove if unused
       def adjust(&block)
         off = @time.utc_offset
         yield

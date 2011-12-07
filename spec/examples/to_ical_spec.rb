@@ -201,7 +201,6 @@ describe IceCube, 'to_ical' do
   end
 
   it 'should be able to serialize to ical with an until date' do
-    pending
     rule = IceCube::Rule.weekly.until Time.now
     rule.to_ical.should match /^FREQ=WEEKLY;UNTIL=\d{8}T\d{6}Z$/
   end
