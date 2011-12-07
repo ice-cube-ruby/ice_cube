@@ -1,0 +1,47 @@
+0.6.0
+  * [#8] Changed how time serialization is done to preserve TimeWithZone when appropriate.
+    Backward compatibility is intact, but bumping the minor version for the YAML format change.
+  * [#11] Fixed next occurrence to work on never-ending schedules
+
+0.6.1
+  * Lessen the amount of info we store in yaml on the time zone
+
+0.6.2 
+  * Patch release for to_yaml performance issue
+
+0.6.3
+  * Change how active_support_occurs_on works
+  * Fixed bug where next_occurrence wouldn't work if no end_date was set
+
+0.6.4
+  * Fixed bug where next_occurrence wouldn't actually grab the correct next occurrence with
+    schedules that had more than one recurrence rule and/or a recurrence rule and a recurrence date
+  * Added next_occurrences function to schedule, allowing you to get the next N occurrences after a
+    given date
+
+0.6.5
+  * Added a :start_date_override option to from_hash / from_yaml (@sakrafd)
+
+0.6.9
+  * Added support for Schedule#occurs_between?
+
+0.6.10
+  * UNTIL date now serialized with time information
+
+0.6.11
+  * Added the ability to add and remove rdates, rrules, exdates, and exrules from a schedule
+
+0.6.12
+  * Be able to set the start_date and duration after creating a schedule
+
+0.6.13
+	* Fix by Ben Fyvie for daily rule crossing over a year boundary
+	* Additional accessor methods on validations and rules for easy use in microformats (thanks @jamesarosen)
+	* Fix for changing start date affecting schedules without reloading
+	* Fix for typo in active_support_occurs_between? causing load issues with ActiveSupport (thanks @carlthuringer)
+
+0.6.14
+  * Fixed a skipping issue around DST ending
+
+0.6.15
+  * Deserialize until_date properly in #to_hash and #to_yaml (thanks @promisedlandt)
