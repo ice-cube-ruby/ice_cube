@@ -2,7 +2,6 @@ module IceCube
 
   class IcalBuilder
 
-    # TODO verify
     ICAL_DAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
 
     def initialize
