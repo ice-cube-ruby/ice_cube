@@ -265,4 +265,10 @@ describe IceCube::Schedule, 'to_yaml' do
     rule.until_date.utc_offset.should == offset
   end
 
+  it 'should be able to bring a Rule to_yaml and back with a count' do
+    rule = IceCube::Rule.daily.count(5)
+    rule = IceCube::Rule.from_yaml rule.to_yaml
+    rule.occurrence_count.should == 5
+  end
+
 end
