@@ -1,6 +1,8 @@
 require 'active_support/time'
 require File.dirname(__FILE__) + '/../spec_helper'
 
+Time.zone = 'Eastern Time (US & Canada)'
+
 describe IceCube::Schedule, 'occurs_on?' do
 
   it 'works with a single recurrence date in a TimeWithZone timezone' do

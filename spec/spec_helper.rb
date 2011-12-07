@@ -1,9 +1,12 @@
 require File.dirname(__FILE__) + '/../lib/ice_cube'
-require 'cover_me'
 
-# https://github.com/markbates/cover_me/issues/50
-at_exit do
-  CoverMe.complete!
+begin
+  require 'cover_me'
+  # https://github.com/markbates/cover_me/issues/50
+  at_exit do
+    CoverMe.complete!
+  end
+rescue LoadError
 end
 
 DAY = Time.utc(2010, 3, 1)
