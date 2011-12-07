@@ -221,8 +221,9 @@ module IceCube
     end
 
     # Load the schedule from a hash
-    # TODO throw errors
-    def self.from_hash(data)
+    def self.from_hash(data, options = {})
+      data[:start_date] = options[:start_date_override] if options[:start_date_override]
+      # And then deserialize
       schedule = IceCube::Schedule.new TimeUtil.deserialize_time(data[:start_date])
       schedule.duration = data[:duration] if data[:duration]
       schedule.end_time = TimeUtil.deserialize_time(data[:end_time]) if data[:end_time]
@@ -238,8 +239,8 @@ module IceCube
     end
 
     # Load the schedule from yaml
-    def self.from_yaml(yaml)
-      from_hash YAML.load(yaml)
+    def self.from_yaml(yaml, options = {})
+      from_hash YAML.load(yaml), options
     end
 
     private
