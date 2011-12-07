@@ -17,7 +17,7 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.prepend interval == 1 ? 'Monthly' : "Every #{interval} months"
+        builder.base = interval == 1 ? 'Monthly' : "Every #{interval} months"
       end
 
       def build_ical(builder)

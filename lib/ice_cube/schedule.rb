@@ -1,4 +1,5 @@
 require 'yaml'
+require 'set'
 
 module IceCube
 
@@ -21,8 +22,8 @@ module IceCube
       @start_time = start_time || Time.now
       @end_time = options[:end_time]
       @duration = options[:duration]
-      @all_recurrence_rules = []
-      @all_exception_rules = []
+      @all_recurrence_rules = Set.new
+      @all_exception_rules = Set.new
     end
 
     # Add a recurrence time to the schedule
@@ -182,6 +183,18 @@ module IceCube
     def first(n = nil)
       occurrences = find_occurrences start_time, nil, n || 1
       n.nil? ? occurrences.first : occurrences
+    end
+
+    # String serialization
+    def to_s
+      pieces = []
+      ed = exdates; rd = rdates - ed
+      pieces.concat rd.sort.map { |t| t.strftime(TO_S_TIME_FORMAT) }
+      pieces.concat rrules.map { |t| t.to_s }
+      pieces.concat exrules.map { |t| "not #{t.to_s}" }
+      pieces.concat ed.sort.map { |t| "not on #{t.strftime(TO_S_TIME_FORMAT)}" }
+      pieces << "until #{end_time.strftime(TIME_FORMAT)}" if end_time
+      pieces.join(' / ')
     end
 
     # Serialize this schedule to_ical

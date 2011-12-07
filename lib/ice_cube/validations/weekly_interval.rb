@@ -18,7 +18,7 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.prepend interval == 1 ? 'Weekly' : "Every #{interval} weeks"
+        builder.base = interval == 1 ? 'Weekly' : "Every #{interval} weeks"
       end
 
       def build_ical(builder)

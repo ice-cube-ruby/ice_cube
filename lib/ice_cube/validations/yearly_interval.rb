@@ -16,7 +16,7 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.prepend interval == 1 ? 'Yearly' : "Every #{interval} years"
+        builder.base = interval == 1 ? 'Yearly' : "Every #{interval} years"
       end
 
       def build_hash(builder)

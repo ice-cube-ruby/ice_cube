@@ -2,24 +2,81 @@ module IceCube
 
   class StringBuilder
 
+    attr_writer :base
+
     # TODO reimplement with linkedlist if desired more efficient
     def initialize
-      @arr = []
+      @types = {}
     end
 
-    def prepend(s)
-      @arr.unshift(s)
+    def piece(type, prefix = nil, suffix = nil)
+      @types[type] ||= {
+        :prefix => prefix,
+        :suffix => suffix,
+        :segments => []
+      }
+      @types[type][:segments]
     end
-
-    def append(s)
-      @arr << s
-    end
-    alias :<< :append
 
     def to_s
-      @arr.join ' '
+      str = @base || ''
+      res = @types.map do |type, entry|
+        if f = self.class.formatter(type)
+          str << ' ' + f.call(entry[:segments])
+        else
+          next if entry[:segments].empty?
+          str << ' ' + entry[:prefix] if entry[:prefix]
+          str << ' ' + self.class.sentence(entry[:segments])
+          str << ' ' + entry[:suffix] if entry[:suffix]
+        end
+      end
+      str
     end
 
+    class << self
+
+      def formatter(type)
+        @formatters[type]
+      end
+
+      def register_formatter(type, &formatter)
+        @formatters ||= {}
+        @formatters[type] = formatter
+      end
+
+    end
+
+    class << self
+
+      NUMBER_SUFFIX = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th']
+      SPECIAL_SUFFIX = { 11 => 'th', 12 => 'th', 13 => 'th', 14 => 'th' } 
+ 
+      # influences by ActiveSupport's to_sentence
+      def sentence(array)
+        case array.length
+        when 0 ; ''
+        when 1 ; array[0].to_s
+        when 2 ; "#{array[0]} and #{array[1]}"
+        else ; "#{array[0...-1].join(', ')}, and #{array[-1]}"
+        end
+      end
+
+      def nice_number(number)
+        if number == -1
+          'last'
+        elsif number < -1
+          suffix = SPECIAL_SUFFIX.include?(number) ?
+            SPECIAL_SUFFIX[number] : NUMBER_SUFFIX[number.abs % 10]
+          number.abs.to_s << suffix << ' to last'
+        else
+          suffix = SPECIAL_SUFFIX.include?(number) ?
+            SPECIAL_SUFFIX[number] : NUMBER_SUFFIX[number.abs % 10]
+          number.to_s << suffix  
+        end
+      end
+
+    end
+  
   end
 
 end

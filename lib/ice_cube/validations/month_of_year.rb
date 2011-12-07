@@ -22,6 +22,10 @@ module IceCube
         @month = month
       end
 
+      def build_s(builder)
+        builder.piece(:month_of_year, 'in') << Date::MONTHNAMES[month]
+      end
+
       def build_hash(builder)
         builder.validations_array(:month_of_year) << month
       end

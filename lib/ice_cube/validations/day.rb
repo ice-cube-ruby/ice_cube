@@ -1,7 +1,9 @@
+require 'date'
+
 module IceCube
 
   module Validations::Day
-
+  
     def day(*days)
       days.each do |day|
         day = TimeUtil.symbol_to_day(day) if day.is_a?(Symbol)
@@ -20,6 +22,10 @@ module IceCube
 
       def initialize(day)
         @day = day
+      end
+
+      def build_s(builder)
+        builder.piece(:day, 'on') << "#{Date::DAYNAMES[day]}s"
       end
 
       def build_hash(builder)

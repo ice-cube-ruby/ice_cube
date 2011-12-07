@@ -21,6 +21,11 @@ module IceCube
         :day
       end
 
+      def build_s(builder)
+        builder.piece(:day_of_week, 'on the') <<
+          "#{StringBuilder.nice_number(occ)} #{Date::DAYNAMES[day]}"
+      end
+
       def build_ical(builder)
         ical_day = IcalBuilder.fixnum_to_ical_day(day)
         builder['BYDAY'].delete_if { |d| d == ical_day }

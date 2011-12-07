@@ -1,3 +1,5 @@
+require 'date'
+
 module IceCube
 
   autoload :TimeUtil, 'ice_cube/time_util'
@@ -56,5 +58,8 @@ module IceCube
   ONE_HOUR =   ONE_MINUTE * 60
   ONE_DAY =    ONE_HOUR   * 24
   ONE_WEEK =   ONE_DAY    * 7
+
+  # Formatting
+  TO_S_TIME_FORMAT = '%B %e, %Y'
 
 end

@@ -12,6 +12,10 @@ module IceCube
       time if time >= t
     end
 
+    def to_hash
+      { :time => time }
+    end
+
   end
 
 end

@@ -17,7 +17,7 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.prepend interval == 1 ? 'Secondly' : "Every #{interval} seconds"
+        builder.base = interval == 1 ? 'Secondly' : "Every #{interval} seconds"
       end
 
       def build_ical(builder)

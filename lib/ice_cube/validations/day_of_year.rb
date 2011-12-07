@@ -14,12 +14,22 @@ module IceCube
 
       attr_reader :day
 
+      StringBuilder.register_formatter(:day_of_year) do |entries|
+        str = "on the #{StringBuilder.sentence(entries)} "
+        str << (entries.size == 1 ? 'day of the year' : 'days of the year')
+        str
+      end
+
       def initialize(day)
         @day = day
       end
 
       def type
         :day
+      end
+
+      def build_s(builder)
+        builder.piece(:day_of_year) << StringBuilder.nice_number(day)
       end
 
       def build_hash(builder)
