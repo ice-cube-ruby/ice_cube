@@ -240,7 +240,6 @@ describe IceCube::Schedule, 'to_yaml' do
   end
 
   it 'should work with occurs_on and TimeWithZone' do
-    pending
     pacific_time = 'Pacific Time (US & Canada)'
     Time.zone = pacific_time
     schedule = IceCube::Schedule.new(Time.zone.now)
