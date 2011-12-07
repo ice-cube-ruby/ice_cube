@@ -9,9 +9,9 @@ module IceCube
   autoload :Rule, 'ice_cube/rule'
   autoload :Schedule, 'ice_cube/schedule'
 
-  autoload :IcalBuilder, 'ice_cube/ical_builder'
-  autoload :HashBuilder, 'ice_cube/hash_builder'
-  autoload :StringBuilder, 'ice_cube/string_builder'
+  autoload :IcalBuilder, 'ice_cube/builders/ical_builder'
+  autoload :HashBuilder, 'ice_cube/builders/hash_builder'
+  autoload :StringBuilder, 'ice_cube/builders/string_builder'
 
   autoload :CountExceeded, 'ice_cube/errors/count_exceeded'
   autoload :UntilExceeded, 'ice_cube/errors/until_exceeded'
