@@ -24,6 +24,10 @@ module IceCube
         builder['FREQ'] << 'SECONDLY'
       end
 
+      def build_hash(builder)
+        builder.validations[:interval] = interval
+      end
+
       def initialize(interval)
         @interval = interval
       end
