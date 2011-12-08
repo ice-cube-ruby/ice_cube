@@ -157,7 +157,7 @@ describe IceCube::Schedule, 'to_yaml' do
   end
 
   it 'should be able to go back and forth to yaml and then call occurrences' do
-    start_date = Time.zone.now
+    start_date = Time.local(2011, 5, 10, 12, 0, 0)
     schedule1 = IceCube::Schedule.new(start_date)
     schedule1.add_recurrence_date start_date
     schedule2 = IceCube::Schedule.from_yaml(schedule1.to_yaml) # round trip
