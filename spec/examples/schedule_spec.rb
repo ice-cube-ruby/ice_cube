@@ -6,6 +6,13 @@ describe IceCube::Schedule do
 
   describe :all_occurrences do
 
+    it 'should stop automatically with just a date' do
+      time = Time.now + 24 * ONE_DAY
+      schedule = IceCube::Schedule.new
+      schedule.add_recurrence_time time
+      schedule.all_occurrences.should == [time]
+    end
+
     it 'should return an error if there is nothing to stop it' do
       schedule = IceCube::Schedule.new
       schedule.rrule IceCube::Rule.daily

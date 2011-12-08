@@ -2,5 +2,3 @@ some way to sort the validations so they're faster - year first
 some yield occurrences methods
 travis.ci
 ruby-1.8.7
-test occurrences with just date recurrences_times
-check in other directory after installing
