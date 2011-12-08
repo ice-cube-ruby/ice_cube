@@ -622,7 +622,7 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'should be able to work with occurs_on? at an odd time - start of day' do
-    schedule = IceCube::Schedule.new(Time.local(2010, 8, 10, 12, 0, 0).in_time_zone('Pacific Time (US & Canada)'))
+    schedule = IceCube::Schedule.new(Time.local(2010, 6, 23, 0, 0, 0).in_time_zone('Pacific Time (US & Canada)'))
     schedule.add_recurrence_rule IceCube::Rule.weekly
     schedule.occurs_on?(Date.new(2010, 8, 10)).should be(true)
     schedule.occurs_on?(Date.new(2010, 8, 11)).should be(false)
