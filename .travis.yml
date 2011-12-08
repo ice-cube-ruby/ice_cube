@@ -6,3 +6,6 @@ branches:
   only:
     - master
     - v0.7
+rvm:
+  - 1.9.2
+  - 1.9.3
