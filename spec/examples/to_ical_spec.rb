@@ -85,7 +85,6 @@ describe IceCube, 'to_ical' do
   
   it 'should be able to serialize of .day_of_week rule to_ical with multiple days' do
     rule = IceCube::Rule.daily.day_of_week(:monday => [1, -1], :tuesday => [2]).day(:wednesday)
-    puts rule.to_ical
     [
       'FREQ=DAILY;BYDAY=WE,1MO,-1MO,2TU',
       'FREQ=DAILY;BYDAY=1MO,-1MO,2TU,WE',

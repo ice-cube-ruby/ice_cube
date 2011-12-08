@@ -5,7 +5,7 @@ spec = Gem::Specification.new do |s|
   s.name = 'ice_cube'  
   s.author = 'John Crepezzi'
   s.add_development_dependency('rspec')
-  s.add_development_dependency('active_support')
+  s.add_development_dependency('active_support', '>= 3.0.0')
   s.description = 'ice_cube is a recurring date library for Ruby.  It allows for quick, programatic expansion of recurring date rules.'
   s.email = 'john@crepezzi.com'
   s.files = Dir['lib/**/*.rb']

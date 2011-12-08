@@ -1,5 +1,7 @@
 # ice_cube - easy date expansion
 
+[![Build Status](https://secure.travis-ci.org/seejohnrun/ice_cube.png)](http://travis-ci.org/seejohnrun/ice_cube)
+
 ``` bash
 gem install ice_cube
 ```
@@ -71,6 +73,10 @@ schedule.occurring_at?(Time.now + 1800) # true
 # you can also give schedules a solidified end_time
 schedule = Schedule.new(Time.now, :end_time => Time.now + 3600)
 schedule.occurs_at?(Time.now + 3601) # false
+
+# Or take control
+schedule = Schedule.new
+schedule.each_occurrence { |t| puts t }
 ```
 
 The reason that schedules have durations and not individual rules, is to maintain compatability with the ical RFC: http://www.kanzaki.com/docs/ical/rrule.html

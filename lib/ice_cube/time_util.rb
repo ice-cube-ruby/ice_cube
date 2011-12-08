@@ -74,7 +74,23 @@ module IceCube
 
     # Get the days in the month for +time
     def self.days_in_month(time)
-      is_leap?(time.year) ? LEAP_YEAR_MONTH_DAYS[time.month - 1] : COMMON_YEAR_MONTH_DAYS[time.month - 1]
+      days_in_month_year(time.month, time.year)
+    end
+
+    def self.days_in_next_month(time)
+      # Get the next month
+      year = time.year
+      month = time.month + 1
+      if month > 12
+        month %= 12
+        year += 1
+      end
+      # And then determine
+      days_in_month_year(month, year)
+    end
+
+    def self.days_in_month_year(month, year)
+      is_leap?(year) ? LEAP_YEAR_MONTH_DAYS[month - 1] : COMMON_YEAR_MONTH_DAYS[month - 1]
     end
     
     # Number of days in a year
