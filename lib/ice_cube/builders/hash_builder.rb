@@ -1,6 +1,5 @@
 module IceCube
 
-  # TODO why this class?
   class HashBuilder
   
     def initialize(rule = nil)

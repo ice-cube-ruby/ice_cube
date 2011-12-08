@@ -4,7 +4,6 @@ module IceCube
 
     attr_writer :base
 
-    # TODO reimplement with linkedlist if desired more efficient
     def initialize
       @types = {}
     end
