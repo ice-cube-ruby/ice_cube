@@ -45,3 +45,7 @@
 
 0.6.15
   * Deserialize until_date properly in #to_hash and #to_yaml (thanks @promisedlandt)
+
+0.7.0
+  * Large rewrite, fixing a few small bugs and including some large optimizations to the spidering algo
+  * Support for #each_occurrence which iterates as it builds forever
