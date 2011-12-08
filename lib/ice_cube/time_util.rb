@@ -20,7 +20,7 @@ module IceCube
 
     # Serialize a time appropriate for storing
     def self.serialize_time(time)
-      if defined?(:ActiveSupport) && time.is_a?(ActiveSupport::TimeWithZone)
+      if defined?(:ActiveSupport) && const_defined?(:ActiveSupport) && time.is_a?(ActiveSupport::TimeWithZone)
         { :time => time, :zone => time.time_zone.name }
       elsif time.is_a?(Time)
         time

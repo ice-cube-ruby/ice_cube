@@ -171,7 +171,7 @@ describe IceCube::Schedule, 'to_yaml' do
     schedule = IceCube::Schedule.new
     schedule.add_exception_time (time = Time.now)
     schedule = IceCube::Schedule.from_yaml schedule.to_yaml
-    schedule.exdates.should == [time]
+    schedule.exdates.map(&:to_s).should == [time.to_s]
   end
 
   it 'crazy shit' do

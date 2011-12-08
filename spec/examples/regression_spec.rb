@@ -37,4 +37,12 @@ describe IceCube do
     schedule.occurring_at?(Time.new(2011, 11, 17, 15, 30)).should be_false
   end
 
+  it 'should not choke on parsing - issue 26' do
+    schedule = IceCube::Schedule.new(Time.local(2011, 8, 9, 14, 52, 14))
+    schedule.rrule IceCube::Rule.weekly(1).day(1, 2, 3, 4, 5)
+    lambda do
+      schedule = IceCube::Schedule.from_yaml(schedule.to_yaml)
+    end.should_not raise_error
+  end
+
 end
