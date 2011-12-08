@@ -158,13 +158,12 @@ describe IceCube::Schedule, 'to_yaml' do
 
   it 'should be able to go back and forth to yaml and then call occurrences' do
     start_date = Time.zone.now
-    schedule = IceCube::Schedule.new(start_date)
-    schedule.add_recurrence_date start_date
-    schedule = IceCube::Schedule.from_yaml(schedule.to_yaml) # round trip
-    dates = schedule.occurrences(Time.now + IceCube::ONE_DAY)
+    schedule1 = IceCube::Schedule.new(start_date)
+    schedule1.add_recurrence_date start_date
+    schedule2 = IceCube::Schedule.from_yaml(schedule1.to_yaml) # round trip
 
-    schedule.start_date.class.should == ActiveSupport::TimeWithZone
-    dates[0].class.should == ActiveSupport::TimeWithZone
+    end_time = Time.now + IceCube::ONE_DAY
+    schedule1.occurrences(end_time).should == schedule2.occurrences(end_time)
   end
 
   it 'should be able to make a round trip with an exdate' do
@@ -204,7 +203,6 @@ describe IceCube::Schedule, 'to_yaml' do
     pacific_time = 'Pacific Time (US & Canada)'
     schedule = IceCube::Schedule.new(Time.now.in_time_zone(pacific_time))
     rt_schedule = IceCube::Schedule.from_yaml(schedule.to_yaml)
-    rt_schedule.start_time.should be_a(ActiveSupport::TimeWithZone)
     rt_schedule.start_time.time_zone.name.should == pacific_time 
   end
 
@@ -250,7 +248,7 @@ describe IceCube::Schedule, 'to_yaml' do
 
   it 'should crazy patch' do
     Time.zone = 'Pacific Time (US & Canada)'
-    day = Time.zone.parse('21 Oct 2010 21:00:00')
+    day = Time.zone.parse('21 Oct 2010 02:00:00')
     schedule = IceCube::Schedule.new(day)
     schedule.add_recurrence_date(day)
     schedule.occurs_on?(Date.new(2010, 10, 20)).should be(false)
