@@ -137,7 +137,7 @@ describe IceCube::Schedule, 'to_yaml' do
   # This is a bug because to_datetime will always convert to system local time
   it 'should be able to roll forward times and get back times in an array - TimeWithZone' do
     Time.zone = "Eastern Time (US & Canada)"
-    start_date = Time.zone.now
+    start_date = Time.zone.local(2011, 11, 5, 12, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
     schedule = IceCube::Schedule.from_yaml(schedule.to_yaml) # round trip
     ice_cube_start_date = schedule.start_date
