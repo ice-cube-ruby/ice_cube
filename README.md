@@ -1,5 +1,7 @@
 # ice_cube - easy date expansion
 
+[![Build Status](https://secure.travis-ci.org/seejohnrun/ice_cube.png)](http://travis-ci.org/seejohnrun/ice_cube)
+
 ``` bash
 gem install ice_cube
 ```
