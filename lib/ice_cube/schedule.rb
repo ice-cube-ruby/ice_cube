@@ -213,7 +213,6 @@ module IceCube
     end
 
     # Convert the schedule to a hash
-    # TODO make sure these names are the same
     def to_hash
       data = {}
       data[:start_date] = TimeUtil.serialize_time(start_time)

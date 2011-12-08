@@ -36,9 +36,9 @@ module IceCube
       end
 
       def validate(time, schedule)
-        # TODO check no AR dependence (in 1.8.7 also)
-        # TODO do something similar to other buckets or try to remove them
-        days = time.to_date - schedule.start_time.to_date
+        time_date = Date.new(time.year, time.month, time.day)
+        start_date = Date.new(schedule.start_time.year, schedule.start_time.month, schedule.start_time.day)
+        days = time_date - start_date
         unless days % interval === 0
           interval - (days % interval)
         end
