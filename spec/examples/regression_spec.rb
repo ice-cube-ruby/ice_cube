@@ -25,4 +25,10 @@ describe IceCube do
     schedule.first(10).map(&:year).uniq.size.should == 1
   end
 
+  it 'should not regress - issue 45' do
+    rule = IceCube::Rule.monthly.day(5).hour_of_day(14).second_of_minute(0).day_of_month(13).minute_of_hour(0).month_of_year(10)
+    schedule = IceCube::Schedule.new
+    schedule.rrule rule
+  end
+
 end
