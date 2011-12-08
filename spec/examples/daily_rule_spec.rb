@@ -33,14 +33,12 @@ describe IceCube::DailyRule, 'occurs_on?' do
   end
 
   it 'should produce the correct days for interval of 4 day with hour and minute of day set' do
-    pending
     start_date = DAY
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.daily(4).hour_of_day(5).minute_of_hour(45)
 
     #check assumption 2 -- 1 (2) (3) (4) 5 (6)
     dates = schedule.occurrences(start_date + 5 * IceCube::ONE_DAY)
-    dates.size.should == 2
     dates.should == [
       DAY + 5 * IceCube::ONE_HOUR + 45 * IceCube::ONE_MINUTE,
       DAY + 4 * IceCube::ONE_DAY + 5 * IceCube::ONE_HOUR + 45 * IceCube::ONE_MINUTE

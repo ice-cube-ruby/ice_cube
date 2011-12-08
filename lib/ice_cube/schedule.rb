@@ -277,7 +277,7 @@ module IceCube
       # And off we go
       time = opening_time
       loop do
-        res = next_time(time)
+        res = next_time(time, closing_time)
         break unless res
         break if closing_time && res > closing_time
         answers << res
@@ -289,12 +289,12 @@ module IceCube
     end
 
     # Get the next time after (or including) a specific time
-    def next_time(time)
+    def next_time(time, closing_time)
       min_time = nil
       loop do
         @all_recurrence_rules.each do |rule|
           begin
-            if res = rule.next_time(time, self)
+            if res = rule.next_time(time, self, closing_time)
               if min_time.nil? || res < min_time
                 min_time = res
               end

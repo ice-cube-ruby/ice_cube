@@ -55,12 +55,12 @@ module IceCube
     end
 
     def on?(time, schedule)
-      next_time(time, schedule) == time
+      next_time(time, schedule, time) == time
     end
 
     # Compute the next time after (or including) the specified time in respect
     # to the given schedule
-    def next_time(time, schedule)
+    def next_time(time, schedule, closing_time)
       loop do
         break if @validations.all? do |name, vals|
           # Execute each validation
@@ -84,8 +84,9 @@ module IceCube
             false
           end
         end
+        # Prevent a non-matching infinite loop
+        return nil if closing_time && time > closing_time
       end
-      # TODO put end time into break for github issue so we don't spin forever
       # NOTE Uses may be 1 higher than proper here since end_time isn't validated
       # in this class.  This is okay now, since we never expose it - but if we ever
       # do - we should check that above this line, and return nil if end_time is past

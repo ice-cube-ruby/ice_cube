@@ -8,8 +8,10 @@ module IceCube
       @time = time
     end
 
-    def next_time(t, schedule)
-      time if time >= t
+    def next_time(t, schedule, closing_time)
+      unless closing_time && closing_time < t
+        time if time >= t
+      end
     end
 
     def to_hash

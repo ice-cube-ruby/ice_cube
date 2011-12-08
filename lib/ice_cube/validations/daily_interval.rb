@@ -36,8 +36,9 @@ module IceCube
       end
 
       def validate(time, schedule)
-        days = (time.to_i - schedule.start_time.to_i) / ONE_DAY
-        days += 1 if (time.to_i % ONE_DAY - schedule.start_time.to_i % ONE_DAY) > 0 # bucket 
+        # TODO check no AR dependence (in 1.8.7 also)
+        # TODO do something similar to other buckets or try to remove them
+        days = time.to_date - schedule.start_time.to_date
         unless days % interval === 0
           interval - (days % interval)
         end
