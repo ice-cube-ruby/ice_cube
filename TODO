@@ -3,5 +3,5 @@ some yield occurrences methods
 travis.ci
 ruby-1.8.7
 remaining todos in code
-test occurrences with just date rules
+test occurrences with just date recurrences_times
 make occurrences throw errors if will infinite loop

@@ -33,7 +33,11 @@ module IceCube
       end
 
       def build_ical(builder)
-        builder['BYDAY'] << IcalBuilder.fixnum_to_ical_day(day)
+        ical_day = IcalBuilder.fixnum_to_ical_day(day)
+        # Only add if there aren't others from day_of_week that override
+        if builder['BYDAY'].none? { |b| b.end_with?(ical_day) }
+          builder['BYDAY'] << ical_day
+        end
       end
 
       def type

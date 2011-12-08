@@ -6,7 +6,7 @@ module IceCube
 
     attr_reader :uses
 
-    def eql?(rule)
+    def ==(rule)
       hash = to_hash
       hash && hash == rule.to_hash
     end

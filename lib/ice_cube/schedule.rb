@@ -1,5 +1,4 @@
 require 'yaml'
-require 'set'
 
 module IceCube
 
@@ -22,8 +21,8 @@ module IceCube
       @start_time = start_time || Time.now
       @end_time = options[:end_time]
       @duration = options[:duration]
-      @all_recurrence_rules = Set.new
-      @all_exception_rules = Set.new
+      @all_recurrence_rules = []
+      @all_exception_rules = []
     end
 
     # Add a recurrence time to the schedule
@@ -48,28 +47,26 @@ module IceCube
 
     # Add a recurrence rule to the schedule
     def add_recurrence_rule(rule)
-      @all_recurrence_rules << rule
+      @all_recurrence_rules << rule unless @all_recurrence_rules.include?(rule)
     end
     alias :rrule :add_recurrence_rule
 
     # Remove a recurrence rule
     def remove_recurrence_rule(rule)
-      deletions = []
-      @all_recurrence_rules.delete_if { |r| deletions << r if rule == r }
-      deletions
+      res = @all_recurrence_rules.delete(rule)
+      res.nil? ? [] : [res]
     end
 
     # Add an exception rule to the schedule
     def add_exception_rule(rule)
-      @all_exception_rules << rule
+      @all_exception_rules << rule unless @all_exception_rules.include?(rule)
     end
     alias :exrule :add_exception_rule
 
     # Remove an exception rule
     def remove_exception_rule(rule)
-      deletions = []
-      @all_exception_rules.delete_if { |r| deletions << r if rule == r }
-      deletions
+      res = @all_exception_rules.delete(rule)
+      res.nil? ? [] : [res]
     end
 
     # Get the recurrence rules
