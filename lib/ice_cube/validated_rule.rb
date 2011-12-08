@@ -18,6 +18,8 @@ module IceCube
 
     # Compute the next time after (or including) the specified time in respect
     # to the given schedule
+    # NOTE: optimization target, sort the rules by their type, year first
+    # so we can make bigger jumps more often
     def next_time(time, schedule, closing_time)
       loop do
         break if @validations.all? do |name, vals|
