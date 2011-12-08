@@ -131,6 +131,12 @@ module IceCube
       find_occurrences(start_time)
     end
 
+    # Iterate forever
+    def each_occurrence(&block)
+      find_occurrences(start_time, &block)
+      self
+    end
+
     # The next n occurrences after now
     def next_occurrences(num, from = Time.now)
       find_occurrences(from + 1, nil, num)
@@ -265,7 +271,7 @@ module IceCube
 
     # Find all of the occurrences for the schedule between opening_time
     # and closing_time
-    def find_occurrences(opening_time, closing_time = nil, limit = nil)
+    def find_occurrences(opening_time, closing_time = nil, limit = nil, &block)
       reset
       answers = []
       # ensure the bounds are proper
@@ -279,7 +285,7 @@ module IceCube
         res = next_time(time, closing_time)
         break unless res
         break if closing_time && res > closing_time
-        answers << res
+        block_given? ? block.call(res) : (answers << res)
         break if limit && answers.length == limit
         time = res + 1
       end

@@ -4,6 +4,37 @@ describe IceCube::Schedule do
 
   include IceCube
 
+  describe :each do
+
+    it 'should be able to yield occurrences for a schedule' do
+      schedule = IceCube::Schedule.new
+      schedule.add_recurrence_rule IceCube::Rule.daily
+      i = 0
+      answers = []
+      schedule.each_occurrence do |time|
+        answers << time
+        i += 1
+        break if i > 9
+      end
+      answers.should == schedule.first(10)
+    end
+
+    it 'should return self' do
+      schedule = IceCube::Schedule.new
+      schedule.each_occurrence { |s| break }.should == schedule
+    end
+
+    it 'should stop itself when hitting the end of a schedule' do
+      time = Time.now + 24 * ONE_DAY
+      schedule = IceCube::Schedule.new
+      schedule.add_recurrence_time time
+      answers = []
+      schedule.each_occurrence { |t| answers << t }
+      answers.should == [time]
+    end
+
+  end
+
   describe :all_occurrences do
 
     it 'should stop automatically with just a date' do
