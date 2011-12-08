@@ -45,4 +45,14 @@ describe IceCube do
     end.should_not raise_error
   end
 
+  it 'should parse an old schedule properly' do
+    file = File.read(File.dirname(__FILE__) + '/../data/issue40.yml')
+    schedule = IceCube::Schedule.from_yaml(file)
+    schedule.start_time.year.should == 2011
+    schedule.start_time.month.should == 11
+    schedule.start_time.day.should == 16
+    schedule.duration.should == 3600
+    schedule.rrules.should == [IceCube::Rule.minutely(60).day(4).hour_of_day(14, 15, 16).minute_of_hour(0)]
+  end
+
 end

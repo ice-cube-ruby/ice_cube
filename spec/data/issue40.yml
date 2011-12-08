@@ -1,0 +1,21 @@
+---
+:start_date: 2011-11-16 11:31:58.441381000 -05:00
+:rrules:
+- :rule_type: IceCube::MinutelyRule
+  :interval: 60
+  :until: !!null 
+  :count: !!null 
+  :validations:
+    :day:
+    - 4
+    :hour_of_day:
+    - 14
+    - 15
+    - 16
+    :minute_of_hour:
+    - 0
+:exrules: []
+:rdates: []
+:exdates: []
+:duration: 3600
+:end_time: !!null 
