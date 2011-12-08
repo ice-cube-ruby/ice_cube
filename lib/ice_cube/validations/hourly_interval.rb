@@ -32,9 +32,12 @@ module IceCube
         @interval = interval
       end
 
+      def dst_adjust?
+        false
+      end
+
       def validate(time, schedule)
         hours = (time.to_i - schedule.start_time.to_i) / IceCube::ONE_HOUR
-        hours += 1 if (time.to_i % ONE_HOUR - schedule.start_time.to_i % ONE_HOUR) > 0 # bucket 
         unless hours % interval == 0
           interval - (hours % interval)
         end

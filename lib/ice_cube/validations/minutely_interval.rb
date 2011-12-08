@@ -16,6 +16,10 @@ module IceCube
         :min
       end
 
+      def dst_adjust?
+        false
+      end
+
       def build_s(builder)
         builder.base = interval == 1 ? 'Minutely' : "Every #{interval} minutes"
       end
@@ -34,7 +38,6 @@ module IceCube
 
       def validate(time, schedule)
         minutes = (time.to_i - schedule.start_time.to_i) / IceCube::ONE_MINUTE
-        minutes +=1 if (time.to_i % ONE_MINUTE - schedule.start_time.to_i % ONE_MINUTE) > 0 # bucket
         unless minutes % interval == 0
           interval - (minutes % interval)
         end

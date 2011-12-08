@@ -16,6 +16,10 @@ module IceCube
         :sec
       end
 
+      def dst_adjust?
+        false
+      end
+
       def build_s(builder)
         builder.base = interval == 1 ? 'Secondly' : "Every #{interval} seconds"
       end

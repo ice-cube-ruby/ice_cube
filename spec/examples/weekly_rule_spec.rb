@@ -61,6 +61,7 @@ describe IceCube::WeeklyRule, 'occurs_on?' do
         if last_date then
           month_interval = (current_date.year * 12 + current_date.month) - (last_date.year * 12 + last_date.month)
           # should not skip months
+          puts schedule.first(100) if month_interval > 1
           month_interval.should == 1
         end
         last_date = current_date

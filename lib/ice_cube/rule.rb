@@ -75,7 +75,8 @@ module IceCube
             res.reject! { |r| r.nil? || r == 0 || r === true }
             if fwd = res.min
               type = vals.first.type # get the jump type
-              wrapper = TimeUtil::TimeWrapper.new(time)
+              dst_adjust = !vals.first.respond_to?(:dst_adjust?) || vals.first.dst_adjust?
+              wrapper = TimeUtil::TimeWrapper.new(time, dst_adjust)
               wrapper.add(type, fwd)
               wrapper.clear_below(type)
               # puts "fail - #{time} - #{name} - #{type} - #{res} - #{wrapper.to_time}"

@@ -49,14 +49,15 @@ module IceCube
       def validate(time, schedule)
         # count the days to the weekday
         sum = day >= time.wday ? day - time.wday : 7 - time.wday + day
-        time += sum * ONE_DAY
+        wrapper = TimeUtil::TimeWrapper.new(time)
+        wrapper.add :day, sum
         # and then count the week until a viable occ
         loop do
-          which_occ, num_occ = TimeUtil.which_occurrence_in_month(time, day)
+          which_occ, num_occ = TimeUtil.which_occurrence_in_month(wrapper.to_time, day)
           this_occ = occ < 0 ? num_occ + occ + 1 : occ
           break if which_occ == this_occ
           sum += 7
-          time += ONE_WEEK
+          wrapper.add :day, 7 # one week
         end
         sum
       end

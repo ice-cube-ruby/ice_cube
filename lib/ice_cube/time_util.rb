@@ -124,7 +124,8 @@ module IceCube
     # A utility class for safely moving time around
     class TimeWrapper
 
-      def initialize(time)
+      def initialize(time, dst_adjust = true)
+        @dst_adjust = dst_adjust
         @time = time
       end
 
@@ -162,12 +163,15 @@ module IceCube
 
       private
 
-      # TODO remove if unused
       def adjust(&block)
-        off = @time.utc_offset
-        yield
-        diff = off - @time.utc_offset
-        # @time += diff
+        if @dst_adjust
+          off = @time.utc_offset
+          yield
+          diff = off - @time.utc_offset
+          @time += diff if diff != 0
+        else
+          yield
+        end
       end
  
       def clear_sec
