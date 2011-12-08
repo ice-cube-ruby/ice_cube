@@ -44,7 +44,7 @@ module IceCube
       NUMBER_SUFFIX = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th']
       SPECIAL_SUFFIX = { 11 => 'th', 12 => 'th', 13 => 'th', 14 => 'th' } 
  
-      # influences by ActiveSupport's to_sentence
+      # influenced by ActiveSupport's to_sentence
       def sentence(array)
         case array.length
         when 0 ; ''

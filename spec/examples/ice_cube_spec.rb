@@ -421,6 +421,12 @@ describe IceCube::Schedule, 'occurs_on?' do
     end.should_not raise_error
   end
 
+  it 'should use occurs_at? when calling occurring_at? with no duration' do
+    schedule = IceCube::Schedule.new
+    schedule.should_receive(:occurs_at?)
+    schedule.occurring_at?(Time.now)
+  end
+
   it 'should be able to specify a duration on a schedule use occurring_at? on the schedule
       to find out if a given time is included' do
     start_time = Time.local 2010, 5, 6, 10, 0, 0

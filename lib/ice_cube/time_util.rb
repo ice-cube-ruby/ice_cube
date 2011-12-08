@@ -37,16 +37,16 @@ module IceCube
 
     # Get the beginning of a date
     def self.beginning_of_date(date)
-      Time.respond_to?(:zone) ? 
+      date.respond_to?(:beginning_of_day) ?
         date.beginning_of_day :
         Time.local(date.year, date.month, date.day, 0, 0, 0)
     end
 
     # Get the end of a date
     def self.end_of_date(date)
-      Time.respond_to?(:zone) ? 
+      date.respond_to?(:end_of_day) ?
         date.end_of_day :
-        local(date.year, date.month, date.day, 23, 59, 59)
+        Time.local(date.year, date.month, date.day, 23, 59, 59)
     end
 
     # Convert a symbol to a numeric month

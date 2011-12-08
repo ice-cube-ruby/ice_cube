@@ -167,6 +167,13 @@ describe IceCube::Schedule, 'to_yaml' do
     dates[0].class.should == ActiveSupport::TimeWithZone
   end
 
+  it 'should be able to make a round trip with an exdate' do
+    schedule = IceCube::Schedule.new
+    schedule.add_exception_time (time = Time.now)
+    schedule = IceCube::Schedule.from_yaml schedule.to_yaml
+    schedule.exdates.should == [time]
+  end
+
   it 'crazy shit' do
     start_date = Time.zone.now
     schedule = IceCube::Schedule.new(start_date)
@@ -185,11 +192,6 @@ describe IceCube::Schedule, 'to_yaml' do
     IceCube::Schedule.from_hash(schedule.to_hash).duration.should == 3600
   end
 
-  it 'should be able to make a round trip to yaml with a duration' do
-    schedule = IceCube::Schedule.new Time.now, :duration => 3600
-    IceCube::Schedule.from_yaml(schedule.to_yaml).duration.should == 3600
-  end
-  
   it 'should be able to be serialized to yaml as part of a hash' do
     schedule = IceCube::Schedule.new Time.now
     hash = { :schedule => schedule }
