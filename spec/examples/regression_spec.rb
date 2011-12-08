@@ -31,4 +31,10 @@ describe IceCube do
     schedule.rrule rule
   end
 
+  it 'should not regress - issue 40' do
+    schedule = IceCube::Schedule.new(Time.new(2011, 11, 16, 11, 31, 58), :duration => 3600)
+    schedule.add_recurrence_rule IceCube::Rule.minutely(60).day(4).hour_of_day(14, 15, 16).minute_of_hour(0)
+    schedule.occurring_at?(Time.new(2011, 11, 17, 15, 30)).should be_false
+  end
+
 end
