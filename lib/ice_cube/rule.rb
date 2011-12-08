@@ -6,6 +6,11 @@ module IceCube
 
     attr_reader :uses
 
+    # Is this a terminating schedule?
+    def terminating?
+      until_time || occurrence_count
+    end
+
     def ==(rule)
       hash = to_hash
       hash && hash == rule.to_hash

@@ -4,6 +4,18 @@ describe IceCube::Schedule do
 
   include IceCube
 
+  describe :all_occurrences do
+
+    it 'should return an error if there is nothing to stop it' do
+      schedule = IceCube::Schedule.new
+      schedule.rrule IceCube::Rule.daily
+      lambda do
+        schedule.all_occurrences
+      end.should raise_error ArgumentError
+    end
+
+  end
+
   describe :next_occurrences do
 
     it 'should be able to calculate next occurrences ignoring exclude_dates' do

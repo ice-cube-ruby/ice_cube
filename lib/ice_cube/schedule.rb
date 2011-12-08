@@ -125,6 +125,9 @@ module IceCube
 
     # All of the occurrences
     def all_occurrences
+      unless end_time || recurrence_rules.all?(&:terminating?)
+        raise ArgumentError.new('Rule must specify either an until date or a count to use #all_occurrences')
+      end
       find_occurrences(start_time)
     end
 

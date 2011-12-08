@@ -3,5 +3,4 @@ some yield occurrences methods
 travis.ci
 ruby-1.8.7
 test occurrences with just date recurrences_times
-make occurrences throw errors if will infinite loop
 check in other directory after installing
