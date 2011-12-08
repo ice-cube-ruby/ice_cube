@@ -49,3 +49,6 @@
 0.7.0
   * Large rewrite, fixing a few small bugs and including some large optimizations to the spidering algo
   * Support for #each_occurrence which iterates as it builds forever
+
+0.7.1
+  * Fix for comparing rules with nil
