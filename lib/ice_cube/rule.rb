@@ -85,6 +85,7 @@ module IceCube
           end
         end
       end
+      # TODO put end time into break for github issue so we don't spin forever
       # NOTE Uses may be 1 higher than proper here since end_time isn't validated
       # in this class.  This is okay now, since we never expose it - but if we ever
       # do - we should check that above this line, and return nil if end_time is past
