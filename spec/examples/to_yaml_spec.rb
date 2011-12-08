@@ -141,7 +141,7 @@ describe IceCube::Schedule, 'to_yaml' do
     schedule = IceCube::Schedule.new(start_date)
     schedule = IceCube::Schedule.from_yaml(schedule.to_yaml) # round trip
     ice_cube_start_date = schedule.start_date
-    ice_cube_start_date.to_datetime.to_s.should == start_date.to_datetime.to_s
+    ice_cube_start_date.should == start_date
     ice_cube_start_date.class.should == ActiveSupport::TimeWithZone
     ice_cube_start_date.utc_offset.should == start_date.utc_offset
   end
@@ -203,7 +203,7 @@ describe IceCube::Schedule, 'to_yaml' do
     pacific_time = 'Pacific Time (US & Canada)'
     schedule = IceCube::Schedule.new(Time.now.in_time_zone(pacific_time))
     rt_schedule = IceCube::Schedule.from_yaml(schedule.to_yaml)
-    rt_schedule.start_time.time_zone.name.should == pacific_time 
+    rt_schedule.start_time.zone.should == 'PST'
   end
 
   it 'should be backward compatible with old yaml Time format' do
