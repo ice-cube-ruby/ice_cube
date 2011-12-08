@@ -16,6 +16,43 @@ module IceCube
     include Validations::Count
     include Validations::Until
 
+    # Compute the next time after (or including) the specified time in respect
+    # to the given schedule
+    def next_time(time, schedule, closing_time)
+      loop do
+        break if @validations.all? do |name, vals|
+          # Execute each validation
+          res = vals.map do |validation|
+            validation.validate(time, schedule)
+          end
+          # If there is any nil, then we're set - otherwise choose the lowest
+          if res.any? { |r| r.nil? || r == 0 }
+            true
+          else
+            return nil if res.all? { |r| r === true } # allow quick escaping
+            res.reject! { |r| r.nil? || r == 0 || r === true }
+            if fwd = res.min
+              type = vals.first.type # get the jump type
+              dst_adjust = !vals.first.respond_to?(:dst_adjust?) || vals.first.dst_adjust?
+              wrapper = TimeUtil::TimeWrapper.new(time, dst_adjust)
+              wrapper.add(type, fwd)
+              wrapper.clear_below(type)
+              # puts "fail - #{time} - #{name} - #{type} - #{res} - #{wrapper.to_time}"
+              time = wrapper.to_time
+            end
+            false
+          end
+        end
+        # Prevent a non-matching infinite loop
+        return nil if closing_time && time > closing_time
+      end
+      # NOTE Uses may be 1 higher than proper here since end_time isn't validated
+      # in this class.  This is okay now, since we never expose it - but if we ever
+      # do - we should check that above this line, and return nil if end_time is past
+      @uses += 1 if time
+      time
+    end 
+
     def to_s
       builder = StringBuilder.new
       @validations.each do |name, validations|

@@ -22,6 +22,10 @@ module IceCube
         @rule = rule
       end
 
+      def type
+        :dealbreaker
+      end
+
       def validate(time, schedule)
         if rule.uses && rule.uses >= count
           raise CountExceeded

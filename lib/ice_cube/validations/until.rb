@@ -18,6 +18,10 @@ module IceCube
 
       attr_reader :time
 
+      def type
+        :dealbreaker
+      end
+
       def initialize(time)
         @time = time
       end
