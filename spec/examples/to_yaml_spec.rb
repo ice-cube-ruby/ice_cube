@@ -142,7 +142,6 @@ describe IceCube::Schedule, 'to_yaml' do
     schedule = IceCube::Schedule.from_yaml(schedule.to_yaml) # round trip
     ice_cube_start_date = schedule.start_date
     ice_cube_start_date.should == start_date
-    ice_cube_start_date.class.should == ActiveSupport::TimeWithZone
     ice_cube_start_date.utc_offset.should == start_date.utc_offset
   end
   
@@ -200,10 +199,9 @@ describe IceCube::Schedule, 'to_yaml' do
   end
 
   it 'should be able to roll forward and back in time' do
-    pacific_time = 'Pacific Time (US & Canada)'
-    schedule = IceCube::Schedule.new(Time.now.in_time_zone(pacific_time))
+    schedule = IceCube::Schedule.new(Time.now)
     rt_schedule = IceCube::Schedule.from_yaml(schedule.to_yaml)
-    rt_schedule.start_time.zone.should == 'PST'
+    rt_schedule.start_time.utc_offset.should == schedule.start_time.utc_offset
   end
 
   it 'should be backward compatible with old yaml Time format' do
