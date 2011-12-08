@@ -20,7 +20,7 @@ module IceCube
 
     # Serialize a time appropriate for storing
     def self.serialize_time(time)
-      if const_defined?('ActiveSupport') && time.is_a?(ActiveSupport::TimeWithZone)
+      if defined?(:ActiveSupport) && time.is_a?(ActiveSupport::TimeWithZone)
         { :time => time, :zone => time.time_zone.name }
       elsif time.is_a?(Time)
         time
@@ -128,14 +128,6 @@ module IceCube
         @time = time
       end
 
-      # TODO remove if unused
-      def adjust(&block)
-        off = @time.utc_offset
-        yield
-        diff = off - @time.utc_offset
-        # @time += diff
-      end
-
       # Get the wrapper time back
       def to_time
         @time
@@ -170,6 +162,14 @@ module IceCube
 
       private
 
+      # TODO remove if unused
+      def adjust(&block)
+        off = @time.utc_offset
+        yield
+        diff = off - @time.utc_offset
+        # @time += diff
+      end
+ 
       def clear_sec
         @time -= @time.sec
       end

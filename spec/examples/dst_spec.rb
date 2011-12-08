@@ -243,7 +243,6 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it "local - should make dates on weekly (day) inverval over dst - github issue 5" do
-    pending
     start_date = Time.local(2010, 3, 7, 12, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.weekly.day(:sunday)

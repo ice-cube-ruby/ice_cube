@@ -48,7 +48,6 @@ describe IceCube::WeeklyRule, 'occurs_on?' do
   end
   
   it 'should occur on every first day of a month at midnight and not skip months when DST ends' do
-    pending
     start_date = Time.local(2011, 8, 1)
     [:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday].each_with_index do |day, index|
       schedule = IceCube::Schedule.new(start_date)

@@ -169,7 +169,6 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'should ~ monthly on the third to last day of the month, 6 times' do
-    pending
     start_date = Time.utc(1997, 9, 28)
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_month(-3).count(6)
