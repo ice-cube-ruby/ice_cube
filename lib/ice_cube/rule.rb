@@ -12,8 +12,10 @@ module IceCube
     end
 
     def ==(rule)
-      hash = to_hash
-      hash && hash == rule.to_hash
+      if rule.is_a? Rule
+        hash = to_hash
+        hash && hash == rule.to_hash
+      end
     end
 
     def hash
