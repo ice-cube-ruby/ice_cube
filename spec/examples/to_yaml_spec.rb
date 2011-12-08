@@ -211,14 +211,6 @@ describe IceCube::Schedule, 'to_yaml' do
     schedule.start_time.should be_a(Time)
   end
 
-  it 'should not have a long yaml dump' do
-    pacific_time = 'Pacific Time (US & Canada)'
-    Time.zone = pacific_time
-
-    schedule = IceCube::Schedule.new(Time.zone.now)
-    schedule.to_yaml.length.should be < 200
-  end
-
   it 'should work to_yaml with non-TimeWithZone' do
     schedule = IceCube::Schedule.new(Time.now)
     schedule.to_yaml.length.should be < 200

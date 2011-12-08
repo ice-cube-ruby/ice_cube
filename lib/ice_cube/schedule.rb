@@ -218,7 +218,12 @@ module IceCube
 
     # Convert the schedule to yaml
     def to_yaml(*args)
-      to_hash.to_yaml(*args)
+      defined?(Psych) ? Psych::dump(to_hash) : YAML::dump(to_hash, *args)
+    end
+
+    # Load the schedule from yaml
+    def self.from_yaml(yaml, options = {})
+      from_hash defined?(Psych) ? Psych::load(yaml) : YAML::load(yaml), options
     end
 
     # Convert the schedule to a hash
@@ -254,11 +259,6 @@ module IceCube
         schedule.add_exception_time TimeUtil.deserialize_time(t)
       end
       schedule
-    end
-
-    # Load the schedule from yaml
-    def self.from_yaml(yaml, options = {})
-      from_hash YAML.load(yaml), options
     end
 
     private

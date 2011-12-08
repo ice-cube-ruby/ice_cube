@@ -1,5 +1,12 @@
 require 'date'
 
+# Use psych if we can
+begin
+  require 'psych'
+rescue LoadError
+  require 'yaml'
+end
+
 module IceCube
 
   autoload :VERSION, 'ice_cube/version'

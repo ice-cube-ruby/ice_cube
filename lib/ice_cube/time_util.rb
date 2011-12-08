@@ -21,13 +21,9 @@ module IceCube
     # Serialize a time appropriate for storing
     def self.serialize_time(time)
       if defined?(:ActiveSupport) && const_defined?(:ActiveSupport) && time.is_a?(ActiveSupport::TimeWithZone)
-        { :time => time, :zone => time.time_zone.name }
+        { :time => time.utc, :zone => time.time_zone.name }
       elsif time.is_a?(Time)
-        if time.respond_to?(:_dump)
-          time._dump
-        else
-          time
-        end
+        time
       end
     end
 
@@ -35,8 +31,6 @@ module IceCube
     def self.deserialize_time(time_or_hash)
       if time_or_hash.is_a?(Time)
         time_or_hash
-      elsif time_or_hash.is_a?(String)
-         Time._load(time_or_hash)
       elsif time_or_hash.is_a?(Hash)
         time_or_hash[:time].in_time_zone(time_or_hash[:zone])
       end
