@@ -52,3 +52,9 @@
 
 0.7.1
   * Fix for comparing rules with nil
+
+0.7.2
+  * Fix for interval to/from YAML issue
+
+HEAD
+  * Fix for time interval buckets (affects hour, minute, sec)
