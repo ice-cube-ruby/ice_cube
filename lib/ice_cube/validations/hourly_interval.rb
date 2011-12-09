@@ -37,7 +37,10 @@ module IceCube
       end
 
       def validate(time, schedule)
-        hours = (time.to_i - schedule.start_time.to_i) / IceCube::ONE_HOUR
+        start_time = schedule.start_time
+        sec = (time.to_i - time.to_i % ONE_HOUR) - 
+          (start_time.to_i - start_time.to_i % ONE_HOUR)
+        hours = sec / ONE_HOUR
         unless hours % interval == 0
           interval - (hours % interval)
         end

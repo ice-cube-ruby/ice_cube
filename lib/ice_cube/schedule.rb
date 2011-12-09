@@ -218,7 +218,7 @@ module IceCube
 
     # Convert the schedule to yaml
     def to_yaml(*args)
-      defined?(Psych) ? Psych::dump(to_hash) : YAML::dump(to_hash, *args)
+      defined?(Psych) ? Psych::dump(to_hash, *args) : YAML::dump(to_hash, *args)
     end
 
     # Load the schedule from yaml

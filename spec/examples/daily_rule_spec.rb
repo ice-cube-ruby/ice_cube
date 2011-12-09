@@ -21,7 +21,7 @@ describe IceCube::DailyRule, 'occurs_on?' do
     dates.size.should == 3
     dates.should == [DAY, DAY + 2 * IceCube::ONE_DAY, DAY + 4 * IceCube::ONE_DAY]
   end
-  
+
   it 'should produce the correct days for @interval = 2 when crossing into a new year' do
     start_date = Time.utc(2011, 12, 29)
     schedule = IceCube::Schedule.new(start_date)
