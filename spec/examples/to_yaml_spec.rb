@@ -5,6 +5,12 @@ Time.zone = 'Eastern Time (US & Canada)'
 
 describe IceCube::Schedule, 'to_yaml' do
 
+  it "should make a round trip with to_yaml - github issue 47" do
+    s = Schedule.new(Time.now)
+    s.add_recurrence_rule Rule.daily(3)
+    Schedule.from_yaml(s.to_yaml).first(3).should == s.first(3)
+  end
+
   it 'should be able to let rules take round trips to yaml' do
     schedule = IceCube::Schedule.new
     schedule.add_recurrence_rule IceCube::Rule.monthly
