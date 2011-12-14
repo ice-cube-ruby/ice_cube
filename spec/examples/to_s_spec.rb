@@ -151,4 +151,10 @@ describe IceCube::Schedule, 'to_s' do
     schedule.to_s.should == 'Weekly 2 times'
   end
 
+  it 'should work when an end_time is set' do
+    schedule = IceCube::Schedule.new(Time.local(2012, 8, 31), :end_time => Time.local(2012, 10, 31))
+    schedule.add_recurrence_rule IceCube::Rule.daily.count(2)
+    schedule.to_s.should == 'Daily 2 times / until October 31, 2012'
+  end
+
 end
