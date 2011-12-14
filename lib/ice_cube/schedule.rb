@@ -199,7 +199,7 @@ module IceCube
       pieces.concat rrules.map { |t| t.to_s }
       pieces.concat exrules.map { |t| "not #{t.to_s}" }
       pieces.concat ed.sort.map { |t| "not on #{t.strftime(TO_S_TIME_FORMAT)}" }
-      pieces << "until #{end_time.strftime(TIME_FORMAT)}" if end_time
+      pieces << "until #{end_time.strftime(TO_S_TIME_FORMAT)}" if end_time
       pieces.join(' / ')
     end
 
