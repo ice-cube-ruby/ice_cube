@@ -10,6 +10,11 @@ module IceCube
       :thursday => 4, :friday => 5, :saturday => 6
     }
 
+    ICAL_DAYS = {
+      'SU' => :sunday, 'MO' => :monday, 'TU' => :tuesday, 'WE' => :wednesday,
+      'TH' => :thursday, 'FR' => :friday, 'SA' => :saturday
+    }
+
     MONTHS = {
       :january => 1, :february => 2, :march => 3, :april => 4, :may => 5,
       :june => 6, :july => 7, :august => 8, :september => 9, :october => 10,
@@ -147,6 +152,12 @@ module IceCube
       (wday - sym_to_wday(week_start)) % 7
     end
     deprecated_alias :normalize_weekday, :normalize_wday
+
+    def self.ical_day_to_symbol(str)
+      day = ICAL_DAYS[str]
+      raise "No such day: #{str}" if day.nil?
+      day
+    end
 
     # Return the count of the number of times wday appears in the month,
     # and which of those time falls on
