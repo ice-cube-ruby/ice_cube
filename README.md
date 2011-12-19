@@ -2,9 +2,24 @@
 
 [![Build Status](https://secure.travis-ci.org/seejohnrun/ice_cube.png)](http://travis-ci.org/seejohnrun/ice_cube)
 
+Installing the Gem manually:
+
 ``` bash
 gem install ice_cube
 ```
+
+Or in Rails 3 add this to your Gemfile:
+
+``` ruby
+gem 'ice_cube'
+```
+
+And this inside at the start of your model definition:
+
+``` ruby
+include IceCube
+```
+
 
 ice_cube is a ruby library for easily handling repeated events (schedules).  The API is modeled after iCalendar repeated dates.  The power lies in the ability to specify multiple rules and dates, and have ice_cube quickly figure out whether the schedule falls on a certain date (.occurs_on?), or what dates it occurs on (.occurrences, .first, .all_occurrences)
 
