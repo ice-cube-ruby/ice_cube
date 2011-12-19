@@ -12,6 +12,11 @@ module IceCube
       :thursday => 4, :friday => 5, :saturday => 6
     }
 
+    ICAL_DAYS = {
+      'SU' => :sunday, 'MO' => :monday, 'TU' => :tuesday, 'WE' => :wednesday,
+      'TH' => :thursday, 'FR' => :friday, 'SA' => :saturday
+    }
+
     MONTHS = {
       :january => 1, :february => 2, :march => 3, :april => 4, :may => 5,
       :june => 6, :july => 7, :august => 8, :september => 9, :october => 10,
@@ -61,6 +66,12 @@ module IceCube
     def self.symbol_to_day(sym)
       day = DAYS[sym]
       raise "No such day: #{sym}" unless day
+      day
+    end
+    
+    def self.ical_day_to_symbol(str)
+      day = ICAL_DAYS[str]
+      raise "No such day: #{str}" if day.nil?
       day
     end
 
