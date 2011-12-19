@@ -26,4 +26,57 @@ describe IceCube, 'from_ical' do
 		rule.class.should == IceCube::YearlyRule
 	end
 
+	it 'should be able to parse a .day rule' do
+		rule = IceCube::Rule
+		rule.from_ical("FREQ=DAILY;BYDAY=MO,TU")
+		rule.should == IceCube::Rule.daily.day(:monday, :tuesday)
+	end
+
+	it 'should be able to parse a .day_of_week rule' do
+		rule = IceCube::Rule
+		rule.from_ical("FREQ=DAILY;BYDAY=-1TU,-2TU")
+		rule.should == IceCube::Rule.daily.day_of_week(:tuesday => [-1, -2])
+	end
+
+	it 'should be able to parse a .day_of_month rule' do
+		rule = IceCube::Rule
+		rule.from_ical("FREQ=DAILY;BYMONTHDAY=23")
+		rule.should == IceCube::Rule.daily.day_of_month(23)
+	end
+
+	it 'should be able to parse a .day_of_year rule' do
+		rule = IceCube::Rule
+		rule.from_ical("FREQ=DAILY;BYYEARDAY=100,200")
+		rule.should == IceCube::Rule.daily.day_of_year(100,200)
+	end
+
+	it 'should be able to serialize a .month_of_year rule' do
+		rule = IceCube::Rule
+		rule.from_ical("FREQ=DAILY;BYMONTH=1,4")
+		rule.should == IceCube::Rule.daily.month_of_year(:january, :april)
+	end
+
+	it 'should be able to collapse a combination day_of_week and day' do
+		rule = IceCube::Rule
+		rule.from_ical("FREQ=DAILY;BYDAY=TU,1MO,-1MO")
+		rule.should == IceCube::Rule.daily.day(:monday, :tuesday).day_of_week(:monday => [1, -1])
+	end
+
+	it 'should be able to parse of .day_of_week rule with multiple days' do
+		rule = IceCube::Rule
+		rule.from_ical("FREQ=DAILY;BYDAY=WE,1MO,-1MO,2TU")
+		rule.should == IceCube::Rule.daily.day_of_week(:monday => [1, -1], :tuesday => [2]).day(:wednesday)
+	end
+
+	it 'should be able to parse a rule with an until date' do
+		rule = IceCube::Rule
+		rule.from_ical("FREQ=WEEKLY;UNTIL=#{Time.now.strftime("%Y%m%dT%H%M%SZ")}")
+		rule.should == IceCube::Rule.weekly.until(Time.now)
+	end
+
+	it 'should be able to parse a rule with a count date' do
+		rule = IceCube::Rule
+		rule.from_ical("FREQ=WEEKLY;COUNT=5")
+		rule.should == IceCube::Rule.weekly.count(5)
+	end
 end
