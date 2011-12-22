@@ -276,17 +276,21 @@ module IceCube
       answers = []
       # ensure the bounds are proper
       if end_time
-        closing_time = end_time unless closing_time && closing_time < @end_time
+        closing_time = end_time unless closing_time && closing_time < end_time
       end
       opening_time = start_time if opening_time < start_time
-      # And off we go
-      time = opening_time
+      # walk up to the opening time - and off we go
+      # If we have rules with counts, we need to walk from the beginning of time,
+      # otherwise opening_time
+      time = full_required? ? start_time : opening_time
       loop do
         res = next_time(time, closing_time)
         break unless res
         break if closing_time && res > closing_time
-        block_given? ? block.call(res) : (answers << res)
-        break if limit && answers.length == limit
+        if res >= opening_time
+          block_given? ? block.call(res) : (answers << res)
+          break if limit && answers.length == limit
+        end
         time = res + 1
       end
       # and return our answers
@@ -322,6 +326,12 @@ module IceCube
         break
       end
       min_time
+    end
+
+    # Return a boolean indicating if any rule needs to be run from the start of time
+    def full_required?
+      @all_recurrence_rules.any?(&:full_required?) ||
+      @all_exception_rules.any?(&:full_required?)
     end
 
     # Return a boolean indicating whether or not a specific time

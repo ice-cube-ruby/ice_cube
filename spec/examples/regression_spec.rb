@@ -70,4 +70,12 @@ describe IceCube do
     ]
   end
 
+  it 'should be able to use count with occurrences_between falling over counts last occurrence - issue 54' do
+    start_time = Time.now
+    schedule = IceCube::Schedule.new(start_time)
+    schedule.add_recurrence_rule(IceCube::Rule.daily.count(5))
+    schedule.occurrences_between(start_time, start_time + 7 * IceCube::ONE_DAY).count.should == 5
+    schedule.occurrences_between(start_time + 7 * IceCube::ONE_DAY, start_time + 14 * IceCube::ONE_DAY).count.should == 0
+  end
+
 end
