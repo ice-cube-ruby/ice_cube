@@ -20,7 +20,7 @@ describe IceCube do
   end
 
   it 'should produce the correct result for every day in may - issue 31' do
-    schedule = IceCube::Schedule.new Time.now
+    schedule = IceCube::Schedule.new Time.local(2011, 12, 25)
     schedule.add_recurrence_rule IceCube::Rule.daily.month_of_year(:may)
     schedule.first(10).map(&:year).uniq.size.should == 1
   end
@@ -43,6 +43,15 @@ describe IceCube do
     lambda do
       schedule = IceCube::Schedule.from_yaml(schedule.to_yaml)
     end.should_not raise_error
+  end
+
+  require 'active_support/time'
+  it 'should not loop forever on clear - issue #53' do
+    Time.zone = 'America/Sao_Paulo'
+    start_time = Time.zone.local(2012, 12, 20)
+    sc = IceCube::Schedule.new start_time, :end_time => Time.zone.local(2013, 11)
+    sc.add_recurrence_rule IceCube::Rule.monthly
+    sc.all_occurrences
   end
 
   it 'should parse an old schedule properly' do
