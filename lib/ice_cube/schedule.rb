@@ -125,9 +125,7 @@ module IceCube
 
     # All of the occurrences
     def all_occurrences
-      unless end_time || recurrence_rules.all?(&:terminating?)
-        raise ArgumentError.new('Rule must specify either an until date or a count to use #all_occurrences')
-      end
+      raise ArgumentError.new('Rule must specify either an until date or a count to use #all_occurrences') unless terminating?
       find_occurrences(start_time)
     end
 
@@ -178,6 +176,43 @@ module IceCube
       else
         occurs_at?(time)
       end
+    end
+
+    # Determine if this schedule conflicts with another schedule
+    # @param [IceCube::Schedule] other_schedule - The schedule to compare to
+    # @param [Time] closing_time - the last time to consider
+    # @return [Boolean] whether or not the schedules conflict at all
+    def conflicts_with?(other_schedule, closing_time = nil)
+      unless terminating? || other_schedule.terminating? || closing_time
+        raise ArgumentError.new 'At least one schedule must be terminating to use #conflicts_with?'
+      end
+      # Pick the terminating schedule, and other schedule
+      # No need to reverse if terminating? or there is a closing time
+      terminating_schedule = self
+      unless terminating? || closing_time
+        terminating_schedule, other_schedule = other_schedule, terminating_schedule
+      end
+      # Go through each occurrence of the terminating schedule and determine
+      # if the other occurs at that time
+      last_time = nil
+      terminating_schedule.each_occurrence do |time|
+        if closing_time && time > closing_time
+          last_time = closing_time
+          break
+        end
+        last_time = time
+        return true if other_schedule.occurring_at?(time)
+      end
+      # Due to durations, we need to walk up to the end time, and verify in the
+      # other direction
+      if last_time
+        other_schedule.each_occurrence do |time|
+          break if time > last_time
+          return true if terminating_schedule.occurring_at?(time)
+        end
+      end
+      # No conflict, return false
+      false
     end
 
     # Determine if the schedule occurs at a specific time
@@ -259,6 +294,12 @@ module IceCube
         schedule.add_exception_time TimeUtil.deserialize_time(t)
       end
       schedule
+    end
+
+    # Determine if the schedule will end
+    # @return [Boolean] true if ending, false if repeating forever
+    def terminating?
+      end_time || recurrence_rules.all?(&:terminating?)
     end
 
     private
