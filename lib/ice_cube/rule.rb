@@ -126,6 +126,11 @@ module IceCube
       next_time(time, schedule, time) == time
     end
 
+    # Whether this rule requires a full run
+    def full_required?
+      !@count.nil?
+    end
+
     # Convenience methods for creating Rules
     class << self
 

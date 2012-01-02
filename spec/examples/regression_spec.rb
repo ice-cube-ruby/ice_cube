@@ -55,4 +55,38 @@ describe IceCube do
     schedule.rrules.should == [IceCube::Rule.minutely(60).day(4).hour_of_day(14, 15, 16).minute_of_hour(0)]
   end
 
+  it 'should handle a simple weekly schedule - icecube issue #52' do
+    rule_inst = IceCube::Rule.weekly(1).day(4)
+    st = Time.new(2011, 12, 1, 18, 0, 0)
+    fin = Time.new(2012, 1, 1, 18, 0, 0)
+    schedule = IceCube::Schedule.new(st, :end_time => fin)
+    schedule.add_recurrence_rule rule_inst
+    schedule.all_occurrences.should == [
+      Time.new(2011, 12, 1, 18),
+      Time.new(2011, 12, 8, 18),
+      Time.new(2011, 12, 15, 18),
+      Time.new(2011, 12, 22, 18),
+      Time.new(2011, 12, 29, 18)
+    ]
+  end
+
+  it 'should be able to use count with occurrences_between falling over counts last occurrence - issue 54' do
+    start_time = Time.now
+    schedule = IceCube::Schedule.new(start_time)
+    schedule.add_recurrence_rule(IceCube::Rule.daily.count(5))
+    schedule.occurrences_between(start_time, start_time + 7 * IceCube::ONE_DAY).count.should == 5
+    schedule.occurrences_between(start_time + 7 * IceCube::ONE_DAY, start_time + 14 * IceCube::ONE_DAY).count.should == 0
+  end
+
+  require 'active_support/time'
+  it 'should exclude a date from a weekly schedule - issue #55' do
+    Time.zone = 'Eastern Time (US & Canada)'
+    ex = Time.zone.local(2011, 12, 27, 14)
+    schedule = IceCube::Schedule.new(ex).tap do |schedule|
+      schedule.add_recurrence_rule IceCube::Rule.weekly.day(:tuesday, :thursday)
+      schedule.add_exception_time ex
+    end
+    schedule.first.should == Time.zone.local(2011, 12, 29, 14)
+  end
+
 end

@@ -8,7 +8,7 @@ describe :remaining_occurrences do
     start_time = Time.now
     schedule = Schedule.new(start_time, :end_time => Time.local(start_time.year, start_time.month, start_time.day, 23, 59, 59))
     schedule.add_recurrence_rule(Rule.hourly)
-    schedule.remaining_occurrences.size.should == 24 - schedule.start_time.hour
+    schedule.remaining_occurrences(start_time).size.should == 24 - schedule.start_time.hour
   end
 
   it 'should get the proper ramining occurrences past the end of the year' do

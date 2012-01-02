@@ -61,3 +61,9 @@
 
 0.7.4
   * NameError when serializing schedule with end_time (thanks digx)
+
+0.7.5
+  * Fix an issue with occurrences_between when using count [#54]
+
+0.7.6
+  * Support for #terminating? and #conflicts_with?
