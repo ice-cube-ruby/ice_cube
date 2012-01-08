@@ -64,3 +64,7 @@
 
 0.7.5
   * Fix an issue with occurrences_between when using count [#54]
+
+---
+
+* Added "Weekends" and "Weekdays" to #day's to_s

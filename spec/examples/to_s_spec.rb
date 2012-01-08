@@ -44,6 +44,34 @@ describe IceCube::Schedule, 'to_s' do
     IceCube::Rule.weekly.day(:monday, :tuesday, :wednesday).to_s.should == 'Weekly on Mondays, Tuesdays, and Wednesdays'
   end
 
+  it 'should show saturday and sunday as weekends' do
+    IceCube::Rule.weekly.day(:saturday, :sunday).to_s.should == 'Weekly on Weekends'
+  end
+
+  it 'should not show saturday and sunday as weekends when other days are present also' do
+    IceCube::Rule.weekly.day(:sunday, :monday, :saturday).to_s.should ==
+      'Weekly on Sundays, Mondays, and Saturdays'
+  end
+
+  it 'should reorganize days to be in order' do
+    IceCube::Rule.weekly.day(:tuesday, :monday).to_s.should ==
+      'Weekly on Mondays and Tuesdays'
+  end
+
+  it 'should show weekdays as such' do
+    IceCube::Rule.weekly.day(
+      :monday, :tuesday, :wednesday,
+      :thursday, :friday
+    ).to_s.should == 'Weekly on Weekdays'
+  end
+
+  it 'should not show weekdays as such when a weekend day is present' do
+    IceCube::Rule.weekly.day(
+      :sunday, :monday, :tuesday, :wednesday,
+      :thursday, :friday
+    ).to_s.should == 'Weekly on Sundays, Mondays, Tuesdays, Wednesdays, Thursdays, and Fridays'
+  end
+
   it 'should work with a single date' do
     schedule = IceCube::Schedule.new Time.local(2010, 3, 20)
     schedule.add_recurrence_date Time.local(2010, 3, 20)
