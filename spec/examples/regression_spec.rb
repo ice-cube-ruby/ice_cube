@@ -78,4 +78,15 @@ describe IceCube do
     schedule.occurrences_between(start_time + 7 * IceCube::ONE_DAY, start_time + 14 * IceCube::ONE_DAY).count.should == 0
   end
 
+  require 'active_support/time'
+  it 'should exclude a date from a weekly schedule - issue #55' do
+    Time.zone = 'Eastern Time (US & Canada)'
+    ex = Time.zone.local(2011, 12, 27, 14)
+    schedule = IceCube::Schedule.new(ex).tap do |schedule|
+      schedule.add_recurrence_rule IceCube::Rule.weekly.day(:tuesday, :thursday)
+      schedule.add_exception_time ex
+    end
+    schedule.first.should == Time.zone.local(2011, 12, 29, 14)
+  end
+
 end

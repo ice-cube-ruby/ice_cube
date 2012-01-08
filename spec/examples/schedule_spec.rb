@@ -4,6 +4,103 @@ describe IceCube::Schedule do
 
   include IceCube
 
+  describe :conflicts_with? do
+
+    it 'should raise an error if both are not terminating' do
+      schedules = 2.times.map do
+        schedule = IceCube::Schedule.new(Time.now)
+        schedule.rrule IceCube::Rule.daily
+        schedule
+      end
+      lambda do
+        schedules.first.conflicts_with?(schedules.last)
+      end.should raise_error ArgumentError
+    end
+
+    it 'should not raise error if both are non-terminating closing time present' do
+      schedule1 = IceCube::Schedule.new Time.now
+      schedule1.rrule IceCube::Rule.weekly
+      schedule2 = IceCube::Schedule.new Time.now
+      schedule2.rrule IceCube::Rule.weekly
+      lambda do
+        schedule1.conflicts_with?(schedule2, Time.now + IceCube::ONE_DAY)
+      end.should_not raise_error
+    end
+
+    it 'should not raise an error if one is non-terminating' do
+      schedule1 = IceCube::Schedule.new Time.now
+      schedule1.rrule IceCube::Rule.weekly
+      schedule2 = IceCube::Schedule.new Time.now
+      schedule2.rrule IceCube::Rule.weekly.until(Time.now)
+      lambda do
+        schedule1.conflicts_with?(schedule2)
+      end.should_not raise_error
+    end
+
+    it 'should not raise an error if the other is non-terminating' do
+      schedule1 = IceCube::Schedule.new Time.now
+      schedule1.rrule IceCube::Rule.weekly.until(Time.now)
+      schedule2 = IceCube::Schedule.new Time.now
+      schedule2.rrule IceCube::Rule.weekly
+      lambda do
+        schedule1.conflicts_with?(schedule2)
+      end.should_not raise_error
+    end
+
+    it 'should return true if conflict is present' do
+      start_time = Time.now
+      schedule1 = IceCube::Schedule.new(start_time)
+      schedule1.rrule IceCube::Rule.daily
+      schedule2 = IceCube::Schedule.new(start_time)
+      schedule2.rrule IceCube::Rule.daily
+      conflict = schedule1.conflicts_with?(schedule2, start_time + IceCube::ONE_DAY)
+      conflict.should be_true
+    end
+
+    it 'should return false if conflict is not present' do
+      start_time = Time.now
+      schedule1 = IceCube::Schedule.new(start_time)
+      schedule1.rrule IceCube::Rule.weekly.day(:tuesday)
+      schedule2 = IceCube::Schedule.new(start_time)
+      schedule2.rrule IceCube::Rule.weekly.day(:monday)
+      conflict = schedule1.conflicts_with?(schedule2, start_time + IceCube::ONE_DAY)
+      conflict.should be_false
+    end
+
+    it 'should return true if conflict is present based on duration' do
+      start_time = Time.now
+      schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_DAY + 1)
+      schedule1.rrule IceCube::Rule.weekly.day(:monday)
+      schedule2 = IceCube::Schedule.new(start_time)
+      schedule2.rrule IceCube::Rule.weekly.day(:tuesday)
+      conflict = schedule1.conflicts_with?(schedule2, start_time + IceCube::ONE_WEEK)
+      conflict.should be_true
+    end
+
+    it 'should return true if conflict is present based on duration - other way' do
+      start_time = Time.now
+      schedule1 = IceCube::Schedule.new(start_time)
+      schedule1.rrule IceCube::Rule.weekly.day(:tuesday)
+      schedule2 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_DAY + 1)
+      schedule2.rrule IceCube::Rule.weekly.day(:monday)
+      conflict = schedule1.conflicts_with?(schedule2, start_time + IceCube::ONE_WEEK)
+      conflict.should be_true
+    end
+
+    it 'should return false if conflict is past closing_time' do
+      start_time = Time.local(2011, 1, 1, 12) # Sunday
+      schedule1 = IceCube::Schedule.new(start_time)
+      schedule1.rrule IceCube::Rule.weekly.day(:friday)
+      schedule2 = IceCube::Schedule.new(start_time)
+      schedule2.rrule IceCube::Rule.weekly.day(:friday)
+      schedule2.conflicts_with?(schedule1, start_time + IceCube::ONE_WEEK).
+        should be_true
+      schedule2.conflicts_with?(schedule1, start_time + IceCube::ONE_DAY).
+        should be_false
+    end
+
+  end
+
   describe :each do
 
     it 'should be able to yield occurrences for a schedule' do
