@@ -2,11 +2,13 @@ module IceCube
 
   module Validations::Until
 
+    extend ::Deprecated
+
     # accessor
     def until_time
       @until
     end
-    alias :until_date :until_time
+    deprecated_alias :until_date, :until_time
 
     def until(time)
       @until = time
