@@ -5,7 +5,7 @@ module IceCube
     include Validations::Lock
 
     def minute_of_hour(*minutes)
-      minutes.each do |minute|
+      minutes.flatten.each do |minute|
         validations_for(:minute_of_hour) << Validation.new(minute)
       end
       clobber_base_validations(:min)

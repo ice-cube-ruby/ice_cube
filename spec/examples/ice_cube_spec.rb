@@ -109,6 +109,15 @@ describe IceCube::Schedule, 'occurs_on?' do
                      Time.utc(2007, 9, 5, 1, 15, 25), Time.utc(2007, 9, 5, 2, 15, 25)]
   end
 
+  it 'should process an array of times as a tuple' do
+    start_date = Time.now
+    schedule_one = IceCube::Schedule.new(start_date)
+    schedule_two = IceCube::Schedule.new(start_date)
+    schedule_one.add_recurrence_rule IceCube::Rule.daily.hour_of_day(1,2).count(6)
+    schedule_two.add_recurrence_rule IceCube::Rule.daily.hour_of_day([1,2]).count(6)
+    schedule_one.all_occurrences.should == schedule_two.all_occurrences
+  end
+
   it 'should be able to be schedules at 1:0:st and 2:0:st every day' do
     start_date = Time.utc(2007, 9, 2, 9, 15, 25)
     schedule = IceCube::Schedule.new(start_date)

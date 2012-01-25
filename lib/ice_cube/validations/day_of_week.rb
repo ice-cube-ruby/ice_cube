@@ -3,7 +3,7 @@ module IceCube
   module Validations::DayOfWeek
 
     def day_of_week(dows)
-      dows.each do |day, occs|
+      dows.flatten.each do |day, occs|
         occs.each do |occ|
           day = TimeUtil.symbol_to_day(day) if day.is_a?(Symbol)
           validations_for(:day_of_week) << Validation.new(day, occ)

@@ -3,7 +3,7 @@ module IceCube
   module Validations::SecondOfMinute
 
     def second_of_minute(*seconds)
-      seconds.each do |second|
+      seconds.flatten.each do |second|
         validations_for(:second_of_minute) << Validation.new(second)
       end
       clobber_base_validations :sec

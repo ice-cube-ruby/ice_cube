@@ -5,7 +5,7 @@ module IceCube
   module Validations::Day
   
     def day(*days)
-      days.each do |day|
+      days.flatten.each do |day|
         day = TimeUtil.symbol_to_day(day) if day.is_a?(Symbol)
         validations_for(:day) << Validation.new(day)
       end
