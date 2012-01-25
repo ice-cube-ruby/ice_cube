@@ -5,7 +5,7 @@ module IceCube
     include Validations::Lock
 
     def day_of_month(*days)
-      days.each do |day|
+      days.flatten.each do |day|
         validations_for(:day_of_month) << Validation.new(day)
       end
       clobber_base_validations(:day, :wday)
