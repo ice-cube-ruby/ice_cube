@@ -71,4 +71,8 @@ module IceCube
   # Formatting
   TO_S_TIME_FORMAT = '%B %e, %Y'
 
+  def self.use_psych?
+    @use_psych ||= defined?(Psych) && Psych::VERSION
+  end
+
 end

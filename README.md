@@ -6,7 +6,11 @@
 gem install ice_cube
 ```
 
-ice_cube is a ruby library for easily handling repeated events (schedules).  The API is modeled after iCalendar repeated dates.  The power lies in the ability to specify multiple rules and dates, and have ice_cube quickly figure out whether the schedule falls on a certain date (.occurs_on?), or what dates it occurs on (.occurrences, .first, .all_occurrences)
+ice_cube is a ruby library for easily handling repeated events (schedules).
+The API is modeled after iCalendar repeated dates.  The power lies in the
+ability to specify multiple rules and dates, and have ice_cube quickly figure
+out whether the schedule falls on a certain date (.occurs_on?), or what dates
+it occurs on (.occurrences, .first, .all_occurrences)
 
 Imagine you want:
 
@@ -15,14 +19,16 @@ Imagine you want:
 You would write:
 
 ``` ruby
-schedule.add_recurrence_rule Rule.yearly.day_of_month(13).day(:friday).month_of_year(:october)
+schedule.add_recurrence_rule Rule.yearly.day_of_month(13).day(:friday).
+  month_of_year(:october)
 ```
 
 ---
 
 ## Quick Introductions
 
-* Presentation from Lone Star Ruby Conf - http://seejohncode.com/ice_cube/static/ice_cube_ruby_nyc.pdf
+* Presentation from Lone Star Ruby Conf -
+  http://seejohncode.com/ice_cube/static/ice_cube_ruby_nyc.pdf
 * Quick Introduction - http://seejohncode.com/ice_cube/
 
 ---
@@ -79,13 +85,16 @@ schedule = Schedule.new
 schedule.each_occurrence { |t| puts t }
 ```
 
-The reason that schedules have durations and not individual rules, is to maintain compatability with the ical RFC: http://www.kanzaki.com/docs/ical/rrule.html
+The reason that schedules have durations and not individual rules, is to
+maintain compatability with the ical
+RFC: http://www.kanzaki.com/docs/ical/rrule.html
 
 ---
 
 ## Persistence
 
-ice_cube implements its own hash-based .to_yaml, so you can quickly (and safely) serialize schedule objects in and out of your data store
+ice_cube implements its own hash-based .to_yaml, so you can quickly (and
+safely) serialize schedule objects in and out of your data store
 
 ``` ruby
 yaml = schedule.to_yaml
@@ -103,19 +112,21 @@ Schedule.from_hash(hash, :start_date_override => Time.now)
 ## Using your words
 
 ice_cube can provide ical or string representations of individual rules.
-  
+
 ``` ruby
 rule = Rule.daily(2).day_of_week(:tuesday => [1, -1], :wednesday => [2])
 
-rule.to_ical  # 'FREQ=DAILY;INTERVAL=2;BYDAY=1TU,-1TU,2WE'
+rule.to_ical # 'FREQ=DAILY;INTERVAL=2;BYDAY=1TU,-1TU,2WE'
 
-rule.to_s     # 'Every 2 days on the last and 1st Tuesdays and the 2nd Wednesday'
+rule.to_s # 'Every 2 days on the last and 1st Tuesdays and the 2nd Wednesday'
 ```
 
 ---
 
-All rules are based off of the schedule's start date. 
-Individual rules may optionally specify an until date, which is a date that that individual rule is no longer effective, or a count (which is how many times maximum you want the rule to be effective)
+All rules are based off of the schedule's start date.
+Individual rules may optionally specify an until date, which is a date that
+that individual rule is no longer effective, or a count (which is how many
+times maximum you want the rule to be effective)
 
 ---
 
@@ -140,7 +151,7 @@ schedule.add_recurrence_rule Rule.daily(3)
 schedule.add_recurrence_rule Rule.weekly
 
 # every other week on monday and tuesday
-schedule.add_recurrence_rule Rule.weekly(2).day(:monday, :tuesday) 
+schedule.add_recurrence_rule Rule.weekly(2).day(:monday, :tuesday)
 
 # for programatic convenience (same as above)
 schedule.add_recurrence_rule Rule.weekly(2).day(1, 2)
@@ -163,7 +174,10 @@ schedule.add_recurrence_rule Rule.monthly(2).day_of_month(15)
 schedule.add_recurrence_rule Rule.monthly.day_of_week(:tuesday => [1, -1])
 
 # every other month on the first monday and last tuesday
-schedule.add_recurrence_rule Rule.monthly(2).day_of_week(:monday => [1], :tuesday => [-1])
+schedule.add_recurrence_rule Rule.monthly(2).day_of_week(
+  :monday => [1],
+  :tuesday => [-1]
+)
 
 # for programatic convenience (same as above)
 schedule.add_recurrence_rule Rule.monthly(2).day_of_week(1 => [1], 2 => [-1])
@@ -194,14 +208,14 @@ schedule.add_recurrence_rule Rule.yearly(3).month_of_year(3)
 
 ### Hourly (by hour of day)
 
-``` ruby   
+``` ruby
 # every hour on the same minute and second as start date
 schedule.add_recurrence_rule Rule.hourly
 
 # every other hour, on mondays
 schedule.add_recurrence_rule Rule.hourly(2).day(:monday)
 ```
-    
+
 ### Minutely (by minute of hour)
 
 ``` ruby
@@ -238,7 +252,8 @@ Use the GitHub issue tracker
 
 ## Contributing
 
-* Contributions are welcome - I use GitHub for issue tracking (accompanying failing tests are awesome) and feature requests
+* Contributions are welcome - I use GitHub for issue
+	tracking (accompanying failing tests are awesome) and feature requests
 * Submit via fork and pull request (include tests)
 * If you're working on something major, shoot me a message beforehand
 
@@ -248,10 +263,22 @@ Use the GitHub issue tracker
 
 (The MIT License)
 
-Copyright © 2010 John Crepezzi
+Copyright © 2010-2012 John Crepezzi
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the ‘Software’), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the ‘Software’), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

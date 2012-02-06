@@ -88,12 +88,12 @@ module IceCube
 
     # Yaml implementation
     def to_yaml(*args)
-      defined?(Psych) ? Psych::dump(to_hash) : YAML::dump(to_hash, *args)
+      IceCube::use_psych? ? Psych::dump(to_hash) : YAML::dump(to_hash, *args)
     end
 
     # From yaml
     def self.from_yaml(yaml)
-      from_hash defined?(Psych) ? Psych::load(yaml) : YAML::load(yaml)
+      from_hash IceCube::use_psych? ? Psych::load(yaml) : YAML::load(yaml)
     end
 
     # Expected to be overridden by subclasses

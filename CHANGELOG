@@ -67,3 +67,7 @@
 
 0.7.6
   * Support for #terminating? and #conflicts_with?
+
+---
+
+* Added "Weekends" and "Weekdays" to #day's to_s
