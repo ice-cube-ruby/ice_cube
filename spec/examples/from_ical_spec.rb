@@ -72,4 +72,12 @@ describe IceCube, 'from_ical' do
 		rule = IceCube::Rule.from_ical("FREQ=WEEKLY;COUNT=5")
 		rule.should == IceCube::Rule.weekly.count(5)
 	end
+
+	it 'test' do
+		schedule = IceCube::Schedule.new(Time.now)
+		schedule.add_recurrence_rule(IceCube::Rule.from_ical("FREQ=DAILY;COUNT=5"))
+		#schedule.occurrences_between(Time.now, Time.now + 14.days).count.should == 5
+		#schedule.occurrences_between(Time.now, Time.now + 7.days).count.should == 5
+		schedule.occurrences_between(Time.now + 7.days, Time.now + 14.days).count.should == 0
+	end
 end
