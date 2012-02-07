@@ -2,6 +2,15 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe IceCube::WeeklyRule, 'occurs_on?' do
 
+  it 'should not produce results for @interval = 0' do
+    start_date = Time.now
+    schedule = IceCube::Schedule.new(start_date)
+    schedule.add_recurrence_rule IceCube::Rule.weekly(0)
+    #check assumption
+    dates = schedule.occurrences(start_date + (7 * 3 + 1) * IceCube::ONE_DAY)
+    dates.size.should == 0
+  end
+
   it 'should produce the correct number of days for @interval = 1 with no weekdays specified' do
     start_date = Time.now
     schedule = IceCube::Schedule.new(start_date)
