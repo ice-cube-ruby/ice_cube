@@ -25,14 +25,6 @@ module IceCube
         true
       end
 
-      def validate(step_time, schedule)
-        t0, t1 = schedule.start_time, step_time
-        months = (t1.month - t0.month) +
-                 (t1.year - t0.year) * 12
-        offset = (months % interval).nonzero?
-        interval - offset if offset
-      end
-
       def build_s(builder)
         builder.base = interval == 1 ? 'Monthly' : "Every #{interval} months"
       end
@@ -44,6 +36,15 @@ module IceCube
       def build_ical(builder)
         builder['FREQ'] << 'MONTHLY'
         builder['INTERVAL'] << interval unless interval == 1
+      end
+
+      def validate(time, schedule)
+        raise ZeroInterval if interval == 0
+        start_time = schedule.start_time
+        months_to_start = (time.month - start_time.month) + (time.year - start_time.year) * 12
+        unless months_to_start % interval == 0
+          interval - (months_to_start % interval)
+        end
       end
 
     end

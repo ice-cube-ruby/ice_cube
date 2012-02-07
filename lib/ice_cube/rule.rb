@@ -26,10 +26,10 @@ module IceCube
     def to_ical
       raise MethodNotImplemented, "Expected to be overrridden by subclasses"
     end
-    
+
     def self.from_ical ical
       params = {:validations => {}}
-      
+
       ical.split(';').each do |rule|
         (name, value) = rule.split('=')
         case name
@@ -41,7 +41,7 @@ module IceCube
           params[:count] = value.to_i
         when 'UNTIL'
           params[:until] = DateTime.parse(value).to_time.utc
-          
+
         when 'BYSECOND'
           params[:validations][:second_of_minute] = value.split(',').collect{ |v| v.to_i }
         when "BYMINUTE"
@@ -54,11 +54,11 @@ module IceCube
           value.split(',').each do |expr|
               day = TimeUtil.ical_day_to_symbol(expr.strip[-2..-1])
               if expr.strip.length > 2  # day with occurence
-                occ = expr[0..-3].to_i 
+                occ = expr[0..-3].to_i
                 dows[day].nil? ? dows[day] = [occ] : dows[day].push(occ)
-                days.delete(TimeUtil.symbol_to_day(day))
+                days.delete(TimeUtil.sym_to_wday(day))
               else
-                days.push TimeUtil.symbol_to_day(day) if dows[day].nil?
+                days.push TimeUtil.sym_to_wday(day) if dows[day].nil?
               end
           end
           params[:validations][:day_of_week] = dows unless dows.empty?
@@ -69,12 +69,12 @@ module IceCube
           params[:validations][:month_of_year] = value.split(',').collect{ |v| v.to_i }
         when "BYYEARDAY"
           params[:validations][:day_of_year] = value.split(',').collect{ |v| v.to_i }
-          
+
         else
           raise "Invalid or unsupported rrule command : #{name}"
         end
       end
-      
+
       rule = IceCube::Rule.send(params[:freq], params[:interval] || 1)
       rule.count(params[:count]) if params[:count]
       rule.until(params[:until]) if params[:until]
