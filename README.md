@@ -74,14 +74,17 @@ schedule.next_occurrences(3, [from_date])
 
 # or give the schedule a duration and ask if occurring_at?
 schedule = Schedule.new(Time.now, :duration => 3600)
+schedule.add_recurrence_rule Rule.daily
 schedule.occurring_at?(Time.now + 1800) # true
 
 # you can also give schedules a solidified end_time
 schedule = Schedule.new(Time.now, :end_time => Time.now + 3600)
+schedule.add_recurrence_rule Rule.daily
 schedule.occurs_at?(Time.now + 3601) # false
 
 # Or take control
 schedule = Schedule.new
+schedule.add_recurrence_rule Rule.daily
 schedule.each_occurrence { |t| puts t }
 ```
 
