@@ -4,17 +4,20 @@ module IceCube
 
   class Schedule
 
+    extend ::Deprecated
+
     # Get the start time
     attr_accessor :start_time
-    alias :start_date :start_time
-    alias :start_date= :start_time=
+    deprecated_alias :start_date, :start_time
+    deprecated_alias :start_date=, :start_time=
     
     # Get the duration
     attr_accessor :duration
 
     # Get the end time
     attr_accessor :end_time
-    alias :end_date :end_time
+    deprecated_alias :end_date, :end_time
+    deprecated_alias :end_date=, :end_time=
 
     # Create a new schedule
     def initialize(start_time = nil, options = {})
@@ -32,8 +35,9 @@ module IceCube
       add_recurrence_rule rule
       time
     end
-    alias :rdate :add_recurrence_time
-    alias :add_recurrence_date :add_recurrence_time
+    alias :rtime :add_recurrence_time
+    deprecated_alias :rdate, :rtime
+    deprecated_alias :add_recurrence_date, :add_recurrence_time
 
     # Add an exception time to the schedule
     def add_exception_time(time)
@@ -42,8 +46,9 @@ module IceCube
       add_exception_rule rule
       time
     end
-    alias :exdate :add_exception_time
-    alias :add_exception_date :add_exception_time
+    alias :extime :add_exception_time
+    deprecated_alias :exdate, :extime
+    deprecated_alias :add_exception_date, :add_exception_time
 
     # Add a recurrence rule to the schedule
     def add_recurrence_rule(rule)
@@ -85,8 +90,9 @@ module IceCube
     def recurrence_times
       @all_recurrence_rules.select { |r| r.is_a?(SingleOccurrenceRule) }.map(&:time)
     end
-    alias :rdates :recurrence_times
-    alias :recurrence_dates :recurrence_times
+    alias :rtimes :recurrence_times
+    deprecated_alias :rdates, :rtimes
+    deprecated_alias :recurrence_dates, :recurrence_times
 
     # Remove a recurrence time
     def remove_recurrence_time(time)
@@ -96,15 +102,17 @@ module IceCube
       end
       time if found
     end
-    alias :remove_recurrence_date :remove_recurrence_time
-    alias :remove_rdate :remove_recurrence_time
+    alias :remove_rtime :remove_recurrence_time
+    deprecated_alias :remove_recurrence_date, :remove_recurrence_time
+    deprecated_alias :remove_rdate, :remove_rtime
 
     # Get the exception times that are on the schedule
     def exception_times
       @all_exception_rules.select { |r| r.is_a?(SingleOccurrenceRule) }.map(&:time)
     end
-    alias :exdates :exception_times
-    alias :exception_dates :exception_times
+    alias :extimes :exception_times
+    deprecated_alias :exdates, :extimes
+    deprecated_alias :exception_dates, :exception_times
 
     # Remove an exception time
     def remove_exception_time(time)
@@ -114,8 +122,9 @@ module IceCube
       end
       time if found
     end
-    alias :remove_exception_date :remove_exception_time
-    alias :remove_exdate :remove_exception_time
+    alias :remove_extime :remove_exception_time
+    deprecated_alias :remove_exception_date, :remove_exception_time
+    deprecated_alias :remove_exdate, :remove_extime
 
     # Get all of the occurrences from the start_time up until a
     # given Time
