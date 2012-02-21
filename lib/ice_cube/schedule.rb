@@ -238,7 +238,7 @@ module IceCube
     # String serialization
     def to_s
       pieces = []
-      ed = exdates; rd = rdates - ed
+      ed = extimes; rd = rtimes - ed
       pieces.concat rd.sort.map { |t| t.strftime(TO_S_TIME_FORMAT) }
       pieces.concat rrules.map { |t| t.to_s }
       pieces.concat exrules.map { |t| "not #{t.to_s}" }
@@ -278,10 +278,10 @@ module IceCube
       data[:duration] = duration if duration
       data[:rrules] = recurrence_rules.map(&:to_hash)
       data[:exrules] = exception_rules.map(&:to_hash)
-      data[:rdates] = recurrence_times.map do |rt|
+      data[:rtimes] = recurrence_times.map do |rt|
         TimeUtil.serialize_time(rt)
       end
-      data[:exdates] = exception_times.map do |et|
+      data[:extimes] = exception_times.map do |et|
         TimeUtil.serialize_time(et)
       end
       data
@@ -296,10 +296,10 @@ module IceCube
       schedule.end_time = TimeUtil.deserialize_time(data[:end_time]) if data[:end_time]
       data[:rrules] && data[:rrules].each { |h| schedule.rrule(IceCube::Rule.from_hash(h)) }  
       data[:exrules] && data[:exrules].each { |h| schedule.exrule(IceCube::Rule.from_hash(h)) }
-      data[:rdates] && data[:rdates].each do |t|
+      data[:rtimes] && data[:rtimes].each do |t|
         schedule.add_recurrence_time TimeUtil.deserialize_time(t)
       end
-      data[:exdates] && data[:exdates].each do |t|
+      data[:extimes] && data[:extimes].each do |t|
         schedule.add_exception_time TimeUtil.deserialize_time(t)
       end
       schedule
