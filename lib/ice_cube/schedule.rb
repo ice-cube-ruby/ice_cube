@@ -302,6 +302,13 @@ module IceCube
       data[:extimes] && data[:extimes].each do |t|
         schedule.add_exception_time TimeUtil.deserialize_time(t)
       end
+      # Also serialize old format for backward compat
+      data[:rdates] && data[:rdates].each do |t|
+        schedule.add_recurrence_time TimeUtil.deserialize_time(t)
+      end
+      data[:exdates] && data[:exdates].each do |t|
+        schedule.add_exception_time TimeUtil.deserialize_time(t)
+      end
       schedule
     end
 
