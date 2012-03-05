@@ -312,6 +312,8 @@ module IceCube
       end
       schedule
     end
+
+    # Determine if the schedule will end
     # @return [Boolean] true if ending, false if repeating forever
     def terminating?
       end_time || recurrence_rules.all?(&:terminating?)
