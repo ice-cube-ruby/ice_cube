@@ -141,6 +141,41 @@ describe IceCube::Schedule do
       conflict.should be_true
     end
 
+    it 'should return false if conflict is not present and no recurrence' do
+      start_time = Time.now
+      schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
+      schedule1.add_recurrence_time(start_time)
+      schedule2 = IceCube::Schedule.new(start_time + IceCube::ONE_HOUR, :duration => IceCube::ONE_HOUR)
+      schedule2.add_recurrence_time(start_time + IceCube::ONE_HOUR)
+      conflict = schedule1.conflicts_with?(schedule2)
+      conflict.should be_false
+      conflict = schedule2.conflicts_with?(schedule1)
+      conflict.should be_false
+    end
+
+    it 'should return false if conflict is not present and single recurrence' do
+       start_time = Time.now
+      schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
+      schedule1.add_recurrence_time(start_time)
+      schedule2 = IceCube::Schedule.new(start_time + IceCube::ONE_HOUR, :duration => IceCube::ONE_HOUR)
+      schedule2.rrule IceCube::Rule.daily
+      conflict = schedule1.conflicts_with?(schedule2)
+      conflict.should be_false
+      conflict = schedule2.conflicts_with?(schedule1)
+      conflict.should be_false
+    end
+
+   it 'should return true if conflict is present and single recurrence' do
+      start_time = Time.now
+      schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
+      schedule1.add_recurrence_time(start_time)
+      schedule2 = IceCube::Schedule.new(start_time + 10.minutes, :duration => IceCube::ONE_HOUR)
+      schedule2.rrule IceCube::Rule.daily
+      conflict = schedule1.conflicts_with?(schedule2)
+      conflict.should be_true
+      conflict = schedule2.conflicts_with?(schedule1)
+      conflict.should be_true
+    end
 
   end
 
