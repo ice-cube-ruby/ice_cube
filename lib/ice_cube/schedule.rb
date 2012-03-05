@@ -215,8 +215,8 @@ module IceCube
       # Due to durations, we need to walk up to the end time, and verify in the
       # other direction
       if last_time
+        last_time = terminating_schedule.duration ? last_time + terminating_schedule.duration : last_time
         other_schedule.each_occurrence do |time|
-          last_time = terminating_schedule.duration ? last_time + terminating_schedule.duration : last_time
           break if time > last_time
           return true if terminating_schedule.occurring_at?(time)
         end
