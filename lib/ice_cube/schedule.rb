@@ -167,9 +167,6 @@ module IceCube
     # Return a boolean indicating if an occurrence falls between
     # two times
     def occurs_between?(begin_time, closing_time)
-      puts "begin time #{begin_time}"
-      puts "closing time #{closing_time}"
-      puts "occurrences #{find_occurrences(begin_time, closing_time,1)}"
       !find_occurrences(begin_time, closing_time, 1).empty?
     end
 
@@ -195,7 +192,6 @@ module IceCube
     # @param [Time] closing_time - the last time to consider
     # @return [Boolean] whether or not the schedules conflict at all
     def conflicts_with?(other_schedule, closing_time = nil)
-      puts "conflicts"
       unless terminating? || other_schedule.terminating? || closing_time
         raise ArgumentError.new 'At least one schedule must be terminating to use #conflicts_with?'
       end
@@ -214,13 +210,11 @@ module IceCube
           break
         end
         last_time = time
-        puts "a time #{time}"
         return true if other_schedule.occurring_at?(time)
       end
       # Due to durations, we need to walk up to the end time, and verify in the
       # other direction
-    
-     if last_time
+      if last_time
         other_schedule.each_occurrence do |time|
           last_time = terminating_schedule.duration ? last_time + terminating_schedule.duration : last_time
           break if time > last_time
