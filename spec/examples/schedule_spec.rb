@@ -99,21 +99,48 @@ describe IceCube::Schedule do
         should be_false
     end
 
-    it 'should return true if conflict is present and no rules set' do
+    it 'should return false if conflict is not present based on duration' do
       start_time = Time.now
-      schedule1 = IceCube::Schedule.new(start_time)
-      schedule2 = IceCube::Schedule.new(start_time)
-      conflict = schedule1.conflicts_with?(schedule2, start_time + IceCube::ONE_DAY)
-      conflict.should be_true
-    end
-
-    it 'should return false if conflict is not present and no rules set' do
-      start_time = Time.now
-      schedule1 = IceCube::Schedule.new(start_time)
-      schedule2 = IceCube::Schedule.new(start_time+IceCube::ONE_DAY)
+      schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
+      schedule1.rrule IceCube::Rule.weekly.day(:monday)
+      schedule2 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
+      schedule2.rrule IceCube::Rule.weekly.day(:tuesday)
       conflict = schedule1.conflicts_with?(schedule2, start_time + IceCube::ONE_WEEK)
       conflict.should be_false
     end
+
+    it 'should return false if conflict is not present on same day based on duration' do
+      start_time = Time.now
+      schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
+      schedule1.rrule IceCube::Rule.daily
+      schedule2 = IceCube::Schedule.new(start_time + 1.hour, :duration => IceCube::ONE_HOUR)
+      schedule2.rrule IceCube::Rule.daily
+      conflict = schedule1.conflicts_with?(schedule2, start_time + IceCube::ONE_WEEK)
+      conflict.should be_false
+    end
+
+    it 'should return true if conflict is present on same day based on duration' do
+      start_time = Time.now
+      schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
+      schedule1.rrule IceCube::Rule.daily
+      schedule2 = IceCube::Schedule.new(start_time + 10.minutes, :duration => IceCube::ONE_HOUR)
+      schedule2.rrule IceCube::Rule.daily
+      conflict = schedule1.conflicts_with?(schedule2, start_time + IceCube::ONE_WEEK)
+      conflict.should be_true
+    end
+
+    it 'should return true if conflict is present and no recurrence' do
+      start_time = Time.now
+      schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
+      schedule1.add_recurrence_time(start_time)
+      schedule2 = IceCube::Schedule.new(start_time + 10.minutes, :duration => IceCube::ONE_HOUR)
+      schedule2.add_recurrence_time(start_time + 10.minutes)
+      conflict = schedule1.conflicts_with?(schedule2)
+      conflict.should be_true
+      conflict = schedule2.conflicts_with?(schedule1)
+      conflict.should be_true
+    end
+
 
   end
 
