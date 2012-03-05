@@ -181,7 +181,7 @@ module IceCube
     def occurring_at?(time)
       if duration
         return false if exception_time?(time)
-        occurs_between?(time - duration + 1, time+1)
+        occurs_between?(time - duration + 1, time)
       else
         occurs_at?(time)
       end
