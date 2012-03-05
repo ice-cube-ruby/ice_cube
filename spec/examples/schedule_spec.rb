@@ -99,6 +99,22 @@ describe IceCube::Schedule do
         should be_false
     end
 
+    it 'should return true if conflict is present and no rules set' do
+      start_time = Time.now
+      schedule1 = IceCube::Schedule.new(start_time)
+      schedule2 = IceCube::Schedule.new(start_time)
+      conflict = schedule1.conflicts_with?(schedule2, start_time + IceCube::ONE_DAY)
+      conflict.should be_true
+    end
+
+    it 'should return false if conflict is not present and no rules set' do
+      start_time = Time.now
+      schedule1 = IceCube::Schedule.new(start_time)
+      schedule2 = IceCube::Schedule.new(start_time+IceCube::ONE_DAY)
+      conflict = schedule1.conflicts_with?(schedule2, start_time + IceCube::ONE_WEEK)
+      conflict.should be_false
+    end
+
   end
 
   describe :each do
