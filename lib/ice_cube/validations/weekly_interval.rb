@@ -23,6 +23,9 @@ module IceCube
 
       def build_ical(builder)
         builder['FREQ'] << 'WEEKLY'
+        unless interval == 1
+          builder['INTERVAL'] << interval
+        end
       end
 
       def build_hash(builder)

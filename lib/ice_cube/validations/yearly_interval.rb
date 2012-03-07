@@ -25,6 +25,9 @@ module IceCube
 
       def build_ical(builder)
         builder['FREQ'] << 'YEARLY'
+        unless interval == 1
+          builder['INTERVAL'] << interval
+        end
       end
 
       def initialize(interval)

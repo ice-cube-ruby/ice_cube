@@ -215,5 +215,13 @@ describe IceCube, 'to_ical' do
     rule = IceCube::Rule.weekly.count(5)
     rule.to_ical.should match /^FREQ=WEEKLY;COUNT=5$/
   end
-   
+
+  %w{secondly minutely hourly daily weekly monthly yearly}.each do |mthd|
+    it "should include intervals for #{mthd} rule" do
+      interval = 2
+      rule = IceCube::Rule.send(mthd.to_sym, interval)
+      rule.to_ical.should == "FREQ=#{mthd.upcase};INTERVAL=#{interval}"
+    end
+  end
+
 end

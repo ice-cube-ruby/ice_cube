@@ -6,7 +6,7 @@ module IceCube
       validations_for(:interval) << Validation.new(interval)
       clobber_base_validations(:hour)
       self
-    end 
+    end
 
     class Validation
 
@@ -26,6 +26,9 @@ module IceCube
 
       def build_ical(builder)
         builder['FREQ'] << 'HOURLY'
+        unless interval == 1
+          builder['INTERVAL'] << interval
+        end
       end
 
       def initialize(interval)
