@@ -318,6 +318,14 @@ module IceCube
       end_time || recurrence_rules.all?(&:terminating?)
     end
 
+    def self.dump(schedule)
+      schedule.to_yaml
+    end
+
+    def self.load(yaml)
+      from_yaml(yaml) unless yaml.nil? || yaml.empty?
+    end
+
     private
 
     # Reset all rules for another run
