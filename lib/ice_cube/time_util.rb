@@ -64,6 +64,18 @@ module IceCube
       day
     end
 
+    # Convert a symbol to an ical day (SU, MO)
+    def self.week_start(sym)
+      raise "No such day: #{sym}" unless DAYS.keys.include?(sym)
+      day = sym.to_s.upcase[0..1]
+      day
+    end
+
+    # Convert weekday from base sunday to the schedule's week start.
+    def self.normalize_weekday(daynum, week_start)
+      (daynum - symbol_to_day(week_start)) % 7
+    end
+
     # Return the count of the number of times wday appears in the month,
     # and which of those time falls on
     def self.which_occurrence_in_month(time, wday)
@@ -93,7 +105,7 @@ module IceCube
     def self.days_in_month_year(month, year)
       is_leap?(year) ? LEAP_YEAR_MONTH_DAYS[month - 1] : COMMON_YEAR_MONTH_DAYS[month - 1]
     end
-    
+
     # Number of days in a year
     def self.days_in_year(time)
       is_leap?(time.year) ? 366 : 365
@@ -190,7 +202,7 @@ module IceCube
           yield
         end
       end
- 
+
       def clear_sec
         @time -= @time.sec
       end

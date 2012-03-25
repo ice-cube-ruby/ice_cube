@@ -37,52 +37,52 @@ describe IceCube, 'to_ical' do
     rule = IceCube::Rule.secondly
     rule.to_ical.should == "FREQ=SECONDLY"
   end
-  
+
   it 'should be able to serialize a .day rule to_ical' do
     rule = IceCube::Rule.daily.day(:monday, :tuesday)
     rule.to_ical.should == "FREQ=DAILY;BYDAY=MO,TU"
   end
-  
+
   it 'should be able to serialize a .day_of_week rule to_ical' do
     rule = IceCube::Rule.daily.day_of_week(:tuesday => [-1, -2])
     rule.to_ical.should == "FREQ=DAILY;BYDAY=-1TU,-2TU"
   end
-  
+
   it 'should be able to serialize a .day_of_month rule to_ical' do
     rule = IceCube::Rule.daily.day_of_month(23)
     rule.to_ical.should == "FREQ=DAILY;BYMONTHDAY=23"
   end
-  
+
   it 'should be able to serialize a .day_of_year rule to_ical' do
     rule = IceCube::Rule.daily.day_of_year(100,200)
     rule.to_ical.should == "FREQ=DAILY;BYYEARDAY=100,200"
   end
-  
+
   it 'should be able to serialize a .month_of_year rule to_ical' do
     rule = IceCube::Rule.daily.month_of_year(:january, :april)
     rule.to_ical.should == "FREQ=DAILY;BYMONTH=1,4"
   end
-  
+
   it 'should be able to serialize a .hour_of_day rule to_ical' do
     rule = IceCube::Rule.daily.hour_of_day(10, 20)
     rule.to_ical.should == "FREQ=DAILY;BYHOUR=10,20"
   end
-  
+
   it 'should be able to serialize a .minute_of_hour rule to_ical' do
     rule = IceCube::Rule.daily.minute_of_hour(5, 55)
     rule.to_ical.should == "FREQ=DAILY;BYMINUTE=5,55"
   end
-  
+
   it 'should be able to serialize a .second_of_minute rule to_ical' do
     rule = IceCube::Rule.daily.second_of_minute(0, 15, 30, 45)
     rule.to_ical.should == "FREQ=DAILY;BYSECOND=0,15,30,45"
   end
-  
+
   it 'should be able to collapse a combination day_of_week and day' do
     rule = IceCube::Rule.daily.day(:monday, :tuesday).day_of_week(:monday => [1, -1])
     ['FREQ=DAILY;BYDAY=TU,1MO,-1MO', 'FREQ=DAILY;BYDAY=1MO,-1MO,TU'].include?(rule.to_ical).should be(true)
   end
-  
+
   it 'should be able to serialize of .day_of_week rule to_ical with multiple days' do
     rule = IceCube::Rule.daily.day_of_week(:monday => [1, -1], :tuesday => [2]).day(:wednesday)
     [
@@ -125,7 +125,7 @@ describe IceCube, 'to_ical' do
     expectation << "RRULE:FREQ=HOURLY"
     schedule.to_ical.should == expectation
   end
-  
+
   it 'should be able to serialize a schedule with one exrule' do
     Time.zone ='Pacific Time (US & Canada)'
     schedule = IceCube::Schedule.new(Time.zone.local(2010, 5, 10, 9, 0, 0))
@@ -135,7 +135,7 @@ describe IceCube, 'to_ical' do
     expectation<< 'EXRULE:FREQ=WEEKLY'
     schedule.to_ical.should == expectation
   end
-  
+
   it 'should be able to serialize a schedule with multiple exrules' do
     Time.zone ='Eastern Time (US & Canada)'
     schedule = IceCube::Schedule.new(Time.zone.local(2010, 10, 20, 4, 30, 0))
@@ -146,7 +146,7 @@ describe IceCube, 'to_ical' do
     expectation<< "EXRULE:FREQ=HOURLY"
     schedule.to_ical.should == expectation
   end
- 
+
   it 'should be able to serialize a schedule with an rdate' do
     schedule = IceCube::Schedule.new(Time.utc(2010, 5, 10, 10, 0, 0))
     schedule.add_recurrence_date Time.utc(2010, 6, 20, 5, 0, 0)
@@ -171,7 +171,7 @@ describe IceCube, 'to_ical' do
     expectation << 'DURATION:PT1H'
     schedule.to_ical.should == expectation
   end
-  
+
   it 'should be able to serialize a schedule with a duration - more odd duration' do
     schedule = IceCube::Schedule.new(Time.utc(2010, 5, 10, 10), :duration => 3665)
     expectation = "DTSTART:20100510T100000Z\n"
@@ -216,12 +216,24 @@ describe IceCube, 'to_ical' do
     rule.to_ical.should match /^FREQ=WEEKLY;COUNT=5$/
   end
 
-  %w{secondly minutely hourly daily weekly monthly yearly}.each do |mthd|
+  %w{secondly minutely hourly daily monthly yearly}.each do |mthd|
     it "should include intervals for #{mthd} rule" do
       interval = 2
       rule = IceCube::Rule.send(mthd.to_sym, interval)
       rule.to_ical.should == "FREQ=#{mthd.upcase};INTERVAL=#{interval}"
     end
+  end
+
+  it 'should include intervals for weekly rule, including weekstart' do
+    interval = 2
+    rule = IceCube::Rule.send(:weekly, interval)
+    rule.to_ical.should == "FREQ=WEEKLY;INTERVAL=#{interval};WKST=SU"
+  end
+
+  it 'should include intervals for weekly rule, including custom weekstart' do
+    interval = 2
+    rule = IceCube::Rule.send(:weekly, interval, :monday)
+    rule.to_ical.should == "FREQ=WEEKLY;INTERVAL=#{interval};WKST=MO"
   end
 
 end

@@ -36,7 +36,7 @@ describe IceCube::WeeklyRule, 'occurs_on?' do
     dates = schedule.occurrences(start_date + 7*3*IceCube::ONE_DAY)
     dates.should == [start_date, start_date + 14*IceCube::ONE_DAY]
   end
-  
+
   it 'should occurr every 2nd tuesday of a month' do
     now = Time.now
     schedule = IceCube::Schedule.new(Time.local(now.year, now.month, now.day))
@@ -46,7 +46,7 @@ describe IceCube::WeeklyRule, 'occurs_on?' do
       d.wday.should == 2
     end
   end
-  
+
   it 'should occur on every first day of a month at midnight and not skip months when DST ends' do
     start_date = Time.local(2011, 8, 1)
     [:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday].each_with_index do |day, index|
@@ -73,5 +73,17 @@ describe IceCube::WeeklyRule, 'occurs_on?' do
     schedule.add_recurrence_rule IceCube::Rule.weekly.day(:monday)
     schedule.first(3).should == [Time.local(2010, 8, 2), Time.local(2010, 8, 9), Time.local(2010, 8, 16)]
   end
-  
+
+  it 'should start weekly rules on monday when monday is the week start' do
+    schedule = IceCube::Schedule.new(Time.local(2012,2,7))
+    schedule.add_recurrence_rule IceCube::Rule.weekly(2, :monday).day(:tuesday, :sunday)
+    schedule.first(3).should == [Time.local(2012,2,7), Time.local(2012,2,12), Time.local(2012,2,21)]
+  end
+
+  it 'should start weekly rules on sunday by default' do
+    schedule = IceCube::Schedule.new(Time.local(2012,2,7))
+    schedule.add_recurrence_rule IceCube::Rule.weekly(2).day(:tuesday, :sunday)
+    schedule.first(3).should == [Time.local(2012,2,7), Time.local(2012,2,19), Time.local(2012,2,21)]
+  end
+
 end

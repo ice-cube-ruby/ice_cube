@@ -97,8 +97,8 @@ module IceCube
       end
 
       # Weekly Rule
-      def weekly(interval = 1)
-        WeeklyRule.new(interval)
+      def weekly(interval = 1, week_start = :sunday)
+        WeeklyRule.new(interval, week_start)
       end
 
       # Monthly Rule
