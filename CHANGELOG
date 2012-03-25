@@ -76,3 +76,6 @@
 
 0.7.9
   * Added INTERVAL to to_ical for all interval validations
+
+0.8.0
+  * Added support for WEEKST (thanks @devwout)
