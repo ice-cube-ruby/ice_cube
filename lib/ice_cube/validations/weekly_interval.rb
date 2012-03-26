@@ -6,9 +6,14 @@ module IceCube
 
     def interval(interval, week_start = :sunday)
       @interval = interval
+      @week_start = week_start
       validations_for(:interval) << Validation.new(interval, week_start)
       clobber_base_validations(:day)
       self
+    end
+
+    def week_start
+      @week_start
     end
 
     class Validation
@@ -33,6 +38,7 @@ module IceCube
 
       def build_hash(builder)
         builder[:interval] = interval
+        builder[:week_start] = week_start
       end
 
       def initialize(interval, week_start)

@@ -269,6 +269,18 @@ describe IceCube::Schedule, 'to_yaml' do
     rule = IceCube::Rule.from_yaml rule.to_yaml
     rule.occurrence_count.should == 5
   end
+  
+  it 'should be able to bring a Rule to_yaml and back with an undefined week start' do
+    rule = IceCube::Rule.weekly(2)
+    rule = IceCube::Rule.from_yaml rule.to_yaml
+    rule.week_start.should == :sunday
+  end
+  
+  it 'should be able to bring a Rule to_yaml and back with a week start defined' do
+    rule = IceCube::Rule.weekly.interval(2, :monday)
+    rule = IceCube::Rule.from_yaml rule.to_yaml
+    rule.week_start.should == :monday
+  end
 
   it 'should be able to bring in a schedule with a rule from hash with symbols or strings' do
     time = Time.zone.now
