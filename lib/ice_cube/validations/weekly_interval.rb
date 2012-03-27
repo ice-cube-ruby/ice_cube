@@ -38,7 +38,7 @@ module IceCube
 
       def build_hash(builder)
         builder[:interval] = interval
-        builder[:week_start] = week_start
+        builder[:week_start] = TimeUtil.symbol_to_day(week_start)
       end
 
       def initialize(interval, week_start)
