@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Ice cube by seejohnrun</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Ice cube</h1>
+        <p>Ruby Date Recurrence Library</p>
+        <p class="view"><a href="https://github.com/seejohnrun/ice_cube">View the Project on GitHub <small>seejohnrun/ice_cube</small></a></p>
+        <ul>
+          <li><a href="https://github.com/seejohnrun/ice_cube/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/seejohnrun/ice_cube/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/seejohnrun/ice_cube">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h2>Get <code>ice_cube</code>
+</h2>
+
+<div class="highlight">
+<pre><span class="c"># install</span>
+<span class="nv">$ </span>gem install 
+<span class="c"># get the code</span>
+<span class="nv">$ </span>gem clone git://github.com/seejohnrun/ice_cube
+</pre>
+</div>
+
+
+<h2>Complex Rules, Simple.</h2>
+
+<div class="highlight">
+<pre><span class="c1"># The fridays in October that are on the 13th of the month</span>
+<span class="no">Rule</span><span class="o">.</span><span class="n">weekly</span><span class="o">.</span><span class="n">day</span><span class="p">(</span><span class="ss">:friday</span><span class="p">)</span><span class="o">.</span><span class="n">day_of_month</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span><span class="o">.</span><span class="n">month_of_year</span><span class="p">(</span><span class="ss">:october</span><span class="p">)</span>
+</pre>
+</div>
+
+
+<h2>Persistence</h2>
+
+<p><code>ice_cube</code> offers a hash-backed to_yaml implementation, making it super easy (and safe) to serialize schedule objects to your data store:</p>
+
+<div class="highlight">
+<pre><span class="c1"># YAML</span>
+<span class="n">yaml</span> <span class="o">=</span> <span class="n">schedule</span><span class="o">.</span><span class="n">to_yaml</span>
+<span class="n">schedule</span> <span class="o">=</span> <span class="no">Schedule</span><span class="o">.</span><span class="n">from_yaml</span><span class="p">(</span><span class="n">yaml</span><span class="p">)</span>
+
+<span class="c1"># Hash</span>
+<span class="nb">hash</span> <span class="o">=</span> <span class="n">schedule</span><span class="o">.</span><span class="n">to_hash</span>
+<span class="n">schedule</span> <span class="o">=</span> <span class="no">Schedule</span><span class="o">.</span><span class="n">from_hash</span><span class="p">(</span><span class="nb">hash</span><span class="p">)</span>
+</pre>
+</div>
+
+
+<h2>Using your words</h2>
+
+<div class="highlight">
+<pre><span class="c1"># A complex rule</span>
+<span class="n">rule</span> <span class="o">=</span> <span class="no">Rule</span><span class="o">.</span><span class="n">daily</span><span class="o">.</span><span class="n">day_of_week</span><span class="p">(</span><span class="ss">:monday</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">month_of_year</span><span class="p">(</span><span class="ss">:april</span><span class="p">)</span>
+
+<span class="n">rule</span><span class="o">.</span><span class="n">to_s</span> <span class="c1"># Daily in April on the last and 1st Mondays</span>
+<span class="n">rule</span><span class="o">.</span><span class="n">to_ical</span> <span class="c1"># FREQ=DAILY;BYMONTH=4;BYDAY=-1MO,1MO</span>
+<span class="n">rule</span><span class="o">.</span><span class="n">to_yaml</span> <span class="c1"># :rrules: \n- :until: \n :count: ...</span>
+</pre>
+</div>
+
+
+<h2>Combining Rules</h2>
+
+<p>Multiple validations on the same rule, result in an AND (&amp;&amp;) relationship</p>
+
+<div class="highlight">
+<pre><span class="c1"># On Wednesdays THAT ARE ALSO in April</span>
+<span class="n">schedule</span><span class="o">.</span><span class="n">add_recurrence_rule</span> <span class="no">Rule</span><span class="o">.</span><span class="n">weekly</span><span class="o">.</span><span class="n">day</span><span class="p">(</span><span class="ss">:wednesday</span><span class="p">)</span><span class="o">.</span><span class="n">month_of_year</span><span class="p">(</span><span class="ss">:april</span><span class="p">)</span>
+</pre>
+</div>
+
+
+<p>Multiple rules in the same schedule, result in an OR (||) relationship</p>
+
+<div class="highlight">
+<pre><span class="c1"># On Thursdays and the 100th day of the year</span>
+<span class="n">schedule</span><span class="o">.</span><span class="n">add_recurrence_rule</span> <span class="no">Rule</span><span class="o">.</span><span class="n">weekly</span><span class="o">.</span><span class="n">day</span><span class="p">(</span><span class="ss">:thursday</span><span class="p">)</span>
+<span class="n">schedule</span><span class="o">.</span><span class="n">add_recurrence_rule</span> <span class="no">Rule</span><span class="o">.</span><span class="n">day_of_year</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</pre>
+</div>
+
+
+<h2>The full workflow, what's in a Schedule?</h2>
+
+<div class="highlight">
+<pre><span class="c1"># Create a schedule for every day in May</span>
+<span class="n">schedule</span> <span class="o">=</span> <span class="no">Schedule</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">Time</span><span class="o">.</span><span class="n">now</span><span class="p">)</span>
+<span class="n">schedule</span><span class="o">.</span><span class="n">add_recurrence_rule</span> <span class="no">Rule</span><span class="o">.</span><span class="n">daily</span><span class="o">.</span><span class="n">month_of_year</span><span class="p">(</span><span class="ss">:may</span><span class="p">)</span>
+
+<span class="c1"># Does it occur at a certain time?</span>
+<span class="n">schedule</span><span class="o">.</span><span class="n">occurs_at?</span><span class="p">(</span><span class="no">Time</span><span class="o">.</span><span class="n">local</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="c1"># false</span>
+
+<span class="c1"># Does it occur on a certain date?</span>
+<span class="n">schedule</span><span class="o">.</span><span class="n">occurs_on?</span><span class="p">(</span><span class="no">Date</span><span class="o">.</span><span class="n">today</span><span class="p">)</span>
+
+<span class="c1"># All of the occurrences between two Times</span>
+<span class="n">schedule</span><span class="o">.</span><span class="n">occurrences_between</span><span class="p">(</span><span class="no">Time</span><span class="o">.</span><span class="n">local</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="no">Time</span><span class="o">.</span><span class="n">local</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+<span class="c1"># When are the first 10 occurrences</span>
+<span class="n">schedule</span><span class="o">.</span><span class="n">first</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># [Thu May 13 18:01:46 -0400 2010, Fri May 13 ...]</span>
+
+<span class="c1"># All of the occurrences between now and another Time</span>
+<span class="n">schedule</span><span class="o">.</span><span class="n">occurrences</span><span class="p">(</span><span class="no">Time</span><span class="o">.</span><span class="n">local</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="c1"># [Thu May 13 18:01:46 -0400 2010]</span>
+
+<span class="c1"># If your schedule has a duration, occurring_at? is important</span>
+<span class="n">ten</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">schedule</span> <span class="o">=</span> <span class="no">Schedule</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">ten</span><span class="p">,</span> <span class="ss">:duration</span> <span class="o">=&gt;</span> <span class="mi">3600</span><span class="p">)</span>
+<span class="n">schedule</span><span class="o">.</span><span class="n">add_recurrence_rule</span> <span class="no">Rule</span><span class="o">.</span><span class="n">daily</span>
+<span class="n">schedule</span><span class="o">.</span><span class="n">occurring_at?</span><span class="p">(</span><span class="no">Time</span><span class="o">.</span><span class="n">local</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="c1"># true</span>
+
+<span class="c1"># If your schedule needs a hard-set end time, that's easy too</span>
+<span class="n">schedule</span> <span class="o">=</span> <span class="no">Schedule</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">Time</span><span class="o">.</span><span class="n">now</span><span class="p">,</span> <span class="ss">:end_time</span> <span class="o">=&gt;</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span> <span class="o">+</span> <span class="mi">3600</span><span class="p">)</span>
+<span class="n">schedule</span><span class="o">.</span><span class="n">occurs_at?</span><span class="p">(</span><span class="no">Time</span><span class="o">.</span><span class="n">now</span> <span class="o">+</span> <span class="mi">3601</span><span class="p">)</span> <span class="c1"># false</span>
+</pre>
+</div>
+
+
+<h2>Reference</h2>
+
+<ul>
+<li><a href="http://seejohnrun.github.com/ice_cube/static/ice_cube_ruby_nyc.pdf">Introduction Slides</a></li>
+<li><a href="http://seejohnrun.github.com/ice_cube/static/lsrc_ice_cube.pdf">Lone Star Ruby Conference Slides</a></li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/seejohnrun">seejohnrun</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+  </body>
+</html>
