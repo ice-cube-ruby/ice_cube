@@ -28,8 +28,11 @@ schedule.add_recurrence_rule Rule.yearly.day_of_month(13).day(:friday).
 ## Quick Introductions
 
 * Presentation from Lone Star Ruby Conf -
-  http://seejohncode.com/ice_cube/static/ice_cube_ruby_nyc.pdf
-* Quick Introduction - http://seejohncode.com/ice_cube/
+  http://seejohnrun.github.com/ice_cube/static/lsrc_ice_cube.pdf
+* Quick Introduction -
+  http://seejohnrun.github.com/ice_cube/static/ice_cube_ruby_nyc.pdf
+* Website -
+  http://seejohnrun.github.com/ice_cube/
 
 ---
 
