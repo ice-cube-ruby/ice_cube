@@ -34,7 +34,7 @@ module IceCube
   autoload :WeeklyRule, 'ice_cube/rules/weekly_rule'
   autoload :MonthlyRule, 'ice_cube/rules/monthly_rule'
   autoload :YearlyRule, 'ice_cube/rules/yearly_rule'
-    
+
   module Validations
 
     autoload :Lock, 'ice_cube/validations/lock'

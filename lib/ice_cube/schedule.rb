@@ -10,7 +10,7 @@ module IceCube
     attr_accessor :start_time
     deprecated_alias :start_date, :start_time
     deprecated_alias :start_date=, :start_time=
-    
+
     # Get the duration
     attr_accessor :duration
 

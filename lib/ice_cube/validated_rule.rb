@@ -47,12 +47,13 @@ module IceCube
         # Prevent a non-matching infinite loop
         return nil if closing_time && time > closing_time
       end
-      # NOTE Uses may be 1 higher than proper here since end_time isn't validated
-      # in this class.  This is okay now, since we never expose it - but if we ever
-      # do - we should check that above this line, and return nil if end_time is past
+      # NOTE Uses may be 1 higher than proper here since end_time isn't
+      # validated in this class.  This is okay now, since we never expose it -
+      # but if we ever do - we should check that above this line, and return
+      # nil if end_time is past
       @uses += 1 if time
       time
-    end 
+    end
 
     def to_s
       builder = StringBuilder.new
