@@ -25,6 +25,10 @@ schedule.add_recurrence_rule Rule.yearly.day_of_month(13).day(:friday).
 
 ---
 
+## This Branch
+
+Experimenting with Internationalization
+
 ## Quick Introductions
 
 * Presentation from Lone Star Ruby Conf -
