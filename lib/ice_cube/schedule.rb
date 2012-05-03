@@ -374,7 +374,7 @@ module IceCube
               end
             end
           # Certain exceptions mean this rule no longer wants to play
-          rescue CountExceeded, UntilExceeded
+          rescue CountExceeded, UntilExceeded, ZeroInterval
             next
           end
         end

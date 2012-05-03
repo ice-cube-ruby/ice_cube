@@ -4,4 +4,6 @@ Gemfile.lock
 .DS_Store
 coverage
 coverage.data
-*.gem
+
+*.idea
+/nbproject

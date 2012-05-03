@@ -1,6 +1,14 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe IceCube::MonthlyRule, 'occurs_on?' do
+
+  it 'should not produce results for @interval = 0' do
+    start_date = DAY
+    schedule = IceCube::Schedule.new(start_date)
+    schedule.add_recurrence_rule IceCube::Rule.monthly(0)
+    #check assumption
+    schedule.occurrences(start_date + 50 * IceCube::ONE_DAY).size.should == 0
+  end
   
   it 'should produce the correct number of days for @interval = 1' do
     start_date = DAY

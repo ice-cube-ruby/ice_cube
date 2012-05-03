@@ -2,6 +2,14 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe IceCube::YearlyRule, 'occurs_on?' do
 
+  it 'should not produce results for @interval = 0' do
+    start_date = Time.local(2010, 7, 12, 5, 0, 0)
+    schedule = IceCube::Schedule.new(start_date)
+    schedule.add_recurrence_rule IceCube::Rule.yearly(0).month_of_year(:april).day_of_week(:monday => [1, -1])
+    #check assumption
+    schedule.occurrences(start_date + IceCube::TimeUtil.days_in_year(start_date) * IceCube::ONE_DAY).size.should == 0
+  end
+
   it 'should be able to specify complex yearly rules' do
     start_date = Time.local(2010, 7, 12, 5, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
