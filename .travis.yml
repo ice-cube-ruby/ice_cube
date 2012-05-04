@@ -1,11 +1,7 @@
 script: "rspec spec"
-notifications:
-  email:
-    - john.crepezzi@gmail.com
 branches:
   only:
-    - master
-    - v0.7
+    - issues/50-from_ical
 rvm:
   - 1.9.2
   - 1.9.3
