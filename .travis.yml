@@ -5,7 +5,7 @@ notifications:
 branches:
   only:
     - master
-    - v0.7
+    - issues/50-from_ical
 rvm:
   - 1.9.3
   - 2.0.0
