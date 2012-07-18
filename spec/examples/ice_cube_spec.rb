@@ -337,6 +337,16 @@ describe IceCube::Schedule, 'occurs_on?' do
     dates.should == [start_time + IceCube::ONE_DAY * 2, start_time + IceCube::ONE_DAY * 3, start_time + IceCube::ONE_DAY * 4]
   end
 
+  it 'should use start date on a bi-weekly recurrence pattern to find the occurrences_between when interval > 1' do
+    start_date = Time.local(2011, 3, 20)
+
+    schedule = IceCube::Schedule.new(start_date)
+    schedule.add_recurrence_rule IceCube::Rule.weekly(2).day(:sunday)
+
+    occurrences = schedule.occurrences_between(Time.local(2012, 7, 7), Time.local(2012, 7, 9))
+    occurrences.should == [Time.local(2012, 7, 8)]
+  end
+
   it 'should be able to tell us when there is at least one occurrence between two dates' do
     start_date = WEDNESDAY
     schedule = IceCube::Schedule.new(start_date)
@@ -778,6 +788,7 @@ describe IceCube::Schedule, 'occurs_on?' do
     rule = IceCube::Rule.daily.count(5)
     rule.occurrence_count.should == 5
   end
+
 
 end
 
