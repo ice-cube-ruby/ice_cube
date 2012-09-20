@@ -37,7 +37,7 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.piece(:until) << "until #{time.strftime(TO_S_TIME_FORMAT)}"
+        builder.piece(:until) << "until #{time.strftime(IceCube.to_s_time_format)}"
       end
 
       def validate(t, schedule)

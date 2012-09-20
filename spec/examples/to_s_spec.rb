@@ -185,4 +185,16 @@ describe IceCube::Schedule, 'to_s' do
     schedule.to_s.should == 'Daily 2 times / until October 31, 2012'
   end
 
+  it 'can have the date format overridden' do
+    old_format = IceCube.to_s_time_format
+    begin
+      IceCube.to_s_time_format = '%B %e, %Y at %I:%M%P'
+      schedule = IceCube::Schedule.new(Time.local(2012, 8, 31), :end_time => Time.local(2012, 10, 31, 17))
+      schedule.add_recurrence_rule IceCube::Rule.daily.count(2)
+      schedule.to_s.should == 'Daily 2 times / until October 31, 2012 at 05:00pm'
+    ensure
+      IceCube.to_s_time_format = old_format
+    end
+  end
+
 end

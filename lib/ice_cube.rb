@@ -69,11 +69,18 @@ module IceCube
   ONE_DAY =    ONE_HOUR   * 24
   ONE_WEEK =   ONE_DAY    * 7
 
-  # Formatting
-  TO_S_TIME_FORMAT = '%B %e, %Y'
-
   def self.use_psych?
     @use_psych ||= defined?(Psych) && defined?(Psych::VERSION)
   end
 
+  # Defines the format used by IceCube when printing out Schedule#to_s.
+  # Defaults to '%B %e, %Y'
+  def self.to_s_time_format
+    @to_s_time_format ||= '%B %e, %Y'
+  end
+
+  # Sets the format used by IceCube when printing out Schedule#to_s.
+  def self.to_s_time_format=(format)
+    @to_s_time_format = format
+  end
 end
