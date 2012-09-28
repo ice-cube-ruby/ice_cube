@@ -239,11 +239,11 @@ module IceCube
     def to_s
       pieces = []
       ed = extimes; rd = rtimes - ed
-      pieces.concat rd.sort.map { |t| t.strftime(TO_S_TIME_FORMAT) }
+      pieces.concat rd.sort.map { |t| t.strftime(IceCube.to_s_time_format) }
       pieces.concat rrules.map { |t| t.to_s }
       pieces.concat exrules.map { |t| "not #{t.to_s}" }
-      pieces.concat ed.sort.map { |t| "not on #{t.strftime(TO_S_TIME_FORMAT)}" }
-      pieces << "until #{end_time.strftime(TO_S_TIME_FORMAT)}" if end_time
+      pieces.concat ed.sort.map { |t| "not on #{t.strftime(IceCube.to_s_time_format)}" }
+      pieces << "until #{end_time.strftime(IceCube.to_s_time_format)}" if end_time
       pieces.join(' / ')
     end
 
