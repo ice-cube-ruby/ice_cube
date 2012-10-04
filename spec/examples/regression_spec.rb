@@ -56,9 +56,9 @@ describe IceCube do
   end
 
   it 'should handle a simple weekly schedule - icecube issue #52' do
-    rule_inst = IceCube::Rule.weekly(1).day(4)
     st = Time.new(2011, 12, 1, 18, 0, 0)
     fin = Time.new(2012, 1, 1, 18, 0, 0)
+    rule_inst = IceCube::Rule.weekly(1).day(4).until(fin)
     schedule = IceCube::Schedule.new(st, :end_time => fin)
     schedule.add_recurrence_rule rule_inst
     schedule.all_occurrences.should == [

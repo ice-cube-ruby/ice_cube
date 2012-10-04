@@ -315,7 +315,7 @@ module IceCube
     # Determine if the schedule will end
     # @return [Boolean] true if ending, false if repeating forever
     def terminating?
-      end_time || recurrence_rules.all?(&:terminating?)
+      recurrence_rules.empty? || recurrence_rules.all?(&:terminating?)
     end
 
     def self.dump(schedule)
@@ -339,10 +339,6 @@ module IceCube
     def find_occurrences(opening_time, closing_time = nil, limit = nil, &block)
       reset
       answers = []
-      # ensure the bounds are proper
-      if end_time
-        closing_time = end_time unless closing_time && closing_time < end_time
-      end
       opening_time = start_time if opening_time < start_time
       # walk up to the opening time - and off we go
       # If we have rules with counts, we need to walk from the beginning of time,

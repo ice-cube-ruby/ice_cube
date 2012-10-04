@@ -465,8 +465,9 @@ describe IceCube::Schedule, 'occurs_on?' do
 
   it 'should be able to specify an end time for the schedule' do
     start_time = DAY
-    schedule = IceCube::Schedule.new(start_time, :end_time => DAY + IceCube::ONE_DAY * 2)
-    schedule.add_recurrence_rule IceCube::Rule.daily
+    end_time = DAY + IceCube::ONE_DAY * 2
+    schedule = IceCube::Schedule.new(start_time)
+    schedule.add_recurrence_rule IceCube::Rule.daily.until(end_time)
     schedule.all_occurrences.should == [DAY, DAY + 1*IceCube::ONE_DAY, DAY + 2*IceCube::ONE_DAY]
   end
 
@@ -477,8 +478,8 @@ describe IceCube::Schedule, 'occurs_on?' do
     schedule.add_recurrence_rule IceCube::Rule.daily
     schedule.first(5).should == [DAY, DAY + 1*IceCube::ONE_DAY, DAY + 2*IceCube::ONE_DAY, DAY + 3*IceCube::ONE_DAY, DAY + 4*IceCube::ONE_DAY]
     # and then ensure that with the end time it stops it at the right day
-    schedule = IceCube::Schedule.new(start_time, :end_time => DAY + IceCube::ONE_DAY * 2 + 1)
-    schedule.add_recurrence_rule IceCube::Rule.daily
+    schedule = IceCube::Schedule.new(start_time)
+    schedule.add_recurrence_rule IceCube::Rule.daily.until(DAY + IceCube::ONE_DAY * 2 + 1)
     schedule.first(5).should == [DAY, DAY + 1 * IceCube::ONE_DAY, DAY + 2 * IceCube::ONE_DAY]
   end
 
@@ -494,8 +495,8 @@ describe IceCube::Schedule, 'occurs_on?' do
   it 'should be able to specify an end date for the schedule and only get those on .occurrences_between' do
     start_time = DAY
     end_time = DAY + IceCube::ONE_DAY * 2
-    schedule = IceCube::Schedule.new(start_time, :end_time => end_time)
-    schedule.add_recurrence_rule IceCube::Rule.daily
+    schedule = IceCube::Schedule.new(start_time)
+    schedule.add_recurrence_rule IceCube::Rule.daily.until(end_time)
     expectation = [DAY, DAY + IceCube::ONE_DAY, DAY + 2*IceCube::ONE_DAY]
     schedule.occurrences_between(start_time - IceCube::ONE_DAY, start_time + 4 * IceCube::ONE_DAY).should == expectation
   end
@@ -503,8 +504,8 @@ describe IceCube::Schedule, 'occurs_on?' do
   it 'should be able to specify an end date for the schedule and only get those on .occurrences' do
     start_time = DAY
     end_time = DAY + IceCube::ONE_DAY * 2
-    schedule = IceCube::Schedule.new(start_time, :end_time => end_time)
-    schedule.add_recurrence_rule IceCube::Rule.daily
+    schedule = IceCube::Schedule.new(start_time)
+    schedule.add_recurrence_rule IceCube::Rule.daily.until(end_time)
     expectation = [DAY, DAY + IceCube::ONE_DAY, DAY + 2*IceCube::ONE_DAY]
     schedule.occurrences(start_time + 4 * IceCube::ONE_DAY).should == expectation
   end
@@ -512,24 +513,24 @@ describe IceCube::Schedule, 'occurs_on?' do
   it 'should be able to work with an end date and .occurs_at' do
     start_time = DAY
     end_time = DAY + IceCube::ONE_DAY * 2
-    schedule = IceCube::Schedule.new(start_time, :end_time => end_time)
-    schedule.add_recurrence_rule IceCube::Rule.daily
+    schedule = IceCube::Schedule.new(start_time)
+    schedule.add_recurrence_rule IceCube::Rule.daily.until(end_time)
     schedule.occurs_at?(DAY + 4*IceCube::ONE_DAY).should be(false) # out of range
   end
 
   it 'should be able to work with an end date and .occurs_at' do
     start_time = DAY
     end_time = DAY + IceCube::ONE_DAY * 2
-    schedule = IceCube::Schedule.new(start_time, :end_time => end_time)
-    schedule.add_recurrence_rule IceCube::Rule.daily
+    schedule = IceCube::Schedule.new(start_time)
+    schedule.add_recurrence_rule IceCube::Rule.daily.until(end_time)
     schedule.occurs_on?((DAY + 4*IceCube::ONE_DAY)).should be(false) # out of range
   end
 
   it 'should be able to work with an end date and .occurring_at' do
     start_time = DAY
     end_time = DAY + IceCube::ONE_DAY * 2
-    schedule = IceCube::Schedule.new(start_time, :end_time => end_time, :duration => 20)
-    schedule.add_recurrence_rule IceCube::Rule.daily
+    schedule = IceCube::Schedule.new(start_time, :duration => 20)
+    schedule.add_recurrence_rule IceCube::Rule.daily.until(end_time)
     schedule.occurring_at?((DAY + 2*IceCube::ONE_DAY + 10)).should be(true) # in range
     schedule.occurring_at?((DAY + 4*IceCube::ONE_DAY + 10)).should be(false) # out of range
   end
@@ -583,8 +584,8 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'should be able to know when to stop with an end date and a rule that misses a few times' do
-    schedule = IceCube::Schedule.new(Time.local(2010, 2, 29), :end_time => Time.local(2010, 10, 30))
-    schedule.add_recurrence_rule IceCube::Rule.yearly
+    schedule = IceCube::Schedule.new(Time.local(2010, 2, 29))
+    schedule.add_recurrence_rule IceCube::Rule.yearly.until(Time.local(2010, 10, 30))
     schedule.first(10).should == [Time.local(2010, 2, 29)]
   end
 
@@ -601,23 +602,23 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'should be able to go through a year of every month on a day that does not exist' do
-    schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 31), :end_time => Time.zone.local(2011, 2, 5))
-    schedule.add_recurrence_rule IceCube::Rule.monthly
+    schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 31))
+    schedule.add_recurrence_rule IceCube::Rule.monthly.until(Time.zone.local(2011, 2, 5))
     schedule.all_occurrences.should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 3, 31), Time.zone.local(2010, 5, 31),
                                  Time.zone.local(2010, 7, 31), Time.zone.local(2010, 8, 31), Time.zone.local(2010, 10, 31),
                                  Time.zone.local(2010, 12, 31), Time.zone.local(2011, 1, 31)]
   end
 
   it 'should be able to go through a year of every 2 months on a day that does not exist' do
-    schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 31), :end_time => Time.zone.local(2011, 2, 5))
-    schedule.add_recurrence_rule IceCube::Rule.monthly(2)
+    schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 31))
+    schedule.add_recurrence_rule IceCube::Rule.monthly(2).until(Time.zone.local(2011, 2, 5))
     schedule.all_occurrences.should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 3, 31), Time.zone.local(2010, 5, 31),
                                         Time.zone.local(2010, 7, 31), Time.zone.local(2011, 1, 31)]
   end
 
   it 'should be able to go through a year of every 3 months on a day that does not exist' do
-    schedule = IceCube::Schedule.new(Time.local(2010, 1, 31), :end_time => Time.local(2011, 2, 5))
-    schedule.add_recurrence_rule IceCube::Rule.monthly(3)
+    schedule = IceCube::Schedule.new(Time.local(2010, 1, 31))
+    schedule.add_recurrence_rule IceCube::Rule.monthly(3).until(Time.local(2011, 2, 5))
     schedule.all_occurrences.should == [Time.local(2010, 1, 31), Time.local(2010, 7, 31), Time.local(2010, 10, 31), Time.local(2011, 1, 31)]
   end
 
