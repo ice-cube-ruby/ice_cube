@@ -148,7 +148,7 @@ describe IceCube::Schedule, 'to_yaml' do
     start_date = Time.zone.local(2011, 11, 5, 12, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
     schedule = IceCube::Schedule.from_yaml(schedule.to_yaml) # round trip
-    ice_cube_start_date = schedule.start_date
+    ice_cube_start_date = schedule.start_time
     ice_cube_start_date.should == start_date
     ice_cube_start_date.utc_offset.should == start_date.utc_offset
   end
@@ -157,7 +157,7 @@ describe IceCube::Schedule, 'to_yaml' do
     start_date = Time.now
     schedule = IceCube::Schedule.new(start_date)
     schedule = IceCube::Schedule.from_yaml(schedule.to_yaml) # round trip
-    ice_cube_start_date = schedule.start_date
+    ice_cube_start_date = schedule.start_time
     ice_cube_start_date.to_s.should == start_date.to_s
     ice_cube_start_date.class.should == Time
     ice_cube_start_date.utc_offset.should == start_date.utc_offset
@@ -229,19 +229,19 @@ describe IceCube::Schedule, 'to_yaml' do
     Time.zone = pacific_time
     schedule = IceCube::Schedule.new(Time.zone.now)
     schedule.add_recurrence_rule IceCube::Rule.weekly
-    schedule.occurs_on?(schedule.start_date.to_date + 6).should be(false)
-    schedule.occurs_on?(schedule.start_date.to_date + 7).should be(true)
-    schedule.occurs_on?(schedule.start_date.to_date + 8).should be(false)
+    schedule.occurs_on?(schedule.start_time.to_date + 6).should be(false)
+    schedule.occurs_on?(schedule.start_time.to_date + 7).should be(true)
+    schedule.occurs_on?(schedule.start_time.to_date + 8).should be(false)
   end
 
   it 'should work with occurs_on and TimeWithZone' do
     pacific_time = 'Pacific Time (US & Canada)'
     Time.zone = pacific_time
     schedule = IceCube::Schedule.new(Time.zone.now)
-    schedule.add_recurrence_date Time.zone.now + 7 * IceCube::ONE_DAY
-    schedule.occurs_on?(schedule.start_date.to_date + 6).should be(false)
-    schedule.occurs_on?(schedule.start_date.to_date + 7).should be(true)
-    schedule.occurs_on?(schedule.start_date.to_date + 8).should be(false)
+    schedule.add_recurrence_time Time.zone.now + 7 * IceCube::ONE_DAY
+    schedule.occurs_on?(schedule.start_time.to_date + 6).should be(false)
+    schedule.occurs_on?(schedule.start_time.to_date + 7).should be(true)
+    schedule.occurs_on?(schedule.start_time.to_date + 8).should be(false)
   end
 
   it 'should crazy patch' do
