@@ -93,7 +93,11 @@ module IceCube
 
     # Fully replace validations
     def replace_validations_for(key, arr)
-      @validations[key] = arr
+      if arr.nil?
+        @validations.delete(key)
+      else
+        @validations[key] = arr
+      end
     end
 
     # Remove the specified base validations

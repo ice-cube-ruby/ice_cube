@@ -790,6 +790,18 @@ describe IceCube::Schedule, 'occurs_on?' do
     rule.occurrence_count.should == 5
   end
 
+  it 'should be able to remove a count validation from a rule' do
+    rule = IceCube::Rule.daily.count(5)
+    rule.occurrence_count.should == 5
+    rule.count nil
+    rule.occurrence_count.should raise_error
+  end
+
+  it 'should be able to remove a count validation from a rule' do
+    rule = IceCube::Rule.daily.count(5)
+    rule.to_hash[:count].should == 5
+    rule.count nil
+    rule.to_hash[:count].should be_nil
+  end
 
 end
-
