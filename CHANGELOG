@@ -88,3 +88,4 @@
 	* Fix the affect on end_time on IceCube::Schedule [#99]
 	* Remove end_time from `to_s` [#99]
 	* Single recurrences now work properly with conflict_with? [#71]
+	* Fix a bug with interval > 1 when using occurrences_between [#92]
