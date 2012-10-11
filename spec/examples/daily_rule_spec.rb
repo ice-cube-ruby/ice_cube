@@ -45,4 +45,16 @@ describe IceCube::DailyRule, 'occurs_on?' do
     ]
   end
 
+  context "full_required?" do
+    it "should return true when interval is > 1" do
+      rule = IceCube::Rule.daily(2)
+      rule.full_required?.should be_true
+    end
+
+    it "should return false when interval is <= 1" do
+      rule = IceCube::Rule.daily
+      rule.full_required?.should be_false
+    end
+  end
+
 end

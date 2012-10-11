@@ -5,6 +5,7 @@ module IceCube
   module Validations::WeeklyInterval
 
     def interval(interval, week_start = :sunday)
+      @interval = interval
       validations_for(:interval) << Validation.new(interval, week_start)
       clobber_base_validations(:day)
       self
