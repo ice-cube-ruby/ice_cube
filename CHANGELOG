@@ -79,3 +79,12 @@
 
 0.8.0
   * Added support for WEEKST (thanks @devwout)
+
+0.8.1
+
+----
+
+0.9.0
+	* Fix the affect on end_time on IceCube::Schedule [#99]
+	* Remove end_time from `to_s` [#99]
+
