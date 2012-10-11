@@ -89,3 +89,4 @@
 	* Remove end_time from `to_s` [#99]
 	* Single recurrences now work properly with conflict_with? [#71]
 	* Fix a bug with interval > 1 when using occurrences_between [#92]
+	* Allow count, until removal by setting to nil [#94]

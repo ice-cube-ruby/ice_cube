@@ -804,4 +804,11 @@ describe IceCube::Schedule, 'occurs_on?' do
     rule.to_hash[:count].should be_nil
   end
 
+  it 'should be able to remove an until validation from a rule' do
+    rule = IceCube::Rule.daily.until(Time.now + IceCube::ONE_DAY)
+    rule.to_hash[:until].should_not be_nil
+    rule.until nil
+    rule.to_hash[:until].should be_nil
+  end
+
 end

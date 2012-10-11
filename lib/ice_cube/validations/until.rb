@@ -41,11 +41,11 @@ module IceCube
       end
 
       def validate(t, schedule)
-        raise UntilExceeded if t > time 
+        raise UntilExceeded if t > time
       end
 
     end
-      
+
   end
 
 end
