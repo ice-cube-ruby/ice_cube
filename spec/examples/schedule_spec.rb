@@ -190,8 +190,6 @@ describe IceCube::Schedule do
       conflict.should be_false
     end
 
- 
-
   end
 
   describe :each do
