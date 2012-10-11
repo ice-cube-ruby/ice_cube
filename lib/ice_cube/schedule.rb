@@ -274,7 +274,7 @@ module IceCube
     def to_hash
       data = {}
       data[:start_date] = TimeUtil.serialize_time(start_time)
-      data[:end_time] = end_time if end_time
+      data[:end_time] = TimeUtil.serialize_time(end_time) if end_time
       data[:duration] = duration if duration
       data[:rrules] = recurrence_rules.map(&:to_hash)
       data[:exrules] = exception_rules.map(&:to_hash)
