@@ -811,4 +811,28 @@ describe IceCube::Schedule, 'occurs_on?' do
     rule.to_hash[:until].should be_nil
   end
 
+  # Full required for rules account for @interval
+
+  %w{Secondly Minutely Hourly Daily Weekly Monthly Yearly}.each do |t|
+
+    klass = eval "IceCube::#{t}Rule"
+    method = t.downcase.to_sym
+
+    describe klass do
+      describe :full_required? do
+
+        it 'should return true when interval is > 1' do
+          rule = IceCube::Rule.send(method, 2)
+          rule.full_required?.should be_true
+        end
+
+        it 'should return false when interval is <= 1' do
+          rule = IceCube::Rule.send(method)
+          rule.full_required?.should be_false
+        end
+
+      end
+    end
+  end
+
 end

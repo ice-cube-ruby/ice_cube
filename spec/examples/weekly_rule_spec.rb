@@ -86,16 +86,4 @@ describe IceCube::WeeklyRule, 'occurs_on?' do
     schedule.first(3).should == [Time.local(2012,2,7), Time.local(2012,2,19), Time.local(2012,2,21)]
   end
 
-  context "full_required?" do
-    it "should return true when interval is > 1" do
-      rule = IceCube::Rule.weekly(2).day(:sunday)
-      rule.full_required?.should be_true
-    end
-
-    it "should return false when interval is <= 1" do
-      rule = IceCube::Rule.weekly.day(:sunday)
-      rule.full_required?.should be_false
-    end
-  end
-
 end

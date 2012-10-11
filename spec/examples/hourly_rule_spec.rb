@@ -12,5 +12,5 @@ describe IceCube::HourlyRule do
     dates.size.should == 3
     dates.should == [DAY, DAY + 3 * IceCube::ONE_HOUR, DAY + 6 * IceCube::ONE_HOUR]
   end
- 
+
 end
