@@ -243,7 +243,6 @@ module IceCube
       pieces.concat rrules.map { |t| t.to_s }
       pieces.concat exrules.map { |t| "not #{t.to_s}" }
       pieces.concat ed.sort.map { |t| "not on #{t.strftime(IceCube.to_s_time_format)}" }
-      pieces << "until #{end_time.strftime(IceCube.to_s_time_format)}" if end_time
       pieces.join(' / ')
     end
 
