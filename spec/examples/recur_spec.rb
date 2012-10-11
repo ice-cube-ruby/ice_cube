@@ -6,16 +6,17 @@ describe :remaining_occurrences do
 
   it 'should get the proper remaining occurrences from now' do
     start_time = Time.now
-    schedule = Schedule.new(start_time, :end_time => Time.local(start_time.year, start_time.month, start_time.day, 23, 59, 59))
-    schedule.add_recurrence_rule(Rule.hourly)
+    end_time = Time.local(start_time.year, start_time.month, start_time.day, 23, 59, 59)
+    schedule = Schedule.new(start_time)
+    schedule.add_recurrence_rule(Rule.hourly.until(end_time))
     schedule.remaining_occurrences(start_time).size.should == 24 - schedule.start_time.hour
   end
 
   it 'should get the proper ramining occurrences past the end of the year' do
     start_time = Time.now
-    schedule = Schedule.new(start_time, :end_time => start_time + ONE_DAY)
-    schedule.add_recurrence_rule(Rule.hourly)
-    schedule.remaining_occurrences(schedule.end_time + 366 * ONE_DAY).size.should == 0
+    schedule = Schedule.new(start_time)
+    schedule.add_recurrence_rule(Rule.hourly.until(start_time + ONE_DAY))
+    schedule.remaining_occurrences(start_time + 366 * ONE_DAY).size.should == 0
   end
 
 end
@@ -32,7 +33,7 @@ describe :next_occurrence do
   it 'should get the next occurrence past the end of the year' do
     schedule = Schedule.new(Time.now, :end_time => Time.now + 24 * ONE_HOUR)
     schedule.add_recurrence_rule(Rule.hourly)
-    schedule.next_occurrence(schedule.end_time + 366 * ONE_DAY).should == nil
+    schedule.next_occurrence(schedule.end_time + 366 * ONE_DAY).should == schedule.end_time + 366 * ONE_DAY + 1 * ONE_HOUR
   end
 
   it 'should be able to use next_occurrence on a never-ending schedule' do
@@ -72,7 +73,7 @@ describe :next_occurrences do
 
   it 'should get the next 3 occurrence past the end of the year' do
     schedule = Schedule.new(Time.now, :end_time => Time.now + ONE_HOUR * 24)
-    schedule.add_recurrence_rule(Rule.hourly)
+    schedule.add_recurrence_rule(Rule.hourly.until(Time.now + 365 * ONE_DAY))
     schedule.next_occurrences(3, schedule.end_time + 366 * ONE_DAY).should == []
   end
 
