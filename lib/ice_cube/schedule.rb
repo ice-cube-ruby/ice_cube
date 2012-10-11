@@ -179,7 +179,6 @@ module IceCube
 
     # Determine if the schedule is occurring at a given time
     def occurring_at?(time)
-      time=time.to_time
       if duration
         return false if exception_time?(time)
         occurs_between?(time - duration + 1, time)
