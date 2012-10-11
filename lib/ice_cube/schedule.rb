@@ -179,6 +179,7 @@ module IceCube
 
     # Determine if the schedule is occurring at a given time
     def occurring_at?(time)
+      time=time.to_time
       if duration
         return false if exception_time?(time)
         occurs_between?(time - duration + 1, time)
@@ -215,6 +216,7 @@ module IceCube
       # Due to durations, we need to walk up to the end time, and verify in the
       # other direction
       if last_time
+        last_time = terminating_schedule.duration ? last_time + terminating_schedule.duration : last_time
         other_schedule.each_occurrence do |time|
           break if time > last_time
           return true if terminating_schedule.occurring_at?(time)
