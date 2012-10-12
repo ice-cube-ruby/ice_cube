@@ -92,6 +92,16 @@ describe IceCube do
     schedule.occurrences_between(start_time + 7 * IceCube::ONE_DAY, start_time + 14 * IceCube::ONE_DAY).count.should == 0
   end
 
+  it 'should produce occurrences regardless of time being specified [#81]' do
+    schedule = IceCube::Schedule.new(Time.new(2012, 05, 1))
+    schedule.add_recurrence_rule IceCube::Rule.daily.hour_of_day(8)
+    occ = schedule.occurrences_between(Time.new(2012, 05, 20), Time.new(2012, 05, 22))
+    occ.should == [
+      Time.new(2012, 5, 20, 8, 0, 0),
+      Time.new(2012, 5, 21, 8, 0, 0)
+    ]
+  end
+
   require 'active_support/time'
   it 'should exclude a date from a weekly schedule - issue #55' do
     Time.zone = 'Eastern Time (US & Canada)'
