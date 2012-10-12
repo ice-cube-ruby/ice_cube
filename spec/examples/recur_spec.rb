@@ -107,4 +107,10 @@ describe :next_occurrences do
       schedule.start_time + ONE_HOUR * 2]
   end
 
+  it 'should generate the same comparable time objects (down to millisecond) on two runs' do
+    schedule = Schedule.new Time.now
+    schedule.rrule Rule.daily
+    schedule.next_occurrences(5).should == schedule.next_occurrences(5)
+  end
+
 end

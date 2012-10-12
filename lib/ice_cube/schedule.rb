@@ -21,7 +21,7 @@ module IceCube
 
     # Create a new schedule
     def initialize(start_time = nil, options = {})
-      @start_time = start_time || Time.now
+      @start_time = start_time || TimeUtil.now
       @end_time = options[:end_time]
       @duration = options[:duration]
       @all_recurrence_rules = []
@@ -145,17 +145,17 @@ module IceCube
     end
 
     # The next n occurrences after now
-    def next_occurrences(num, from = Time.now)
+    def next_occurrences(num, from = TimeUtil.now)
       find_occurrences(from + 1, nil, num)
     end
 
     # The next occurrence after now (overridable)
-    def next_occurrence(from = Time.now)
+    def next_occurrence(from = TimeUtil.now)
       find_occurrences(from + 1, nil, 1).first
     end
 
     # The remaining occurrences (same requirements as all_occurrences)
-    def remaining_occurrences(from = Time.now)
+    def remaining_occurrences(from = TimeUtil.now)
       find_occurrences(from)
     end
 

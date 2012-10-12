@@ -18,6 +18,11 @@ module IceCube
       :november => 11, :december => 12
     }
 
+    # Provides a Time.now without the usec
+    def self.now
+      Time.at Time.now.to_i
+    end
+
     # Serialize a time appropriate for storing
     def self.serialize_time(time)
       if defined?(:ActiveSupport) && const_defined?(:ActiveSupport) && time.is_a?(ActiveSupport::TimeWithZone)
