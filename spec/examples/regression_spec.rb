@@ -113,6 +113,12 @@ describe IceCube do
 
   require 'active_support/time'
 
+  it 'should not hang over DST [#53]' do
+    schedule = IceCube::Schedule.new Time.now, :end_time => 4.years.from_now.end_of_year
+    schedule.rrule IceCube::Rule.monthly
+    schedule.occurrences 2.years.from_now
+  end
+
   it 'should not hang next_time on DST boundary [#98]' do # set local to Sweden
     schedule = IceCube::Schedule.from_yaml <<-EOS
     :start_date: 2012-09-03 0:00:00.000000000 +00:00
