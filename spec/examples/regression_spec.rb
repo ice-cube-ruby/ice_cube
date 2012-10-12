@@ -102,6 +102,15 @@ describe IceCube do
     ]
   end
 
+  it 'should not include exception times due to rounding errors [#83]' do
+    start_time = Time.now # start time with usec
+    exdate = Time.at (start_time + IceCube::ONE_DAY).to_i # one day in the future, no usec
+
+    schedule = IceCube::Schedule.new start_time
+    schedule.rrule IceCube::Rule.daily
+    schedule.first(1)[0].mday.should_not == exdate.mday
+  end
+
   require 'active_support/time'
   it 'should exclude a date from a weekly schedule - issue #55' do
     Time.zone = 'Eastern Time (US & Canada)'
