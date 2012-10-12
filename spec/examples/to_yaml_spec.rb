@@ -235,10 +235,11 @@ describe IceCube::Schedule, 'to_yaml' do
   end
 
   it 'should work with occurs_on and TimeWithZone' do
+    start_time = Time.zone.local(2012, 7, 15, 12, 0, 0)
     pacific_time = 'Pacific Time (US & Canada)'
     Time.zone = pacific_time
-    schedule = IceCube::Schedule.new(Time.zone.now)
-    schedule.add_recurrence_time Time.zone.now + 7 * IceCube::ONE_DAY
+    schedule = IceCube::Schedule.new(start_time)
+    schedule.add_recurrence_time start_time + 7 * IceCube::ONE_DAY
     schedule.occurs_on?(schedule.start_time.to_date + 6).should be(false)
     schedule.occurs_on?(schedule.start_time.to_date + 7).should be(true)
     schedule.occurs_on?(schedule.start_time.to_date + 8).should be(false)
