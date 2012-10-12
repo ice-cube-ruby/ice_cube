@@ -39,6 +39,9 @@ module IceCube
               wrapper = TimeUtil::TimeWrapper.new(time, dst_adjust)
               wrapper.add(type, fwd)
               wrapper.clear_below(type)
+              if wrapper.to_time == time
+                wrapper.add(:sec, wrapper.to_time.utc_offset * 2)
+              end
               time = wrapper.to_time
             end
             false

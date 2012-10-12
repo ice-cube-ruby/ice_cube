@@ -114,9 +114,35 @@ describe IceCube do
   require 'active_support/time'
 
   it 'should not hang next_time on DST boundary [#98]' do # set local to Sweden
-    Time.zone = 'UTC'
-    schedule = IceCube::Schedule.new Time.zone.local(2012, 9, 3, 0, 0, 0)
-    schedule.rrule IceCube::Rule.daily
+    schedule = IceCube::Schedule.from_yaml <<-EOS
+    :start_date: 2012-09-03 0:00:00.000000000 +00:00
+    :end_time: 2022-09-15 0:00:00.000000000 +00:00
+    :rrules:
+    - :validations: {}
+      :rule_type: IceCube::DailyRule
+      :interval: 1
+    :exrules: []
+    :rtimes: []
+    :extimes: []
+    EOS
+    occ = schedule.occurrences(Date.new(2013, 07, 13).to_time)
+    occ.detect { |o| o.year == 2013 && o.month == 3 && o.day == 31 }.should be_nil # no such time
+  end
+
+  it 'should still include date over DST boundary [#98]' do # set local to Sweden
+    schedule = IceCube::Schedule.from_yaml <<-EOS
+    :start_date: 2012-09-03 15:00:00.000000000 +00:00
+    :end_time: 2022-09-15 15:00:00.000000000 +00:00
+    :rrules:
+    - :validations: {}
+      :rule_type: IceCube::DailyRule
+      :interval: 1
+    :exrules: []
+    :rtimes: []
+    :extimes: []
+    EOS
+    occ = schedule.occurrences(Date.new(2013, 07, 13).to_time)
+    occ.detect { |o| o.year == 2013 && o.month == 3 && o.day == 31 }.should be_true
   end
 
   it 'should exclude a date from a weekly schedule - issue #55' do
