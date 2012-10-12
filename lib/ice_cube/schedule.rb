@@ -288,9 +288,10 @@ module IceCube
     end
 
     # Load the schedule from a hash
-    def self.from_hash(data, options = {})
-      data[:start_date] = options[:start_date_override] if options[:start_date_override]
+    def self.from_hash(original_hash, options = {})
+      original_hash[:start_date] = options[:start_date_override] if options[:start_date_override]
       # And then deserialize
+      data = IceCube::FlexibleHash.new(original_hash)
       schedule = IceCube::Schedule.new TimeUtil.deserialize_time(data[:start_date])
       schedule.duration = data[:duration] if data[:duration]
       schedule.end_time = TimeUtil.deserialize_time(data[:end_time]) if data[:end_time]

@@ -90,3 +90,4 @@
 	* Single recurrences now work properly with conflict_with? [#71]
 	* Fix a bug with interval > 1 when using occurrences_between [#92]
 	* Allow count, until removal by setting to nil [#94]
+	* Allow deserialization of string structures easily [#93]

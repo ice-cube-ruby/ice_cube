@@ -269,4 +269,14 @@ describe IceCube::Schedule, 'to_yaml' do
     rule.occurrence_count.should == 5
   end
 
-end
+  it 'should be able to bring in a schedule with a rule from hash with symbols or strings' do
+    time = Time.zone.now
+    symbol_data = { :start_date => time, :rrules =>   [ { :validations => { :day => [1] }, :rule_type => "IceCube::DailyRule", :interval => 1 } ], :exrules => [], :rtimes => [], :extimes => [] }
+    string_data = { 'start_date' => time, 'rrules' => [ { 'validations' => { 'day' => [1] }, 'rule_type' => "IceCube::DailyRule", 'interval' => 1 } ], 'exrules' => [], 'rtimes' => [], 'extimes' => [] }
+
+    symbol_yaml = IceCube::Schedule.from_hash(symbol_data).to_yaml
+    string_yaml = IceCube::Schedule.from_hash(string_data).to_yaml
+    symbol_yaml.should == string_yaml
+  end
+
+ end
