@@ -112,6 +112,13 @@ describe IceCube do
   end
 
   require 'active_support/time'
+
+  it 'should not hang next_time on DST boundary [#98]' do # set local to Sweden
+    Time.zone = 'UTC'
+    schedule = IceCube::Schedule.new Time.zone.local(2012, 9, 3, 0, 0, 0)
+    schedule.rrule IceCube::Rule.daily
+  end
+
   it 'should exclude a date from a weekly schedule - issue #55' do
     Time.zone = 'Eastern Time (US & Canada)'
     ex = Time.zone.local(2011, 12, 27, 14)
