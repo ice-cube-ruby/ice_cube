@@ -8,6 +8,7 @@ module IceCube
     def until_time
       @until
     end
+    deprecated_alias :until_date, :until_time
 
     def until(time)
       @until = time

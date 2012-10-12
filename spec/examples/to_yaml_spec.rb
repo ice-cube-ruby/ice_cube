@@ -261,7 +261,7 @@ describe IceCube::Schedule, 'to_yaml' do
     offset = time.utc_offset
     rule = IceCube::Rule.daily.until(time)
     rule = IceCube::Rule.from_yaml(rule.to_yaml)
-    rule.until_time.utc_offset.should == offset
+    rule.until_date.utc_offset.should == offset
   end
 
   it 'should be able to bring a Rule to_yaml and back with a count' do
