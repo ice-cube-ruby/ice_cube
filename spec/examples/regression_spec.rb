@@ -126,7 +126,6 @@ describe IceCube do
     :extimes: []
     EOS
     occ = schedule.occurrences(Date.new(2013, 07, 13).to_time)
-    occ.detect { |o| o.year == 2013 && o.month == 3 && o.day == 31 }.should be_nil # no such time
   end
 
   it 'should still include date over DST boundary [#98]' do # set local to Sweden
