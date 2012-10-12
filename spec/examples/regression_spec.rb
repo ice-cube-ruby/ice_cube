@@ -70,6 +70,20 @@ describe IceCube do
     ]
   end
 
+  it 'should produce all occurrences between dates, not breaking on exceptions [#82]' do
+    schedule = IceCube::Schedule.new(Time.new(2012, 5, 1))
+    schedule.add_recurrence_rule IceCube::Rule.daily.day(:sunday, :tuesday, :wednesday, :thursday, :friday, :saturday)
+    occurrences = schedule.occurrences_between(Time.new(2012, 5, 19), Time.new(2012, 5, 24))
+    occurrences.should == [
+      Time.new(2012, 5, 19),
+      Time.new(2012, 5, 20),
+      # No 21st
+      Time.new(2012, 5, 22),
+      Time.new(2012, 5, 23),
+      Time.new(2012, 5, 24)
+    ]
+  end
+
   it 'should be able to use count with occurrences_between falling over counts last occurrence - issue 54' do
     start_time = Time.now
     schedule = IceCube::Schedule.new(start_time)
