@@ -170,6 +170,13 @@ module IceCube
       !find_occurrences(begin_time, closing_time, 1).empty?
     end
 
+    # Return a boolean indicating if an occurrence is occurring between
+    # two times, inclusive
+    def occurring_between?(begin_time, closing_time)
+      dur = duration || 0
+      occurs_between?(begin_time - dur + 1, closing_time + dur - 1)
+    end
+
     # Return a boolean indicating if an occurrence falls on a certain date
     def occurs_on?(date)
       begin_time = TimeUtil.beginning_of_date(date)

@@ -20,7 +20,42 @@ describe :remaining_occurrences do
   end
 
 end
-  
+
+describe :occurring_between? do
+
+  let(:start_time) { Time.local(2012, 7, 7, 7) }
+  let(:schedule) do
+    IceCube::Schedule.new(start_time, :duration => 30).tap do |schedule|
+      schedule.rrule IceCube::Rule.daily
+    end
+  end
+
+  it 'should occur when the range is entirely contained' do
+    schedule.occurring_between?(start_time + 1, start_time + 20).should be_true
+  end
+
+  it 'should occur when the range is offset left' do
+    schedule.occurring_between?(start_time - 60, start_time - 29).should be_true
+  end
+
+  it 'should occur when the range is offset right' do
+    schedule.occurring_between?(start_time + 29, start_time + 40).should be_true
+  end
+
+  it 'should occur when the range is overflowing' do
+    schedule.occurring_between?(start_time - 29, start_time + 40).should be_true
+  end
+
+  it 'should be false when the range starts after the duration expires' do
+    schedule.occurring_between?(start_time + 30, start_time + 40).should be_false
+  end
+
+  it 'should be false when the range ends before the start' do
+    schedule.occurring_between?(start_time - 40, start_time - 30).should be_false
+  end
+
+end
+
 describe :next_occurrence do
 
   it 'should get the next occurrence from now' do

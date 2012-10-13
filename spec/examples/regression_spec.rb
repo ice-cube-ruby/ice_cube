@@ -111,6 +111,15 @@ describe IceCube do
     schedule.first(1)[0].mday.should_not == exdate.mday
   end
 
+  it 'should return true if a recurring schedule occurs_between? a time range [#88]' do
+    start_time = Time.new(2012, 7, 7, 8)
+    schedule = IceCube::Schedule.new(start_time, :duration => 2 * IceCube::ONE_HOUR)
+    schedule.add_recurrence_rule Rule.weekly
+    t1 = Time.new(2012, 7, 14, 9)
+    t2 = Time.new(2012, 7, 14, 11)
+    schedule.occurring_between?(t1, t2).should be_true
+  end
+
   require 'active_support/time'
 
   it 'should not hang over DST [#53]' do
