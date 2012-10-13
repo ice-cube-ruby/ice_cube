@@ -23,6 +23,22 @@ module IceCube
       Time.at Time.now.to_i
     end
 
+    # Ensure that this is either nil, or a time
+    def self.ensure_time(time)
+      case time
+      when Date, DateTime then time.to_time
+      else time
+      end
+    end
+
+    # Ensure that this is either nil, or a date
+    def self.ensure_date(date)
+      case date
+      when Date then date
+      else date.to_time
+      end
+    end
+
     # Serialize a time appropriate for storing
     def self.serialize_time(time)
       if defined?(:ActiveSupport) && const_defined?(:ActiveSupport) && time.is_a?(ActiveSupport::TimeWithZone)

@@ -7,26 +7,36 @@ module IceCube
     extend ::Deprecated
 
     # Get the start time
-    attr_accessor :start_time
+    attr_reader :start_time
     deprecated_alias :start_date, :start_time
-    deprecated_alias :start_date=, :start_time=
 
     # Get the duration
     attr_accessor :duration
 
     # Get the end time
-    attr_accessor :end_time
+    attr_reader :end_time
     deprecated_alias :end_date, :end_time
-    deprecated_alias :end_date=, :end_time=
 
     # Create a new schedule
     def initialize(start_time = nil, options = {})
-      @start_time = start_time || TimeUtil.now
-      @end_time = options[:end_time]
+      self.start_time = start_time || TimeUtil.now
+      self.end_time = options[:end_time]
       @duration = options[:duration]
       @all_recurrence_rules = []
       @all_exception_rules = []
     end
+
+    # Set start_time
+    def start_time=(start_time)
+      @start_time = TimeUtil.ensure_time start_time
+    end
+    deprecated_alias :start_date=, :start_time=
+
+    # Set end_time
+    def end_time=(end_time)
+      @end_time = TimeUtil.ensure_time end_time
+    end
+    deprecated_alias :end_date=, :end_time=
 
     # Add a recurrence time to the schedule
     def add_recurrence_time(time)
@@ -179,6 +189,7 @@ module IceCube
 
     # Return a boolean indicating if an occurrence falls on a certain date
     def occurs_on?(date)
+      date = TimeUtil.ensure_date date
       begin_time = TimeUtil.beginning_of_date(date)
       closing_time = TimeUtil.end_of_date(date)
       occurs_between?(begin_time, closing_time)
@@ -199,6 +210,7 @@ module IceCube
     # @param [Time] closing_time - the last time to consider
     # @return [Boolean] whether or not the schedules conflict at all
     def conflicts_with?(other_schedule, closing_time = nil)
+      closing_time = TimeUtil.ensure_time closing_time
       unless terminating? || other_schedule.terminating? || closing_time
         raise ArgumentError.new 'At least one schedule must be terminating to use #conflicts_with?'
       end
@@ -345,6 +357,8 @@ module IceCube
     # Find all of the occurrences for the schedule between opening_time
     # and closing_time
     def find_occurrences(opening_time, closing_time = nil, limit = nil, &block)
+      opening_time = TimeUtil.ensure_time opening_time
+      closing_time = TimeUtil.ensure_time closing_time
       reset
       answers = []
       opening_time = start_time if opening_time < start_time

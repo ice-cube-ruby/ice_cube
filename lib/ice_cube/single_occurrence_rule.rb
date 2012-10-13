@@ -5,7 +5,7 @@ module IceCube
     attr_reader :time
 
     def initialize(time)
-      @time = time
+      @time = TimeUtil.ensure_time time
     end
 
     # Always terminating
