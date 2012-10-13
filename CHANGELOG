@@ -93,3 +93,4 @@
 	* Allow deserialization of string structures easily [#93]
 	* Ignore usecs when creating Time.now for *_occurrences [#84]
 	* DST bug fix [#98]
+	* Added occurring_between? [#88]
