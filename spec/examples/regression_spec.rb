@@ -159,6 +159,14 @@ describe IceCube do
     occ.detect { |o| o.year == 2013 && o.month == 3 && o.day == 31 }.should be_true
   end
 
+  it "failing spec for hanging on DST boundary [#98]" do
+    Time.zone = "Europe/London"
+    first = Time.zone.parse("Sun, 31 Mar 2013 00:00:00 GMT +00:00")
+    schedule = IceCube::Schedule.new(first)
+    schedule.add_recurrence_rule IceCube::Rule.monthly
+    next_occurance = schedule.next_occurrence(first)
+  end
+
   it 'should exclude a date from a weekly schedule - issue #55' do
     Time.zone = 'Eastern Time (US & Canada)'
     ex = Time.zone.local(2011, 12, 27, 14)
