@@ -12,7 +12,7 @@ module IceCube
 
     def until(time)
       @until = time
-      replace_validations_for(:until, [Validation.new(time)])
+      replace_validations_for(:until, time.nil? ? nil : [Validation.new(time)])
       self
     end
 

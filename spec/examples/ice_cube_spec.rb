@@ -808,7 +808,7 @@ describe IceCube::Schedule, 'occurs_on?' do
     rule = IceCube::Rule.daily.until(Time.now + IceCube::ONE_DAY)
     rule.to_hash[:until].should_not be_nil
     rule.until nil
-    rule.to_hash[:until].should be_nil
+    rule.to_hash.should_not have_key(:until)
   end
 
   # Full required for rules account for @interval

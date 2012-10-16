@@ -114,7 +114,7 @@ describe IceCube do
   it 'should return true if a recurring schedule occurs_between? a time range [#88]' do
     start_time = Time.new(2012, 7, 7, 8)
     schedule = IceCube::Schedule.new(start_time, :duration => 2 * IceCube::ONE_HOUR)
-    schedule.add_recurrence_rule Rule.weekly
+    schedule.add_recurrence_rule IceCube::Rule.weekly
     t1 = Time.new(2012, 7, 14, 9)
     t2 = Time.new(2012, 7, 14, 11)
     schedule.occurring_between?(t1, t2).should be_true
@@ -175,6 +175,18 @@ describe IceCube do
       schedule.add_exception_time ex
     end
     schedule.first.should == Time.zone.local(2011, 12, 29, 14)
+  end
+
+  it 'should not raise an exception after setting the rule until to nil' do
+    rule = IceCube::Rule.daily.until(Time.local(2012, 10, 1))
+    rule.until(nil)
+
+    schedule = IceCube::Schedule.new Time.local(2011, 10, 11, 12)
+    schedule.add_recurrence_rule rule
+
+    lambda {
+      schedule.occurrences_between(Time.local(2012, 1, 1), Time.local(2012, 12, 1))
+    }.should_not raise_error(ArgumentError, 'comparison of Time with nil failed')
   end
 
 end
