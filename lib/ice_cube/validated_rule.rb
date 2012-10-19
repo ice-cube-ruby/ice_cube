@@ -36,12 +36,12 @@ module IceCube
             if fwd = res.min
               type = vals.first.type # get the jump type
               dst_adjust = !vals.first.respond_to?(:dst_adjust?) || vals.first.dst_adjust?
+              dst_adjust = false if time.utc_offset == 0
               wrapper = TimeUtil::TimeWrapper.new(time, dst_adjust)
               wrapper.add(type, fwd)
               wrapper.clear_below(type)
-              if wrapper.to_time == time
-                wrapper.add(:sec, wrapper.to_time.utc_offset * 2)
-              end
+              # Move over DST if blocked
+              wrapper.add(:sec, time.utc_offset) until wrapper.to_time > time
               time = wrapper.to_time
             end
             false
