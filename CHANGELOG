@@ -97,3 +97,4 @@
 
 0.9.1
 	* A fix for removing until validations [#106]
+	* A DST edge fix
