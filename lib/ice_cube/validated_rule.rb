@@ -36,12 +36,17 @@ module IceCube
             if fwd = res.min
               type = vals.first.type # get the jump type
               dst_adjust = !vals.first.respond_to?(:dst_adjust?) || vals.first.dst_adjust?
-              dst_adjust = false if time.utc_offset == 0
               wrapper = TimeUtil::TimeWrapper.new(time, dst_adjust)
               wrapper.add(type, fwd)
               wrapper.clear_below(type)
-              # Move over DST if blocked
-              wrapper.add(:sec, time.utc_offset) until wrapper.to_time > time
+              # Move over DST if blocked, no adjustments
+              if wrapper.to_time <= time
+                wrapper = TimeUtil::TimeWrapper.new(wrapper.to_time, false)
+                until wrapper.to_time > time
+                  wrapper.add(:min, 10) # smallest interval
+                end
+              end
+              # And then get the correct time out
               time = wrapper.to_time
             end
             false
