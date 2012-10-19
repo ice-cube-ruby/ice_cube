@@ -189,4 +189,13 @@ describe IceCube do
     }.should_not raise_error(ArgumentError, 'comparison of Time with nil failed')
   end
 
+  it 'should not infinite loop [#109]' do
+    schedule = IceCube::Schedule.new Time.new(2012, 4, 27, 0, 0, 0)
+    schedule.rrule IceCube::Rule.weekly.day(:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday).hour_of_day(0).minute_of_hour(0).second_of_minute(0)
+    schedule.duration = 3600
+    start_time = Time.new(2012, 10, 20, 0, 0, 0)
+    end_time = Time.new(2012, 10, 20, 23, 59, 59)
+    schedule.occurrences_between(start_time, end_time).first.should == start_time
+  end
+
 end
