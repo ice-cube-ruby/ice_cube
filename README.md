@@ -2,8 +2,6 @@
 
 [![Build Status](https://secure.travis-ci.org/seejohnrun/ice_cube.png)](http://travis-ci.org/seejohnrun/ice_cube)
 
-<iframe style="border: 0; margin: 0; padding: 0;" src="https://www.gittip.com/seejohnrun/widget.html" width="48pt" height="20pt"></iframe>
-
 ``` bash
 gem install ice_cube
 ```
