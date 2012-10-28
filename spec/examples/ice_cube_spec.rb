@@ -54,7 +54,7 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'should be able to exclude a certain date from a range' do
-    start_date = Time.now
+    start_date = Time.local 2012, 3, 1
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.daily
     schedule.add_exception_date(start_date + 1 * IceCube::ONE_DAY) # all days except tomorrow
