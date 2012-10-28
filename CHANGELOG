@@ -82,8 +82,6 @@
 
 0.8.1
 
-----
-
 0.9.0
 	* Fix the affect on end_time on IceCube::Schedule [#99]
 	* Remove end_time from `to_s` [#99]
@@ -94,3 +92,12 @@
 	* Ignore usecs when creating Time.now for *_occurrences [#84]
 	* DST bug fix [#98]
 	* Added occurring_between? [#88]
+
+0.9.1
+	* A fix for removing until validations [#106]
+	* A DST edge fix
+
+---
+
+0.9.2
+  * Allow passing Time, Date, or DateTime to all calls

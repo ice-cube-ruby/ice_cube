@@ -114,7 +114,7 @@ describe IceCube do
   it 'should return true if a recurring schedule occurs_between? a time range [#88]' do
     start_time = Time.new(2012, 7, 7, 8)
     schedule = IceCube::Schedule.new(start_time, :duration => 2 * IceCube::ONE_HOUR)
-    schedule.add_recurrence_rule Rule.weekly
+    schedule.add_recurrence_rule IceCube::Rule.weekly
     t1 = Time.new(2012, 7, 14, 9)
     t2 = Time.new(2012, 7, 14, 11)
     schedule.occurring_between?(t1, t2).should be_true
@@ -159,6 +159,14 @@ describe IceCube do
     occ.detect { |o| o.year == 2013 && o.month == 3 && o.day == 31 }.should be_true
   end
 
+  it "failing spec for hanging on DST boundary [#98]" do
+    Time.zone = "Europe/London"
+    first = Time.zone.parse("Sun, 31 Mar 2013 00:00:00 GMT +00:00")
+    schedule = IceCube::Schedule.new(first)
+    schedule.add_recurrence_rule IceCube::Rule.monthly
+    next_occurance = schedule.next_occurrence(first)
+  end
+
   it 'should exclude a date from a weekly schedule - issue #55' do
     Time.zone = 'Eastern Time (US & Canada)'
     ex = Time.zone.local(2011, 12, 27, 14)
@@ -167,6 +175,27 @@ describe IceCube do
       schedule.add_exception_time ex
     end
     schedule.first.should == Time.zone.local(2011, 12, 29, 14)
+  end
+
+  it 'should not raise an exception after setting the rule until to nil' do
+    rule = IceCube::Rule.daily.until(Time.local(2012, 10, 1))
+    rule.until(nil)
+
+    schedule = IceCube::Schedule.new Time.local(2011, 10, 11, 12)
+    schedule.add_recurrence_rule rule
+
+    lambda {
+      schedule.occurrences_between(Time.local(2012, 1, 1), Time.local(2012, 12, 1))
+    }.should_not raise_error(ArgumentError, 'comparison of Time with nil failed')
+  end
+
+  it 'should not infinite loop [#109]' do
+    schedule = IceCube::Schedule.new Time.new(2012, 4, 27, 0, 0, 0)
+    schedule.rrule IceCube::Rule.weekly.day(:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday).hour_of_day(0).minute_of_hour(0).second_of_minute(0)
+    schedule.duration = 3600
+    start_time = Time.new(2012, 10, 20, 0, 0, 0)
+    end_time = Time.new(2012, 10, 20, 23, 59, 59)
+    schedule.occurrences_between(start_time, end_time).first.should == start_time
   end
 
 end

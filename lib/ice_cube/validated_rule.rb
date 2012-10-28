@@ -39,9 +39,14 @@ module IceCube
               wrapper = TimeUtil::TimeWrapper.new(time, dst_adjust)
               wrapper.add(type, fwd)
               wrapper.clear_below(type)
-              if wrapper.to_time == time
-                wrapper.add(:sec, wrapper.to_time.utc_offset * 2)
+              # Move over DST if blocked, no adjustments
+              if wrapper.to_time <= time
+                wrapper = TimeUtil::TimeWrapper.new(wrapper.to_time, false)
+                until wrapper.to_time > time
+                  wrapper.add(:min, 10) # smallest interval
+                end
               end
+              # And then get the correct time out
               time = wrapper.to_time
             end
             false
