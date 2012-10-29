@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe IceCube::MonthlyRule, 'occurs_on?' do
-  
+
   it 'should produce the correct number of days for @interval = 1' do
     start_date = DAY
     schedule = IceCube::Schedule.new(start_date)
@@ -40,7 +40,7 @@ describe IceCube::MonthlyRule, 'occurs_on?' do
     #check assumption (month 1 monday) (month 2 monday)
     schedule.occurrences(start_date + 50 * IceCube::ONE_DAY).size.should == 2
   end
-  
+
   it 'should produce the correct number of days for @interval = 1 with only the last mondays' do
     start_date = Time.utc(2010, 1, 1)
     schedule = IceCube::Schedule.new(start_date)

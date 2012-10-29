@@ -13,7 +13,7 @@ describe IceCube::Schedule, 'occurs_on?' do
     dates.each do |date|
       date.utc?.should_not == true
       date.hour.should == 5
-    end  
+    end
   end
 
   # DST in 2010 is November 7th at 2am
@@ -27,9 +27,9 @@ describe IceCube::Schedule, 'occurs_on?' do
     dates.each do |date|
       date.utc?.should_not == true
       date.hour.should == 5
-    end  
+    end
   end
-  
+
   it 'cross a daylight savings time boundary with a recurrence rule in local time' do
     start_date = Time.local(2010, 3, 14, 5, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
@@ -55,7 +55,7 @@ describe IceCube::Schedule, 'occurs_on?' do
       distance_in_hours += 2
     end
   end
-  
+
   it 'every 30 minutes over a daylight savings time boundary, checking interval' do
     start_date = Time.local(2010, 11, 6, 23, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
@@ -68,7 +68,7 @@ describe IceCube::Schedule, 'occurs_on?' do
       distance_in_minutes += 30
     end
   end
-  
+
   it 'every 120 seconds over a daylight savings time boundary, checking interval' do
     start_date = Time.local(2010, 11, 6, 23, 50, 0)
     schedule = IceCube::Schedule.new(start_date)
@@ -81,7 +81,7 @@ describe IceCube::Schedule, 'occurs_on?' do
       distance_in_seconds += 120
     end
   end
-  
+
   it 'every other day over a daylight savings time boundary, checking hour/min/sec' do
     start_date = Time.local(2010, 11, 6, 20, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
@@ -94,7 +94,7 @@ describe IceCube::Schedule, 'occurs_on?' do
       d.sec.should == start_date.sec
     end
   end
-  
+
   it 'every other month over a daylight savings time boundary, checking day/hour/min/sec' do
     start_date = Time.local(2010, 11, 6, 20, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
@@ -108,7 +108,7 @@ describe IceCube::Schedule, 'occurs_on?' do
       d.sec.should == start_date.sec
     end
   end
-  
+
   it 'every other year over a daylight savings time boundary, checking day/hour/min/sec' do
     start_date = Time.local(2010, 11, 6, 20, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
@@ -123,7 +123,7 @@ describe IceCube::Schedule, 'occurs_on?' do
       d.sec.should == start_date.sec
     end
   end
-  
+
   it 'LOCAL - has an until date on a rule that is over a DST from the start date' do
     start_date = Time.local(2010, 3, 13, 5, 0, 0)
     end_date = Time.local(2010, 3, 15, 5, 0, 0)
@@ -159,7 +159,7 @@ describe IceCube::Schedule, 'occurs_on?' do
     #make sure we end on the proper time
     schedule.all_occurrences.last.should == end_date
   end
-  
+
   it 'LOCAL - has an end date on a rule that is over a DST from the start date' do
     start_date = Time.local(2010, 3, 13, 5, 0, 0)
     end_date = Time.local(2010, 3, 15, 5, 0, 0)
@@ -262,5 +262,5 @@ describe IceCube::Schedule, 'occurs_on?' do
     schedule.add_recurrence_rule IceCube::Rule.yearly.month_of_year(:april).day_of_month(10)
     schedule.first(3).should == [Time.local(2010, 4, 10, 12, 0, 0), Time.local(2011, 4, 10, 12, 0, 0), Time.local(2012, 4, 10, 12, 0, 0)]
   end
-  
+
 end
