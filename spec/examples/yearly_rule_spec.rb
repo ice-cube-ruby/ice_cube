@@ -17,7 +17,7 @@ describe IceCube::YearlyRule, 'occurs_on?' do
     #check assumption - over 1 year should be 2
     schedule.occurrences(start_date + IceCube::TimeUtil.days_in_year(start_date) * IceCube::ONE_DAY).size.should == 2
   end
-  
+
   it 'should produce the correct number of days for @interval = 1' do
     start_date = Time.now
     schedule = IceCube::Schedule.new(start_date)
@@ -56,5 +56,5 @@ describe IceCube::YearlyRule, 'occurs_on?' do
     #check assumption
     schedule.occurrences(Time.utc(2010, 12, 31)).size.should == 2
   end
-  
+
 end

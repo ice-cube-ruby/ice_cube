@@ -5,6 +5,7 @@ module IceCube
   module Validations::WeeklyInterval
 
     def interval(interval, week_start = :sunday)
+      @interval = interval
       validations_for(:interval) << Validation.new(interval, week_start)
       clobber_base_validations(:day)
       self
@@ -45,7 +46,7 @@ module IceCube
         st = schedule.start_time
         start_date = Date.new(st.year, st.month, st.day)
         weeks = (
-          (date - TimeUtil.normalize_weekday(date.wday, week_start)) - 
+          (date - TimeUtil.normalize_weekday(date.wday, week_start)) -
           (start_date - TimeUtil.normalize_weekday(start_date.wday, week_start))
         ) / 7
         unless weeks % interval == 0

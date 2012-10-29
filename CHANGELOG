@@ -79,3 +79,25 @@
 
 0.8.0
   * Added support for WEEKST (thanks @devwout)
+
+0.8.1
+
+0.9.0
+	* Fix the affect on end_time on IceCube::Schedule [#99]
+	* Remove end_time from `to_s` [#99]
+	* Single recurrences now work properly with conflict_with? [#71]
+	* Fix a bug with interval > 1 when using occurrences_between [#92]
+	* Allow count, until removal by setting to nil [#94]
+	* Allow deserialization of string structures easily [#93]
+	* Ignore usecs when creating Time.now for *_occurrences [#84]
+	* DST bug fix [#98]
+	* Added occurring_between? [#88]
+
+0.9.1
+	* A fix for removing until validations [#106]
+	* A DST edge fix
+
+---
+
+0.9.2
+  * Allow passing Time, Date, or DateTime to all calls

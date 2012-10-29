@@ -50,7 +50,7 @@ describe IceCube::WeeklyRule, 'occurs_on?' do
     now = Time.now
     schedule = IceCube::Schedule.new(Time.local(now.year, now.month, now.day))
     schedule.add_recurrence_rule IceCube::Rule.monthly.hour_of_day(11).day_of_week(:tuesday => [2])
-    schedule.first(100).each do |d| 
+    schedule.first(100).each do |d|
       d.hour.should == 11
       d.wday.should == 2
     end

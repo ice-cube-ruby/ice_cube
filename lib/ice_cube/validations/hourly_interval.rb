@@ -3,6 +3,7 @@ module IceCube
   module Validations::HourlyInterval
 
     def interval(interval)
+      @interval = interval
       validations_for(:interval) << Validation.new(interval)
       clobber_base_validations(:hour)
       self
@@ -42,7 +43,7 @@ module IceCube
       def validate(time, schedule)
         raise ZeroInterval if interval == 0
         start_time = schedule.start_time
-        sec = (time.to_i - time.to_i % ONE_HOUR) - 
+        sec = (time.to_i - time.to_i % ONE_HOUR) -
           (start_time.to_i - start_time.to_i % ONE_HOUR)
         hours = sec / ONE_HOUR
         unless hours % interval == 0
