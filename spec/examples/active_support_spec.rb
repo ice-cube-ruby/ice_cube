@@ -54,19 +54,19 @@ describe IceCube::Schedule, 'occurs_on?' do
   it 'should work with occurs_on? and a boundary of a day in a different time_zone' do
     schedule = IceCube::Schedule.new(Time.local(2009, 2, 7, 10, 30, 0))
     schedule.add_recurrence_rule IceCube::Rule.daily
-    schedule.occurs_on?(Date.new(2009, 2, 7)).should be(true)
+    schedule.occurs_on?(Date.new(2009, 2, 7)).should be_true
   end
 
   it 'should work in the occurs_on? boundary condition to the beginning of the day' do
     schedule = IceCube::Schedule.new(Time.local(2009, 2, 7, 23, 59, 59))
     schedule.add_recurrence_rule IceCube::Rule.daily
-    schedule.occurs_on?(Date.new(2009, 2, 7)).should be(true)
+    schedule.occurs_on?(Date.new(2009, 2, 7)).should be_true
   end
 
   it 'should work in the occurs_on? boundary condition to the end of the day' do
     schedule = IceCube::Schedule.new(Time.local(2009, 2, 7, 0, 0, 0))
     schedule.add_recurrence_rule IceCube::Rule.daily
-    schedule.occurs_on?(Date.new(2009, 2, 7)).should be(true)
+    schedule.occurs_on?(Date.new(2009, 2, 7)).should be_true
   end
   
 end

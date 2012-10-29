@@ -132,13 +132,13 @@ describe IceCube::Schedule, 'to_yaml' do
 
   it 'should have a to_yaml representation of a rule that does not contain ruby objects' do
     rule = IceCube::Rule.daily.day_of_week(:monday => [1, -1]).month_of_year(:april)
-    rule.to_yaml.include?('object').should be(false)
+    rule.to_yaml.include?('object').should be_false
   end
 
   it 'should have a to_yaml representation of a schedule that does not contain ruby objects' do
     schedule = IceCube::Schedule.new(Time.now)
     schedule.add_recurrence_rule IceCube::Rule.daily.day_of_week(:monday => [1, -1]).month_of_year(:april)
-    schedule.to_yaml.include?('object').should be(false)
+    schedule.to_yaml.include?('object').should be_false
   end
 
   # This test will fail when not run in Eastern Time
@@ -229,9 +229,9 @@ describe IceCube::Schedule, 'to_yaml' do
     Time.zone = pacific_time
     schedule = IceCube::Schedule.new(Time.zone.now)
     schedule.add_recurrence_rule IceCube::Rule.weekly
-    schedule.occurs_on?(schedule.start_time.to_date + 6).should be(false)
-    schedule.occurs_on?(schedule.start_time.to_date + 7).should be(true)
-    schedule.occurs_on?(schedule.start_time.to_date + 8).should be(false)
+    schedule.occurs_on?(schedule.start_time.to_date + 6).should be_false
+    schedule.occurs_on?(schedule.start_time.to_date + 7).should be_true
+    schedule.occurs_on?(schedule.start_time.to_date + 8).should be_false
   end
 
   it 'should work with occurs_on and TimeWithZone' do
@@ -240,9 +240,9 @@ describe IceCube::Schedule, 'to_yaml' do
     Time.zone = pacific_time
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_time start_time + 7 * IceCube::ONE_DAY
-    schedule.occurs_on?(schedule.start_time.to_date + 6).should be(false)
-    schedule.occurs_on?(schedule.start_time.to_date + 7).should be(true)
-    schedule.occurs_on?(schedule.start_time.to_date + 8).should be(false)
+    schedule.occurs_on?(schedule.start_time.to_date + 6).should be_false
+    schedule.occurs_on?(schedule.start_time.to_date + 7).should be_true
+    schedule.occurs_on?(schedule.start_time.to_date + 8).should be_false
   end
 
   it 'should crazy patch' do
@@ -250,9 +250,9 @@ describe IceCube::Schedule, 'to_yaml' do
     day = Time.zone.parse('21 Oct 2010 02:00:00')
     schedule = IceCube::Schedule.new(day)
     schedule.add_recurrence_date(day)
-    schedule.occurs_on?(Date.new(2010, 10, 20)).should be(false)
-    schedule.occurs_on?(Date.new(2010, 10, 21)).should be(true)
-    schedule.occurs_on?(Date.new(2010, 10, 22)).should be(false)
+    schedule.occurs_on?(Date.new(2010, 10, 20)).should be_false
+    schedule.occurs_on?(Date.new(2010, 10, 21)).should be_true
+    schedule.occurs_on?(Date.new(2010, 10, 22)).should be_false
   end
 
   it 'should be able to bring a Rule to_yaml and back with a timezone' do
