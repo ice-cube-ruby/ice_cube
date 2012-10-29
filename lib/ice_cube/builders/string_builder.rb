@@ -41,8 +41,8 @@ module IceCube
     class << self
 
       NUMBER_SUFFIX = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th']
-      SPECIAL_SUFFIX = { 11 => 'th', 12 => 'th', 13 => 'th', 14 => 'th' } 
- 
+      SPECIAL_SUFFIX = { 11 => 'th', 12 => 'th', 13 => 'th', 14 => 'th' }
+
       # influenced by ActiveSupport's to_sentence
       def sentence(array)
         case array.length
@@ -63,12 +63,12 @@ module IceCube
         else
           suffix = SPECIAL_SUFFIX.include?(number) ?
             SPECIAL_SUFFIX[number] : NUMBER_SUFFIX[number.abs % 10]
-          number.to_s << suffix  
+          number.to_s << suffix
         end
       end
 
     end
-  
+
   end
 
 end
