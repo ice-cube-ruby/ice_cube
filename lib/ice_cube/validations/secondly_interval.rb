@@ -3,6 +3,7 @@ module IceCube
   module Validations::SecondlyInterval
 
     def interval(interval)
+      @interval = interval
       validations_for(:interval) << Validation.new(interval)
       clobber_base_validations(:sec)
       self

@@ -2,6 +2,10 @@
 
 [![Build Status](https://secure.travis-ci.org/seejohnrun/ice_cube.png)](http://travis-ci.org/seejohnrun/ice_cube)
 
+<a href="https://www.stripeme.com/pay/1lq0">
+  <img alt="Pay" src="https://www.stripeme.com/pay.jpg" />
+</a>
+
 ``` bash
 gem install ice_cube
 ```
@@ -28,8 +32,11 @@ schedule.add_recurrence_rule Rule.yearly.day_of_month(13).day(:friday).
 ## Quick Introductions
 
 * Presentation from Lone Star Ruby Conf -
-  http://seejohncode.com/ice_cube/static/ice_cube_ruby_nyc.pdf
-* Quick Introduction - http://seejohncode.com/ice_cube/
+  http://seejohnrun.github.com/ice_cube/static/lsrc_ice_cube.pdf
+* Quick Introduction -
+  http://seejohnrun.github.com/ice_cube/static/ice_cube_ruby_nyc.pdf
+* Website -
+  http://seejohnrun.github.com/ice_cube/
 
 ---
 
@@ -76,6 +83,7 @@ schedule.next_occurrences(3, [from_date])
 schedule = Schedule.new(Time.now, :duration => 3600)
 schedule.add_recurrence_rule Rule.daily
 schedule.occurring_at?(Time.now + 1800) # true
+schedule.occurring_between?(t1, t2)
 
 # you can also give schedules a solidified end_time
 schedule = Schedule.new(Time.now, :end_time => Time.now + 3600)

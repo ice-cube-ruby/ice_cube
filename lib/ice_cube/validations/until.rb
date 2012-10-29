@@ -11,8 +11,8 @@ module IceCube
     deprecated_alias :until_date, :until_time
 
     def until(time)
-      @until = time
-      replace_validations_for(:until, [Validation.new(time)])
+      @until = TimeUtil.ensure_time time
+      replace_validations_for(:until, time.nil? ? nil : [Validation.new(time)])
       self
     end
 
@@ -37,15 +37,15 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.piece(:until) << "until #{time.strftime(TO_S_TIME_FORMAT)}"
+        builder.piece(:until) << "until #{time.strftime(IceCube.to_s_time_format)}"
       end
 
       def validate(t, schedule)
-        raise UntilExceeded if t > time 
+        raise UntilExceeded if t > time
       end
 
     end
-      
+
   end
 
 end

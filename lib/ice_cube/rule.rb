@@ -44,7 +44,8 @@ module IceCube
     end
 
     # Convert from a hash and create a rule
-    def self.from_hash(hash)
+    def self.from_hash(original_hash)
+      hash = IceCube::FlexibleHash.new original_hash
       return nil unless match = hash[:rule_type].match(/\:\:(.+?)Rule/)
       rule = IceCube::Rule.send(match[1].downcase.to_sym, hash[:interval] || 1)
       rule.interval(hash[:interval] || 1, TimeUtil.daynum_to_symbol(hash[:week_start]) || :sunday) if match[1] == "Weekly"
@@ -71,7 +72,7 @@ module IceCube
 
     # Whether this rule requires a full run
     def full_required?
-      !@count.nil?
+      !@count.nil? || (!@interval.nil? && @interval > 1)
     end
 
     # Convenience methods for creating Rules
