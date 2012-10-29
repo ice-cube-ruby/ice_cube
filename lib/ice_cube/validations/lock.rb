@@ -23,11 +23,11 @@ module IceCube
       # If this number is positive, then follow our normal procedure
       if start > 0
         return start >= time.day ? start - time.day : days_in_this_month - time.day + start
-      end 
+      end
       # If the number is negative, and it resolved against the current month
       # puts it in the future, just return the difference
       days_in_this_month = TimeUtil.days_in_month(time)
-      start_one = days_in_this_month + start + 1 
+      start_one = days_in_this_month + start + 1
       if start_one >= time.day
         return start_one - time.day
       end

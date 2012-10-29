@@ -3,8 +3,8 @@
 :rrules:
 - :rule_type: IceCube::MinutelyRule
   :interval: 60
-  :until: !!null 
-  :count: !!null 
+  :until: !!null
+  :count: !!null
   :validations:
     :day:
     - 4
@@ -18,4 +18,4 @@
 :rdates: []
 :exdates: []
 :duration: 3600
-:end_time: !!null 
+:end_time: !!null

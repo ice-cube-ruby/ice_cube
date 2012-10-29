@@ -1,7 +1,7 @@
 module IceCube
 
   class HashBuilder
-  
+
     def initialize(rule = nil)
       @hash = { :validations => {}, :rule_type => rule.class.name }
     end
