@@ -12,6 +12,9 @@ module IceCube
     include Validations::Day
     include Validations::MonthOfYear
     include Validations::DayOfYear
+    
+    include Validations::OffsetFromPascha
+    
 
     include Validations::Count
     include Validations::Until
