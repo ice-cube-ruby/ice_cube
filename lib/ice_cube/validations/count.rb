@@ -45,7 +45,7 @@ module IceCube
       end
 
       StringBuilder.register_formatter(:count) do |segments|
-        count = segments.first 
+        count = segments.first
         "#{count} #{count == 1 ? 'time' : 'times'}"
       end
 

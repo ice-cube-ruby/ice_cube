@@ -11,7 +11,8 @@ module IceCube
     deprecated_alias :until_date, :until_time
 
     def until(time)
-      @until = TimeUtil.ensure_time time
+      time = TimeUtil.ensure_time time, true
+      @until = time
       replace_validations_for(:until, time.nil? ? nil : [Validation.new(time)])
       self
     end

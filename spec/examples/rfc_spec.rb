@@ -55,7 +55,7 @@ describe IceCube::Schedule, 'occurs_on?' do
       [1998, 1999, 2000].should include(date.year)
     end
   end
- 
+
   it 'should ~ weekly for 10 occurrences' do
     schedule = IceCube::Schedule.new(Time.utc(1997, 9, 2))
     schedule.add_recurrence_rule IceCube::Rule.weekly.count(10)
@@ -185,7 +185,7 @@ describe IceCube::Schedule, 'occurs_on?' do
     expectation = [Time.utc(1997, 9, 2), Time.utc(1997, 9, 15), Time.utc(1997, 10, 2), Time.utc(1997, 10, 15), Time.utc(1997, 11, 2), Time.utc(1997, 11, 15), Time.utc(1997, 12, 2), Time.utc(1997, 12, 15), Time.utc(1998, 1, 2), Time.utc(1998, 1, 15)]
     dates.should == expectation
   end
-  
+
   it 'should ~ monthly on the 1st and last days of the month for 10 occurrences' do
     start_date = Time.utc(1997, 9, 30)
     schedule = IceCube::Schedule.new(start_date)
@@ -293,7 +293,7 @@ describe IceCube::Schedule, 'occurs_on?' do
     expectation = [Time.utc(1996, 11, 5), Time.utc(2000, 11, 7), Time.utc(2004, 11, 2)]
     dates.should == expectation
   end
-  
+
   it 'should ~ every 3 hours from 9am to 5pm on a specific day' do
     start_date = Time.utc(1997, 9, 2, 9, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
@@ -301,7 +301,7 @@ describe IceCube::Schedule, 'occurs_on?' do
     dates = schedule.all_occurrences
     dates.should == [Time.utc(1997, 9, 2, 9, 0, 0), Time.utc(1997, 9, 2, 12, 0, 0), Time.utc(1997, 9, 2, 15, 0, 0)]
   end
-  
+
   it 'should ~ every 15 minutes for 6 occurrences' do
     start_date = Time.utc(1997, 9, 2, 9, 0, 0)
     schedule = IceCube::Schedule.new(start_date)
@@ -317,7 +317,7 @@ describe IceCube::Schedule, 'occurs_on?' do
     dates = schedule.all_occurrences
     dates.should == [Time.utc(1997, 9, 2, 9, 0, 0), Time.utc(1997, 9, 2, 10, 30, 0), Time.utc(1997, 9, 2, 12, 0, 0), Time.utc(1997, 9, 2, 13, 30, 0)]
   end
-  
+
   it 'should ~ every 20 minutes from 9am to 4:40pm every day (a)' do
     start_date = Time.utc(1997, 9, 2, 8, 0, 0)
     end_date = Time.utc(1997, 9, 2, 10, 20, 0)
@@ -327,7 +327,7 @@ describe IceCube::Schedule, 'occurs_on?' do
     expecation = [Time.utc(1997, 9, 2, 9), Time.utc(1997, 9, 2, 9, 20), Time.utc(1997, 9, 2, 9, 40), Time.utc(1997, 9, 2, 10, 0), Time.utc(1997, 9, 2, 10, 20)]
     dates.should == expecation
   end
-  
+
 end
 
 def test_expectations(schedule, dates_array)

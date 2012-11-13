@@ -179,7 +179,7 @@ describe IceCube::Schedule do
 
     it 'should return false if conflict is not present and single recurrence and time originally specified as DateTime' do
       date = DateTime.new(2020,9,21,11,30,0)
-      start_time = date.to_time 
+      start_time = date.to_time
       schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
       schedule1.add_recurrence_time(start_time)
       schedule2 = IceCube::Schedule.new(start_time + IceCube::ONE_HOUR, :duration => IceCube::ONE_HOUR)
@@ -274,7 +274,7 @@ describe IceCube::Schedule do
   describe :start_date= do
 
     it 'should modify start date in rrule_occurrence_heads when changed' do
-      schedule = Schedule.new (Time.now - 1000)
+      schedule = Schedule.new(Time.now - 1000)
       schedule.rrule Rule.daily
       schedule.start_date = (start_date = Time.now)
       (Time.now - schedule.first).should be < 100

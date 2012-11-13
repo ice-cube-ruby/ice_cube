@@ -5,7 +5,7 @@ describe IceCube do
   it 'should consider recurrence dates properly in find_occurreces - github issue 43' do
     s = IceCube::Schedule.new(Time.local(2011,10,1, 18, 25))
     s.add_recurrence_date(Time.local(2011,12,3,15,0,0))
-    s.add_recurrence_date(Time.local(2011,12,3,10,0,0)) 
+    s.add_recurrence_date(Time.local(2011,12,3,10,0,0))
     s.add_recurrence_date(Time.local(2011,12,4,10,0,0))
     s.occurs_at?(Time.local(2011,12,3,15,0,0)).should be_true
   end
@@ -214,6 +214,12 @@ describe IceCube do
     schedule = IceCube::Schedule.new
     schedule.rrule IceCube::Rule.daily
     schedule.next_occurrence.should_not be_utc
+  end
+
+  it 'should include occurrences on until _date_ [#118]' do
+    schedule = IceCube::Schedule.new Time.new(2012, 4, 27)
+    schedule.rrule IceCube::Rule.daily.hour_of_day(12).until(Date.new(2012, 4, 28))
+    schedule.all_occurrences.should == [Time.new(2012, 4, 27, 12), Time.new(2012, 4, 28, 12)]
   end
 
 end
