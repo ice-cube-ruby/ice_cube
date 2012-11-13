@@ -19,8 +19,10 @@ module IceCube
     }
 
     # Provides a Time.now without the usec
-    def self.now
-      Time.at Time.now.to_i
+    def self.now(utc = false)
+      time = Time.at(Time.now.to_i)
+      time = time.utc if utc
+      time
     end
 
     # Ensure that this is either nil, or a time

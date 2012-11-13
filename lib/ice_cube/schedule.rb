@@ -155,17 +155,20 @@ module IceCube
     end
 
     # The next n occurrences after now
-    def next_occurrences(num, from = TimeUtil.now)
+    def next_occurrences(num, from = nil)
+      from ||= TimeUtil.now(@start_time.utc?)
       find_occurrences(from + 1, nil, num)
     end
 
     # The next occurrence after now (overridable)
-    def next_occurrence(from = TimeUtil.now)
+    def next_occurrence(from = nil)
+      from ||= TimeUtil.now(@start_time.utc?)
       find_occurrences(from + 1, nil, 1).first
     end
 
     # The remaining occurrences (same requirements as all_occurrences)
-    def remaining_occurrences(from = TimeUtil.now)
+    def remaining_occurrences(from = nil)
+      from ||= TimeUtil.now(@start_time.utc?)
       find_occurrences(from)
     end
 
