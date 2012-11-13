@@ -24,9 +24,10 @@ module IceCube
     end
 
     # Ensure that this is either nil, or a time
-    def self.ensure_time(time)
+    def self.ensure_time(time, date_eod = false)
       case time
-      when Date, DateTime then time.to_time
+      when DateTime then time.to_time
+      when Date then date_eod ? time.to_time.end_of_day : time.to_time
       else time
       end
     end

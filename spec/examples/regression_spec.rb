@@ -198,4 +198,10 @@ describe IceCube do
     schedule.occurrences_between(start_time, end_time).first.should == start_time
   end
 
+  it 'should include occurrences on until _date_ [#118]' do
+    schedule = IceCube::Schedule.new Time.new(2012, 4, 27)
+    schedule.rrule IceCube::Rule.daily.hour_of_day(12).until(Date.new(2012, 4, 28))
+    schedule.all_occurrences.should == [Time.new(2012, 4, 27, 12), Time.new(2012, 4, 28, 12)]
+  end
+
 end
