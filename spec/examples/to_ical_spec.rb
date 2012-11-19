@@ -156,12 +156,22 @@ describe IceCube, 'to_ical' do
     schedule.to_ical.should == expectation
   end
 
-  it 'should be able to serialize a schedule with an exdate' do
+  it 'should be able to serialize a schedule with one exdate' do
     schedule = IceCube::Schedule.new(Time.utc(2010, 5, 10, 10, 0, 0))
     schedule.add_exception_date Time.utc(2010, 6, 20, 5, 0, 0)
     # test equality
     expectation = "DTSTART:20100510T100000Z\n"
     expectation << "EXDATE:20100620T050000Z"
+    schedule.to_ical.should == expectation
+  end
+
+  it 'should be able to serialize a schedule with multiple exdates' do
+    schedule = IceCube::Schedule.new(Time.utc(2012, 11, 19, 12, 0, 0))
+    schedule.add_exception_date Time.utc(2013, 3, 20, 12, 0, 0)
+    schedule.add_exception_date Time.utc(2013, 7, 1, 12, 0, 0)
+    # test equality
+    expectation = "DTSTART:20121119T120000Z\n"
+    expectation << "EXDATE:20130320T120000Z,20130701T120000Z"
     schedule.to_ical.should == expectation
   end
 

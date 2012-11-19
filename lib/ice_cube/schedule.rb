@@ -277,7 +277,9 @@ module IceCube
       pieces.concat recurrence_rules.map { |r| "RRULE:#{r.to_ical}" }
       pieces.concat exception_rules.map { |r| "EXRULE:#{r.to_ical}" }
       pieces.concat recurrence_times.map { |t| "RDATE#{IcalBuilder.ical_format(t, force_utc)}" }
-      pieces.concat exception_times.map { |t| "EXDATE#{IcalBuilder.ical_format(t, force_utc)}" }
+      if exception_times.size > 0
+        pieces << "EXDATE:#{exception_times.map { |t| IcalBuilder.ical_utc_format(t) }.join(",")}"
+      end
       pieces << "DTEND#{IcalBuilder.ical_format(end_time, force_utc)}" if end_time
       pieces.join("\n")
     end
