@@ -6,7 +6,7 @@
 0.6.1
   * Lessen the amount of info we store in yaml on the time zone
 
-0.6.2 
+0.6.2
   * Patch release for to_yaml performance issue
 
 0.6.3

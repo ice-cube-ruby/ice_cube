@@ -26,7 +26,7 @@ describe IceCube::DailyRule, 'occurs_on?' do
     start_date = Time.utc(2011, 12, 29)
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.daily(2)
-    #check assumption (3) -- (1) 2 (3) 4 (5) 6 
+    #check assumption (3) -- (1) 2 (3) 4 (5) 6
     dates = schedule.occurrences(start_date + 5 * IceCube::ONE_DAY)
     dates.size.should == 3
     dates.should == [start_date, start_date + 2 * IceCube::ONE_DAY, start_date + 4 * IceCube::ONE_DAY]

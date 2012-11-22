@@ -330,7 +330,7 @@ describe IceCube::Schedule, 'occurs_on?' do
   end
 
   it 'should be able to find occurrences between two dates which are both in the future' do
-    start_time = Time.now
+    start_time = Time.local(2012, 5, 1)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily
     dates = schedule.occurrences_between(start_time + IceCube::ONE_DAY * 2, start_time + IceCube::ONE_DAY * 4)
