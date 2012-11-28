@@ -266,7 +266,8 @@ module IceCube
       pieces.concat rrules.map { |t| t.to_s }
       pieces.concat exrules.map { |t| "not #{t.to_s}" }
       pieces.concat ed.sort.map { |t| "not on #{t.strftime(IceCube.to_s_time_format)}" }
-      pieces.join(' / ')
+      output = pieces.join(' / ')
+      rrules.count > 0 ? "#{output}, starting on #{start_time.strftime(IceCube.to_s_time_format)}" : output
     end
 
     # Serialize this schedule to_ical
