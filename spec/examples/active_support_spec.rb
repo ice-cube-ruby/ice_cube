@@ -69,5 +69,20 @@ describe IceCube::Schedule, 'occurs_on?' do
     schedule.occurs_on?(Date.new(2009, 2, 7)).should be_true
   end
 
-end
+  it 'should use the correct zone for next_occurrences before start_date' do
+    Time.zone = "Pacific Time (US & Canada)"
+    future_time = Time.zone.now.beginning_of_day + 1.day
+    schedule = IceCube::Schedule.new(future_time)
+    schedule.add_recurrence_rule IceCube::Rule.daily
+    schedule.next_occurrence.time_zone.should == schedule.start_time.time_zone
+  end
 
+  it 'should use the correct zone for next_occurrences after start_date' do
+    Time.zone = "Pacific Time (US & Canada)"
+    past_time = Time.zone.now.beginning_of_day
+    schedule = IceCube::Schedule.new(past_time)
+    schedule.add_recurrence_rule IceCube::Rule.daily
+    schedule.next_occurrence.time_zone.should == schedule.start_time.time_zone
+  end
+
+end
