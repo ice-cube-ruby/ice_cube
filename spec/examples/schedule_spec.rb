@@ -269,6 +269,36 @@ describe IceCube::Schedule do
       occurrence.should == start_time + IceCube::ONE_DAY * 2
     end
 
+    it 'should respect time zone info for a local future time [#115]' do
+      start_time = Time.local(Time.now.year + 1, 7, 1, 0, 0, 0)
+      compare_time_zone_info(start_time)
+    end
+
+    it 'should respect time zone info for a local past time [#115]' do
+      start_time = Time.local(Time.now.year - 1, 7, 1, 0, 0, 0)
+      compare_time_zone_info(start_time)
+    end
+
+    it 'should respect time zone info for a utc past time [#115]' do
+      start_time = Time.utc(Time.now.year - 1, 7, 1, 0, 0, 0)
+      compare_time_zone_info(start_time)
+    end
+
+    it 'should respect time zone info for a utc future time [#115]' do
+      start_time = Time.utc(Time.now.year + 1, 7, 1, 0, 0, 0)
+      compare_time_zone_info(start_time)
+    end
+
+    it 'should respect time zone info for a offset past time [#115]' do
+      start_time = Time.utc(Time.now.year - 1, 7, 1, 0, 0, 0).localtime("-05:00")
+      compare_time_zone_info(start_time)
+    end
+
+    it 'should respect time zone info for a offset future time [#115]' do
+      start_time = Time.utc(Time.now.year + 1, 7, 1, 0, 0, 0).localtime("-05:00")
+      compare_time_zone_info(start_time)
+    end
+
   end
 
   describe :start_date= do
@@ -408,4 +438,14 @@ describe IceCube::Schedule do
 
   end
 
+  def compare_time_zone_info(start_time)
+    schedule = IceCube::Schedule.new(start_time)
+    schedule.rrule IceCube::Rule.yearly(1)
+    occurrence = schedule.next_occurrence
+
+    occurrence.dst?.should == start_time.dst?
+    occurrence.utc?.should == start_time.utc?
+    occurrence.zone.should == start_time.zone
+    occurrence.utc_offset == start_time.utc_offset
+  end
 end
