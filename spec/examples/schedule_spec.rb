@@ -113,7 +113,7 @@ describe IceCube::Schedule do
       start_time = Time.now
       schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
       schedule1.rrule IceCube::Rule.daily
-      schedule2 = IceCube::Schedule.new(start_time + 1.hour, :duration => IceCube::ONE_HOUR)
+      schedule2 = IceCube::Schedule.new(start_time + 3600, :duration => IceCube::ONE_HOUR)
       schedule2.rrule IceCube::Rule.daily
       conflict = schedule1.conflicts_with?(schedule2, start_time + IceCube::ONE_WEEK)
       conflict.should be_false
@@ -123,7 +123,7 @@ describe IceCube::Schedule do
       start_time = Time.now
       schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
       schedule1.rrule IceCube::Rule.daily
-      schedule2 = IceCube::Schedule.new(start_time + 10.minutes, :duration => IceCube::ONE_HOUR)
+      schedule2 = IceCube::Schedule.new(start_time + 600, :duration => IceCube::ONE_HOUR)
       schedule2.rrule IceCube::Rule.daily
       conflict = schedule1.conflicts_with?(schedule2, start_time + IceCube::ONE_WEEK)
       conflict.should be_true
@@ -133,8 +133,8 @@ describe IceCube::Schedule do
       start_time = Time.now
       schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
       schedule1.add_recurrence_time(start_time)
-      schedule2 = IceCube::Schedule.new(start_time + 10.minutes, :duration => IceCube::ONE_HOUR)
-      schedule2.add_recurrence_time(start_time + 10.minutes)
+      schedule2 = IceCube::Schedule.new(start_time + 600, :duration => IceCube::ONE_HOUR)
+      schedule2.add_recurrence_time(start_time + 600)
       conflict = schedule1.conflicts_with?(schedule2)
       conflict.should be_true
       conflict = schedule2.conflicts_with?(schedule1)
@@ -169,7 +169,7 @@ describe IceCube::Schedule do
       start_time = Time.now
       schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
       schedule1.add_recurrence_time(start_time)
-      schedule2 = IceCube::Schedule.new(start_time + 10.minutes, :duration => IceCube::ONE_HOUR)
+      schedule2 = IceCube::Schedule.new(start_time + 600, :duration => IceCube::ONE_HOUR)
       schedule2.rrule IceCube::Rule.daily
       conflict = schedule1.conflicts_with?(schedule2)
       conflict.should be_true
@@ -213,7 +213,7 @@ describe IceCube::Schedule do
     end
 
     it 'should stop itself when hitting the end of a schedule' do
-      time = Time.now + 24 * ONE_DAY
+      time = Time.now + 24 * IceCube::ONE_DAY
       schedule = IceCube::Schedule.new
       schedule.add_recurrence_time time
       answers = []
@@ -226,7 +226,7 @@ describe IceCube::Schedule do
   describe :all_occurrences do
 
     it 'should stop automatically with just a date' do
-      time = Time.now + 24 * ONE_DAY
+      time = Time.now + 24 * IceCube::ONE_DAY
       schedule = IceCube::Schedule.new
       schedule.add_recurrence_time time
       schedule.all_occurrences.should == [time]
@@ -246,13 +246,13 @@ describe IceCube::Schedule do
 
     it 'should be able to calculate next occurrences ignoring exclude_dates' do
       start_time = Time.now
-      schedule = Schedule.new start_time
-      schedule.rrule Rule.daily(1)
-      schedule.exdate start_time + ONE_DAY
+      schedule = IceCube::Schedule.new start_time
+      schedule.rrule IceCube::Rule.daily(1)
+      schedule.exdate start_time + IceCube::ONE_DAY
       occurrences = schedule.next_occurrences(2, start_time) # 3 occurrences in the next year
       occurrences.should == [
-        start_time + ONE_DAY * 2,
-        start_time + ONE_DAY * 3
+        start_time + IceCube::ONE_DAY * 2,
+        start_time + IceCube::ONE_DAY * 3
       ]
     end
 
@@ -262,11 +262,11 @@ describe IceCube::Schedule do
 
     it 'should be able to calculate the next occurrence past an exdate' do
       start_time = Time.now
-      schedule = Schedule.new start_time
-      schedule.rrule Rule.daily(1)
-      schedule.exdate start_time + ONE_DAY
+      schedule = IceCube::Schedule.new start_time
+      schedule.rrule IceCube::Rule.daily(1)
+      schedule.exdate start_time + IceCube::ONE_DAY
       occurrence = schedule.next_occurrence(start_time) # 3 occurrences in the next year
-      occurrence.should == start_time + ONE_DAY * 2
+      occurrence.should == start_time + IceCube::ONE_DAY * 2
     end
 
   end
@@ -274,8 +274,8 @@ describe IceCube::Schedule do
   describe :start_date= do
 
     it 'should modify start date in rrule_occurrence_heads when changed' do
-      schedule = Schedule.new(Time.now - 1000)
-      schedule.rrule Rule.daily
+      schedule = IceCube::Schedule.new(Time.now - 1000)
+      schedule.rrule IceCube::Rule.daily
       schedule.start_date = (start_date = Time.now)
       (Time.now - schedule.first).should be < 100
     end
