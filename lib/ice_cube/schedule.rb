@@ -36,7 +36,7 @@ module IceCube
     deprecated_alias :end_date=, :end_time=
 
     def duration
-      end_time - start_time if end_time
+      end_time ? end_time - start_time : 0
     end
 
     def duration=(seconds)
@@ -191,8 +191,7 @@ module IceCube
     # Return a boolean indicating if an occurrence is occurring between
     # two times, inclusive
     def occurring_between?(begin_time, closing_time)
-      dur = duration || 0
-      occurs_between?(begin_time - dur + 1, closing_time + dur - 1)
+      occurs_between?(begin_time - duration + 1, closing_time + duration - 1)
     end
 
     # Return a boolean indicating if an occurrence falls on a certain date
@@ -205,7 +204,7 @@ module IceCube
 
     # Determine if the schedule is occurring at a given time
     def occurring_at?(time)
-      if duration
+      if duration > 0
         return false if exception_time?(time)
         occurs_between?(time - duration + 1, time)
       else
@@ -242,7 +241,7 @@ module IceCube
       # Due to durations, we need to walk up to the end time, and verify in the
       # other direction
       if last_time
-        last_time = terminating_schedule.duration ? last_time + terminating_schedule.duration : last_time
+        last_time += terminating_schedule.duration
         other_schedule.each_occurrence do |time|
           break if time > last_time
           return true if terminating_schedule.occurring_at?(time)

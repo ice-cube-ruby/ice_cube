@@ -9,7 +9,7 @@ describe IceCube::Schedule do
     it 'should be based on end_time' do
       start = Time.now
       schedule = IceCube::Schedule.new(start)
-      schedule.duration.should be_nil
+      schedule.duration.should == 0
       schedule.end_time = start + 3600
       schedule.duration.should == 3600
     end
