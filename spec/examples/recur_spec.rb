@@ -66,7 +66,8 @@ describe :next_occurrence do
   end
 
   it 'should get the next occurrence past the end of the year' do
-    schedule = Schedule.new(Time.now, :end_time => Time.now + 24 * ONE_HOUR)
+    start_time = Time.now
+    schedule = Schedule.new(start_time, :end_time => start_time + 24 * ONE_HOUR)
     schedule.add_recurrence_rule(Rule.hourly)
     schedule.next_occurrence(schedule.end_time + 366 * ONE_DAY).should == schedule.end_time + 366 * ONE_DAY + 1 * ONE_HOUR
   end
