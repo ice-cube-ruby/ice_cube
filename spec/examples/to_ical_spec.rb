@@ -168,14 +168,14 @@ describe IceCube, 'to_ical' do
   it 'should be able to serialize a schedule with a duration' do
     schedule = IceCube::Schedule.new(Time.utc(2010, 5, 10, 10), :duration => 3600)
     expectation = "DTSTART:20100510T100000Z\n"
-    expectation << 'DURATION:PT1H'
+    expectation << 'DTEND:20100510T110000Z'
     schedule.to_ical.should == expectation
   end
 
   it 'should be able to serialize a schedule with a duration - more odd duration' do
     schedule = IceCube::Schedule.new(Time.utc(2010, 5, 10, 10), :duration => 3665)
     expectation = "DTSTART:20100510T100000Z\n"
-    expectation << 'DURATION:PT1H1M5S'
+    expectation << 'DTEND:20100510T110105Z'
     schedule.to_ical.should == expectation
   end
 

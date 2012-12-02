@@ -10,9 +10,6 @@ module IceCube
     attr_reader :start_time
     deprecated_alias :start_date, :start_time
 
-    # Get the duration
-    attr_accessor :duration
-
     # Get the end time
     attr_reader :end_time
     deprecated_alias :end_date, :end_time
@@ -20,8 +17,8 @@ module IceCube
     # Create a new schedule
     def initialize(start_time = nil, options = {})
       self.start_time = start_time || TimeUtil.now
-      self.end_time = options[:end_time]
-      @duration = options[:duration]
+      self.end_time = self.start_time + options[:duration] if options[:duration]
+      self.end_time = options[:end_time] if options[:end_time]
       @all_recurrence_rules = []
       @all_exception_rules = []
     end
@@ -37,6 +34,14 @@ module IceCube
       @end_time = TimeUtil.ensure_time end_time
     end
     deprecated_alias :end_date=, :end_time=
+
+    def duration
+      end_time - start_time if end_time
+    end
+
+    def duration=(seconds)
+      @end_time = start_time + seconds
+    end
 
     # Add a recurrence time to the schedule
     def add_recurrence_time(time)
@@ -273,7 +278,6 @@ module IceCube
     def to_ical(force_utc = false)
       pieces = []
       pieces << "DTSTART#{IcalBuilder.ical_format(start_time, force_utc)}"
-      pieces << "DURATION:#{IcalBuilder.ical_duration(duration)}" if duration
       pieces.concat recurrence_rules.map { |r| "RRULE:#{r.to_ical}" }
       pieces.concat exception_rules.map { |r| "EXRULE:#{r.to_ical}" }
       pieces.concat recurrence_times.map { |t| "RDATE#{IcalBuilder.ical_format(t, force_utc)}" }
@@ -297,7 +301,6 @@ module IceCube
       data = {}
       data[:start_date] = TimeUtil.serialize_time(start_time)
       data[:end_time] = TimeUtil.serialize_time(end_time) if end_time
-      data[:duration] = duration if duration
       data[:rrules] = recurrence_rules.map(&:to_hash)
       data[:exrules] = exception_rules.map(&:to_hash)
       data[:rtimes] = recurrence_times.map do |rt|
@@ -315,7 +318,7 @@ module IceCube
       # And then deserialize
       data = IceCube::FlexibleHash.new(original_hash)
       schedule = IceCube::Schedule.new TimeUtil.deserialize_time(data[:start_date])
-      schedule.duration = data[:duration] if data[:duration]
+      schedule.end_time = schedule.start_time + data[:duration] if data[:duration]
       schedule.end_time = TimeUtil.deserialize_time(data[:end_time]) if data[:end_time]
       data[:rrules] && data[:rrules].each { |h| schedule.rrule(IceCube::Rule.from_hash(h)) }
       data[:exrules] && data[:exrules].each { |h| schedule.exrule(IceCube::Rule.from_hash(h)) }
