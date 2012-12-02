@@ -79,3 +79,15 @@ module IceCube
 
   end
 end
+
+describe IceCube::Occurrence do
+
+  it 'can be subtracted from a time' do
+    start_time = Time.now
+    occurrence = Occurrence.new(start_time)
+
+    difference = (start_time + 60) - occurrence
+    difference.should == 60
+  end
+
+end

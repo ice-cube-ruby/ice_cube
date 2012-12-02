@@ -285,6 +285,12 @@ describe IceCube::Schedule do
 
   describe :all_occurrences do
 
+    it 'has end times for each occurrence' do
+      schedule = IceCube::Schedule.new(Time.now, :duration => IceCube::ONE_HOUR)
+      schedule.add_recurrence_rule IceCube::Rule.daily.until(Time.now + 3 * IceCube::ONE_DAY)
+      schedule.all_occurrences.all? { |o| o.end_time.should == o + IceCube::ONE_HOUR }
+    end
+
     it 'should include its start time when empty' do
       schedule = IceCube::Schedule.new(t0 = Time.now)
       schedule.all_occurrences.should == [t0]
@@ -394,7 +400,7 @@ describe IceCube::Schedule do
       schedule = IceCube::Schedule.new(Time.now - 1000)
       schedule.rrule IceCube::Rule.daily
       schedule.start_time = (start_date = Time.now)
-      (Time.now - schedule.first).should be < 100
+      (Time.now - schedule.first.start_time).should be < 100
     end
 
   end
