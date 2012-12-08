@@ -97,7 +97,5 @@
 	* A fix for removing until validations [#106]
 	* A DST edge fix
 
----
-
 0.9.2
   * Allow passing Time, Date, or DateTime to all calls
