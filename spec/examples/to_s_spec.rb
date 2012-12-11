@@ -103,7 +103,7 @@ describe IceCube::Schedule, 'to_s' do
     schedule = IceCube::Schedule.new Time.local(2010, 3, 20)
     schedule.add_recurrence_date Time.local(2010, 3, 20)
     schedule.add_recurrence_rule IceCube::Rule.weekly
-    schedule.to_s.should == 'March 20, 2010 / Weekly'
+    schedule.to_s.should == "March 20, 2010 / Weekly starting on #{Time.local(2010, 3, 20).strftime(IceCube.to_s_time_format)}"
   end
 
   it 'should work with rules and dates and exdates' do
@@ -112,13 +112,13 @@ describe IceCube::Schedule, 'to_s' do
     schedule.add_recurrence_date Time.local(2010, 3, 20)
     schedule.add_exception_date Time.local(2010, 3, 20) # ignored
     schedule.add_exception_date Time.local(2010, 3, 21)
-    schedule.to_s.should == 'Weekly / not on March 20, 2010 / not on March 21, 2010'
+    schedule.to_s.should == "Weekly / not on March 20, 2010 / not on March 21, 2010 starting on #{Time.local(2010, 3, 20).strftime(IceCube.to_s_time_format)}"
   end
 
   it 'should work with a single rrule' do
     schedule = IceCube::Schedule.new Time.local(2010, 3, 20)
     schedule.add_recurrence_rule IceCube::Rule.weekly.day_of_week(:monday => [1])
-    schedule.to_s.should == schedule.rrules[0].to_s
+    schedule.to_s.should == "#{schedule.rrules[0].to_s} starting on #{Time.local(2010, 3, 20).strftime(IceCube.to_s_time_format)}"
   end
 
   it 'should be able to say the last monday of the month' do
@@ -162,21 +162,24 @@ describe IceCube::Schedule, 'to_s' do
   end
 
   it 'should be able to reflect until dates' do
-    schedule = IceCube::Schedule.new(Time.now)
+    t = Time.now
+    schedule = IceCube::Schedule.new(t)
     schedule.rrule IceCube::Rule.weekly.until(Time.local(2012, 2, 3))
-    schedule.to_s.should == 'Weekly until February  3, 2012'
+    schedule.to_s.should == "Weekly until February  3, 2012 starting on #{t.strftime(IceCube.to_s_time_format)}"
   end
 
   it 'should be able to reflect count' do
-    schedule = IceCube::Schedule.new(Time.now)
+    t = Time.now
+    schedule = IceCube::Schedule.new(t)
     schedule.add_recurrence_rule IceCube::Rule.weekly.count(1)
-    schedule.to_s.should == 'Weekly 1 time'
+    schedule.to_s.should == "Weekly 1 time starting on #{t.strftime(IceCube.to_s_time_format)}"
   end
 
   it 'should be able to reflect count (proper pluralization)' do
-    schedule = IceCube::Schedule.new(Time.now)
+    t = Time.now
+    schedule = IceCube::Schedule.new(t)
     schedule.add_recurrence_rule IceCube::Rule.weekly.count(2)
-    schedule.to_s.should == 'Weekly 2 times'
+    schedule.to_s.should == "Weekly 2 times starting on #{t.strftime(IceCube.to_s_time_format)}"
   end
 
 end
