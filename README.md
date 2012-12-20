@@ -254,6 +254,7 @@ schedule.add_recurrence_rule Rule.secondly(15).hour_of_day(12)
 * Mat Brown - mat@patch.com
 * Philip Roberts
 * @sakrafd
+* Andrew Vit (@avit)
 
 ---
 
