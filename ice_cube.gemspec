@@ -4,6 +4,7 @@ spec = Gem::Specification.new do |s|
 
   s.name = 'ice_cube'
   s.author = 'John Crepezzi'
+  s.add_development_dependency('rake')
   s.add_development_dependency('rspec')
   s.add_development_dependency('active_support', '>= 3.0.0')
   s.add_development_dependency('tzinfo')
