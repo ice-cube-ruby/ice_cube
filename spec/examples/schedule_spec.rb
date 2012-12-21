@@ -318,6 +318,10 @@ describe IceCube::Schedule do
       compare_time_zone_info(start_time)
     end
 
+    it 'should respect time zone info for a DateTime' do
+      start_time = DateTime.new(Time.now.year + 1, 7, 1, 0, 0, 0, "-05:00")
+      compare_time_zone_info(start_time)
+    end
   end
 
   describe :start_date= do
@@ -553,7 +557,7 @@ describe IceCube::Schedule do
     schedule.rrule IceCube::Rule.yearly(1)
     occurrence = schedule.next_occurrence
 
-    occurrence.dst?.should == start_time.dst?
+    occurrence.dst?.should == start_time.dst? if start_time.respond_to? :dst?
     occurrence.utc?.should == start_time.utc?
     occurrence.zone.should == start_time.zone
     occurrence.utc_offset == start_time.utc_offset

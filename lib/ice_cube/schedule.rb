@@ -364,7 +364,7 @@ module IceCube
     def find_occurrences(opening_time, closing_time = nil, limit = nil, &block)
       opening_time = TimeUtil.ensure_time opening_time
       closing_time = TimeUtil.ensure_time closing_time
-      opening_time += start_time.subsec - opening_time.subsec
+      opening_time += start_time.subsec - opening_time.subsec rescue 0
       reset
       answers = []
       opening_time = start_time if opening_time < start_time
