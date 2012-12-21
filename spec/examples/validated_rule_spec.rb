@@ -38,6 +38,15 @@ describe IceCube, "::ValidatedRule" do
           rule.next_time(first + 1.hour + 1.second, schedule, nil).to_s.should_not == first.to_s
         end
       end
+
+    end
+
+    it 'should match times with usec' do
+      first_time = Time.new(2012, 12, 21, 12, 21, 12.12121212)
+      schedule = stub(start_time: first_time)
+      rule = IceCube::Rule.secondly
+
+      rule.next_time(first_time + 1, schedule, nil).should == first_time + 1
     end
   end
 end

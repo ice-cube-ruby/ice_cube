@@ -66,7 +66,7 @@ module IceCube
     end
 
     def on?(time, schedule)
-      next_time(time, schedule, time) == time
+      next_time(time, schedule, time).to_i == time.to_i
     end
 
     # Whether this rule requires a full run

@@ -24,7 +24,7 @@ module IceCube
 
       until finds_acceptable_time?
         # Prevent a non-matching infinite loop
-        return nil if closing_time && @time > closing_time
+        return nil if closing_time && @time.to_i > closing_time.to_i
       end
 
       # NOTE Uses may be 1 higher than proper here since end_time isn't

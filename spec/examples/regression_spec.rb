@@ -103,12 +103,14 @@ describe IceCube do
   end
 
   it 'should not include exception times due to rounding errors [#83]' do
-    start_time = Time.now # start time with usec
-    exdate = Time.at (start_time + IceCube::ONE_DAY).to_i # one day in the future, no usec
+    start_time = Time.new(2012, 12, 21, 21, 12, 21.212121)
 
     schedule = IceCube::Schedule.new start_time
     schedule.rrule IceCube::Rule.daily
-    schedule.first(1)[0].mday.should_not == exdate.mday
+    schedule.exdate (start_time + IceCube::ONE_DAY).round
+
+    schedule.first(2)[0].should == start_time
+    schedule.first(2)[1].should == (start_time + 2*IceCube::ONE_DAY)
   end
 
   it 'should return true if a recurring schedule occurs_between? a time range [#88]' do
