@@ -18,11 +18,23 @@ module IceCube
       :november => 11, :december => 12
     }
 
-    # Provides a Time.now without the usec
-    def self.now(utc = false)
-      time = Time.at(Time.now.to_i)
-      time = time.utc if utc
-      time
+    # Provides a Time.now without the usec, in the reference zone or utc offset
+    def self.now(reference=Time.now)
+      match_zone(Time.at(Time.now.to_i), reference)
+    end
+
+    def self.match_zone(time, reference)
+      if reference.respond_to? :time_zone
+        time.in_time_zone(reference.time_zone)
+      else
+        if reference.utc?
+          time.utc
+        elsif reference.zone
+          time.getlocal
+        else
+          time.getlocal(reference.utc_offset)
+        end
+      end
     end
 
     # Ensure that this is either nil, or a time
@@ -61,17 +73,23 @@ module IceCube
     end
 
     # Get the beginning of a date
-    def self.beginning_of_date(date)
-      date.respond_to?(:beginning_of_day) ?
-        date.beginning_of_day :
-        Time.local(date.year, date.month, date.day, 0, 0, 0)
+    def self.beginning_of_date(date, reference=Time.now)
+      args = [date.year, date.month, date.day, 0, 0, 0]
+      if reference.respond_to?(:time_zone) && reference.time_zone
+        reference.time_zone.local(*args)
+      else
+        match_zone(Time.new(*args << reference.utc_offset), reference)
+      end
     end
 
     # Get the end of a date
-    def self.end_of_date(date)
-      date.respond_to?(:end_of_day) ?
-        date.end_of_day :
-        Time.local(date.year, date.month, date.day, 23, 59, 59)
+    def self.end_of_date(date, reference=Time.now)
+      args = [date.year, date.month, date.day, 23, 59, 59]
+      if reference.respond_to?(:time_zone) && reference.time_zone
+        reference.time_zone.local(*args)
+      else
+        match_zone(Time.new(*args << reference.utc_offset), reference)
+      end
     end
 
     # Convert a symbol to a numeric month
