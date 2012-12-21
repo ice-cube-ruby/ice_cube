@@ -21,16 +21,13 @@ module IceCube
     def next_time(time, schedule, closing_time)
       @time = time
       @schedule = schedule
+      @closing_time = closing_time
 
       until finds_acceptable_time?
-        # Prevent a non-matching infinite loop
-        return nil if closing_time && @time > closing_time
+        return nil if past_closing_time? # Prevent a non-matching infinite loop
       end
+      return nil if past_closing_time? # Prevent @uses incrementing for invalid times
 
-      # NOTE Uses may be 1 higher than proper here since end_time isn't
-      # validated in this class.  This is okay now, since we never expose it -
-      # but if we ever do - we should check that above this line, and return
-      # nil if end_time is past
       @uses += 1 if @time
       @time
     end
@@ -134,6 +131,10 @@ module IceCube
 
       # And then get the correct time out
       @time = wrapper.to_time
+    end
+
+    def past_closing_time?
+      @closing_time && @time > @closing_time
     end
 
   end
