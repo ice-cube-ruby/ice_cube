@@ -7,9 +7,7 @@ describe IceCube::Schedule do
     rule = IceCube::Rule.daily.day(:monday)
     schedule = IceCube::Schedule.new(Time.now)
     schedule.add_recurrence_rule rule
-    lambda do
-      schedule.first(3)
-    end.should_not raise_error
+    lambda { schedule.first(3) }.should_not raise_error
   end
 
   it 'should respond to complex combinations (1)' do
@@ -451,14 +449,14 @@ describe IceCube::Schedule do
     end
   end
 
-  it 'should be able to get back rdates from an ice_cube schedule' do
+  it 'should be able to get back rdates from a schedule' do
     schedule = IceCube::Schedule.new DAY
     schedule.add_recurrence_date DAY
     schedule.add_recurrence_date(DAY + 2)
     schedule.rdates.should == [DAY, DAY + 2]
   end
 
-  it 'should be able to get back exdates from an ice_cube schedule' do
+  it 'should be able to get back exdates from a schedule' do
     schedule = IceCube::Schedule.new DAY
     schedule.add_exception_date DAY
     schedule.add_exception_date(DAY + 2)
