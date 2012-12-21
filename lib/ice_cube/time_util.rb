@@ -50,7 +50,9 @@ module IceCube
     def self.ensure_date(date)
       case date
       when Date then date
-      else date.to_time
+      else
+        return date.to_date if date.respond_to? :to_date
+        return date.to_time.to_date if date.respond_to? :to_time
       end
     end
 
