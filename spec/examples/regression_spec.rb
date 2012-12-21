@@ -222,4 +222,10 @@ describe IceCube do
     schedule.all_occurrences.should == [Time.new(2012, 4, 27, 12), Time.new(2012, 4, 28, 12)]
   end
 
+  it 'should strip usecs from arguments when finding occurrences' do
+    schedule = IceCube::Schedule.new(Time.utc(2012, 4, 1, 10, 00))
+    schedule.rrule IceCube::Rule.weekly
+    time = schedule.occurrences_between(Time.utc(2012,5,1,10,00,00,4), Time.utc(2012, 5, 15)).first
+    time.usec.should == 0
+  end
 end
