@@ -156,19 +156,19 @@ module IceCube
 
     # The next n occurrences after now
     def next_occurrences(num, from = nil)
-      from ||= TimeUtil.now(@start_time.utc?)
+      from ||= TimeUtil.now(@start_time)
       find_occurrences(from + 1, nil, num)
     end
 
     # The next occurrence after now (overridable)
     def next_occurrence(from = nil)
-      from ||= TimeUtil.now(@start_time.utc?)
+      from ||= TimeUtil.now(@start_time)
       find_occurrences(from + 1, nil, 1).first
     end
 
     # The remaining occurrences (same requirements as all_occurrences)
     def remaining_occurrences(from = nil)
-      from ||= TimeUtil.now(@start_time.utc?)
+      from ||= TimeUtil.now(@start_time)
       find_occurrences(from)
     end
 
@@ -193,8 +193,8 @@ module IceCube
     # Return a boolean indicating if an occurrence falls on a certain date
     def occurs_on?(date)
       date = TimeUtil.ensure_date date
-      begin_time = TimeUtil.beginning_of_date(date)
-      closing_time = TimeUtil.end_of_date(date)
+      begin_time = TimeUtil.beginning_of_date(date, start_time)
+      closing_time = TimeUtil.end_of_date(date, start_time)
       occurs_between?(begin_time, closing_time)
     end
 
