@@ -6,6 +6,7 @@ module IceCube
 
     def initialize(interval = 1)
       interval(interval)
+      reset
     end
 
   end

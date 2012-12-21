@@ -15,7 +15,7 @@ module IceCube
 
     def next_time(t, schedule, closing_time)
       unless closing_time && closing_time < t
-        time if time >= t
+        time if time.to_i >= t.to_i
       end
     end
 

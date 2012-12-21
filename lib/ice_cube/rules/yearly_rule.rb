@@ -7,6 +7,7 @@ module IceCube
     def initialize(interval = 1)
       interval(interval)
       schedule_lock(:month, :day, :hour, :min, :sec)
+      reset
     end
 
   end

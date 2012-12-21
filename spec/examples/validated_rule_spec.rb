@@ -3,9 +3,10 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe IceCube, "::ValidatedRule" do
   describe "#next_time" do
+
     context "monthly" do
       let(:rule) { IceCube::Rule.monthly }
-      before { rule.reset }
+
       it "Should return current day when starting on same day" do
         first = Time.new(2013, 2, 25, 0, 0, 0)
         schedule = IceCube::Schedule.new(first)
