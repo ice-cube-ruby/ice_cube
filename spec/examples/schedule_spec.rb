@@ -4,6 +4,25 @@ describe IceCube::Schedule do
 
   include IceCube
 
+  describe :duration do
+
+    it 'should be based on end_time' do
+      start = Time.now
+      schedule = IceCube::Schedule.new(start)
+      schedule.duration.should == 0
+      schedule.end_time = start + 3600
+      schedule.duration.should == 3600
+    end
+
+    it 'should give precedence to :end_time option' do
+      start = Time.now
+      conflicting_options = {:end_time => start + 600, :duration => 1200}
+      schedule = IceCube::Schedule.new(start, conflicting_options)
+      schedule.duration.should == 600
+    end
+
+  end
+
   describe :conflicts_with? do
 
     it 'should raise an error if both are not terminating' do
