@@ -193,6 +193,17 @@ module IceCube
     def self.is_leap?(year)
       (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
     end
+    
+    
+    def self.date_of_pascha(year)
+      g = year % 19
+      i = (19 * g + 15) % 30
+      j = (year + year/4 + i) % 7
+      l = i - j
+      month = 3 + (l + 40) / 44
+      day = l + 28 - 31 * (month / 4)
+      Date::civil(year, month, day, Date::JULIAN).gregorian
+    end
 
     # A utility class for safely moving time around
     class TimeWrapper
