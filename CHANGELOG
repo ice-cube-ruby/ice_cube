@@ -99,3 +99,11 @@
 
 0.9.2
   * Allow passing Time, Date, or DateTime to all calls
+
+0.9.3
+	* Match the subseconds of start_time when finding occurrences [#89]
+	* Duration is dependent upon end_time [#120]
+	* Duration defaults to 0
+	* Rules start uses with 0
+	* Avoid microseconds when comparing times [#83]
+	* Handle DateTime's lack of subseconds
