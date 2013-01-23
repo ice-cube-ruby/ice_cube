@@ -136,6 +136,11 @@ describe IceCube::Schedule, 'to_s' do
     rule_str.should == 'Monthly on the 2nd to last Thursday'
   end
 
+  it 'should join the first and last weekdays of the month' do
+    rule_str = IceCube::Rule.monthly.day_of_week(:thursday => [1, -1]).to_s
+    rule_str.should == 'Monthly on the 1st Thursday and last Thursday'
+  end
+
   it 'should be able to say the days of the month something happens' do
     rule_str = IceCube::Rule.monthly.day_of_month(1, 15, 30).to_s
     rule_str.should == 'Monthly on the 1st, 15th, and 30th days of the month'
