@@ -1,8 +1,9 @@
 require 'date'
 
 module IceCube
-
   module TimeUtil
+
+    extend ::Deprecated
 
     DAYS = {
       :sunday => 0, :monday => 1, :tuesday => 2, :wednesday => 3,
@@ -92,37 +93,30 @@ module IceCube
     end
 
     # Convert a symbol to a numeric month
-    def self.symbol_to_month(sym)
-      month = MONTHS[sym]
-      raise "No such month: #{sym}" unless month
-      month
+    def self.sym_to_month(sym)
+      return wday = sym if (1..12).include? sym
+      MONTHS.fetch(sym) { |k| raise KeyError, "No such month: #{k}" }
     end
+    deprecated_alias :symbol_to_month, :sym_to_month
 
-    # Convert a symbol to a numeric day
-    def self.symbol_to_day(sym)
-      day = DAYS[sym]
-      raise "No such day: #{sym}" unless day
-      day
+    # Convert a symbol to a wday number
+    def self.sym_to_wday(sym)
+      return sym if (0..6).include? sym
+      DAYS.fetch(sym) { |k| raise KeyError, "No such weekday: #{k}" }
     end
+    deprecated_alias :symbol_to_day, :sym_to_wday
 
-    # Convert a symbol to an ical day (SU, MO)
-    def self.week_start(sym)
-      raise "No such day: #{sym}" unless DAYS.keys.include?(sym)
-      day = sym.to_s.upcase[0..1]
-      day
+    # Convert wday number to day symbol
+    def self.wday_to_sym(wday)
+      return sym = wday if DAYS.keys.include? wday
+      DAYS.invert.fetch(wday) { |i| raise KeyError, "No such wday number: #{i}" }
     end
 
     # Convert weekday from base sunday to the schedule's week start.
-    def self.normalize_weekday(daynum, week_start)
-      (daynum - symbol_to_day(week_start)) % 7
+    def self.normalize_wday(wday, week_start)
+      (wday - sym_to_wday(week_start)) % 7
     end
-    
-    # Convert day number to day symbol
-    def self.daynum_to_symbol(daynum)
-      raise "No such day number: #{daynum}" unless (0..6).include?(daynum)
-      day = DAYS.invert[daynum]
-      day
-    end
+    deprecated_alias :normalize_weekday, :normalize_wday
 
     # Return the count of the number of times wday appears in the month,
     # and which of those time falls on
@@ -266,5 +260,4 @@ module IceCube
     end
 
   end
-
 end

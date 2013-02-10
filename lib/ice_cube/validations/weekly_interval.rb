@@ -6,7 +6,7 @@ module IceCube
 
     def interval(interval, week_start = :sunday)
       @interval = interval
-      @week_start = week_start
+      @week_start = TimeUtil.wday_to_sym(week_start)
       validations_for(:interval) << Validation.new(interval, week_start)
       clobber_base_validations(:day)
       self
@@ -32,13 +32,13 @@ module IceCube
         builder['FREQ'] << 'WEEKLY'
         unless interval == 1
           builder['INTERVAL'] << interval
-          builder['WKST'] << TimeUtil.week_start(week_start)
+          builder['WKST'] << week_start.to_s.upcase[0..1]
         end
       end
 
       def build_hash(builder)
         builder[:interval] = interval
-        builder[:week_start] = TimeUtil.symbol_to_day(week_start)
+        builder[:week_start] = TimeUtil.sym_to_wday(week_start)
       end
 
       def initialize(interval, week_start)
@@ -51,8 +51,8 @@ module IceCube
         st = schedule.start_time
         start_date = Date.new(st.year, st.month, st.day)
         weeks = (
-          (date - TimeUtil.normalize_weekday(date.wday, week_start)) -
-          (start_date - TimeUtil.normalize_weekday(start_date.wday, week_start))
+          (date - TimeUtil.normalize_wday(date.wday, week_start)) -
+          (start_date - TimeUtil.normalize_wday(start_date.wday, week_start))
         ) / 7
         unless weeks % interval == 0
           (interval - (weeks % interval)) * 7

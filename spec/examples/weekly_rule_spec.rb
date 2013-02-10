@@ -86,4 +86,8 @@ describe IceCube::WeeklyRule, 'occurs_on?' do
     schedule.first(3).should == [Time.local(2012,2,7), Time.local(2012,2,19), Time.local(2012,2,21)]
   end
 
+  it 'should validate week_start input' do
+    expect { IceCube::Rule.weekly(2, :someday) }.to raise_error
+  end
+
 end
