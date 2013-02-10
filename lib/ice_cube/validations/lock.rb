@@ -16,22 +16,40 @@ module IceCube
 
     private
 
-    # Needs to be custom since we don't know the days in the month
-    # (meaning, its not a fixed interval)
+    # For monthly rules that have no specified day value, the validation relies
+    # on the schedule start time and jumps to include every month even if it
+    # has fewer days than the schedule's start day.
+    #
+    # Negative day values (from month end) also include all months.
+    #
+    # Positive day values are taken literally so months with fewer days will
+    # be skipped.
+    #
     def validate_day_lock(time, schedule)
       days_in_month = TimeUtil.days_in_month(time)
       date = time.to_date
 
-      unless value && value < 0
-        start = [value || schedule.start_time.day, days_in_month].min
-        month_diff = 0
+      if value && value < 0
+        start = TimeUtil.day_of_month(value, date)
+        month_overflow = days_in_month - TimeUtil.days_in_next_month(time)
+      elsif value && value > 0
+        start = value
+        month_overflow = 0
       else
-        start = [1 + days_in_month + value, 1].max
-        month_diff = TimeUtil.days_in_next_month(time) - days_in_month
+        start = TimeUtil.day_of_month(schedule.start_time.day, date)
+        month_overflow = 0
       end
 
-      diff = start - date.day
-      diff >= 0 ? diff : (date >> 1) - date + diff + month_diff
+      distance = start - date.day
+
+      if value && value > 0
+        jump = days_in_month + distance
+      else
+        jump = TimeUtil.days_to_next_month(date) + distance
+        jump -= month_overflow
+      end
+
+      distance >= 0 ? distance : jump
     end
 
   end

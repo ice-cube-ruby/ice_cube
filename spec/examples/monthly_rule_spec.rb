@@ -74,4 +74,11 @@ describe IceCube::MonthlyRule, 'occurs_on?' do
     schedule.add_recurrence_rule IceCube::Rule.monthly
     schedule.first(3).should == [Time.utc(2010, 1, 29, 0, 0, 0), Time.utc(2010, 2, 28, 0, 0, 0), Time.utc(2010, 3, 29, 0, 0, 0)]
   end
+
+  it 'should restrict to available days of month when specified' do
+    schedule = IceCube::Schedule.new Time.utc(2013,1,31)
+    schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_month(31)
+    occurrences = schedule.first(3)
+    occurrences.should == [Time.utc(2013,1,31), Time.utc(2013,3,31), Time.utc(2013,5,31)]
+  end
 end

@@ -132,9 +132,28 @@ module IceCube
       ((date >> 1) - date).to_i
     end
 
+    # Get the days in the following month for +time
     def self.days_in_next_month(time)
       date = Date.new(time.year, time.month, 1) >> 1
       ((date >> 1) - date).to_i
+    end
+
+    # Count the number of days to the same day of the next month without
+    # overflowing shorter months
+    def self.days_to_next_month(time)
+      date = time.to_date
+      (date >> 1) - date
+    end
+
+    # Get a day of the month in the month of a given time without overflowing
+    # into the next month. Accepts days from positive (start of month forward) or
+    # negative (from end of month)
+    def self.day_of_month(value, date)
+      if value.to_i > 0
+        [value, days_in_month(date)].min
+      else
+        [1 + days_in_month(date) + value, 1].max
+      end
     end
 
     # Number of days in a year
