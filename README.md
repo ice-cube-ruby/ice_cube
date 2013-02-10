@@ -166,6 +166,9 @@ schedule.add_recurrence_rule Rule.weekly(2).day(:monday, :tuesday)
 
 # for programatic convenience (same as above)
 schedule.add_recurrence_rule Rule.weekly(2).day(1, 2)
+
+# specifying a weekly interval with a different first weekday (defaults to Sunday)
+schedule.add_recurrence_rule Rule.weekly(2, :monday)
 ```
 
 ### Monthly (by day of month)

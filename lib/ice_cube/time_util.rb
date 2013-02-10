@@ -116,6 +116,13 @@ module IceCube
     def self.normalize_weekday(daynum, week_start)
       (daynum - symbol_to_day(week_start)) % 7
     end
+    
+    # Convert day number to day symbol
+    def self.daynum_to_symbol(daynum)
+      raise "No such day number: #{daynum}" unless (0..6).include?(daynum)
+      day = DAYS.invert[daynum]
+      day
+    end
 
     # Return the count of the number of times wday appears in the month,
     # and which of those time falls on
