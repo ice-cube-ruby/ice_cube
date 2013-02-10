@@ -519,31 +519,31 @@ describe IceCube::Schedule do
   it 'should be able to exist on the 29th of each month crossing over february - github issue 6a' do
     schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 29))
     schedule.add_recurrence_rule IceCube::Rule.monthly
-    schedule.first(3).should == [Time.zone.local(2010, 1, 29), Time.zone.local(2010, 3, 29), Time.zone.local(2010, 4, 29)]
+    schedule.first(3).should == [Time.zone.local(2010, 1, 29), Time.zone.local(2010, 2, 28), Time.zone.local(2010, 3, 29)]
   end
 
   it 'should be able to exist on the 30th of each month crossing over february - github issue 6a' do
     schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 30))
     schedule.add_recurrence_rule IceCube::Rule.monthly
-    schedule.first(3).should == [Time.zone.local(2010, 1, 30), Time.zone.local(2010, 3, 30), Time.zone.local(2010, 4, 30)]
+    schedule.first(3).should == [Time.zone.local(2010, 1, 30), Time.zone.local(2010, 2, 28), Time.zone.local(2010, 3, 30)]
   end
 
   it 'should be able to exist ont he 31st of each month crossing over february - github issue 6a' do
     schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 31))
     schedule.add_recurrence_rule IceCube::Rule.monthly
-    schedule.first(3).should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 3, 31), Time.zone.local(2010, 5, 31)]
+    schedule.first(3).should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 2, 28), Time.zone.local(2010, 3, 31)]
   end
 
   it 'should deal with a yearly rule that has februaries with different mdays' do
     schedule = IceCube::Schedule.new(Time.local(2008, 2, 29))
     schedule.add_recurrence_rule IceCube::Rule.yearly
-    schedule.first(3).should == [Time.local(2008, 2, 29), Time.local(2012, 2, 29), Time.local(2016, 2, 29)]
+    schedule.first(3).should == [Time.local(2008, 2, 29), Time.local(2009, 2, 28), Time.local(2010, 2, 28)]
   end
 
   it 'should work with every other month even when the day of the month iterating on does not exist' do
     schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 31))
     schedule.add_recurrence_rule IceCube::Rule.monthly(2)
-    schedule.first(6).should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 3, 31), Time.zone.local(2010, 5, 31), Time.zone.local(2010, 7, 31), Time.zone.local(2011, 1, 31), Time.zone.local(2011, 3, 31)]
+    schedule.first(6).should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 3, 31), Time.zone.local(2010, 5, 31), Time.zone.local(2010, 7, 31), Time.zone.local(2010, 9, 30), Time.zone.local(2010, 11, 30)]
   end
 
   it 'should be able to go into february and stay on the same day' do
@@ -568,27 +568,6 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(Time.local(2010, 2, 29))
     schedule.add_recurrence_rule IceCube::Rule.yearly.count(1)
     schedule.first(10).should == [Time.local(2010, 2, 29)]
-  end
-
-  it 'should be able to go through a year of every month on a day that does not exist' do
-    schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 31))
-    schedule.add_recurrence_rule IceCube::Rule.monthly.until(Time.zone.local(2011, 2, 5))
-    schedule.all_occurrences.should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 3, 31), Time.zone.local(2010, 5, 31),
-                                 Time.zone.local(2010, 7, 31), Time.zone.local(2010, 8, 31), Time.zone.local(2010, 10, 31),
-                                 Time.zone.local(2010, 12, 31), Time.zone.local(2011, 1, 31)]
-  end
-
-  it 'should be able to go through a year of every 2 months on a day that does not exist' do
-    schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 31))
-    schedule.add_recurrence_rule IceCube::Rule.monthly(2).until(Time.zone.local(2011, 2, 5))
-    schedule.all_occurrences.should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 3, 31), Time.zone.local(2010, 5, 31),
-                                        Time.zone.local(2010, 7, 31), Time.zone.local(2011, 1, 31)]
-  end
-
-  it 'should be able to go through a year of every 3 months on a day that does not exist' do
-    schedule = IceCube::Schedule.new(Time.local(2010, 1, 31))
-    schedule.add_recurrence_rule IceCube::Rule.monthly(3).until(Time.local(2011, 2, 5))
-    schedule.all_occurrences.should == [Time.local(2010, 1, 31), Time.local(2010, 7, 31), Time.local(2010, 10, 31), Time.local(2011, 1, 31)]
   end
 
   it 'should have some convenient aliases' do
