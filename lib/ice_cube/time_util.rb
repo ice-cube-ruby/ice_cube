@@ -4,9 +4,6 @@ module IceCube
 
   module TimeUtil
 
-    LEAP_YEAR_MONTH_DAYS = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    COMMON_YEAR_MONTH_DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-
     DAYS = {
       :sunday => 0, :monday => 1, :tuesday => 2, :wednesday => 3,
       :thursday => 4, :friday => 5, :saturday => 6
@@ -131,67 +128,31 @@ module IceCube
 
     # Get the days in the month for +time
     def self.days_in_month(time)
-      days_in_month_year(time.month, time.year)
+      date = Date.new(time.year, time.month, 1)
+      ((date >> 1) - date).to_i
     end
 
     def self.days_in_next_month(time)
-      # Get the next month
-      year = time.year
-      month = time.month + 1
-      if month > 12
-        month %= 12
-        year += 1
-      end
-      # And then determine
-      days_in_month_year(month, year)
-    end
-
-    def self.days_in_month_year(month, year)
-      is_leap?(year) ? LEAP_YEAR_MONTH_DAYS[month - 1] : COMMON_YEAR_MONTH_DAYS[month - 1]
+      date = Date.new(time.year, time.month, 1) >> 1
+      ((date >> 1) - date).to_i
     end
 
     # Number of days in a year
     def self.days_in_year(time)
-      is_leap?(time.year) ? 366 : 365
+      date = Date.new(time.year, 1, 1)
+      ((date >> 12) - date).to_i
     end
 
     # Number of days to n years
     def self.days_in_n_years(time, year_distance)
-      sum = 0
-      wrapper = TimeWrapper.new(time)
-      year_distance.times do
-        diy = days_in_year(wrapper.to_time)
-        sum += diy
-        wrapper.add(:day, diy)
-      end
-      sum
+      date = time.to_date
+      ((date >> year_distance * 12) - date).to_i
     end
 
     # The number of days in n months
     def self.days_in_n_months(time, month_distance)
-      # move to a safe spot in the month to make this computation
-      desired_day = time.day
-      time -= IceCube::ONE_DAY * (time.day - 27) if time.day >= 28
-      # move n months ahead
-      sum = 0
-      wrapper = TimeWrapper.new(time)
-      month_distance.times do
-        dim = days_in_month(wrapper.to_time)
-        sum += dim
-        wrapper.add(:day, dim)
-      end
-      # now we can move to the desired day
-      dim = days_in_month(wrapper.to_time)
-      if desired_day > dim
-        sum -= desired_day - dim
-      end
-      sum
-    end
-
-    # Given a year, return a boolean indicating whether it is
-    # a leap year or not
-    def self.is_leap?(year)
-      (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
+      date = time.to_date
+      ((date >> month_distance) - date).to_i
     end
 
     # A utility class for safely moving time around
