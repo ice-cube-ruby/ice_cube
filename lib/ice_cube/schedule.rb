@@ -21,6 +21,7 @@ module IceCube
       self.end_time = options[:end_time] if options[:end_time]
       @all_recurrence_rules = []
       @all_exception_rules = []
+      yield self if block_given?
     end
 
     # Set start_time

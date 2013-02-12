@@ -4,6 +4,14 @@ describe IceCube::Schedule do
 
   include IceCube
 
+  it 'yields itself for configuration' do
+    t1 = Time.utc(2013, 2, 12, 12, 34 ,56)
+    schedule = IceCube::Schedule.new do |s|
+      s.start_time = t1
+    end
+    schedule.start_time.should == t1
+  end
+
   describe :duration do
 
     it 'should be based on end_time' do
