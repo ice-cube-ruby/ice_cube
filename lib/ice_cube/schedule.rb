@@ -182,16 +182,20 @@ module IceCube
       find_occurrences(begin_time, closing_time)
     end
 
-    # Return a boolean indicating if an occurrence falls between
-    # two times
+    # Return a boolean indicating if an occurrence falls between two times
     def occurs_between?(begin_time, closing_time)
       !find_occurrences(begin_time, closing_time, 1).empty?
     end
 
-    # Return a boolean indicating if an occurrence is occurring between
-    # two times, inclusive
-    def occurring_between?(begin_time, closing_time)
-      occurs_between?(begin_time - duration + 1, closing_time + duration - 1)
+    # Return a boolean indicating if an occurrence is occurring between two
+    # times, inclusive of its duration. This counts zero-length occurrences
+    # that intersect the start of the range and within the range, but not
+    # occurrences at the end of the range since none of their duration
+    # intersects the range.
+    def occurring_between?(opening_time, closing_time)
+      opening_time = opening_time - duration
+      closing_time = closing_time - 1 if duration > 0
+      occurs_between?(opening_time, closing_time)
     end
 
     # Return a boolean indicating if an occurrence falls on a certain date
