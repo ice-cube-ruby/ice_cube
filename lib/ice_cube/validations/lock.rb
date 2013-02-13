@@ -40,16 +40,16 @@ module IceCube
         month_overflow = 0
       end
 
-      distance = start - date.day
+      sleeps = start - date.day
 
       if value && value > 0
-        jump = days_in_month + distance
+        until_next_month = days_in_month + sleeps
       else
-        jump = TimeUtil.days_to_next_month(date) + distance
-        jump -= month_overflow
+        until_next_month = TimeUtil.days_to_next_month(date) + sleeps
+        until_next_month -= month_overflow
       end
 
-      distance >= 0 ? distance : jump
+      sleeps >= 0 ? sleeps : until_next_month
     end
 
   end
