@@ -271,6 +271,8 @@ describe IceCube::Schedule do
 
   describe :next_occurrences do
 
+    let(:nonsense) { IceCube::Rule.monthly.day_of_week(:monday => [1]).day_of_month(31) }
+
     it 'should be able to calculate next occurrences ignoring exclude_dates' do
       start_time = Time.now
       schedule = IceCube::Schedule.new start_time
@@ -281,6 +283,15 @@ describe IceCube::Schedule do
         start_time + IceCube::ONE_DAY * 2,
         start_time + IceCube::ONE_DAY * 3
       ]
+    end
+
+    it 'should be empty if nothing is found before closing time' do
+      schedule = IceCube::Schedule.new do |s|
+        s.start_time = Time.utc(2013, 1, 1)
+        s.add_recurrence_rule nonsense.until(s.start_time.to_date >> 12)
+      end
+      trap_infinite_loop_beyond(24)
+      schedule.next_occurrences(1).should be_empty
     end
 
   end
@@ -566,8 +577,12 @@ describe IceCube::Schedule do
     occurrence = schedule.next_occurrence
 
     occurrence.dst?.should == start_time.dst? if start_time.respond_to? :dst?
-    occurrence.utc?.should == start_time.utc?
+    occurrence.utc?.should == start_time.utc? if start_time.respond_to? :utc?
     occurrence.zone.should == start_time.zone
     occurrence.utc_offset == start_time.utc_offset
+  end
+
+  def trap_infinite_loop_beyond(iterations)
+    IceCube::ValidatedRule.any_instance.should_receive(:finds_acceptable_time?).at_most(iterations).times.and_call_original
   end
 end

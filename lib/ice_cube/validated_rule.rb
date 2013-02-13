@@ -21,12 +21,8 @@ module IceCube
     def next_time(time, schedule, closing_time)
       @time = time
       @schedule = schedule
-      @closing_time = closing_time
 
-      until finds_acceptable_time?
-        return nil if past_closing_time? # Prevent a non-matching infinite loop
-      end
-      return nil if past_closing_time? # Prevent @uses incrementing for invalid times
+      return nil unless find_acceptable_time_before(closing_time)
 
       @uses += 1 if @time
       @time
@@ -94,6 +90,13 @@ module IceCube
       end
     end
 
+    def find_acceptable_time_before(boundary)
+      until finds_acceptable_time?
+        return false if past_closing_time?(boundary)
+      end
+      true
+    end
+
     def validation_accepts_or_updates_time?(validations_for_type)
       res = validated_results(validations_for_type)
       # If there is any nil, then we're set - otherwise choose the lowest
@@ -133,8 +136,8 @@ module IceCube
       @time = wrapper.to_time
     end
 
-    def past_closing_time?
-      @closing_time && @time > @closing_time
+    def past_closing_time?(closing_time)
+      closing_time && @time > closing_time
     end
 
   end
