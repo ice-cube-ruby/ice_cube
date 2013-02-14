@@ -512,7 +512,7 @@ describe IceCube::Schedule do
         schedule.occurs_on?(Time.local(2010, 7, 3,  0,  0,  1, false, "+11:15")).should be_false
       end
 
-      specify 'should determine if it occurs on the day of a given ActiveSupport::Time' do
+      specify 'should determine if it occurs on the day of a given ActiveSupport::Time', :if_active_support_time => true do
         Time.zone = "Pacific/Honolulu"
         schedule.occurs_on?(Time.zone.parse('2010-07-01 23:59:59')).should be_false
         schedule.occurs_on?(Time.zone.parse('2010-07-02 00:00:01')).should be_true
@@ -537,7 +537,7 @@ describe IceCube::Schedule do
         include_examples 'occurring on a given day'
       end
 
-      context 'starting from an ActiveSupport::Time' do
+      context 'starting from an ActiveSupport::Time', :if_active_support_time => true do
         let(:start_time) { Time.local(2010, 7, 2, 10, 0, 0, true, '-07:00').in_time_zone('America/Vancouver') }
         include_examples 'occurring on a given day'
       end

@@ -7,9 +7,9 @@ describe IceCube::Schedule, 'to_yaml' do
 
   [:yearly, :monthly, :weekly, :daily, :hourly, :minutely, :secondly].each do |type|
     it "should make a #{type} round trip with to_yaml - github issue 47" do
-      s = Schedule.new(Time.now)
-      s.add_recurrence_rule Rule.send(type, 3)
-      Schedule.from_yaml(s.to_yaml).first(3).should == s.first(3)
+      s = IceCube::Schedule.new(Time.now)
+      s.add_recurrence_rule IceCube::Rule.send(type, 3)
+      IceCube::Schedule.from_yaml(s.to_yaml).first(3).should == s.first(3)
     end
   end
 
@@ -292,4 +292,4 @@ describe IceCube::Schedule, 'to_yaml' do
     symbol_yaml.should == string_yaml
   end
 
- end
+end
