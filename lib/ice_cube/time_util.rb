@@ -38,9 +38,13 @@ module IceCube
     # Ensure that this is either nil, or a time
     def self.ensure_time(time, date_eod = false)
       case time
-      when DateTime then time.to_time
-      when Date then date_eod ? time.to_time.end_of_day : time.to_time
-      else time
+      when DateTime
+        warn "IceCube: DateTime support is deprecated (please use Time)"
+        time.to_time
+      when Date
+        date_eod ? end_of_date(time) : time.to_time
+      else
+        time
       end
     end
 

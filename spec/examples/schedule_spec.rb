@@ -12,6 +12,20 @@ describe IceCube::Schedule do
     schedule.start_time.should == t1
   end
 
+  it 'initializes with a start_time' do
+    t1 = Time.local(2013, 2, 14, 0, 32, 0)
+    schedule = IceCube::Schedule.new(t1)
+    schedule.start_time.should be_a Time
+    schedule.start_time.should == t1
+  end
+
+  it 'converts initialized DateTime to Time' do
+    dt = DateTime.new(2013, 2, 14, 0, 32, 0)
+    schedule = IceCube::Schedule.new(dt)
+    schedule.start_time.should be_a Time
+    schedule.start_time.should == dt.to_time
+  end
+
   describe :duration do
 
     it 'should be based on end_time' do
@@ -204,9 +218,8 @@ describe IceCube::Schedule do
       conflict.should be_true
     end
 
-    it 'should return false if conflict is not present and single recurrence and time originally specified as DateTime' do
-      date = DateTime.new(2020,9,21,11,30,0)
-      start_time = date.to_time
+    it 'should return false if conflict is not present and single recurrence and time originally specified as Time' do
+      start_time = Time.new(2020,9,21,11,30,0)
       schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
       schedule1.add_recurrence_time(start_time)
       schedule2 = IceCube::Schedule.new(start_time + IceCube::ONE_HOUR, :duration => IceCube::ONE_HOUR)
@@ -334,11 +347,6 @@ describe IceCube::Schedule do
 
     it 'should respect time zone info for a offset future time [#115]' do
       start_time = Time.utc(Time.now.year + 1, 7, 1, 0, 0, 0).localtime("-05:00")
-      compare_time_zone_info(start_time)
-    end
-
-    it 'should respect time zone info for a DateTime' do
-      start_time = DateTime.new(Time.now.year + 1, 7, 1, 0, 0, 0, "-05:00")
       compare_time_zone_info(start_time)
     end
   end
