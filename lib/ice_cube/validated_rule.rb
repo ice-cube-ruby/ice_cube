@@ -16,6 +16,20 @@ module IceCube
     include Validations::Count
     include Validations::Until
 
+    # Validations ordered for efficiency in sequence of:
+    # * descending intervals
+    # * boundary limits
+    # * base values by cardinality (n = 60, 60, 31, 24, 12, 7)
+    # * locks by cardinality (n = 365, 60, 60, 31, 24, 12, 7)
+    # * interval multiplier
+    VALIDATION_ORDER = [
+      :year, :month, :day, :wday, :hour, :min, :sec, :count, :until,
+      :base_sec, :base_min, :base_day, :base_hour, :base_month, :base_wday,
+      :day_of_year, :second_of_minute, :minute_of_hour, :day_of_month,
+      :hour_of_day, :month_of_year, :day_of_week,
+      :interval
+    ]
+
     # Compute the next time after (or including) the specified time in respect
     # to the given schedule
     def next_time(time, schedule, closing_time)
@@ -82,11 +96,9 @@ module IceCube
 
     private
 
-    # NOTE: optimization target, sort the rules by their type, year first
-    # so we can make bigger jumps more often
     def finds_acceptable_time?
-      @validations.all? do |name, validations_for_type|
-        validation_accepts_or_updates_time?(validations_for_type)
+      validation_names.all? do |type|
+        validation_accepts_or_updates_time?(@validations[type])
       end
     end
 
@@ -138,6 +150,10 @@ module IceCube
 
     def past_closing_time?(closing_time)
       closing_time && @time > closing_time
+    end
+
+    def validation_names
+      VALIDATION_ORDER & @validations.keys
     end
 
   end
