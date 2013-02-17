@@ -61,7 +61,7 @@ module IceCube
     # Serialize a time appropriate for storing
     def self.serialize_time(time)
       if time.respond_to?(:time_zone)
-        { :time => time.utc, :zone => time.time_zone.name }
+        {:time => time.utc, :zone => time.time_zone.name}
       elsif time.is_a?(Time)
         time
       end

@@ -27,6 +27,14 @@ module IceCube
           res.map(&:to_s).uniq.size.should == 1
         end
 
+        it 'should serialize to hash without error' do
+          schedule = IceCube::Schedule.new(Time.now)
+          schedule.add_recurrence_rule IceCube::Rule.hourly.until(Date.today >> 1)
+          schedule.add_recurrence_time Time.now + 123
+          schedule.add_exception_time Time.now + 456
+          expect { schedule.to_hash }.to_not raise_error
+        end
+
       end
     end
 

@@ -18,11 +18,15 @@ WORLD_TIME_ZONES = [
 RSpec.configure do |config|
 
   config.around :each, :if_active_support_time => true do |example|
-    example.run if defined? ActiveSupport::Time
+    example.run if defined? ActiveSupport
   end
 
   config.around :each, :if_active_support_time => false do |example|
-    example.run unless defined? ActiveSupport::Time
+    unless defined? ActiveSupport
+      stubbed_active_support = ::ActiveSupport = Module.new
+      example.run
+      Object.send :remove_const, :ActiveSupport
+    end
   end
 
   config.around :each do |example|
