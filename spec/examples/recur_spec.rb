@@ -96,15 +96,15 @@ describe :next_occurrence do
 
   it 'should get the next occurrence when a recurrence date is also added' do
     schedule = Schedule.new(Time.now)
-    schedule.add_recurrence_date(schedule.start_time + 30 * ONE_MINUTE)
+    schedule.add_recurrence_time(schedule.start_time + 30 * ONE_MINUTE)
     schedule.add_recurrence_rule Rule.hourly
     schedule.next_occurrence(schedule.start_time).should == schedule.start_time + 30 * ONE_MINUTE
   end
 
   it 'should get the next occurrence and ignore recurrence dates that are before the desired time' do
     schedule = Schedule.new(Time.now)
-    schedule.add_recurrence_date(schedule.start_time + 30 * ONE_MINUTE)
-    schedule.add_recurrence_date(schedule.start_time - 30 * ONE_MINUTE)
+    schedule.add_recurrence_time(schedule.start_time + 30 * ONE_MINUTE)
+    schedule.add_recurrence_time(schedule.start_time - 30 * ONE_MINUTE)
     schedule.add_recurrence_rule Rule.hourly
     schedule.next_occurrence(schedule.start_time).should == schedule.start_time + 30 * ONE_MINUTE
   end
@@ -141,7 +141,7 @@ describe :next_occurrences do
   it 'should get the next 3 occurrences when a recurrence date is also added' do
     schedule = Schedule.new(Time.now)
     schedule.add_recurrence_rule Rule.hourly
-    schedule.add_recurrence_date(schedule.start_time + 30 * ONE_MINUTE)
+    schedule.add_recurrence_time(schedule.start_time + 30 * ONE_MINUTE)
     schedule.next_occurrences(3, schedule.start_time).should == [
       schedule.start_time + 30 * ONE_MINUTE,
       schedule.start_time + 1 * ONE_HOUR,
@@ -150,8 +150,8 @@ describe :next_occurrences do
 
   it 'should get the next 3 occurrences and ignore recurrence dates that are before the desired time' do
     schedule = Schedule.new(Time.now)
-    schedule.add_recurrence_date(schedule.start_time + 30 * ONE_MINUTE)
-    schedule.add_recurrence_date(schedule.start_time - 30 * ONE_MINUTE)
+    schedule.add_recurrence_time(schedule.start_time + 30 * ONE_MINUTE)
+    schedule.add_recurrence_time(schedule.start_time - 30 * ONE_MINUTE)
     schedule.add_recurrence_rule Rule.hourly
     schedule.next_occurrences(3, schedule.start_time).should == [
       schedule.start_time + 30 * ONE_MINUTE,

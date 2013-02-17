@@ -445,7 +445,7 @@ describe IceCube::Schedule do
     it 'should be able to remove a recurrence date from a schedule' do
       time = Time.now
       schedule = IceCube::Schedule.new(time)
-      schedule.add_recurrence_date time
+      schedule.add_recurrence_time time
       schedule.remove_recurrence_date time
       schedule.recurrence_dates.should be_empty
     end
@@ -572,9 +572,9 @@ describe IceCube::Schedule do
 
     it 'should be true for multiple rdates' do
       schedule = IceCube::Schedule.new(Time.local(2010, 7, 10, 16))
-      schedule.add_recurrence_date(Time.local(2010, 7, 11, 16))
-      schedule.add_recurrence_date(Time.local(2010, 7, 12, 16))
-      schedule.add_recurrence_date(Time.local(2010, 7, 13, 16))
+      schedule.add_recurrence_time(Time.local(2010, 7, 11, 16))
+      schedule.add_recurrence_time(Time.local(2010, 7, 12, 16))
+      schedule.add_recurrence_time(Time.local(2010, 7, 13, 16))
 
       schedule.occurs_on?(Date.new(2010, 7, 11)).should be_true
       schedule.occurs_on?(Date.new(2010, 7, 12)).should be_true

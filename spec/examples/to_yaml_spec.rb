@@ -167,7 +167,7 @@ module IceCube
     it 'should be able to go back and forth to yaml and then call occurrences' do
       start_date = Time.local(2011, 5, 10, 12, 0, 0)
       schedule1 = Schedule.new(start_date)
-      schedule1.add_recurrence_date start_date
+      schedule1.add_recurrence_time start_date
       schedule2 = Schedule.from_yaml(schedule1.to_yaml) # round trip
 
       end_time = Time.now + ONE_DAY
@@ -186,7 +186,7 @@ module IceCube
       schedule = Schedule.new(start_date)
 
       schedule.add_recurrence_rule Rule.weekly.day(:wednesday)
-      schedule.add_recurrence_date start_date
+      schedule.add_recurrence_time start_date
 
       schedule = Schedule.from_hash(schedule.to_hash)
       schedule = Schedule.from_yaml(schedule.to_yaml)
@@ -250,7 +250,7 @@ module IceCube
       Time.zone = 'Pacific Time (US & Canada)'
       day = Time.zone.parse('21 Oct 2010 02:00:00')
       schedule = Schedule.new(day)
-      schedule.add_recurrence_date(day)
+      schedule.add_recurrence_time(day)
       schedule.occurs_on?(Date.new(2010, 10, 20)).should be_false
       schedule.occurs_on?(Date.new(2010, 10, 21)).should be_true
       schedule.occurs_on?(Date.new(2010, 10, 22)).should be_false

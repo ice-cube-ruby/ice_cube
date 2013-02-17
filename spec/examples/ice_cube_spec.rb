@@ -27,7 +27,7 @@ describe IceCube::Schedule do
   it 'should respond to a single date event' do
     start_date = Time.now
     schedule = IceCube::Schedule.new(start_date)
-    schedule.add_recurrence_date(start_date + 2)
+    schedule.add_recurrence_time(start_date + 2)
     #check assumptions
     dates = schedule.occurrences(start_date + 50)
     dates.size.should == 1
@@ -37,8 +37,8 @@ describe IceCube::Schedule do
   it 'should not return anything when given a single date and the same exclusion date' do
     start_date = Time.now
     schedule = IceCube::Schedule.new(start_date)
-    schedule.add_recurrence_date(start_date + 2)
-    schedule.add_exception_date(start_date + 2)
+    schedule.add_recurrence_time(start_date + 2)
+    schedule.add_exception_time(start_date + 2)
     #check assumption
     schedule.occurrences(start_date + 50 * IceCube::ONE_DAY).size.should == 0
   end
@@ -55,7 +55,7 @@ describe IceCube::Schedule do
     start_date = Time.local 2012, 3, 1
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.daily
-    schedule.add_exception_date(start_date + 1 * IceCube::ONE_DAY) # all days except tomorrow
+    schedule.add_exception_time(start_date + 1 * IceCube::ONE_DAY) # all days except tomorrow
     # check assumption
     dates = schedule.occurrences(start_date + 13 * IceCube::ONE_DAY) # 2 weeks
     dates.size.should == 13 # 2 weeks minus 1 day
@@ -284,7 +284,7 @@ describe IceCube::Schedule do
   it 'can retrieve rdates from a schedule' do
     schedule = IceCube::Schedule.new(Time.now)
     dates = [Time.now, Time.now + 5, Time.now + 10]
-    dates.each { |d| schedule.add_recurrence_date(d) }
+    dates.each { |d| schedule.add_recurrence_time(d) }
     # pull the dates back out of the schedule and compare
     schedule.rdates.should == dates
   end
@@ -292,7 +292,7 @@ describe IceCube::Schedule do
   it 'can retrieve exdates from a schedule' do
     schedule = IceCube::Schedule.new(Time.now)
     dates = [Time.now, Time.now + 5, Time.now + 10]
-    dates.each { |d| schedule.add_exception_date(d) }
+    dates.each { |d| schedule.add_exception_time(d) }
     # pull the dates back out of the schedule and compare
     schedule.exdates.should == dates
   end
@@ -361,38 +361,38 @@ describe IceCube::Schedule do
 
   it 'should be able to get back rdates from a schedule' do
     schedule = IceCube::Schedule.new DAY
-    schedule.add_recurrence_date DAY
-    schedule.add_recurrence_date(DAY + 2)
+    schedule.add_recurrence_time DAY
+    schedule.add_recurrence_time(DAY + 2)
     schedule.rdates.should == [DAY, DAY + 2]
   end
 
   it 'should be able to get back exdates from a schedule' do
     schedule = IceCube::Schedule.new DAY
-    schedule.add_exception_date DAY
-    schedule.add_exception_date(DAY + 2)
+    schedule.add_exception_time DAY
+    schedule.add_exception_time(DAY + 2)
     schedule.exdates.should == [DAY, DAY + 2]
   end
 
   it 'should allow calling of .first on a schedule with no arguments' do
     start_time = Time.now
     schedule = IceCube::Schedule.new(start_time)
-    schedule.add_recurrence_date start_time
+    schedule.add_recurrence_time start_time
     schedule.first.should == start_time
   end
 
-  it 'should be able to ignore nil dates that are inserted as part of a collection to add_recurrence_date' do
+  it 'should be able to ignore nil dates that are inserted as part of a collection to add_recurrence_time' do
     start_time = Time.now
     schedule = IceCube::Schedule.new(start_time)
-    schedule.add_recurrence_date start_time
-    schedule.add_recurrence_date start_time + IceCube::ONE_DAY
-    schedule.add_recurrence_date nil
+    schedule.add_recurrence_time start_time
+    schedule.add_recurrence_time start_time + IceCube::ONE_DAY
+    schedule.add_recurrence_time nil
     schedule.all_occurrences.should == [start_time, start_time + IceCube::ONE_DAY]
   end
 
   it 'should be able to use all_occurrences with no rules' do
     start_time = Time.now
     schedule = IceCube::Schedule.new(start_time)
-    schedule.add_recurrence_date start_time
+    schedule.add_recurrence_time start_time
     lambda do
       schedule.all_occurrences.should == [start_time]
     end.should_not raise_error
@@ -434,7 +434,7 @@ describe IceCube::Schedule do
     start_time = Time.local 2010, 5, 6, 10, 0, 0
     schedule = IceCube::Schedule.new(start_time, :duration => 3600)
     schedule.add_recurrence_rule IceCube::Rule.daily
-    schedule.add_exception_date Time.local(2010, 5, 6, 10, 21, 30)
+    schedule.add_exception_time Time.local(2010, 5, 6, 10, 21, 30)
     schedule.occurring_at?(Time.local(2010, 5, 6, 10, 21, 29)).should be_true
     schedule.occurring_at?(Time.local(2010, 5, 6, 10, 21, 30)).should be_false
     schedule.occurring_at?(Time.local(2010, 5, 6, 10, 21, 31)).should be_true
@@ -596,14 +596,14 @@ describe IceCube::Schedule do
 
   it 'should have some convenient alias for rdates' do
     schedule = IceCube::Schedule.new(Time.now)
-    schedule.add_recurrence_date Time.local(2010, 8, 13)
+    schedule.add_recurrence_time Time.local(2010, 8, 13)
     schedule.rdate Time.local(2010, 8, 14)
     schedule.rdates.should == [Time.local(2010, 8, 13), Time.local(2010, 8, 14)]
   end
 
   it 'should have some convenient alias for exdates' do
     schedule = IceCube::Schedule.new(Time.now)
-    schedule.add_exception_date Time.local(2010, 8, 13)
+    schedule.add_exception_time Time.local(2010, 8, 13)
     schedule.exdate Time.local(2010, 8, 14)
     schedule.exdates.should == [Time.local(2010, 8, 13), Time.local(2010, 8, 14)]
   end

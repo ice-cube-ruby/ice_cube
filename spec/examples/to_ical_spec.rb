@@ -149,7 +149,7 @@ describe IceCube, 'to_ical' do
 
   it 'should be able to serialize a schedule with an rdate' do
     schedule = IceCube::Schedule.new(Time.utc(2010, 5, 10, 10, 0, 0))
-    schedule.add_recurrence_date Time.utc(2010, 6, 20, 5, 0, 0)
+    schedule.add_recurrence_time Time.utc(2010, 6, 20, 5, 0, 0)
     # test equality
     expectation = "DTSTART:20100510T100000Z\n"
     expectation << "RDATE:20100620T050000Z"
@@ -158,7 +158,7 @@ describe IceCube, 'to_ical' do
 
   it 'should be able to serialize a schedule with an exdate' do
     schedule = IceCube::Schedule.new(Time.utc(2010, 5, 10, 10, 0, 0))
-    schedule.add_exception_date Time.utc(2010, 6, 20, 5, 0, 0)
+    schedule.add_exception_time Time.utc(2010, 6, 20, 5, 0, 0)
     # test equality
     expectation = "DTSTART:20100510T100000Z\n"
     expectation << "EXDATE:20100620T050000Z"
