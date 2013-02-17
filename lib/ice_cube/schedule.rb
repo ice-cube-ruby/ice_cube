@@ -297,7 +297,11 @@ module IceCube
 
     # Load the schedule from yaml
     def self.from_yaml(yaml, options = {})
-      from_hash IceCube::use_psych? ? Psych::load(yaml) : YAML::load(yaml), options
+      hash = IceCube::use_psych? ? Psych::load(yaml) : YAML::load(yaml)
+      if match = yaml.match(/start_date: .+((?:-|\+)\d{2}:\d{2})$/)
+        TimeUtil.restore_deserialized_offset(hash[:start_date], match[1])
+      end
+      from_hash hash, options
     end
 
     # Convert the schedule to a hash

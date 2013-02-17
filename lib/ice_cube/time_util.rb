@@ -60,7 +60,7 @@ module IceCube
 
     # Serialize a time appropriate for storing
     def self.serialize_time(time)
-      if defined?(:ActiveSupport) && const_defined?(:ActiveSupport) && time.is_a?(ActiveSupport::TimeWithZone)
+      if time.respond_to?(:time_zone)
         { :time => time.utc, :zone => time.time_zone.name }
       elsif time.is_a?(Time)
         time
@@ -76,8 +76,20 @@ module IceCube
       end
     end
 
+    # Check the deserialized time offset string against actual local time
+    # offset to try and preserve the original offset for plain Ruby Time. If
+    # the offset is the same as local we can assume the same original zone and
+    # keep it.  If it was serialized with a different offset than local TZ it
+    # will lose the zone and not support DST.
+    def self.restore_deserialized_offset(time, orig_offset_str)
+      return time if time.respond_to?(:time_zone) or
+                     time.getlocal(orig_offset_str).utc_offset == time.utc_offset
+      warn 'IceCube: parsed Time from nonlocal TZ. Use ActiveSupport to fix DST'
+      time.localtime(orig_offset_str)
+    end
+
     # Get the beginning of a date
-    def self.beginning_of_date(date, reference=Time.now)
+    def self.beginning_of_date(date, reference=date.to_time)
       args = [date.year, date.month, date.day, 0, 0, 0]
       if reference.respond_to?(:time_zone) && reference.time_zone
         reference.time_zone.local(*args)
@@ -87,7 +99,7 @@ module IceCube
     end
 
     # Get the end of a date
-    def self.end_of_date(date, reference=Time.now)
+    def self.end_of_date(date, reference=date.to_time)
       args = [date.year, date.month, date.day, 23, 59, 59]
       if reference.respond_to?(:time_zone) && reference.time_zone
         reference.time_zone.local(*args)

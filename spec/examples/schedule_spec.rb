@@ -493,39 +493,43 @@ describe IceCube::Schedule do
     subject(:schedule) { IceCube::Schedule.new(start_time) }
 
     shared_examples "occurring on a given day" do
-      specify 'should determine if it occurs on a given Date' do
-        schedule.occurs_on?(Date.new(2010, 7, 1)).should be_false
-        schedule.occurs_on?(Date.new(2010, 7, 2)).should be_true
-        schedule.occurs_on?(Date.new(2010, 7, 3)).should be_false
-      end
+      WORLD_TIME_ZONES.each do |zone|
+        context "in #{zone}", :system_time_zone => zone do
+          specify 'should determine if it occurs on a given Date' do
+            schedule.occurs_on?(Date.new(2010, 7, 1)).should be_false
+            schedule.occurs_on?(Date.new(2010, 7, 2)).should be_true
+            schedule.occurs_on?(Date.new(2010, 7, 3)).should be_false
+          end
 
-      specify 'should determine if it occurs on the day of a given UTC Time' do
-        schedule.occurs_on?(Time.utc(2010, 7, 1, 23, 59, 59)).should be_false
-        schedule.occurs_on?(Time.utc(2010, 7, 2,  0,  0,  1)).should be_true
-        schedule.occurs_on?(Time.utc(2010, 7, 2, 23, 59, 59)).should be_true
-        schedule.occurs_on?(Time.utc(2010, 7, 3,  0,  0,  1)).should be_false
-      end
+          specify 'should determine if it occurs on the day of a given UTC Time' do
+            schedule.occurs_on?(Time.utc(2010, 7, 1, 23, 59, 59)).should be_false
+            schedule.occurs_on?(Time.utc(2010, 7, 2,  0,  0,  1)).should be_true
+            schedule.occurs_on?(Time.utc(2010, 7, 2, 23, 59, 59)).should be_true
+            schedule.occurs_on?(Time.utc(2010, 7, 3,  0,  0,  1)).should be_false
+          end
 
-      specify 'should determine if it occurs on the day of a given local Time' do
-        schedule.occurs_on?(Time.local(2010, 7, 1, 23, 59, 59)).should be_false
-        schedule.occurs_on?(Time.local(2010, 7, 2,  0,  0,  1)).should be_true
-        schedule.occurs_on?(Time.local(2010, 7, 2, 23, 59, 59)).should be_true
-        schedule.occurs_on?(Time.local(2010, 7, 3,  0,  0,  1)).should be_false
-      end
+          specify 'should determine if it occurs on the day of a given local Time' do
+            schedule.occurs_on?(Time.local(2010, 7, 1, 23, 59, 59)).should be_false
+            schedule.occurs_on?(Time.local(2010, 7, 2,  0,  0,  1)).should be_true
+            schedule.occurs_on?(Time.local(2010, 7, 2, 23, 59, 59)).should be_true
+            schedule.occurs_on?(Time.local(2010, 7, 3,  0,  0,  1)).should be_false
+          end
 
-      specify 'should determine if it occurs on the day of a given non-local Time' do
-        schedule.occurs_on?(Time.local(2010, 7, 1, 23, 59, 59, false, "+11:15")).should be_false
-        schedule.occurs_on?(Time.local(2010, 7, 2,  0,  0,  1, false, "+11:15")).should be_true
-        schedule.occurs_on?(Time.local(2010, 7, 2, 23, 59, 59, false, "+11:15")).should be_true
-        schedule.occurs_on?(Time.local(2010, 7, 3,  0,  0,  1, false, "+11:15")).should be_false
-      end
+          specify 'should determine if it occurs on the day of a given non-local Time' do
+            schedule.occurs_on?(Time.local(2010, 7, 1, 23, 59, 59, false, "+11:15")).should be_false
+            schedule.occurs_on?(Time.local(2010, 7, 2,  0,  0,  1, false, "+11:15")).should be_true
+            schedule.occurs_on?(Time.local(2010, 7, 2, 23, 59, 59, false, "+11:15")).should be_true
+            schedule.occurs_on?(Time.local(2010, 7, 3,  0,  0,  1, false, "+11:15")).should be_false
+          end
 
-      specify 'should determine if it occurs on the day of a given ActiveSupport::Time', :if_active_support_time => true do
-        Time.zone = "Pacific/Honolulu"
-        schedule.occurs_on?(Time.zone.parse('2010-07-01 23:59:59')).should be_false
-        schedule.occurs_on?(Time.zone.parse('2010-07-02 00:00:01')).should be_true
-        schedule.occurs_on?(Time.zone.parse('2010-07-02 23:59:59')).should be_true
-        schedule.occurs_on?(Time.zone.parse('2010-07-03 00:00:01')).should be_false
+          specify 'should determine if it occurs on the day of a given ActiveSupport::Time', :if_active_support_time => true do
+            Time.zone = "Pacific/Honolulu"
+            schedule.occurs_on?(Time.zone.parse('2010-07-01 23:59:59')).should be_false
+            schedule.occurs_on?(Time.zone.parse('2010-07-02 00:00:01')).should be_true
+            schedule.occurs_on?(Time.zone.parse('2010-07-02 23:59:59')).should be_true
+            schedule.occurs_on?(Time.zone.parse('2010-07-03 00:00:01')).should be_false
+          end
+        end
       end
     end
 
@@ -591,6 +595,7 @@ describe IceCube::Schedule do
   end
 
   def trap_infinite_loop_beyond(iterations)
-    IceCube::ValidatedRule.any_instance.should_receive(:finds_acceptable_time?).at_most(iterations).times.and_call_original
+    IceCube::ValidatedRule.any_instance.should_receive(:finds_acceptable_time?)
+                          .at_most(iterations).times.and_call_original
   end
 end
