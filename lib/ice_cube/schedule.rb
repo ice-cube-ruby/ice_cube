@@ -397,33 +397,19 @@ module IceCube
 
     # Get the next time after (or including) a specific time
     def next_time(time, closing_time)
-      min_time = nil
       loop do
-        @all_recurrence_rules.each do |rule|
+        min_time = @all_recurrence_rules.reduce(nil) do |min_time, rule|
           begin
-            if res = rule.next_time(time, self, closing_time)
-              if min_time.nil? || res < min_time
-                min_time = res
-              end
-            end
-          # Certain exceptions mean this rule no longer wants to play
+            new_time = rule.next_time(time, self, min_time || closing_time)
+            [min_time, new_time].compact.min
           rescue CountExceeded, UntilExceeded
-            next
+            min_time
           end
         end
-        # If there is no match, return nil
-        return nil unless min_time
-        # Now make sure that its not an exception_time, and if it is
-        # then keep looking
-        if exception_time?(min_time)
-          time = min_time + 1
-          min_time = nil
-          next
-        end
-        # Break, we're done
-        break
+        break nil unless min_time
+        next(time = min_time + 1) if exception_time?(min_time)
+        break min_time
       end
-      min_time
     end
 
     # Return a boolean indicating if any rule needs to be run from the start of time

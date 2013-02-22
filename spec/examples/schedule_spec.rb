@@ -280,6 +280,13 @@ describe IceCube::Schedule do
       end.should raise_error ArgumentError
     end
 
+    it 'should consider count limits separately for multiple rules' do
+      schedule = IceCube::Schedule.new
+      schedule.rrule IceCube::Rule.minutely.count(3)
+      schedule.rrule IceCube::Rule.daily.count(3)
+      schedule.all_occurrences.size.should == 5
+    end
+
   end
 
   describe :next_occurrences do
