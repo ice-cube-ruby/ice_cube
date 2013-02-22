@@ -3,6 +3,36 @@ require File.dirname(__FILE__) + '/../spec_helper'
 module IceCube
   describe DailyRule, 'occurs_on?' do
 
+    it 'should include nearest time in DST start hour' do
+      schedule = Schedule.new(t0 = Time.local(2013, 3, 9, 2, 30, 0))
+      schedule.add_recurrence_rule Rule.daily
+      schedule.first(3).should == [
+        Time.local(2013, 3,  9, 2, 30, 0), # -0800
+        Time.local(2013, 3, 10, 3, 30, 0), # -0700
+        Time.local(2013, 3, 11, 2, 30, 0)  # -0700
+      ]
+    end
+
+    it 'should not skip times in DST end hour' do
+      schedule = Schedule.new(t0 = Time.local(2013, 11, 2, 2, 30, 0))
+      schedule.add_recurrence_rule Rule.daily
+      schedule.first(3).should == [
+        Time.local(2013, 11, 2, 2, 30, 0), # -0700
+        Time.local(2013, 11, 3, 2, 30, 0), # -0800
+        Time.local(2013, 11, 4, 2, 30, 0)  # -0800
+      ]
+    end
+
+    it 'should include nearest time to DST start when locking hour_of_day' do
+      schedule = Schedule.new(t0 = Time.local(2013, 3, 9, 2, 0, 0))
+      schedule.add_recurrence_rule Rule.daily.hour_of_day(2)
+      schedule.first(3).should == [
+        Time.local(2013, 3,  9, 2, 0, 0), # -0800
+        Time.local(2013, 3, 10, 3, 0, 0), # -0700
+        Time.local(2013, 3, 11, 2, 0, 0)  # -0700
+      ]
+    end
+
     it 'should produce the correct days for @interval = 1' do
       schedule = Schedule.new(t0 = Time.now)
       schedule.add_recurrence_rule Rule.daily
