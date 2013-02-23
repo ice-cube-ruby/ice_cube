@@ -24,23 +24,17 @@ describe IceCube::Schedule do
     end
   end
 
-  it 'should respond to a single date event' do
-    start_date = Time.now
-    schedule = IceCube::Schedule.new(start_date)
-    schedule.add_recurrence_time(start_date + 2)
-    #check assumptions
-    dates = schedule.occurrences(start_date + 50)
-    dates.size.should == 1
-    dates[0].should == start_date + 2
+  it 'should return an added occurrence time' do
+    schedule = IceCube::Schedule.new(t0 = Time.now)
+    schedule.add_recurrence_time(t0 + 2)
+    schedule.occurrences(t0 + 50).should == [t0, t0 + 2]
   end
 
-  it 'should not return anything when given a single date and the same exclusion date' do
-    start_date = Time.now
-    schedule = IceCube::Schedule.new(start_date)
-    schedule.add_recurrence_time(start_date + 2)
-    schedule.add_exception_time(start_date + 2)
-    #check assumption
-    schedule.occurrences(start_date + 50 * IceCube::ONE_DAY).size.should == 0
+  it 'should not return an occurrence time that is excluded' do
+    schedule = IceCube::Schedule.new(t0 = Time.now)
+    schedule.add_recurrence_time(t0 + 2)
+    schedule.add_exception_time(t0 + 2)
+    schedule.occurrences(t0 + 50).should == [t0]
   end
 
   it 'should return properly with a combination of a recurrence and exception rule' do

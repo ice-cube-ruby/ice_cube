@@ -198,6 +198,13 @@ describe IceCube, 'to_ical' do
     schedule.to_ical.should == "DTSTART;TZID=#{time.zone}:#{time.strftime('%Y%m%dT%H%M%S')}" # default false
   end
 
+  it 'should not have an rtime that duplicates start time' do
+    start = Time.utc(2012, 12, 12, 12, 0, 0)
+    schedule = IceCube::Schedule.new(start)
+    schedule.add_recurrence_time start
+    schedule.to_ical.should == "DTSTART:20121212T120000Z"
+  end
+
   it 'should be able to receive a to_ical in utc time' do
     time = Time.now
     schedule = IceCube::Schedule.new(Time.now)

@@ -45,6 +45,26 @@ describe IceCube::Schedule do
 
   end
 
+  describe :recurrence_times do
+
+    it 'should start empty' do
+      IceCube::Schedule.new.recurrence_times.should be_empty
+    end
+
+    it 'should include added times' do
+      schedule = IceCube::Schedule.new(t0 = Time.now)
+      schedule.add_recurrence_time(t1 = t0 + 3600)
+      schedule.recurrence_times.should == [t1]
+    end
+
+    it 'can include start time' do
+      schedule = IceCube::Schedule.new(t0 = Time.now)
+      schedule.add_recurrence_time(t0)
+      schedule.recurrence_times.should == [t0]
+    end
+
+  end
+
   describe :conflicts_with? do
 
     it 'should raise an error if both are not terminating' do
@@ -249,27 +269,37 @@ describe IceCube::Schedule do
 
     it 'should return self' do
       schedule = IceCube::Schedule.new
-      schedule.each_occurrence { |s| break }.should == schedule
+      schedule.each_occurrence { |s| }.should == schedule
     end
 
     it 'should stop itself when hitting the end of a schedule' do
-      time = Time.now + 24 * IceCube::ONE_DAY
-      schedule = IceCube::Schedule.new
-      schedule.add_recurrence_time time
+      schedule = IceCube::Schedule.new(t0 = Time.now)
+      t1 = t0 + 24 * IceCube::ONE_DAY
+      schedule.add_recurrence_time t1
       answers = []
       schedule.each_occurrence { |t| answers << t }
-      answers.should == [time]
+      answers.should == [t0, t1]
     end
 
   end
 
   describe :all_occurrences do
 
-    it 'should stop automatically with just a date' do
-      time = Time.now + 24 * IceCube::ONE_DAY
-      schedule = IceCube::Schedule.new
-      schedule.add_recurrence_time time
-      schedule.all_occurrences.should == [time]
+    it 'should include its start time when empty' do
+      schedule = IceCube::Schedule.new(t0 = Time.now)
+      schedule.all_occurrences.should == [t0]
+    end
+
+   it 'should have one occurrence with one recurrence time at start_time' do
+      schedule = IceCube::Schedule.new(t0 = Time.local(2012, 12, 12, 12, 12, 12))
+      schedule.add_recurrence_time t0
+      schedule.all_occurrences.should == [t0]
+    end
+
+    it 'should have two occurrences with a recurrence time after start_time' do
+      schedule = IceCube::Schedule.new(t0 = Time.local(2012, 12, 12, 12, 12, 12))
+      schedule.add_recurrence_time t1 = Time.local(2013,  1, 13,  1, 13,  1)
+      schedule.all_occurrences.should == [t0, t1]
     end
 
     it 'should return an error if there is nothing to stop it' do

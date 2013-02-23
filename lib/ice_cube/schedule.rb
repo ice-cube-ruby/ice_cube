@@ -270,11 +270,11 @@ module IceCube
     # String serialization
     def to_s
       pieces = []
-      ed = extimes; rd = rtimes - ed
+      rd = recurrence_times_with_start_time - extimes
       pieces.concat rd.sort.map { |t| t.strftime(IceCube.to_s_time_format) }
-      pieces.concat rrules.map { |t| t.to_s }
+      pieces.concat rrules.map  { |t| t.to_s }
       pieces.concat exrules.map { |t| "not #{t.to_s}" }
-      pieces.concat ed.sort.map { |t| "not on #{t.strftime(IceCube.to_s_time_format)}" }
+      pieces.concat extimes.sort.map { |t| "not on #{t.strftime(IceCube.to_s_time_format)}" }
       pieces.join(' / ')
     end
 
@@ -283,9 +283,9 @@ module IceCube
       pieces = []
       pieces << "DTSTART#{IcalBuilder.ical_format(start_time, force_utc)}"
       pieces.concat recurrence_rules.map { |r| "RRULE:#{r.to_ical}" }
-      pieces.concat exception_rules.map { |r| "EXRULE:#{r.to_ical}" }
-      pieces.concat recurrence_times.map { |t| "RDATE#{IcalBuilder.ical_format(t, force_utc)}" }
-      pieces.concat exception_times.map { |t| "EXDATE#{IcalBuilder.ical_format(t, force_utc)}" }
+      pieces.concat exception_rules.map  { |r| "EXRULE:#{r.to_ical}" }
+      pieces.concat recurrence_times_without_start_time.map { |t| "RDATE#{IcalBuilder.ical_format(t, force_utc)}" }
+      pieces.concat exception_times.map  { |t| "EXDATE#{IcalBuilder.ical_format(t, force_utc)}" }
       pieces << "DTEND#{IcalBuilder.ical_format(end_time, force_utc)}" if end_time
       pieces.join("\n")
     end
@@ -398,7 +398,7 @@ module IceCube
     # Get the next time after (or including) a specific time
     def next_time(time, closing_time)
       loop do
-        min_time = @all_recurrence_rules.reduce(nil) do |min_time, rule|
+        min_time = recurrence_rules_with_implicit_start_occurrence.reduce(nil) do |min_time, rule|
           begin
             new_time = rule.next_time(time, self, min_time || closing_time)
             [min_time, new_time].compact.min
@@ -423,6 +423,30 @@ module IceCube
     def exception_time?(time)
       @all_exception_rules.any? do |rule|
         rule.on?(time, self)
+      end
+    end
+
+    def implicit_start_occurrence
+      SingleOccurrenceRule.new(start_time)
+    end
+
+    def recurrence_times_without_start_time
+      recurrence_times.reject { |t| t == start_time }
+    end
+
+    def recurrence_times_with_start_time
+      if (recurrence_rules).empty?
+        [start_time] + recurrence_times_without_start_time
+      else
+        recurrence_times
+      end
+    end
+
+    def recurrence_rules_with_implicit_start_occurrence
+      if recurrence_rules.empty?
+        [implicit_start_occurrence] + @all_recurrence_rules
+      else
+        @all_recurrence_rules
       end
     end
 
