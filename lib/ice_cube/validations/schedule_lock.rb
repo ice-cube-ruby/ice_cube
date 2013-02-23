@@ -34,6 +34,12 @@ module IceCube
       def build_hash(builder)
       end
 
+      def dst_adjust?
+        case @type
+        when :sec, :min then false
+        else true
+        end
+      end
     end
 
   end

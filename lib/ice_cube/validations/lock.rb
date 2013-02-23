@@ -5,7 +5,7 @@ module IceCube
 
   module Validations::Lock
 
-    INTERVALS = {:hour => 24, :min => 60, :sec => 60, :month => 12, :wday => 7}
+    INTERVALS = {:min => 60, :sec => 60, :month => 12, :wday => 7}
 
     def validate(time, schedule)
       return send(:"validate_#{type}_lock", time, schedule) unless INTERVALS[type]
@@ -15,6 +15,23 @@ module IceCube
     end
 
     private
+
+    # Lock the hour if explicitly set by hour_of_day, but allow for the nearest
+    # hour during DST start to keep the correct interval.
+    #
+    def validate_hour_lock(time, schedule)
+      hour = value || schedule.start_time.send(type)
+      hour = 24 + hour if hour < 0
+      if hour >= time.hour
+        hour - time.hour
+      else
+        if dst_offset = TimeUtil.dst_change(time)
+          hour - time.hour + dst_offset
+        else
+          24 - time.hour + hour
+        end
+      end
+    end
 
     # For monthly rules that have no specified day value, the validation relies
     # on the schedule start time and jumps to include every month even if it

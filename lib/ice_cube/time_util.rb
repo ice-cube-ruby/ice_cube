@@ -191,6 +191,13 @@ module IceCube
       ((date >> month_distance) - date).to_i
     end
 
+    def self.dst_change(time)
+      one_hour_ago = time - ONE_HOUR
+      if time.dst? ^ one_hour_ago.dst?
+        (time.utc_offset - one_hour_ago.utc_offset) / ONE_HOUR
+      end
+    end
+
     # A utility class for safely moving time around
     class TimeWrapper
 
