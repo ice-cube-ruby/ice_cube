@@ -245,20 +245,20 @@ module IceCube
       end
 
       def clear_sec
-        @time -= @time.sec
+        @time.sec > 0 ? @time -= @time.sec : @time
       end
 
       def clear_min
-        @time -= (@time.min * ONE_MINUTE)
+        @time.min > 0 ? @time -= (@time.min * ONE_MINUTE) : @time
       end
 
       def clear_hour
-        @time -= (@time.hour * ONE_HOUR)
+        @time.hour > 0 ? @time -= (@time.hour * ONE_HOUR) : @time
       end
 
       # Move to the first of the month, 0 hours
       def clear_day
-        @time -= (@time.day - 1) * IceCube::ONE_DAY
+        @time.day > 1 ? @time -= (@time.day - 1) * ONE_DAY : @time
       end
 
       # Clear to january 1st
@@ -271,6 +271,7 @@ module IceCube
       end
 
       def clear_year
+        @time
       end
 
     end
