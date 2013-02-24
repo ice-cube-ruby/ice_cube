@@ -147,7 +147,7 @@ describe IceCube, 'to_ical' do
     schedule.to_ical.should == expectation
   end
 
-  it 'should be able to serialize a schedule with an rdate' do
+  it 'should be able to serialize a schedule with an rtime' do
     schedule = IceCube::Schedule.new(Time.utc(2010, 5, 10, 10, 0, 0))
     schedule.add_recurrence_time Time.utc(2010, 6, 20, 5, 0, 0)
     # test equality
@@ -156,7 +156,7 @@ describe IceCube, 'to_ical' do
     schedule.to_ical.should == expectation
   end
 
-  it 'should be able to serialize a schedule with an exdate' do
+  it 'should be able to serialize a schedule with an exception time' do
     schedule = IceCube::Schedule.new(Time.utc(2010, 5, 10, 10, 0, 0))
     schedule.add_exception_time Time.utc(2010, 6, 20, 5, 0, 0)
     # test equality

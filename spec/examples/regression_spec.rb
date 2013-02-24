@@ -110,7 +110,7 @@ module IceCube
         it 'should not include exception times due to rounding errors [#83]' do
           schedule = Schedule.new(t0 = Time.new(2012, 12, 21, 21, 12, 21.212121))
           schedule.rrule Rule.daily
-          schedule.exdate((t0 + ONE_DAY).round)
+          schedule.extime((t0 + ONE_DAY).round)
           schedule.first(2)[0].should == t0
           schedule.first(2)[1].should == t0 + 2 * ONE_DAY
         end

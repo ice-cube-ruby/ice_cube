@@ -107,7 +107,7 @@ describe IceCube::Schedule, 'to_s' do
     schedule.to_s.should == 'March 20, 2010'
   end
 
-  it 'should remove duplicate rdates' do
+  it 'should remove duplicate rtimes' do
     schedule = IceCube::Schedule.new t0 = Time.local(2010, 3, 19)
     schedule.add_recurrence_time Time.local(2010, 3, 20)
     schedule.add_recurrence_time Time.local(2010, 3, 20)
@@ -121,7 +121,7 @@ describe IceCube::Schedule, 'to_s' do
     schedule.to_s.should == 'March 20, 2010 / Weekly'
   end
 
-  it 'should work with rules and dates and exdates' do
+  it 'should work with rules and times and exception times' do
     schedule = IceCube::Schedule.new Time.local(2010, 3, 20)
     schedule.add_recurrence_rule IceCube::Rule.weekly
     schedule.add_recurrence_time Time.local(2010, 3, 20)
