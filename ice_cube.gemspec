@@ -7,6 +7,7 @@ Gem::Specification.new do |s|
   s.author        = 'John Crepezzi'
   s.email         = 'john@crepezzi.com'
   s.homepage      = 'http://seejohnrun.github.com/ice_cube/'
+  s.license       = 'MIT'
 
   s.version       = IceCube::VERSION
   s.platform      = Gem::Platform::RUBY
