@@ -83,7 +83,7 @@
 0.8.1
 
 0.9.0
-	* Fix the affect on end_time on IceCube::Schedule [#99]
+	* Fix the effect on end_time on IceCube::Schedule [#99]
 	* Remove end_time from `to_s` [#99]
 	* Single recurrences now work properly with conflict_with? [#71]
 	* Fix a bug with interval > 1 when using occurrences_between [#92]
@@ -107,3 +107,14 @@
 	* Rules start uses with 0
 	* Avoid microseconds when comparing times [#83]
 	* Handle DateTime's lack of subseconds
+
+0.10.0
+	* Fix monthly intervals to not skip short months [#105]
+	* Add support for week_start (@masquita) [#75]
+	* Fix occurring_between? for zero-length occurrences at start boundary [#147]
+	* Add block initialization, new schedule yields itself [#146]
+	* Warn on use of DateTime and convert to local Time [#144]
+	* Bug fix for count limit across multiple rules [#149]
+	* Fix occurrences in DST transition [#150]
+	* Start time counts as an implicit occurrence (no more empty schedule) [#135]
+	* Schedule occurrences have end times [#119]

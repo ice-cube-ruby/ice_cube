@@ -1,20 +1,21 @@
-# ice_cube - easy date expansion
+# ice_cube - Easy schedule expansion
 
-[![Build Status](https://secure.travis-ci.org/seejohnrun/ice_cube.png)](http://travis-ci.org/seejohnrun/ice_cube)
+[![Build Status][travis-ice_cube-png]][travis-ice_cube]
 
 <a href="https://www.stripeme.com/pay/1lq0">
   <img alt="Pay" src="https://www.stripeme.com/pay.jpg" />
 </a>
 
-``` bash
+```bash
 gem install ice_cube
 ```
 
 ice_cube is a ruby library for easily handling repeated events (schedules).
-The API is modeled after iCalendar repeated dates.  The power lies in the
-ability to specify multiple rules and dates, and have ice_cube quickly figure
-out whether the schedule falls on a certain date (.occurs_on?), or what dates
-it occurs on (.occurrences, .first, .all_occurrences)
+The API is modeled after [iCalendar events][ical-3.6.1], in a pleasant Ruby
+syntax. The power lies in the ability to specify multiple rules, and have
+ice_cube quickly figure out whether the schedule falls on a certain date
+(.occurs_on?), or what times it occurs at (.occurrences, .first,
+.all_occurrences).
 
 Imagine you want:
 
@@ -22,83 +23,101 @@ Imagine you want:
 
 You would write:
 
-``` ruby
-schedule.add_recurrence_rule Rule.yearly.day_of_month(13).day(:friday).
-  month_of_year(:october)
+```ruby
+schedule.add_recurrence_rule(
+  Rule.yearly.day_of_month(13).day(:friday).month_of_year(:october)
+)
 ```
 
 ---
 
 ## Quick Introductions
 
-* Presentation from Lone Star Ruby Conf -
-  http://seejohnrun.github.com/ice_cube/static/lsrc_ice_cube.pdf
-* Quick Introduction -
-  http://seejohnrun.github.com/ice_cube/static/ice_cube_ruby_nyc.pdf
-* Website -
-  http://seejohnrun.github.com/ice_cube/
+* [Presentation from Lone Star Ruby Conf][ice_cube-lone_star_pdf]
+* [Quick Introduction][ice_cube-ruby_nyc_pdf]
+* [Documentation Website][ice_cube-docs]
 
 ---
 
-With ice_cube, you can specify (in order of precendence)
+With ice_cube, you can specify (in increasing order of precendence):
 
-* Exception Dates - To specifically exclude from a schedule
-* Recurrence Dates - To specifically include in a schedule
-* Exception Rules - Rules on how to exclude recurring dates in a schedule
-* Recurrence Rules - Rules on how to include recurring dates in a schedule
+* Recurrence Rules - Rules on how to include recurring times in a schedule
+* Recurrence Times - To specifically include in a schedule
+* Exception Times - To specifically exclude from a schedule
 
-EX: Specifying a exception/recurrence date:
+Example: Specifying a recurrence with an exception time:
 
-``` ruby
-schedule = Schedule.new(start_date)
-schedule.add_recurrence_date(Time.now)
-schedule.add_exception_date(Time.now + 1)
+```ruby
+schedule = Schedule.new(now = Time.now) do |s|
+  s.add_recurrence_rule(Rule.daily.count(3))
+  s.add_exception_time(now + 1.day)
+end
 
-# list all occurrences from start_date to end_date
-occurrences = schedule.occurrences(end_date) # [Time.now]
+# list occurrences until end_time (end_time is needed for non-terminating rules)
+occurrences = schedule.occurrences(end_time) # [now]
 
-# or all of the occurrences
-occurrences = schedule.all_occurrences # [Time.now]
+# or all of the occurrences (only for terminating schedules)
+occurrences = schedule.all_occurrences # [now, now + 2.days]
 
 # or check just a single time
-schedule.occurs_at?(Time.now) # true
+schedule.occurs_at?(now + 1.day) # false
+schedule.occurs_at?(now + 2.days) # true
 
 # or check just a single day
-schedule.occurs_on?(Date.new) # true
+schedule.occurs_on?(Date.today) # true
 
 # or check whether it occurs between two dates
-schedule.occurs_between?(Time.now, Time.now + 30.days) # true
-schedule.occurs_between?(Time.now + 3.days, Time.now + 30.days) # false
+schedule.occurs_between?(now, now + 30.days) # true
+schedule.occurs_between?(now + 3.days, now + 30.days) # false
 
 # or the first (n) occurrences
-schedule.first(n) # [Time.now]
-schedule.first # Time.now
+schedule.first(2) # [now, now + 2.days]
+schedule.first # now
 
 # or the next occurrence
-schedule.next_occurrence([from_date]) # defaults to Time.now
-schedule.remaining_occurrences
-schedule.next_occurrences(3, [from_date])
+schedule.next_occurrence(from_time)     # defaults to Time.now
+schedule.next_occurrences(3, from_time) # defaults to Time.now
+schedule.remaining_occurrences          # for terminating schedules
 
 # or give the schedule a duration and ask if occurring_at?
-schedule = Schedule.new(Time.now, :duration => 3600)
+schedule = Schedule.new(now, :duration => 3600)
 schedule.add_recurrence_rule Rule.daily
-schedule.occurring_at?(Time.now + 1800) # true
+schedule.occurring_at?(now + 1800) # true
 schedule.occurring_between?(t1, t2)
 
-# you can also give schedules a solidified end_time
-schedule = Schedule.new(Time.now, :end_time => Time.now + 3600)
+# using end_time also sets the duration 
+schedule = Schedule.new(start = Time.now, :end_time => start + 3600)
 schedule.add_recurrence_rule Rule.daily
-schedule.occurs_at?(Time.now + 3601) # false
+schedule.occurring_at?(start + 3599) # true
+schedule.occurring_at?(start + 3600) # false
 
-# Or take control
+# take control and use iteration
 schedule = Schedule.new
-schedule.add_recurrence_rule Rule.daily
+schedule.add_recurrence_rule Rule.daily.until(Date.today + 30)
 schedule.each_occurrence { |t| puts t }
 ```
 
 The reason that schedules have durations and not individual rules, is to
 maintain compatability with the ical
 RFC: http://www.kanzaki.com/docs/ical/rrule.html
+
+To limit schedules use `count` or `until` on the recurrence rules. Setting `end_time` on the schedule just sets the duration (from the start time) for each occurrence.
+
+---
+
+## Time Zones and ActiveSupport vs. Standard Ruby Time Classes
+
+ice_cube works great without ActiveSupport but only supports the environment's
+single "local" time zone (`ENV['TZ']`) or UTC. To correctly support multiple
+time zones (especially for DST), you should require 'active_support/time'.
+
+A schedule's occurrences will be returned in the same class and time zone as
+the schedule's start_time. Schedule start times are supported as:
+
+* Time.local (default when no time is specified)
+* Time.utc
+* ActiveSupport::TimeWithZone (with `Time.zone.now`, `Time.zone.local`, `time.in_time_zone(tz)`)
+* DateTime (deprecated) and Date are converted to a Time.local
 
 ---
 
@@ -122,9 +141,10 @@ Schedule.from_hash(hash, :start_date_override => Time.now)
 
 ## Using your words
 
-ice_cube can provide ical or string representations of individual rules.
+ice_cube can provide ical or string representations of individual rules, or the
+whole schedule.
 
-``` ruby
+```ruby
 rule = Rule.daily(2).day_of_week(:tuesday => [1, -1], :wednesday => [2])
 
 rule.to_ical # 'FREQ=DAILY;INTERVAL=2;BYDAY=1TU,-1TU,2WE'
@@ -134,20 +154,13 @@ rule.to_s # 'Every 2 days on the last and 1st Tuesdays and the 2nd Wednesday'
 
 ---
 
-All rules are based off of the schedule's start date.
-Individual rules may optionally specify an until date, which is a date that
-that individual rule is no longer effective, or a count (which is how many
-times maximum you want the rule to be effective)
-
----
-
 ## Some types of Rules
 
 There are many types of recurrence rules that can be added to a schedule:
 
 ### Daily
 
-``` ruby
+```ruby
 # every day
 schedule.add_recurrence_rule Rule.daily
 
@@ -157,23 +170,23 @@ schedule.add_recurrence_rule Rule.daily(3)
 
 ### Weekly
 
-``` ruby
+```ruby
 # every week
 schedule.add_recurrence_rule Rule.weekly
 
 # every other week on monday and tuesday
 schedule.add_recurrence_rule Rule.weekly(2).day(:monday, :tuesday)
 
-# for programatic convenience (same as above)
+# for programmatic convenience (same as above)
 schedule.add_recurrence_rule Rule.weekly(2).day(1, 2)
 
 # specifying a weekly interval with a different first weekday (defaults to Sunday)
-schedule.add_recurrence_rule Rule.weekly(2, :monday)
+schedule.add_recurrence_rule Rule.weekly(1, :monday)
 ```
 
 ### Monthly (by day of month)
 
-``` ruby
+```ruby
 # every month on the first and last days of the month
 schedule.add_recurrence_rule Rule.monthly.day_of_month(1, -1)
 
@@ -181,9 +194,12 @@ schedule.add_recurrence_rule Rule.monthly.day_of_month(1, -1)
 schedule.add_recurrence_rule Rule.monthly(2).day_of_month(15)
 ```
 
-### Monthly (by day of week)
+Monthly rules will use the nearest day at the end of the month if the month is
+too short (e.g. February 28 for `day_of_month(31)`)
 
-``` ruby
+### Monthly (by day of Nth week)
+
+```ruby
 # every month on the first and last tuesdays of the month
 schedule.add_recurrence_rule Rule.monthly.day_of_week(:tuesday => [1, -1])
 
@@ -193,14 +209,14 @@ schedule.add_recurrence_rule Rule.monthly(2).day_of_week(
   :tuesday => [-1]
 )
 
-# for programatic convenience (same as above)
+# for programmatic convenience (same as above)
 schedule.add_recurrence_rule Rule.monthly(2).day_of_week(1 => [1], 2 => [-1])
 ```
 
 ### Yearly (by day of year)
 
-``` ruby
-# every year on the 100th day from the beginning and end of the year
+```ruby
+# every year on the 100th days from the beginning and end of the year
 schedule.add_recurrence_rule Rule.yearly.day_of_year(100, -100)
 
 # every fourth year on new year's eve
@@ -209,7 +225,7 @@ schedule.add_recurrence_rule Rule.yearly(4).day_of_year(-1)
 
 ### Yearly (by month of year)
 
-``` ruby
+```ruby
 # every year on the same day as start_date but in january and february
 schedule.add_recurrence_rule Rule.yearly.month_of_year(:january, :februrary)
 
@@ -222,7 +238,7 @@ schedule.add_recurrence_rule Rule.yearly(3).month_of_year(3)
 
 ### Hourly (by hour of day)
 
-``` ruby
+```ruby
 # every hour on the same minute and second as start date
 schedule.add_recurrence_rule Rule.hourly
 
@@ -232,7 +248,7 @@ schedule.add_recurrence_rule Rule.hourly(2).day(:monday)
 
 ### Minutely (by minute of hour)
 
-``` ruby
+```ruby
 # every 10 minutes
 schedule.add_recurrence_rule Rule.minutely(10)
 
@@ -242,11 +258,11 @@ schedule.add_recurrence_rule Rule.minutely(90).day_of_week(:tuesday => [-1])
 
 ### Secondly (by second of minute)
 
-``` ruby
+```ruby
 # every second
 schedule.add_recurrence_rule Rule.secondly
 
-# every 15 seconds between 12 - 12:59
+# every 15 seconds between 12:00 - 12:59
 schedule.add_recurrence_rule Rule.secondly(15).hour_of_day(12)
 ```
 
@@ -257,13 +273,13 @@ schedule.add_recurrence_rule Rule.secondly(15).hour_of_day(12)
 * Mat Brown - mat@patch.com
 * Philip Roberts
 * @sakrafd
-* Andrew Vit (@avit)
+* Andrew Vit ([@avit][github-avit])
 
 ---
 
 ## Issues?
 
-Use the GitHub issue tracker
+Use the GitHub [issue tracker][ice_cube-issues]
 
 ## Contributing
 
@@ -274,3 +290,11 @@ Use the GitHub issue tracker
 
 
 
+[ical-3.6.1]: https://tools.ietf.org/html/rfc5545#section-3.6.1
+[github-avit]: https://github.com/avit/
+[travis-ice_cube]: http://travis-ci.org/seejohnrun/ice_cube
+[travis-ice_cube-png]: https://secure.travis-ci.org/seejohnrun/ice_cube.png
+[ice_cube-lone_star_pdf]: http://seejohnrun.github.com/ice_cube/static/lsrc_ice_cube.pdf
+[ice_cube-ruby_nyc_pdf]: http://seejohnrun.github.com/ice_cube/static/ice_cube_ruby_nyc.pdf
+[ice_cube-docs]: http://seejohnrun.github.com/ice_cube/
+[ice_cube-issues]: https://github.com/seejohnrun/ice_cube/issues
