@@ -3,24 +3,28 @@ require File.dirname(__FILE__) + '/../spec_helper'
 module IceCube
   describe WeeklyRule do
 
-    it 'should include nearest time in DST start hour' do
-      schedule = Schedule.new(t0 = Time.local(2013, 3, 3, 2, 30, 0))
-      schedule.add_recurrence_rule Rule.weekly
-      schedule.first(3).should == [
-        Time.local(2013, 3,  3, 2, 30, 0), # -0800
-        Time.local(2013, 3, 10, 3, 30, 0), # -0700
-        Time.local(2013, 3, 17, 2, 30, 0)  # -0700
-      ]
-    end
+    context :system_time_zone => 'America/Vancouver' do
 
-    it 'should not skip times in DST end hour' do
-      schedule = Schedule.new(t0 = Time.local(2013, 10, 27, 2, 30, 0))
-      schedule.add_recurrence_rule Rule.weekly
-      schedule.first(3).should == [
-        Time.local(2013, 10, 27, 2, 30, 0), # -0700
-        Time.local(2013, 11,  3, 2, 30, 0), # -0700
-        Time.local(2013, 11, 10, 2, 30, 0)  # -0800
-      ]
+      it 'should include nearest time in DST start hour' do
+        schedule = Schedule.new(t0 = Time.local(2013, 3, 3, 2, 30, 0))
+        schedule.add_recurrence_rule Rule.weekly
+        schedule.first(3).should == [
+          Time.local(2013, 3,  3, 2, 30, 0), # -0800
+          Time.local(2013, 3, 10, 3, 30, 0), # -0700
+          Time.local(2013, 3, 17, 2, 30, 0)  # -0700
+        ]
+      end
+
+      it 'should not skip times in DST end hour' do
+        schedule = Schedule.new(t0 = Time.local(2013, 10, 27, 2, 30, 0))
+        schedule.add_recurrence_rule Rule.weekly
+        schedule.first(3).should == [
+          Time.local(2013, 10, 27, 2, 30, 0), # -0700
+          Time.local(2013, 11,  3, 2, 30, 0), # -0700
+          Time.local(2013, 11, 10, 2, 30, 0)  # -0800
+        ]
+      end
+
     end
 
     it 'should produce the correct number of days for @interval = 1 with no weekdays specified' do
