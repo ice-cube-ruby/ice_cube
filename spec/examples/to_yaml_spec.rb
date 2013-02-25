@@ -174,11 +174,11 @@ module IceCube
       schedule1.occurrences(end_time).should == schedule2.occurrences(end_time)
     end
 
-    it 'should be able to make a round trip with an exdate' do
+    it 'should be able to make a round trip with an exception time' do
       schedule = Schedule.new
       schedule.add_exception_time(time = Time.now)
       schedule = Schedule.from_yaml schedule.to_yaml
-      schedule.exdates.map(&:to_s).should == [time.to_s]
+      schedule.extimes.map(&:to_s).should == [time.to_s]
     end
 
     it 'crazy shit' do

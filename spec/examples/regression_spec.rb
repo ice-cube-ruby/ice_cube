@@ -30,9 +30,9 @@ module IceCube
 
         it 'should work with all validation locks [#45]' do
           schedule = Schedule.new
-          schedule.rrule Rule.monthly
-                             .month_of_year(10).day_of_month(13).day(5)
-                             .hour_of_day(14).minute_of_hour(0).second_of_minute(0)
+          schedule.rrule Rule.monthly.
+                             month_of_year(10).day_of_month(13).day(5).
+                             hour_of_day(14).minute_of_hour(0).second_of_minute(0)
           schedule.occurrences(Date.today >> 12).should be_an Array
         end
 
@@ -110,7 +110,7 @@ module IceCube
         it 'should not include exception times due to rounding errors [#83]' do
           schedule = Schedule.new(t0 = Time.new(2012, 12, 21, 21, 12, 21.212121))
           schedule.rrule Rule.daily
-          schedule.exdate((t0 + ONE_DAY).round)
+          schedule.extime((t0 + ONE_DAY).round)
           schedule.first(2)[0].should == t0
           schedule.first(2)[1].should == t0 + 2 * ONE_DAY
         end
@@ -154,7 +154,7 @@ module IceCube
           :extimes: []
           EOS
           times = schedule.occurrences(Date.new(2013, 07, 13).to_time)
-          times.detect { |o| o.to_date == Date.new(2013, 3, 31) }.should be_true
+          times.detect { |o| Date.new(o.year, o.month, o.day) == Date.new(2013, 3, 31) }.should be_true
         end
 
         it "failing spec for hanging on DST boundary [#98]" do

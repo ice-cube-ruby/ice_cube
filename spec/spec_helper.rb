@@ -12,7 +12,7 @@ WEDNESDAY = Time.utc(2010, 6, 23, 5, 0, 0)
 WORLD_TIME_ZONES = [
   'America/Anchorage',  # -1000 / -0900
   'Europe/London',      # +0000 / +0100
-  'Pacific/Wellington', # +1200 / +1300
+  'Pacific/Auckland',   # +1200 / +1300
 ]
 
 RSpec.configure do |config|

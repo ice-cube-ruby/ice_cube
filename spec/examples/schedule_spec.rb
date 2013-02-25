@@ -23,7 +23,7 @@ describe IceCube::Schedule do
     dt = DateTime.new(2013, 2, 14, 0, 32, 0)
     schedule = IceCube::Schedule.new(dt)
     schedule.start_time.should be_a Time
-    schedule.start_time.should == dt.to_time
+    schedule.start_time.should == Time.local(dt.year, dt.month, dt.day, dt.hour, dt.min, dt.sec)
   end
 
   describe :duration do
@@ -239,7 +239,7 @@ describe IceCube::Schedule do
     end
 
     it 'should return false if conflict is not present and single recurrence and time originally specified as Time' do
-      start_time = Time.new(2020,9,21,11,30,0)
+      start_time = Time.local(2020, 9, 21, 11, 30, 0)
       schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
       schedule1.add_recurrence_time(start_time)
       schedule2 = IceCube::Schedule.new(start_time + IceCube::ONE_HOUR, :duration => IceCube::ONE_HOUR)
@@ -285,6 +285,12 @@ describe IceCube::Schedule do
 
   describe :all_occurrences do
 
+    it 'has end times for each occurrence' do
+      schedule = IceCube::Schedule.new(Time.now, :duration => IceCube::ONE_HOUR)
+      schedule.add_recurrence_rule IceCube::Rule.daily.until(Time.now + 3 * IceCube::ONE_DAY)
+      schedule.all_occurrences.all? { |o| o.end_time.should == o + IceCube::ONE_HOUR }
+    end
+
     it 'should include its start time when empty' do
       schedule = IceCube::Schedule.new(t0 = Time.now)
       schedule.all_occurrences.should == [t0]
@@ -323,11 +329,11 @@ describe IceCube::Schedule do
 
     let(:nonsense) { IceCube::Rule.monthly.day_of_week(:monday => [1]).day_of_month(31) }
 
-    it 'should be able to calculate next occurrences ignoring exclude_dates' do
+    it 'should be able to calculate next occurrences ignoring excluded times' do
       start_time = Time.now
       schedule = IceCube::Schedule.new start_time
       schedule.rrule IceCube::Rule.daily(1)
-      schedule.exdate start_time + IceCube::ONE_DAY
+      schedule.extime start_time + IceCube::ONE_DAY
       occurrences = schedule.next_occurrences(2, start_time) # 3 occurrences in the next year
       occurrences.should == [
         start_time + IceCube::ONE_DAY * 2,
@@ -336,9 +342,9 @@ describe IceCube::Schedule do
     end
 
     it 'should be empty if nothing is found before closing time' do
-      schedule = IceCube::Schedule.new do |s|
-        s.start_time = Time.utc(2013, 1, 1)
-        s.add_recurrence_rule nonsense.until(s.start_time.to_date >> 12)
+      schedule = IceCube::Schedule.new(t0 = Time.utc(2013, 1, 1)) do |s|
+        next_year = Date.new(t0.year + 1, t0.month, t0.day)
+        s.add_recurrence_rule nonsense.until(next_year)
       end
       trap_infinite_loop_beyond(24)
       schedule.next_occurrences(1).should be_empty
@@ -348,11 +354,11 @@ describe IceCube::Schedule do
 
   describe :next_occurrence do
 
-    it 'should be able to calculate the next occurrence past an exdate' do
+    it 'should be able to calculate the next occurrence past an exception time' do
       start_time = Time.now
       schedule = IceCube::Schedule.new start_time
       schedule.rrule IceCube::Rule.daily(1)
-      schedule.exdate start_time + IceCube::ONE_DAY
+      schedule.extime start_time + IceCube::ONE_DAY
       occurrence = schedule.next_occurrence(start_time) # 3 occurrences in the next year
       occurrence.should == start_time + IceCube::ONE_DAY * 2
     end
@@ -393,8 +399,8 @@ describe IceCube::Schedule do
     it 'should modify start date in rrule_occurrence_heads when changed' do
       schedule = IceCube::Schedule.new(Time.now - 1000)
       schedule.rrule IceCube::Rule.daily
-      schedule.start_date = (start_date = Time.now)
-      (Time.now - schedule.first).should be < 100
+      schedule.start_time = (start_date = Time.now)
+      (Time.now - schedule.first.start_time).should be < 100
     end
 
   end
@@ -477,50 +483,50 @@ describe IceCube::Schedule do
 
   end
 
-  describe :remove_recurrence_date do
+  describe :remove_recurrence_time do
 
     it 'should be able to remove a recurrence date from a schedule' do
       time = Time.now
       schedule = IceCube::Schedule.new(time)
       schedule.add_recurrence_time time
-      schedule.remove_recurrence_date time
-      schedule.recurrence_dates.should be_empty
+      schedule.remove_recurrence_time time
+      schedule.recurrence_times.should be_empty
     end
 
-    it 'should return the date that was removed' do
+    it 'should return the time that was removed' do
       schedule = IceCube::Schedule.new Time.now
       time = Time.now
-      schedule.rdate time
-      schedule.remove_rdate(time).should == time
+      schedule.rtime time
+      schedule.remove_rtime(time).should == time
     end
 
     it 'should return nil if the date was not in the schedule' do
       schedule = IceCube::Schedule.new Time.now
-      schedule.remove_recurrence_date(Time.now).should be_nil
+      schedule.remove_recurrence_time(Time.now).should be_nil
     end
 
   end
 
-  describe :remove_exception_date do
+  describe :remove_exception_time do
 
     it 'should be able to remove a exception date from a schedule' do
       time = Time.now
       schedule = IceCube::Schedule.new(time)
-      schedule.exdate time
-      schedule.remove_exception_date time
-      schedule.exception_dates.should be_empty
+      schedule.extime time
+      schedule.remove_exception_time time
+      schedule.exception_times.should be_empty
     end
 
     it 'should return the date that was removed' do
       schedule = IceCube::Schedule.new Time.now
       time = Time.now
-      schedule.exdate time
-      schedule.remove_exdate(time).should == time
+      schedule.extime time
+      schedule.remove_extime(time).should == time
     end
 
     it 'should return nil if the date was not in the schedule' do
       schedule = IceCube::Schedule.new Time.now
-      schedule.remove_exception_date(Time.now).should be_nil
+      schedule.remove_exception_time(Time.now).should be_nil
     end
 
   end
@@ -553,10 +559,10 @@ describe IceCube::Schedule do
           end
 
           specify 'should determine if it occurs on the day of a given non-local Time' do
-            schedule.occurs_on?(Time.local(2010, 7, 1, 23, 59, 59, false, "+11:15")).should be_false
-            schedule.occurs_on?(Time.local(2010, 7, 2,  0,  0,  1, false, "+11:15")).should be_true
-            schedule.occurs_on?(Time.local(2010, 7, 2, 23, 59, 59, false, "+11:15")).should be_true
-            schedule.occurs_on?(Time.local(2010, 7, 3,  0,  0,  1, false, "+11:15")).should be_false
+            schedule.occurs_on?(Time.new(2010, 7, 1, 23, 59, 59, "+11:15")).should be_false
+            schedule.occurs_on?(Time.new(2010, 7, 2,  0,  0,  1, "+11:15")).should be_true
+            schedule.occurs_on?(Time.new(2010, 7, 2, 23, 59, 59, "+11:15")).should be_true
+            schedule.occurs_on?(Time.new(2010, 7, 3,  0,  0,  1, "+11:15")).should be_false
           end
 
           specify 'should determine if it occurs on the day of a given ActiveSupport::Time', :if_active_support_time => true do
@@ -587,7 +593,7 @@ describe IceCube::Schedule do
       end
 
       context 'starting from an ActiveSupport::Time', :if_active_support_time => true do
-        let(:start_time) { Time.local(2010, 7, 2, 10, 0, 0, true, '-07:00').in_time_zone('America/Vancouver') }
+        let(:start_time) { Time.new(2010, 7, 2, 10, 0, 0, '-07:00').in_time_zone('America/Vancouver') }
         include_examples 'occurring on a given day'
       end
     end
@@ -607,7 +613,7 @@ describe IceCube::Schedule do
       include_examples :occurs_on?
     end
 
-    it 'should be true for multiple rdates' do
+    it 'should be true for multiple rtimes' do
       schedule = IceCube::Schedule.new(Time.local(2010, 7, 10, 16))
       schedule.add_recurrence_time(Time.local(2010, 7, 11, 16))
       schedule.add_recurrence_time(Time.local(2010, 7, 12, 16))
@@ -632,7 +638,7 @@ describe IceCube::Schedule do
   end
 
   def trap_infinite_loop_beyond(iterations)
-    IceCube::ValidatedRule.any_instance.should_receive(:finds_acceptable_time?)
-                          .at_most(iterations).times.and_call_original
+    IceCube::ValidatedRule.any_instance.should_receive(:finds_acceptable_time?).
+                          at_most(iterations).times.and_call_original
   end
 end

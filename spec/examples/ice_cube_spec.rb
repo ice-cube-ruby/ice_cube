@@ -275,20 +275,20 @@ describe IceCube::Schedule do
     schedule.exrules.should == rules
   end
 
-  it 'can retrieve rdates from a schedule' do
+  it 'can retrieve recurrence times from a schedule' do
     schedule = IceCube::Schedule.new(Time.now)
-    dates = [Time.now, Time.now + 5, Time.now + 10]
-    dates.each { |d| schedule.add_recurrence_time(d) }
+    times = [Time.now, Time.now + 5, Time.now + 10]
+    times.each { |d| schedule.add_recurrence_time(d) }
     # pull the dates back out of the schedule and compare
-    schedule.rdates.should == dates
+    schedule.rtimes.should == times
   end
 
-  it 'can retrieve exdates from a schedule' do
+  it 'can retrieve exception_times from a schedule' do
     schedule = IceCube::Schedule.new(Time.now)
-    dates = [Time.now, Time.now + 5, Time.now + 10]
-    dates.each { |d| schedule.add_exception_time(d) }
+    times = [Time.now, Time.now + 5, Time.now + 10]
+    times.each { |d| schedule.add_exception_time(d) }
     # pull the dates back out of the schedule and compare
-    schedule.exdates.should == dates
+    schedule.extimes.should == times
   end
 
   it 'can reuse the same rule' do
@@ -357,14 +357,14 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new DAY
     schedule.add_recurrence_time DAY
     schedule.add_recurrence_time(DAY + 2)
-    schedule.rdates.should == [DAY, DAY + 2]
+    schedule.rtimes.should == [DAY, DAY + 2]
   end
 
-  it 'should be able to get back exdates from a schedule' do
+  it 'should be able to get back exception times from a schedule' do
     schedule = IceCube::Schedule.new DAY
     schedule.add_exception_time DAY
     schedule.add_exception_time(DAY + 2)
-    schedule.exdates.should == [DAY, DAY + 2]
+    schedule.extimes.should == [DAY, DAY + 2]
   end
 
   it 'should allow calling of .first on a schedule with no arguments' do
@@ -568,8 +568,8 @@ describe IceCube::Schedule do
     start_time = Time.now
     schedule = IceCube::Schedule.new(start_time)
 
-    schedule.start_date.should == schedule.start_time
-    schedule.end_date.should == schedule.end_time
+    schedule.start_time.should == schedule.start_time
+    schedule.end_time.should == schedule.end_time
   end
 
   it 'should have some convenient alias for rrules' do
@@ -588,18 +588,18 @@ describe IceCube::Schedule do
     schedule.exrules.should == [daily, monthly]
   end
 
-  it 'should have some convenient alias for rdates' do
+  it 'should have some convenient alias for recurrence_times' do
     schedule = IceCube::Schedule.new(Time.now)
     schedule.add_recurrence_time Time.local(2010, 8, 13)
-    schedule.rdate Time.local(2010, 8, 14)
-    schedule.rdates.should == [Time.local(2010, 8, 13), Time.local(2010, 8, 14)]
+    schedule.rtime Time.local(2010, 8, 14)
+    schedule.rtimes.should == [Time.local(2010, 8, 13), Time.local(2010, 8, 14)]
   end
 
-  it 'should have some convenient alias for exdates' do
+  it 'should have some convenient alias for extimes' do
     schedule = IceCube::Schedule.new(Time.now)
     schedule.add_exception_time Time.local(2010, 8, 13)
-    schedule.exdate Time.local(2010, 8, 14)
-    schedule.exdates.should == [Time.local(2010, 8, 13), Time.local(2010, 8, 14)]
+    schedule.extime Time.local(2010, 8, 14)
+    schedule.extimes.should == [Time.local(2010, 8, 13), Time.local(2010, 8, 14)]
   end
 
   it 'should be able to have a rule and an exrule' do
@@ -652,7 +652,7 @@ describe IceCube::Schedule do
 
   it 'should use current date as start date when invoked with a nil parameter' do
     schedule = IceCube::Schedule.new nil
-    (Time.now - schedule.start_date).should be < 100
+    (Time.now - schedule.start_time).should be < 100
   end
 
   it 'should be able to get the occurrence count for a rule' do

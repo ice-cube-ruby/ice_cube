@@ -44,7 +44,7 @@ module IceCube
     #
     def validate_day_lock(time, schedule)
       days_in_month = TimeUtil.days_in_month(time)
-      date = time.to_date
+      date = Date.new(time.year, time.month, time.day)
 
       if value && value < 0
         start = TimeUtil.day_of_month(value, date)

@@ -7,8 +7,8 @@ module IceCube
   describe TimeUtil, :if_active_support_time => false do
 
     before do
-      Time.any_instance.should_receive(:respond_to?).with(:time_zone)
-          .at_least(1).times.and_return(false)
+      Time.any_instance.should_receive(:respond_to?).with(:time_zone).
+        at_least(1).times.and_return(false)
     end
 
     WORLD_TIME_ZONES.each do |zone|
