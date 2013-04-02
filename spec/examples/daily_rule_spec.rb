@@ -75,5 +75,19 @@ module IceCube
       ]
     end
 
+    it 'should produce the correct days for @interval = 4 when interval was canged after initialization' do
+      from_time = Time.utc(2011, 12, 29)
+      schedule = Schedule.new(from_time)
+
+      rule = Rule.daily(2)
+      rule.replace_validations_for(:interval, [])
+      rule.interval(4)
+
+      schedule.add_recurrence_rule rule
+      times = schedule.occurrences(from_time + 10 * ONE_DAY)
+      times.size.should == 3
+      times.should == [from_time, from_time + 4 * ONE_DAY, from_time + 8 * ONE_DAY]
+    end
+
   end
 end
