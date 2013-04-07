@@ -75,7 +75,7 @@ module IceCube
       ]
     end
 
-    it 'should produce the correct days for @interval = 4 when interval was canged after initialization' do
+    it 'should produce the correct days for @interval = 4 when interval was changed after initialization' do
       from_time = Time.utc(2011, 12, 29)
       schedule = Schedule.new(from_time)
 
