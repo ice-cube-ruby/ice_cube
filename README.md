@@ -268,6 +268,17 @@ schedule.add_recurrence_rule Rule.secondly(15).hour_of_day(12)
 
 ---
 
+## recurring_select
+
+The team over at [GetJobber](http://getjobber.com/) have open-sourced
+RecurringSelect, which makes working with IceCube easier in a Rails app
+via some nice helpers.
+
+Check it out at
+https://github.com/GetJobber/recurring_select
+
+---
+
 ## Contributors
 
 * Mat Brown - mat@patch.com
