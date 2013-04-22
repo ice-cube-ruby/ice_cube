@@ -85,6 +85,15 @@ schedule.add_recurrence_rule Rule.daily
 schedule.occurring_at?(now + 1800) # true
 schedule.occurring_between?(t1, t2)
 
+# or set a recurrence rule for every monday and friday every two weeks.
+schedule = Schedule.new
+schedule.add_recurrence_rule Rule.weekly(2).day(:monday, friday)
+
+# Same as above, but with an splatted array.
+schedule = Schedule.new
+days = [:monday, :friday]
+schedule.add_recurrence_rule Rule.weekly(2).day(*days)
+
 # using end_time also sets the duration 
 schedule = Schedule.new(start = Time.now, :end_time => start + 3600)
 schedule.add_recurrence_rule Rule.daily
