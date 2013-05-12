@@ -22,6 +22,7 @@ module IceCube
     end
 
     def self.match_zone(time, reference)
+      return unless time = ensure_time(time)
       if reference.respond_to? :time_zone
         time.in_time_zone(reference.time_zone)
       else

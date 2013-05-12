@@ -77,6 +77,48 @@ module IceCube
       schedule.next_occurrence.time_zone.should == schedule.start_time.time_zone
     end
 
+    describe 'querying with time arguments for a different zone' do
+
+      let(:schedule) do
+        utc = Time.utc(2013, 1, 1).in_time_zone('UTC')
+        Schedule.new(utc) { |s| s.add_recurrence_rule Rule.daily.count(3) }
+      end
+
+      let(:reference_time) do
+        Time.utc(2013, 1, 1).in_time_zone('Bern') # +01:00
+      end
+
+      it 'uses schedule zone for next_occurrence' do
+        next_occurrence = schedule.next_occurrence(reference_time)
+        next_occurrence.should == Time.utc(2013, 1, 2)
+        next_occurrence.time_zone.should == schedule.start_time.time_zone
+      end
+
+      it 'uses schedule zone for next_occurrences' do
+        next_occurrences = schedule.next_occurrences(2, reference_time)
+        next_occurrences.should == [Time.utc(2013, 1, 2), Time.utc(2013, 1, 3)]
+        next_occurrences.all? { |t| t.time_zone.should == schedule.start_time.time_zone }
+      end
+
+      it 'uses schedule zone for remaining_occurrences' do
+        remaining_occurrences = schedule.remaining_occurrences(reference_time + 1.day)
+        remaining_occurrences.should == [Time.utc(2013, 1, 2), Time.utc(2013, 1, 3)]
+        remaining_occurrences.all? { |t| t.time_zone.should == schedule.start_time.time_zone }
+      end
+
+      it 'uses schedule zone for occurrences' do
+        occurrences = schedule.occurrences(reference_time + 1.day)
+        occurrences.should == [Time.utc(2013, 1, 1), Time.utc(2013, 1, 2)]
+        occurrences.all? { |t| t.time_zone.should == schedule.start_time.time_zone }
+      end
+
+      it 'uses schedule zone for occurrences_between' do
+        occurrences_between = schedule.occurrences_between(reference_time, reference_time + 1.day)
+        occurrences_between.should == [Time.utc(2013, 1, 1), Time.utc(2013, 1, 2)]
+        occurrences_between.all? { |t| t.time_zone.should == schedule.start_time.time_zone }
+      end
+
+    end
   end
 end
 
