@@ -150,7 +150,7 @@ module IceCube
 
     # All of the occurrences
     def all_occurrences
-      raise ArgumentError.new('Rule must specify either an until date or a count to use #all_occurrences') unless terminating?
+      require_terminating_rules
       find_occurrences(start_time)
     end
 
@@ -174,6 +174,7 @@ module IceCube
 
     # The remaining occurrences (same requirements as all_occurrences)
     def remaining_occurrences(from = nil)
+      require_terminating_rules
       from ||= TimeUtil.now(@start_time)
       find_occurrences(from)
     end
@@ -424,6 +425,12 @@ module IceCube
       @all_exception_rules.any? do |rule|
         rule.on?(time, self)
       end
+    end
+
+    def require_terminating_rules
+      return true if terminating?
+      method_name = caller[0].split(' ').last
+      raise ArgumentError, "All recurrence rules must specify .until or .count to use #{method_name}"
     end
 
     def implicit_start_occurrence

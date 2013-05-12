@@ -19,6 +19,12 @@ describe :remaining_occurrences do
     schedule.remaining_occurrences(start_time + 366 * ONE_DAY).size.should == 0
   end
 
+  it 'should raise an error if there is nothing to stop it' do
+    schedule = IceCube::Schedule.new
+    schedule.add_recurrence_rule IceCube::Rule.daily
+    expect { schedule.remaining_occurrences }.to raise_error ArgumentError
+  end
+
 end
 
 describe :occurring_between? do
