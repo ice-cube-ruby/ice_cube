@@ -62,8 +62,8 @@ module IceCube
       if value && value > 0
         until_next_month = days_in_month + sleeps
       else
-        until_next_month = TimeUtil.days_to_next_month(date) + sleeps
-        until_next_month -= month_overflow
+        until_next_month = start < 28 ? days_in_month : TimeUtil.days_to_next_month(date)
+        until_next_month += sleeps - month_overflow
       end
 
       sleeps >= 0 ? sleeps : until_next_month

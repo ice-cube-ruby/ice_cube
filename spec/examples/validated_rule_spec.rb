@@ -21,6 +21,13 @@ describe IceCube, "::ValidatedRule" do
         rule.next_time(first + 1, schedule, nil).should == Time.new(2013, 3, 25, 0, 0, 0)
       end
 
+      it 'should return the next month near end of longer month [#171]' do
+        schedule = IceCube::Schedule.new(Date.new 2013, 1, 1)
+        [27, 28, 29, 30, 31].each do |day|
+          rule.next_time(Time.new(2013, 1, day), schedule, nil).should == Time.new(2013, 2, 1)
+        end
+      end
+
       context "DST edge" do
         before { Time.zone = "Europe/London" }
         let(:first) { Time.zone.parse("Sun, 31 Mar 2013 00:00:00 GMT +00:00") }
