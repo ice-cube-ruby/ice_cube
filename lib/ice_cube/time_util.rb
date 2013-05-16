@@ -161,7 +161,7 @@ module IceCube
     # overflowing shorter months
     def self.days_to_next_month(time)
       date = Date.new(time.year, time.month, time.day)
-      (date >> 1) - date
+      ((date >> 1) - date).to_i
     end
 
     # Get a day of the month in the month of a given time without overflowing
