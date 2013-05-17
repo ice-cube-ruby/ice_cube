@@ -243,4 +243,14 @@ describe IceCube, 'to_ical' do
     rule.to_ical.should == "FREQ=WEEKLY;INTERVAL=#{interval};WKST=MO"
   end
 
+  [:yearly, :monthly, :weekly, :daily, :hourly, :minutely, :secondly].each do |type|
+    it "should make a #{type} rule roundtrip with to_yaml and same to_ical results" do
+      rule = IceCube::Rule.send(type)
+
+      yaml_string = rule.to_yaml
+      rule2 = IceCube::Rule.from_yaml(yaml_string)
+      rule.to_ical.should == rule2.to_ical
+    end
+  end
+
 end

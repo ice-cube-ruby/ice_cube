@@ -47,8 +47,11 @@ module IceCube
     def self.from_hash(original_hash)
       hash = IceCube::FlexibleHash.new original_hash
       return nil unless match = hash[:rule_type].match(/\:\:(.+?)Rule/)
-      rule = IceCube::Rule.send(match[1].downcase.to_sym, hash[:interval] || 1)
-      rule.interval(hash[:interval] || 1, TimeUtil.wday_to_sym(hash[:week_start] || 0)) if match[1] == "Weekly"
+      if match[1] == "Weekly"
+        rule = IceCube::Rule.send(match[1].downcase.to_sym, hash[:interval] || 1, TimeUtil.wday_to_sym(hash[:week_start] || 0))
+      else
+        rule = IceCube::Rule.send(match[1].downcase.to_sym, hash[:interval] || 1)
+      end
       rule.until(TimeUtil.deserialize_time(hash[:until])) if hash[:until]
       rule.count(hash[:count]) if hash[:count]
       hash[:validations] && hash[:validations].each do |key, value|
