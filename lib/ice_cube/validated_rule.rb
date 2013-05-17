@@ -83,6 +83,7 @@ module IceCube
       if arr.nil?
         @validations.delete(key)
       else
+        @validations      ||= {}
         @validations[key] = arr
       end
     end

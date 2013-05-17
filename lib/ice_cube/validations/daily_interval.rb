@@ -8,7 +8,7 @@ module IceCube
         raise ArgumentError, "Expecting Fixnum value for interval, got #{interval.inspect}"
       end
       @interval = interval
-      validations_for(:interval) << Validation.new(interval)
+      replace_validations_for(:interval, [Validation.new(interval)])
       clobber_base_validations(:wday, :day)
       self
     end
