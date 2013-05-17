@@ -5,7 +5,7 @@ module IceCube
     include Validations::Lock
 
     def minute_of_hour(*minutes)
-      minutes.each do |minute|
+      minutes.flatten.each do |minute|
         unless minute.is_a?(Fixnum)
           raise ArgumentError, "expecting Fixnum value for minute, got #{minute.inspect}"
         end

@@ -42,6 +42,35 @@ module IceCube
       schedule.occurrences(t0 + 4 * ONE_WEEK).size.should == 8
     end
 
+    it 'should set days from symbol args' do
+      schedule = Schedule.new(t0 = WEDNESDAY)
+      schedule.add_recurrence_rule Rule.weekly.day(:monday, :wednesday)
+      schedule.rrules.first.validations_for(:day).map(&:day).should == [1, 3]
+    end
+
+    it 'should set days from array of symbols' do
+      schedule = Schedule.new(t0 = WEDNESDAY)
+      schedule.add_recurrence_rule Rule.weekly.day([:monday, :wednesday])
+      schedule.rrules.first.validations_for(:day).map(&:day).should == [1, 3]
+    end
+
+    it 'should set days from integer args' do
+      schedule = Schedule.new(t0 = WEDNESDAY)
+      schedule.add_recurrence_rule Rule.weekly.day(1, 3)
+      schedule.rrules.first.validations_for(:day).map(&:day).should == [1, 3]
+    end
+
+    it 'should set days from array of integers' do
+      schedule = Schedule.new(t0 = WEDNESDAY)
+      schedule.add_recurrence_rule Rule.weekly.day([1, 3])
+      schedule.rrules.first.validations_for(:day).map(&:day).should == [1, 3]
+    end
+
+    it 'should raise an error on invalid input' do
+      schedule = Schedule.new(t0 = WEDNESDAY)
+      expect { schedule.add_recurrence_rule Rule.weekly.day(["1", "3"]) }.to raise_error
+    end
+
     it 'should produce the correct number of days for @interval = 2 with only one day per week' do
       schedule = Schedule.new(t0 = WEDNESDAY)
       schedule.add_recurrence_rule Rule.weekly(2).day(:wednesday)

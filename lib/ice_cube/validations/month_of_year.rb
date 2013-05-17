@@ -3,7 +3,7 @@ module IceCube
   module Validations::MonthOfYear
 
     def month_of_year(*months)
-      months.each do |month|
+      months.flatten.each do |month|
         unless month.is_a?(Fixnum) || month.is_a?(Symbol)
           raise ArgumentError, "expecting Fixnum or Symbol value for month, got #{month.inspect}"
         end
