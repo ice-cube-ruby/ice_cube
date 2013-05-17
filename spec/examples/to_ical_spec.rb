@@ -243,4 +243,10 @@ describe IceCube, 'to_ical' do
     rule.to_ical.should == "FREQ=WEEKLY;INTERVAL=#{interval};WKST=MO"
   end
 
+  it 'should not repeat interval when updating rule' do
+    rule = IceCube::Rule.weekly
+    rule.interval(2)
+    rule.to_ical.should =~ /^FREQ=WEEKLY;INTERVAL=2/
+  end
+
 end

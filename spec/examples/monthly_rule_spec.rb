@@ -3,6 +3,13 @@ require File.dirname(__FILE__) + '/../spec_helper'
 module IceCube
   describe MonthlyRule do
 
+    it 'should update previous interval' do
+      schedule = stub(start_time: t0 = Time.utc(2013, 5, 17))
+      rule = Rule.monthly(3)
+      rule.interval(1)
+      rule.next_time(t0 + 1, schedule, nil).should == t0 + 31.days
+    end
+
     it 'should produce the correct number of days for @interval = 1' do
       schedule = Schedule.new(t0 = Time.now)
       schedule.add_recurrence_rule Rule.monthly

@@ -28,6 +28,13 @@ module IceCube
 
     end
 
+    it 'should update previous interval' do
+      schedule = stub(start_time: t0 = Time.now)
+      rule = Rule.hourly(7)
+      rule.interval(5)
+      rule.next_time(t0 + 1, schedule, nil).should == t0 + 5.hours
+    end
+
     it 'should produce the correct days for @interval = 3' do
       start_date = DAY
       schedule = Schedule.new(start_date)
