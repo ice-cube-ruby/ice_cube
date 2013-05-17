@@ -5,6 +5,7 @@ module IceCube
     include Validations::YearlyInterval
 
     def initialize(interval = 1)
+      super
       interval(interval)
       schedule_lock(:month, :day, :hour, :min, :sec)
       reset

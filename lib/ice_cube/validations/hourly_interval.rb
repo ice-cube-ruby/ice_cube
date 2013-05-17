@@ -3,9 +3,6 @@ module IceCube
   module Validations::HourlyInterval
 
     def interval(interval)
-      unless interval.is_a?(Fixnum)
-        raise ArgumentError, "Expecting Fixnum value for interval, got #{interval.inspect}"
-      end
       @interval = interval
       validations_for(:interval) << Validation.new(interval)
       clobber_base_validations(:hour)

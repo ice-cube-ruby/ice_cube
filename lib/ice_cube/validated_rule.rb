@@ -30,6 +30,10 @@ module IceCube
       :interval
     ]
 
+    def initialize(interval = 1, *)
+      @validations = Hash.new
+    end
+
     # Compute the next time after (or including) the specified time in respect
     # to the given schedule
     def next_time(time, schedule, closing_time)
@@ -74,7 +78,6 @@ module IceCube
 
     # Get the collection that contains validations of a certain type
     def validations_for(key)
-      @validations ||= {}
       @validations[key] ||= []
     end
 
