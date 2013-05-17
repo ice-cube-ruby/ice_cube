@@ -21,6 +21,11 @@ module IceCube
   #
   class Occurrence < SimpleDelegator
 
+    # Report class name as 'Time' to thwart type checking.
+    def self.name
+      'Time'
+    end
+
     # Optimize for common methods to avoid method_missing
     extend Forwardable
     def_delegators :start_time, :to_s, :to_i, :<=>, :==

@@ -6,6 +6,7 @@ describe Occurrence do
 
   it "reports as a Time" do
     occurrence = Occurrence.new(t0 = Time.now, t0 + 3600)
+    occurrence.class.name.should == 'Time'
     occurrence.is_a?(Time).should be_true
     occurrence.kind_of?(Time).should be_true
   end
