@@ -118,3 +118,11 @@
 	* Fix occurrences in DST transition [#150]
 	* Start time counts as an implicit occurrence (no more empty schedule) [#135]
 	* Schedule occurrences have end times [#119]
+
+0.10.1
+	* Match time zone from schedule when finding times [#152]
+	* Reliably calculate distance to same day in next month [#171]
+	* Accept arrays in multiparameter DSL methods [#139]
+	* Updating interval on a rule shouldn't leave duplicate validations [#158] [#157]
+	* Allow Occurrence to work transparently with Arel [#168]
+	* Raise errors for invalid input [#139]
