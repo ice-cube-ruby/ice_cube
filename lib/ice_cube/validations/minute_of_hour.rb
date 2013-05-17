@@ -6,6 +6,9 @@ module IceCube
 
     def minute_of_hour(*minutes)
       minutes.each do |minute|
+        unless minute.is_a?(Fixnum)
+          raise ArgumentError, "expecting Fixnum value for minute, got #{minute.inspect}"
+        end
         validations_for(:minute_of_hour) << Validation.new(minute)
       end
       clobber_base_validations(:min)

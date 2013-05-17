@@ -4,6 +4,9 @@ module IceCube
 
     def day_of_year(*days)
       days.each do |day|
+        unless day.is_a?(Fixnum)
+          raise ArgumentError, "expecting Fixnum value for day, got #{day.inspect}"
+        end
         validations_for(:day_of_year) << Validation.new(day)
       end
       clobber_base_validations(:month, :day, :wday)

@@ -5,6 +5,9 @@ module IceCube
   module Validations::WeeklyInterval
 
     def interval(interval, week_start = :sunday)
+      unless interval.is_a?(Fixnum)
+        raise ArgumentError, "Expecting Fixnum value for interval, got #{interval.inspect}"
+      end
       @interval = interval
       @week_start = TimeUtil.wday_to_sym(week_start)
       validations_for(:interval) << Validation.new(interval, week_start)
