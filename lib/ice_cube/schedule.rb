@@ -268,6 +268,14 @@ module IceCube
       n.nil? ? occurrences.first : occurrences
     end
 
+    # Get the final n occurrences of a terminating schedule
+    # or the final one if no n is given
+    def last(n = nil)
+      require_terminating_rules
+      occurrences = find_occurrences(start_time, nil, nil, n || 1)
+      n.nil? ? occurrences.last : occurrences[-n..-1]
+    end
+
     # String serialization
     def to_s
       pieces = []
@@ -371,7 +379,7 @@ module IceCube
 
     # Find all of the occurrences for the schedule between opening_time
     # and closing_time
-    def find_occurrences(opening_time, closing_time = nil, limit = nil, &block)
+    def find_occurrences(opening_time, closing_time = nil, limit = nil, tail_limit = nil, &block)
       opening_time = TimeUtil.ensure_time opening_time
       closing_time = TimeUtil.ensure_time closing_time
       opening_time += start_time.subsec - opening_time.subsec rescue 0
@@ -388,6 +396,7 @@ module IceCube
         break if closing_time && res > closing_time
         if res >= opening_time
           block_given? ? block.call(res) : (answers << res)
+          answers.shift if tail_limit && answers.length > tail_limit
           break if limit && answers.length == limit
         end
         time = res + 1

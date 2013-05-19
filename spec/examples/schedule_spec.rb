@@ -394,6 +394,32 @@ describe IceCube::Schedule do
     end
   end
 
+  describe :last do
+
+    it 'returns the last occurrence for a terminating schedule' do
+      t0 = Time.utc(2013, 5, 18, 12, 34)
+      t1 = Time.utc(2013, 5, 31, 12, 34)
+      schedule = IceCube::Schedule.new(t0)
+      schedule.add_recurrence_rule IceCube::Rule.daily.until(t1 + 1)
+      schedule.last.should == t1
+    end
+
+    it 'returns an array of occurrences given a number' do
+      t0 = Time.utc(2013, 5, 18, 12, 34)
+      t1 = Time.utc(2013, 5, 31, 12, 34)
+      schedule = IceCube::Schedule.new(t0)
+      schedule.add_recurrence_rule IceCube::Rule.daily.until(t1 + 1)
+      schedule.last(2).should == [t1 - ONE_DAY, t1]
+    end
+
+    it 'raises an error for a non-terminating schedule' do
+      schedule = IceCube::Schedule.new
+      schedule.add_recurrence_rule IceCube::Rule.daily
+      expect { schedule.last }.to raise_error
+    end
+
+  end
+
   describe :start_date= do
 
     it 'should modify start date in rrule_occurrence_heads when changed' do

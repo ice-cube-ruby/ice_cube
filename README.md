@@ -74,6 +74,10 @@ schedule.occurs_between?(now + 3.days, now + 30.days) # false
 schedule.first(2) # [now, now + 2.days]
 schedule.first # now
 
+# or the last (n) occurrences (if the schedule terminates)
+schedule.last(2) # [now + 1.day, now + 2.days]
+schedule.last    # now + 2.days
+
 # or the next occurrence
 schedule.next_occurrence(from_time)     # defaults to Time.now
 schedule.next_occurrences(3, from_time) # defaults to Time.now
