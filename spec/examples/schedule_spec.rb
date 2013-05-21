@@ -392,6 +392,55 @@ describe IceCube::Schedule do
       start_time = Time.utc(Time.now.year + 1, 7, 1, 0, 0, 0).localtime("-05:00")
       compare_time_zone_info(start_time)
     end
+
+  end
+
+  describe :previous_occurrence do
+
+    it 'returns the previous occurrence for a time in the schedule' do
+      t0 = Time.utc(2013, 5, 18, 12, 34)
+      schedule = IceCube::Schedule.new(t0)
+      schedule.add_recurrence_rule IceCube::Rule.daily
+      previous = schedule.previous_occurrence(t0 + 2 * ONE_DAY)
+      previous.should == t0 + ONE_DAY
+    end
+
+    it 'returns nil given the start time' do
+      t0 = Time.utc(2013, 5, 18, 12, 34)
+      schedule = IceCube::Schedule.new(t0)
+      schedule.add_recurrence_rule IceCube::Rule.daily
+      previous = schedule.previous_occurrence(t0)
+      previous.should be_nil
+    end
+
+  end
+
+  describe :previous_occurrences do
+
+    it 'returns an array of previous occurrences from a given time' do
+      t0 = Time.utc(2013, 5, 18, 12, 34)
+      schedule = IceCube::Schedule.new(t0)
+      schedule.add_recurrence_rule IceCube::Rule.daily
+      previous = schedule.previous_occurrences(2, t0 + 3 * ONE_DAY)
+      previous.should == [t0 + ONE_DAY, t0 + 2 * ONE_DAY]
+    end
+
+    it 'limits the returned occurrences to a given count' do
+      t0 = Time.utc(2013, 5, 18, 12, 34)
+      schedule = IceCube::Schedule.new(t0)
+      schedule.add_recurrence_rule IceCube::Rule.daily
+      previous = schedule.previous_occurrences(999, t0 + 2 * ONE_DAY)
+      previous.should == [t0, t0 + ONE_DAY]
+    end
+
+    it 'returns empty array given the start time' do
+      t0 = Time.utc(2013, 5, 18, 12, 34)
+      schedule = IceCube::Schedule.new(t0)
+      schedule.add_recurrence_rule IceCube::Rule.daily
+      previous = schedule.previous_occurrences(2, t0)
+      previous.should == []
+    end
+
   end
 
   describe :last do

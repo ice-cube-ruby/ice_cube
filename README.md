@@ -83,6 +83,11 @@ schedule.next_occurrence(from_time)     # defaults to Time.now
 schedule.next_occurrences(3, from_time) # defaults to Time.now
 schedule.remaining_occurrences          # for terminating schedules
 
+# or the previous occurrence
+schedule.previous_occurrence(from_time)
+schedule.previous_occurrences(3, from_time)
+
+
 # or give the schedule a duration and ask if occurring_at?
 schedule = Schedule.new(now, :duration => 3600)
 schedule.add_recurrence_rule Rule.daily

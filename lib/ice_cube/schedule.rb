@@ -172,6 +172,18 @@ module IceCube
       find_occurrences(from + 1, nil, 1).first
     end
 
+    # The previous occurrence from a given time
+    def previous_occurrence(from)
+      return nil if from <= start_time
+      find_occurrences(start_time, from - 1, nil, 1).last
+    end
+
+    # The previous n occurrences before a given time
+    def previous_occurrences(num, from)
+      return [] if from <= start_time
+      find_occurrences(start_time, from - 1, nil, num)
+    end
+
     # The remaining occurrences (same requirements as all_occurrences)
     def remaining_occurrences(from = nil)
       require_terminating_rules
