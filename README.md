@@ -60,19 +60,19 @@ occurrences = schedule.occurrences(end_time) # [now]
 occurrences = schedule.all_occurrences # [now, now + 2.days]
 
 # or check just a single time
-schedule.occurs_at?(now + 1.day) # false
+schedule.occurs_at?(now + 1.day)  # false
 schedule.occurs_at?(now + 2.days) # true
 
 # or check just a single day
 schedule.occurs_on?(Date.today) # true
 
 # or check whether it occurs between two dates
-schedule.occurs_between?(now, now + 30.days) # true
+schedule.occurs_between?(now, now + 30.days)          # true
 schedule.occurs_between?(now + 3.days, now + 30.days) # false
 
 # or the first (n) occurrences
 schedule.first(2) # [now, now + 2.days]
-schedule.first # now
+schedule.first    # now
 
 # or the last (n) occurrences (if the schedule terminates)
 schedule.last(2) # [now + 1.day, now + 2.days]
