@@ -41,7 +41,7 @@ module IceCube
       schedule = stub(start_time: t0 = Time.now)
       rule = Rule.daily(7)
       rule.interval(5)
-      rule.next_time(t0 + 1, schedule, nil).should == t0 + 5.days
+      rule.next_time(t0 + 1, schedule, nil).should == t0 + 5 * ONE_DAY
     end
 
     it 'should produce the correct days for @interval = 1' do

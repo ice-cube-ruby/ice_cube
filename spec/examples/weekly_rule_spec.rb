@@ -31,7 +31,7 @@ module IceCube
       schedule = stub(start_time: t0 = Time.now)
       rule = Rule.weekly(7)
       rule.interval(2)
-      rule.next_time(t0 + 1, schedule, nil).should == t0 + 14.days
+      rule.next_time(t0 + 1, schedule, nil).should == t0 + 14 * ONE_DAY
     end
 
     it 'should produce the correct number of days for @interval = 1 with no weekdays specified' do
