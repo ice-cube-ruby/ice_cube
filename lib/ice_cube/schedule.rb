@@ -454,7 +454,7 @@ module IceCube
       raise ArgumentError, "All recurrence rules must specify .until or .count to use #{method_name}"
     end
 
-    def implicit_start_occurrence
+    def implicit_start_occurrence_rule
       SingleOccurrenceRule.new(start_time)
     end
 
@@ -463,8 +463,8 @@ module IceCube
     end
 
     def recurrence_times_with_start_time
-      if (recurrence_rules).empty?
-        [start_time] + recurrence_times_without_start_time
+      if recurrence_rules.empty?
+        [start_time].concat recurrence_times_without_start_time
       else
         recurrence_times
       end
@@ -472,7 +472,7 @@ module IceCube
 
     def recurrence_rules_with_implicit_start_occurrence
       if recurrence_rules.empty?
-        [implicit_start_occurrence] + @all_recurrence_rules
+        [implicit_start_occurrence_rule].concat @all_recurrence_rules
       else
         @all_recurrence_rules
       end
