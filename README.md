@@ -36,7 +36,8 @@ schedule.add_recurrence_rule(
 * [Presentation from Lone Star Ruby Conf][ice_cube-lone_star_pdf]
 * [Quick Introduction][ice_cube-ruby_nyc_pdf]
 * [Documentation Website][ice_cube-docs]
-
+* [Rails FullCalendar IceCube GitHub](https://github.com/mzararagoza/rails-fullcalendar-icecube "github")
+* [Rails FullCalendar IceCube Heroku](http://rails-fullcalendar-icecube.herokuapp.com/ "heroku")
 ---
 
 With ice_cube, you can specify (in increasing order of precendence):
