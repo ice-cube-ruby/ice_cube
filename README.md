@@ -36,8 +36,8 @@ schedule.add_recurrence_rule(
 * [Presentation from Lone Star Ruby Conf][ice_cube-lone_star_pdf]
 * [Quick Introduction][ice_cube-ruby_nyc_pdf]
 * [Documentation Website][ice_cube-docs]
-* [Rails FullCalendar IceCube GitHub][https://github.com/mzararagoza/rails-fullcalendar-icecube "github"]
-* [Rails FullCalendar IceCube Heroku][http://rails-fullcalendar-icecube.herokuapp.com/ "heroku"]
+* [Rails FullCalendar IceCube GitHub](http://rails-fullcalendar-icecube.herokuapp.com/ "rails-fullcalendar-icecube")
+* [Rails Demo](http://rails-fullcalendar-icecube.herokuapp.com/ "rails-fullcalendar-icecube")
 ---
 
 With ice_cube, you can specify (in increasing order of precendence):
@@ -289,6 +289,16 @@ https://github.com/GetJobber/recurring_select
 
 ---
 
+## rails/full calendar/ice cube demo
+
+And Example project thanks to @miamiruby, @mzararagoza and @nathancolgate 
+
+Check it out on
+[Github][github-rails-fullcalendar-icecube]
+[Heroku][demo-app]
+
+---
+
 ## Contributors
 
 * Mat Brown - mat@patch.com
@@ -319,3 +329,5 @@ Use the GitHub [issue tracker][ice_cube-issues]
 [ice_cube-ruby_nyc_pdf]: http://seejohnrun.github.com/ice_cube/static/ice_cube_ruby_nyc.pdf
 [ice_cube-docs]: http://seejohnrun.github.com/ice_cube/
 [ice_cube-issues]: https://github.com/seejohnrun/ice_cube/issues
+[github-rails-fullcalendar-icecube]: http://rails-fullcalendar-icecube.herokuapp.com/
+[demo-app]: http://rails-fullcalendar-icecube.herokuapp.com
