@@ -287,13 +287,13 @@ https://github.com/GetJobber/recurring_select
 
 ---
 
-## rails/full calendar/ice cube demo
+## Rails Demo using Full calendar and Ice Cube
 
 And Example project thanks to @miamiruby, @mzararagoza and @nathancolgate 
 
 Check it out on
-[Github][github-rails-fullcalendar-icecube]
-[Heroku][demo-app]
+* [Github][github-rails-fullcalendar-icecube]
+* [Heroku][demo-app]
 
 ---
 
