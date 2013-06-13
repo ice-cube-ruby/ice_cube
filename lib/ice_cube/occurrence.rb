@@ -28,7 +28,7 @@ module IceCube
 
     # Optimize for common methods to avoid method_missing
     extend Forwardable
-    def_delegators :start_time, :to_s, :to_i, :<=>, :==
+    def_delegators :start_time, :to_i, :<=>, :==
     def_delegators :to_range, :cover?, :include?, :each, :first, :last
 
     attr_reader :start_time, :end_time
@@ -79,12 +79,17 @@ module IceCube
       start_time
     end
 
-    def to_s
-      if duration > 0
-        "#{start_time} - #{end_time}"
+    # Shows both the start and end time if there is a duration.
+    # Optional format argument (e.g. :long, :short) supports Rails
+    # time formats and is only used when ActiveSupport is available.
+    #
+    def to_s(format=nil)
+      if format && to_time.public_method(:to_s).arity > 0
+        t0, t1 = start_time.to_s(format), end_time.to_s(format)
       else
-        "#{start_time}"
+        t0, t1 = start_time.to_s, end_time.to_s
       end
+      duration > 0 ? "#{t0} - #{t1}" : t0
     end
 
     def overnight?

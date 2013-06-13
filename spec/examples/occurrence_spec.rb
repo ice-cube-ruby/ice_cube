@@ -26,6 +26,12 @@ describe Occurrence do
 
       occurrence.to_s.should == "#{start_time} - #{end_time}"
     end
+
+    it "accepts a format option to comply with ActiveSupport" do
+      occurrence = Occurrence.new(Time.now)
+
+      expect { occurrence.to_s(:short) }.not_to raise_error
+    end
   end
 
   describe :end_time do
