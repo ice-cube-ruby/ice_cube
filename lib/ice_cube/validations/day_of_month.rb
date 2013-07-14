@@ -2,8 +2,6 @@ module IceCube
 
   module Validations::DayOfMonth
 
-    include Validations::Lock
-
     def day_of_month(*days)
       days.flatten.each do |day|
         unless day.is_a?(Fixnum)

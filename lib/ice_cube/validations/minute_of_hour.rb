@@ -2,8 +2,6 @@ module IceCube
 
   module Validations::MinuteOfHour
 
-    include Validations::Lock
-
     def minute_of_hour(*minutes)
       minutes.flatten.each do |minute|
         unless minute.is_a?(Fixnum)

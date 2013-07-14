@@ -2,8 +2,6 @@ module IceCube
 
   module Validations::HourOfDay
 
-    include Validations::Lock
-
     # Add hour of day validations
     def hour_of_day(*hours)
       hours.flatten.each do |hour|
