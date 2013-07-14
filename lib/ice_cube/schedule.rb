@@ -237,7 +237,7 @@ module IceCube
     def conflicts_with?(other_schedule, closing_time = nil)
       closing_time = TimeUtil.ensure_time closing_time
       unless terminating? || other_schedule.terminating? || closing_time
-        raise ArgumentError.new 'At least one schedule must be terminating to use #conflicts_with?'
+        raise ArgumentError, "One or both schedules must be terminating to use #conflicts_with?"
       end
       # Pick the terminating schedule, and other schedule
       # No need to reverse if terminating? or there is a closing time
