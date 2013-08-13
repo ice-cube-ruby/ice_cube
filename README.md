@@ -2,10 +2,6 @@
 
 [![Build Status][travis-ice_cube-png]][travis-ice_cube]
 
-<a href="https://www.stripeme.com/pay/1lq0">
-  <img alt="Pay" src="https://www.stripeme.com/pay.jpg" />
-</a>
-
 ```bash
 gem install ice_cube
 ```
