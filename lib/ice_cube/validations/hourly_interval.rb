@@ -27,9 +27,7 @@ module IceCube
 
       def build_ical(builder)
         builder['FREQ'] << 'HOURLY'
-        unless interval == 1
-          builder['INTERVAL'] << interval
-        end
+        builder['INTERVAL'] << interval unless interval == 1
       end
 
       def initialize(interval)

@@ -27,9 +27,7 @@ module IceCube
 
       def build_ical(builder)
         builder['FREQ'] << 'SECONDLY'
-        unless interval == 1
-          builder['INTERVAL'] << interval
-        end
+        builder['INTERVAL'] << interval unless interval == 1
       end
 
       def build_hash(builder)

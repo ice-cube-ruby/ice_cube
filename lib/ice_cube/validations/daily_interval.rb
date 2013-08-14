@@ -30,9 +30,7 @@ module IceCube
 
       def build_ical(builder)
         builder['FREQ'] << 'DAILY'
-        unless interval == 1
-          builder['INTERVAL'] << interval
-        end
+        builder['INTERVAL'] << interval unless interval == 1
       end
 
       def type
