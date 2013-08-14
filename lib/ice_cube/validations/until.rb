@@ -4,7 +4,7 @@ module IceCube
 
     extend Deprecated
 
-    # accessor
+    # Value reader for limit
     def until_time
       @until
     end

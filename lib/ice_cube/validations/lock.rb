@@ -1,8 +1,13 @@
 module IceCube
 
-  # A validation mixin that will lock the +type field to
-  # +value or +schedule.start_time.send(type) if value is nil
-
+  # This validation mixin is used by the various "fixed-time" (e.g. day,
+  # day_of_month, hour_of_day) Validation and ScheduleLock::Validation modules.
+  # It is not a standalone rule validation like the others.
+  #
+  # Given the including Validation's defined +type+ field, it will lock
+  # to the specified +value+ or else the corresponding time unit from the
+  # schedule's start_time
+  #
   module Validations::Lock
 
     INTERVALS = {:min => 60, :sec => 60, :hour => 24, :month => 12, :wday => 7}

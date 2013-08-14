@@ -10,8 +10,6 @@ module IceCube
       self
     end
 
-    # A validation for checking to make sure that a time
-    # is inside of a certain DailyInterval
     class Validation
 
       attr_reader :interval

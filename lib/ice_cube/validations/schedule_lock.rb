@@ -2,16 +2,16 @@ module IceCube
 
   module Validations::ScheduleLock
 
-    # Lock the given times down the schedule's start_time for that position
+    # Lock the given time units to the units from schedule's +start_time+
     # These locks are all clobberable by other rules of the same #type
-    # using clobber_base_validation
+    # using +clobber_base_validation+
+    #
     def schedule_lock(*types)
       types.each do |type|
         validations_for(:"base_#{type}") << Validation.new(type)
       end
     end
 
-    # A validation used for locking time into a certain value
     class Validation
 
       include Validations::Lock

@@ -2,7 +2,7 @@ module IceCube
 
   module Validations::Count
 
-    # accessor
+    # Value reader for limit
     def occurrence_count
       @count
     end
