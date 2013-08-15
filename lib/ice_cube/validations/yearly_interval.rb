@@ -17,7 +17,7 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.base = interval == 1 ? 'Yearly' : "Every #{interval} years"
+        builder.base = interval == 1 ? I18n.t('ice_cube.yearly') : "#{I18n.t('ice_cube.every')} #{interval} #{I18n.t('ice_cube.years')}"
       end
 
       def build_hash(builder)

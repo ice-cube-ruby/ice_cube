@@ -22,7 +22,7 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.base = interval == 1 ? 'Secondly' : "Every #{interval} seconds"
+        builder.base = interval == 1 ? I18n.t('ice_cube.secondly') : I18n.t('ice_cube.every_second', interval: interval)
       end
 
       def build_ical(builder)

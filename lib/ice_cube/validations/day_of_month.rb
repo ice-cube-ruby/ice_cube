@@ -20,8 +20,8 @@ module IceCube
       include Validations::Lock
 
       StringBuilder.register_formatter(:day_of_month) do |entries|
-        str = "on the #{StringBuilder.sentence(entries)} "
-        str << (entries.size == 1 ? 'day of the month' : 'days of the month')
+        str = "#{I18n.t('ice_cube.on')} #{I18n.t('ice_cube.the')} #{StringBuilder.sentence(entries)} "
+        str << I18n.t('ice_cube.days_of_month', count: entries.size)
         str
       end
 

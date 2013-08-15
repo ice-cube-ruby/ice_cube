@@ -292,10 +292,10 @@ module IceCube
     def to_s
       pieces = []
       rd = recurrence_times_with_start_time - extimes
-      pieces.concat rd.sort.map { |t| t.strftime(IceCube.to_s_time_format) }
+      pieces.concat rd.sort.map { |t| I18n.l(t, format: IceCube.to_s_time_format) }
       pieces.concat rrules.map  { |t| t.to_s }
-      pieces.concat exrules.map { |t| "not #{t.to_s}" }
-      pieces.concat extimes.sort.map { |t| "not on #{t.strftime(IceCube.to_s_time_format)}" }
+      pieces.concat exrules.map { |t| "#{I18n.t('ice_cube.not')} #{t.to_s}" }
+      pieces.concat extimes.sort.map { |t| "#{I18n.t('ice_cube.not')} #{I18n.t('ice_cube.on')} #{I18n.l(t, format: IceCube.to_s_time_format)}" }
       pieces.join(' / ')
     end
 
