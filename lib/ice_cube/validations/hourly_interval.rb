@@ -18,7 +18,7 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.base = interval == 1 ? 'Hourly' : "Every #{interval} hours"
+        builder.base = interval == 1 ? I18n.t('ice_cube.hourly') : "#{I18n.t('ice_cube.every')} #{interval} #{I18n.t('ice_cube.hours')}"
       end
 
       def build_hash(builder)

@@ -52,12 +52,12 @@ module IceCube
         validation_days.sort!
         # pick the right shortening, if applicable
         if validation_days == [0, 6]
-          'on Weekends'
+          I18n.t('ice_cube.on_weekends')
         elsif validation_days == (1..5).to_a
-          'on Weekdays'
+          I18n.t('ice_cube.on_weekdays')
         else
-          segments = validation_days.map { |d| "#{Date::DAYNAMES[d]}s" }
-          "on #{StringBuilder.sentence(segments)}"
+          segments = validation_days.map { |d| I18n.t('date.day_names')[d].pluralize }
+          "#{I18n.t('ice_cube.on')} #{StringBuilder.sentence(segments)}"
         end
       end
 

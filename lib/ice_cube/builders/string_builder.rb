@@ -48,14 +48,14 @@ module IceCube
         case array.length
         when 0 ; ''
         when 1 ; array[0].to_s
-        when 2 ; "#{array[0]} and #{array[1]}"
-        else ; "#{array[0...-1].join(', ')}, and #{array[-1]}"
+        when 2 ; "#{array[0]} #{I18n.t('ice_cube.and')} #{array[1]}"
+        else ; "#{array[0...-1].join(', ')}, #{I18n.t('ice_cube.and')} #{array[-1]}"
         end
       end
 
       def nice_number(number)
         if number == -1
-          'last'
+          I18n.t('ice_cube.last')
         elsif number < -1
           suffix = SPECIAL_SUFFIX.include?(number) ?
             SPECIAL_SUFFIX[number] : NUMBER_SUFFIX[number.abs % 10]
