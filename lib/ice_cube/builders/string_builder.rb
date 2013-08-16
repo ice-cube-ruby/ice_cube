@@ -13,16 +13,14 @@ module IceCube
     end
 
     def to_s
-      str = @base || ''
-      res = @types.map do |type, segments|
+      @types.each_with_object(@base || '') do |(type, segments), str|
         if f = self.class.formatter(type)
-          str << ' ' + f.call(segments)
+          str << ' ' << f.call(segments)
         else
           next if segments.empty?
-          str << ' ' + self.class.sentence(segments)
+          str << ' ' << self.class.sentence(segments)
         end
       end
-      str
     end
 
     def self.formatter(type)
@@ -50,15 +48,11 @@ module IceCube
       end
 
       def nice_number(number)
-        if number == -1
-          'last'
-        elsif number < -1
-          suffix = SPECIAL_SUFFIX.include?(number) ?
-            SPECIAL_SUFFIX[number] : NUMBER_SUFFIX[number.abs % 10]
+        return 'last' if number == -1
+        suffix = SPECIAL_SUFFIX[number] || NUMBER_SUFFIX[number.abs % 10]
+        if number < -1
           number.abs.to_s << suffix << ' to last'
         else
-          suffix = SPECIAL_SUFFIX.include?(number) ?
-            SPECIAL_SUFFIX[number] : NUMBER_SUFFIX[number.abs % 10]
           number.to_s << suffix
         end
       end
