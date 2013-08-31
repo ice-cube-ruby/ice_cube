@@ -179,7 +179,6 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.monthly
     dates = schedule.first(10)
-    puts dates.inspect
     dates.each do |date|
       date.day.should == 31 if ['1', '3', '5', '7', '8', '10', '12'].include? date.month
       date.day.should == 30 if ['4', '6', '9', '11'].include? date.month
