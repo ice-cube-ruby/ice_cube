@@ -133,19 +133,6 @@ describe IceCube::Schedule do
     end
   end
 
-  it 'occurs monthly' do
-    start_date = Time.now
-    schedule = IceCube::Schedule.new(start_date)
-    schedule.add_recurrence_rule IceCube::Rule.monthly
-    dates = schedule.first(10)
-    dates.each do |date|
-      date.day.should == start_date.day
-      date.hour.should == start_date.hour
-      date.min.should == start_date.min
-      date.sec.should == start_date.sec
-    end
-  end
-
   it 'occurs daily' do
     start_date = Time.now
     schedule = IceCube::Schedule.new(start_date)
