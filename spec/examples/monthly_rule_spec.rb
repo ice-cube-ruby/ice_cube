@@ -60,21 +60,32 @@ module IceCube
       schedule.occurrences(t1).size.should == 24
     end
 
-    it 'should occur on every first day of a month at midnight and not skip months when DST ends' do
-      [:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday].each_with_index do |weekday, wday|
-        schedule = Schedule.new(t0 = Time.local(2011, 8, 1))
-        schedule.add_recurrence_rule Rule.monthly.day_of_week(weekday => [1])
-        last_date = nil
-        schedule.first(48).each do |current_date|
-          current_date.wday.should == wday
-          current_date.hour.should == 0
-          if last_date then
-            month_interval = (current_date.year * 12 + current_date.month) -
-                             (last_date.year * 12 + last_date.month)
-            # should not skip months
-            month_interval.should == 1
+    [:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday].each_with_index do |weekday, wday|
+      context "for every first #{weekday} of a month" do
+        let(:schedule) {
+          schedule = Schedule.new(t0 = Time.local(2011, 8, 1))
+          schedule.add_recurrence_rule Rule.monthly.day_of_week(weekday => [1])
+        }
+
+        it "should not skip a month when DST ends" do
+          schedule.first(48).inject(nil) do |last_date, current_date|
+            next current_date unless last_date
+            month_interval(current_date, last_date).should == 1
           end
-          last_date = current_date
+        end
+
+        it "should not change day when DST ends" do
+          schedule.first(48).inject(nil) do |last_date, current_date|
+            next current_date unless last_date
+            current_date.wday.should == wday
+          end
+        end
+
+        it "should not change hour when DST ends" do
+          schedule.first(48).inject(nil) do |last_date, current_date|
+            next current_date unless last_date
+            current_date.hour.should == 0
+          end
         end
       end
     end
@@ -109,6 +120,12 @@ module IceCube
         Time.utc(2013, 3, 31),
         Time.utc(2013, 5, 31)
       ]
+    end
+
+    def month_interval(current_date, last_date)
+      current_month = current_date.year * 12 + current_date.month
+      last_month    = last_date.year * 12 + last_date.month
+      current_month - last_month
     end
 
   end
