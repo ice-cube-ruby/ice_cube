@@ -199,8 +199,8 @@ schedule.add_recurrence_rule Rule.monthly.day_of_month(1, -1)
 schedule.add_recurrence_rule Rule.monthly(2).day_of_month(15)
 ```
 
-Monthly rules will use the nearest day at the end of the month if the month is
-too short (e.g. February 28 for `day_of_month(31)`)
+Monthly rules will skip months that are too short for the specified day of
+month (e.g. no occurrences in February for `day_of_month(31)`).
 
 ### Monthly (by day of Nth week)
 
