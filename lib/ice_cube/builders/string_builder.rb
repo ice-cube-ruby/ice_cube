@@ -25,20 +25,16 @@ module IceCube
       str
     end
 
-    class << self
-
-      def formatter(type)
-        @formatters[type]
-      end
-
-      def register_formatter(type, &formatter)
-        @formatters ||= {}
-        @formatters[type] = formatter
-      end
-
+    def self.formatter(type)
+      @formatters[type]
     end
 
-    class << self
+    def self.register_formatter(type, &formatter)
+      @formatters ||= {}
+      @formatters[type] = formatter
+    end
+
+    module Helpers
 
       NUMBER_SUFFIX = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th']
       SPECIAL_SUFFIX = { 11 => 'th', 12 => 'th', 13 => 'th', 14 => 'th' }
@@ -68,6 +64,8 @@ module IceCube
       end
 
     end
+
+    extend Helpers
 
   end
 
