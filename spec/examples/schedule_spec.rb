@@ -346,7 +346,6 @@ describe IceCube::Schedule do
         next_year = Date.new(t0.year + 1, t0.month, t0.day)
         s.add_recurrence_rule nonsense.until(next_year)
       end
-      trap_infinite_loop_beyond(24)
       schedule.next_occurrences(1).should be_empty
     end
 
@@ -608,7 +607,7 @@ describe IceCube::Schedule do
 
   describe :occurs_on? do
 
-    subject(:schedule) { IceCube::Schedule.new(start_time) }
+    let(:schedule) { IceCube::Schedule.new(start_time) }
 
     shared_examples "occurring on a given day" do
       WORLD_TIME_ZONES.each do |zone|
@@ -712,8 +711,4 @@ describe IceCube::Schedule do
     occurrence.utc_offset == start_time.utc_offset
   end
 
-  def trap_infinite_loop_beyond(iterations)
-    IceCube::ValidatedRule.any_instance.should_receive(:finds_acceptable_time?).
-                          at_most(iterations).times.and_call_original
-  end
 end

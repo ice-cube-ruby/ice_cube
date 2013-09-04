@@ -311,6 +311,28 @@ module IceCube
       pieces.join("\n")
     end
 
+    def self.from_ical(ical_string, options = {})
+      data = {}
+      ical_string.each_line do |line|
+        (property, value) = line.split(':')
+        (property, tzid) = property.split(';') 
+        case property
+        when 'DTSTART'
+          data[:start_date] = Time.parse(value)
+        when 'DTEND'
+          data[:end_time] = Time.parse(value)
+          when 'EXDATE'
+          data[:extimes] ||= []
+          data[:extimes] += value.split(',').map{|v| Time.parse(v)}
+        when 'DURATION'
+          data[:duration] # FIXME
+        when 'RRULE'
+          data[:rrules] = [IceCube::Rule.from_ical(value)]
+        end
+      end
+      from_hash data
+    end
+
     # Convert the schedule to yaml
     def to_yaml(*args)
       IceCube::use_psych? ? Psych::dump(to_hash, *args) : YAML::dump(to_hash, *args)
@@ -349,8 +371,12 @@ module IceCube
       schedule = IceCube::Schedule.new TimeUtil.deserialize_time(data[:start_date])
       schedule.end_time = schedule.start_time + data[:duration] if data[:duration]
       schedule.end_time = TimeUtil.deserialize_time(data[:end_time]) if data[:end_time]
-      data[:rrules] && data[:rrules].each { |h| schedule.rrule(IceCube::Rule.from_hash(h)) }
-      data[:exrules] && data[:exrules].each { |h| schedule.exrule(IceCube::Rule.from_hash(h)) }
+      data[:rrules] && data[:rrules].each do |h| 
+        schedule.rrule(h.is_a?(IceCube::Rule) ? h : IceCube::Rule.from_hash(h))
+      end
+      data[:exrules] && data[:exrules].each do |h| 
+        schedule.exrule(h.is_a?(IceCube::Rule) ? h : IceCube::Rule.from_hash(h))
+      end
       data[:rtimes] && data[:rtimes].each do |t|
         schedule.add_recurrence_time TimeUtil.deserialize_time(t)
       end
@@ -424,7 +450,7 @@ module IceCube
           begin
             new_time = rule.next_time(time, self, min_time || closing_time)
             [min_time, new_time].compact.min
-          rescue CountExceeded, UntilExceeded
+          rescue CountExceeded, UntilExceeded, ZeroInterval
             min_time
           end
         end
