@@ -40,6 +40,7 @@ module IceCube
       end
 
       def validate(time, schedule)
+        raise ZeroInterval if interval == 0
         time_date = Date.new(time.year, time.month, time.day)
         start_date = Date.new(schedule.start_time.year, schedule.start_time.month, schedule.start_time.day)
         days = time_date - start_date

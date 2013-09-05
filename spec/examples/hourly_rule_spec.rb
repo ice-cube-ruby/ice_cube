@@ -26,25 +26,45 @@ module IceCube
         ]
       end
 
-    end
+      it 'should update previous interval' do
+        schedule = stub(start_time: t0 = Time.now)
+        rule = Rule.hourly(7)
+        rule.interval(5)
+        rule.next_time(t0 + 1, schedule, nil).should == t0 + 5.hours
+      end
 
-    it 'should update previous interval' do
-      schedule = stub(start_time: t0 = Time.now)
-      rule = Rule.hourly(7)
-      rule.interval(5)
-      rule.next_time(t0 + 1, schedule, nil).should == t0 + 5.hours
-    end
+      it 'should produce the correct days for @interval = 3' do
+        start_date = DAY
+        schedule = Schedule.new(start_date)
+        schedule = Schedule.from_yaml(schedule.to_yaml)
+        schedule.add_recurrence_rule Rule.hourly(3)
+        #check assumption (3) -- (1) 2 (3) 4 (5) 6
+        dates = schedule.first(3)
+        dates.size.should == 3
+        dates.should == [DAY, DAY + 3 * ONE_HOUR, DAY + 6 * ONE_HOUR]
+      end
 
-    it 'should produce the correct days for @interval = 3' do
-      start_date = DAY
-      schedule = Schedule.new(start_date)
-      schedule = Schedule.from_yaml(schedule.to_yaml)
-      schedule.add_recurrence_rule Rule.hourly(3)
-      #check assumption (3) -- (1) 2 (3) 4 (5) 6
-      dates = schedule.first(3)
-      dates.size.should == 3
-      dates.should == [DAY, DAY + 3 * ONE_HOUR, DAY + 6 * ONE_HOUR]
-    end
+      it 'should not produce results for @interval = 0' do
+        start_date = DAY
+        schedule = IceCube::Schedule.new(start_date)
+        schedule = IceCube::Schedule.from_yaml(schedule.to_yaml)
+        schedule.add_recurrence_rule IceCube::Rule.hourly(0)
+        #check assumption
+        dates = schedule.first(3)
+        dates.size.should == 0
+        dates.should == []
+      end
 
+      it 'should produce the correct days for @interval = 3' do
+        start_date = DAY
+        schedule = IceCube::Schedule.new(start_date)
+        schedule = IceCube::Schedule.from_yaml(schedule.to_yaml)
+        schedule.add_recurrence_rule IceCube::Rule.hourly(3)
+        #check assumption (3) -- (1) 2 (3) 4 (5) 6
+        dates = schedule.first(3)
+        dates.size.should == 3
+        dates.should == [DAY, DAY + 3 * IceCube::ONE_HOUR, DAY + 6 * IceCube::ONE_HOUR]
+      end
+    end
   end
 end

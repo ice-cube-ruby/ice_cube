@@ -3,6 +3,22 @@ require File.dirname(__FILE__) + '/../spec_helper'
 module IceCube
   describe MonthlyRule do
 
+    it 'should not produce results for @interval = 0' do
+      start_date = DAY
+      schedule = IceCube::Schedule.new(start_date)
+      schedule.add_recurrence_rule IceCube::Rule.monthly(0)
+      #check assumption
+      schedule.occurrences(start_date + 50 * IceCube::ONE_DAY).size.should == 0
+    end
+
+    it 'should produce the correct number of days for @interval = 1' do
+      start_date = DAY
+      schedule = IceCube::Schedule.new(start_date)
+      schedule.add_recurrence_rule IceCube::Rule.monthly
+      #check assumption
+      schedule.occurrences(start_date + 50 * IceCube::ONE_DAY).size.should == 2
+    end
+
     it 'should update previous interval' do
       schedule = stub(start_time: t0 = Time.utc(2013, 5, 17))
       rule = Rule.monthly(3)

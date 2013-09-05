@@ -41,6 +41,7 @@ module IceCube
       end
 
       def validate(time, schedule)
+        raise ZeroInterval if interval == 0
         seconds = time.to_i - schedule.start_time.to_i
         unless seconds % interval == 0
           interval - (seconds % interval)

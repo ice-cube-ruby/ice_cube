@@ -37,6 +37,7 @@ module IceCube
       end
 
       def validate(time, schedule)
+        raise ZeroInterval if interval == 0
         start_time = schedule.start_time
         months_to_start = (time.month - start_time.month) + (time.year - start_time.year) * 12
         unless months_to_start % interval == 0
