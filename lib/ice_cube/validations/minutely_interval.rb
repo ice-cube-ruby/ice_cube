@@ -25,6 +25,16 @@ module IceCube
         false
       end
 
+      def validate(time, schedule)
+        start_time = schedule.start_time
+        sec = (time.to_i - time.to_i % ONE_MINUTE) -
+          (start_time.to_i - start_time.to_i % ONE_MINUTE)
+        minutes = sec / ONE_MINUTE
+        unless minutes % interval == 0
+          interval - (minutes % interval)
+        end
+      end
+
       def build_s(builder)
         builder.base = interval == 1 ? 'Minutely' : "Every #{interval} minutes"
       end
@@ -36,16 +46,6 @@ module IceCube
 
       def build_hash(builder)
         builder[:interval] = interval
-      end
-
-      def validate(time, schedule)
-        start_time = schedule.start_time
-        sec = (time.to_i - time.to_i % ONE_MINUTE) -
-          (start_time.to_i - start_time.to_i % ONE_MINUTE)
-        minutes = sec / ONE_MINUTE
-        unless minutes % interval == 0
-          interval - (minutes % interval)
-        end
       end
 
     end

@@ -20,6 +20,13 @@ module IceCube
         :year
       end
 
+      def validate(time, schedule)
+        years_to_start = time.year - schedule.start_time.year
+        unless years_to_start % interval == 0
+          interval - (years_to_start % interval)
+        end
+      end
+
       def build_s(builder)
         builder.base = interval == 1 ? 'Yearly' : "Every #{interval} years"
       end
@@ -32,13 +39,6 @@ module IceCube
         builder['FREQ'] << 'YEARLY'
         unless interval == 1
           builder['INTERVAL'] << interval
-        end
-      end
-
-      def validate(time, schedule)
-        years_to_start = time.year - schedule.start_time.year
-        unless years_to_start % interval == 0
-          interval - (years_to_start % interval)
         end
       end
 

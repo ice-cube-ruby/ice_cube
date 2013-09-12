@@ -29,6 +29,19 @@ module IceCube
         :day
       end
 
+      def validate(time, schedule)
+        date = Date.new(time.year, time.month, time.day)
+        st = schedule.start_time
+        start_date = Date.new(st.year, st.month, st.day)
+        weeks = (
+          (date - TimeUtil.normalize_wday(date.wday, week_start)) -
+          (start_date - TimeUtil.normalize_wday(start_date.wday, week_start))
+        ) / 7
+        unless weeks % interval == 0
+          (interval - (weeks % interval)) * 7
+        end
+      end
+
       def build_s(builder)
         builder.base = interval == 1 ? 'Weekly' : "Every #{interval} weeks"
       end
@@ -44,19 +57,6 @@ module IceCube
       def build_hash(builder)
         builder[:interval] = interval
         builder[:week_start] = TimeUtil.sym_to_wday(week_start)
-      end
-
-      def validate(time, schedule)
-        date = Date.new(time.year, time.month, time.day)
-        st = schedule.start_time
-        start_date = Date.new(st.year, st.month, st.day)
-        weeks = (
-          (date - TimeUtil.normalize_wday(date.wday, week_start)) -
-          (start_date - TimeUtil.normalize_wday(start_date.wday, week_start))
-        ) / 7
-        unless weeks % interval == 0
-          (interval - (weeks % interval)) * 7
-        end
       end
 
     end

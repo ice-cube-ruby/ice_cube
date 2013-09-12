@@ -25,6 +25,16 @@ module IceCube
         false
       end
 
+      def validate(time, schedule)
+        start_time = schedule.start_time
+        sec = (time.to_i - time.to_i % ONE_HOUR) -
+          (start_time.to_i - start_time.to_i % ONE_HOUR)
+        hours = sec / ONE_HOUR
+        unless hours % interval == 0
+          interval - (hours % interval)
+        end
+      end
+
       def build_s(builder)
         builder.base = interval == 1 ? 'Hourly' : "Every #{interval} hours"
       end
@@ -36,16 +46,6 @@ module IceCube
       def build_ical(builder)
         builder['FREQ'] << 'HOURLY'
         builder['INTERVAL'] << interval unless interval == 1
-      end
-
-      def validate(time, schedule)
-        start_time = schedule.start_time
-        sec = (time.to_i - time.to_i % ONE_HOUR) -
-          (start_time.to_i - start_time.to_i % ONE_HOUR)
-        hours = sec / ONE_HOUR
-        unless hours % interval == 0
-          interval - (hours % interval)
-        end
       end
 
     end

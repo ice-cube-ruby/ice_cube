@@ -25,6 +25,13 @@ module IceCube
         false
       end
 
+      def validate(time, schedule)
+        seconds = time.to_i - schedule.start_time.to_i
+        unless seconds % interval == 0
+          interval - (seconds % interval)
+        end
+      end
+
       def build_s(builder)
         builder.base = interval == 1 ? 'Secondly' : "Every #{interval} seconds"
       end
@@ -36,13 +43,6 @@ module IceCube
 
       def build_hash(builder)
         builder[:interval] = interval
-      end
-
-      def validate(time, schedule)
-        seconds = time.to_i - schedule.start_time.to_i
-        unless seconds % interval == 0
-          interval - (seconds % interval)
-        end
       end
 
     end

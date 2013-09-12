@@ -24,6 +24,15 @@ module IceCube
         :day
       end
 
+      def validate(time, schedule)
+        time_date = Date.new(time.year, time.month, time.day)
+        start_date = Date.new(schedule.start_time.year, schedule.start_time.month, schedule.start_time.day)
+        days = time_date - start_date
+        unless days % interval === 0
+          interval - (days % interval)
+        end
+      end
+
       def build_s(builder)
         builder.base = interval == 1 ? 'Daily' : "Every #{interval} days"
       end
@@ -35,15 +44,6 @@ module IceCube
       def build_ical(builder)
         builder['FREQ'] << 'DAILY'
         builder['INTERVAL'] << interval unless interval == 1
-      end
-
-      def validate(time, schedule)
-        time_date = Date.new(time.year, time.month, time.day)
-        start_date = Date.new(schedule.start_time.year, schedule.start_time.month, schedule.start_time.day)
-        days = time_date - start_date
-        unless days % interval === 0
-          interval - (days % interval)
-        end
       end
 
     end

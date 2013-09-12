@@ -29,6 +29,10 @@ module IceCube
         :dealbreaker
       end
 
+      def validate(t, schedule)
+        raise UntilExceeded if t > time
+      end
+
       def build_ical(builder)
         builder['UNTIL'] << IcalBuilder.ical_utc_format(time)
       end
@@ -39,10 +43,6 @@ module IceCube
 
       def build_s(builder)
         builder.piece(:until) << "until #{time.strftime(IceCube.to_s_time_format)}"
-      end
-
-      def validate(t, schedule)
-        raise UntilExceeded if t > time
       end
 
     end
