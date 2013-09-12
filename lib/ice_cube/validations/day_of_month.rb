@@ -17,17 +17,17 @@ module IceCube
 
       include Validations::Lock
 
-      StringBuilder.register_formatter(:day_of_month) do |entries|
-        str = "on the #{StringBuilder.sentence(entries)} "
-        str << (entries.size == 1 ? 'day of the month' : 'days of the month')
-        str
-      end
-
       attr_reader :day
       alias :value :day
 
       def initialize(day)
         @day = day
+      end
+
+      StringBuilder.register_formatter(:day_of_month) do |entries|
+        str = "on the #{StringBuilder.sentence(entries)} "
+        str << (entries.size == 1 ? 'day of the month' : 'days of the month')
+        str
       end
 
       def build_s(builder)

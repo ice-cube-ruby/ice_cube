@@ -20,6 +20,11 @@ module IceCube
 
       attr_reader :interval, :week_start
 
+      def initialize(interval, week_start)
+        @interval = interval
+        @week_start = week_start
+      end
+
       def type
         :day
       end
@@ -39,11 +44,6 @@ module IceCube
       def build_hash(builder)
         builder[:interval] = interval
         builder[:week_start] = TimeUtil.sym_to_wday(week_start)
-      end
-
-      def initialize(interval, week_start)
-        @interval = interval
-        @week_start = week_start
       end
 
       def validate(time, schedule)

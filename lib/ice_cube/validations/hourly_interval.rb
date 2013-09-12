@@ -13,6 +13,10 @@ module IceCube
 
       attr_reader :interval
 
+      def initialize(interval)
+        @interval = interval
+      end
+
       def type
         :hour
       end
@@ -28,10 +32,6 @@ module IceCube
       def build_ical(builder)
         builder['FREQ'] << 'HOURLY'
         builder['INTERVAL'] << interval unless interval == 1
-      end
-
-      def initialize(interval)
-        @interval = interval
       end
 
       def dst_adjust?

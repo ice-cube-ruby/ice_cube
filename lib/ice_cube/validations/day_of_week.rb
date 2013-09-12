@@ -17,6 +17,11 @@ module IceCube
 
       attr_reader :day, :occ
 
+      def initialize(day, occ)
+        @day = day
+        @occ = occ
+      end
+
       StringBuilder.register_formatter(:day_of_week) do |segments|
         'on the ' + segments.join(' and ')
       end
@@ -40,11 +45,6 @@ module IceCube
         builder.validations[:day_of_week] ||= {}
         arr = (builder.validations[:day_of_week][day] ||= [])
         arr << occ
-      end
-
-      def initialize(day, occ)
-        @day = day
-        @occ = occ
       end
 
       def validate(time, schedule)

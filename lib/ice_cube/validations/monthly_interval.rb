@@ -13,6 +13,10 @@ module IceCube
 
       attr_reader :interval
 
+      def initialize(interval)
+        @interval = interval
+      end
+
       def type
         :month
       end
@@ -28,10 +32,6 @@ module IceCube
 
       def build_hash(builder)
         builder[:interval] = interval
-      end
-
-      def initialize(interval)
-        @interval = interval
       end
 
       def validate(time, schedule)

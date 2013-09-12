@@ -12,6 +12,10 @@ module IceCube
 
       attr_reader :interval
 
+      def initialize(interval)
+        @interval = interval
+      end
+
       def type
         :year
       end
@@ -29,10 +33,6 @@ module IceCube
         unless interval == 1
           builder['INTERVAL'] << interval
         end
-      end
-
-      def initialize(interval)
-        @interval = interval
       end
 
       def validate(time, schedule)

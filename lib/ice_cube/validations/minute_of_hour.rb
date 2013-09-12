@@ -17,16 +17,16 @@ module IceCube
 
       include Validations::Lock
 
-      StringBuilder.register_formatter(:minute_of_hour) do |segments|
-        str = "on the #{StringBuilder.sentence(segments)} "
-        str << (segments.size == 1 ? 'minute of the hour' : 'minutes of the hour')
-      end
-
       attr_reader :minute
       alias :value :minute
 
       def initialize(minute)
         @minute = minute
+      end
+
+      StringBuilder.register_formatter(:minute_of_hour) do |segments|
+        str = "on the #{StringBuilder.sentence(segments)} "
+        str << (segments.size == 1 ? 'minute of the hour' : 'minutes of the hour')
       end
 
       def build_s(builder)
