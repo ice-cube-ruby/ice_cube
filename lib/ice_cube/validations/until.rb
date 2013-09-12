@@ -26,7 +26,7 @@ module IceCube
       end
 
       def type
-        :dealbreaker
+        :limit
       end
 
       def validate(step_time, schedule)
