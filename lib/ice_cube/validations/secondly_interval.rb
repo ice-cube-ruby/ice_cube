@@ -36,13 +36,13 @@ module IceCube
         builder.base = interval == 1 ? 'Secondly' : "Every #{interval} seconds"
       end
 
+      def build_hash(builder)
+        builder[:interval] = interval
+      end
+
       def build_ical(builder)
         builder['FREQ'] << 'SECONDLY'
         builder['INTERVAL'] << interval unless interval == 1
-      end
-
-      def build_hash(builder)
-        builder[:interval] = interval
       end
 
     end

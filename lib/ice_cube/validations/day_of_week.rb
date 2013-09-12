@@ -46,8 +46,10 @@ module IceCube
         builder.piece(:day_of_week) << "#{StringBuilder.nice_number(occ)} #{Date::DAYNAMES[day]}"
       end
 
-      StringBuilder.register_formatter(:day_of_week) do |segments|
-        'on the ' + segments.join(' and ')
+      def build_hash(builder)
+        builder.validations[:day_of_week] ||= {}
+        arr = (builder.validations[:day_of_week][day] ||= [])
+        arr << occ
       end
 
       def build_ical(builder)
@@ -57,10 +59,8 @@ module IceCube
         builder['BYDAY'] << "#{occ}#{ical_day}"
       end
 
-      def build_hash(builder)
-        builder.validations[:day_of_week] ||= {}
-        arr = (builder.validations[:day_of_week][day] ||= [])
-        arr << occ
+      StringBuilder.register_formatter(:day_of_week) do |segments|
+        'on the ' + segments.join(' and ')
       end
 
     end

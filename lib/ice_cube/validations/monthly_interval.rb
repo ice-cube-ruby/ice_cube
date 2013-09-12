@@ -33,13 +33,13 @@ module IceCube
         builder.base = interval == 1 ? 'Monthly' : "Every #{interval} months"
       end
 
+      def build_hash(builder)
+        builder[:interval] = interval
+      end
+
       def build_ical(builder)
         builder['FREQ'] << 'MONTHLY'
         builder['INTERVAL'] << interval unless interval == 1
-      end
-
-      def build_hash(builder)
-        builder[:interval] = interval
       end
 
     end

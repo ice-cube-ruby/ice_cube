@@ -33,16 +33,16 @@ module IceCube
         raise UntilExceeded if t > time
       end
 
-      def build_ical(builder)
-        builder['UNTIL'] << IcalBuilder.ical_utc_format(time)
+      def build_s(builder)
+        builder.piece(:until) << "until #{time.strftime(IceCube.to_s_time_format)}"
       end
 
       def build_hash(builder)
         builder[:until] = TimeUtil.serialize_time(time)
       end
 
-      def build_s(builder)
-        builder.piece(:until) << "until #{time.strftime(IceCube.to_s_time_format)}"
+      def build_ical(builder)
+        builder['UNTIL'] << IcalBuilder.ical_utc_format(time)
       end
 
     end

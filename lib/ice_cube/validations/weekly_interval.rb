@@ -46,17 +46,17 @@ module IceCube
         builder.base = interval == 1 ? 'Weekly' : "Every #{interval} weeks"
       end
 
+      def build_hash(builder)
+        builder[:interval] = interval
+        builder[:week_start] = TimeUtil.sym_to_wday(week_start)
+      end
+
       def build_ical(builder)
         builder['FREQ'] << 'WEEKLY'
         unless interval == 1
           builder['INTERVAL'] << interval
           builder['WKST'] << week_start.to_s.upcase[0..1]
         end
-      end
-
-      def build_hash(builder)
-        builder[:interval] = interval
-        builder[:week_start] = TimeUtil.sym_to_wday(week_start)
       end
 
     end

@@ -37,18 +37,18 @@ module IceCube
         builder.piece(:day_of_year) << StringBuilder.nice_number(day)
       end
 
-      StringBuilder.register_formatter(:day_of_year) do |entries|
-        str = "on the #{StringBuilder.sentence(entries)} "
-        str << (entries.size == 1 ? 'day of the year' : 'days of the year')
-        str
-      end
-
       def build_hash(builder)
         builder.validations_array(:day_of_year) << day
       end
 
       def build_ical(builder)
         builder['BYYEARDAY'] << day
+      end
+
+      StringBuilder.register_formatter(:day_of_year) do |entries|
+        str = "on the #{StringBuilder.sentence(entries)} "
+        str << (entries.size == 1 ? 'day of the year' : 'days of the year')
+        str
       end
 
     end
