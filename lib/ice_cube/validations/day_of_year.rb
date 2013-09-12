@@ -33,14 +33,14 @@ module IceCube
         diff >= 0 ? diff : diff + days_in_year
       end
 
+      def build_s(builder)
+        builder.piece(:day_of_year) << StringBuilder.nice_number(day)
+      end
+
       StringBuilder.register_formatter(:day_of_year) do |entries|
         str = "on the #{StringBuilder.sentence(entries)} "
         str << (entries.size == 1 ? 'day of the year' : 'days of the year')
         str
-      end
-
-      def build_s(builder)
-        builder.piece(:day_of_year) << StringBuilder.nice_number(day)
       end
 
       def build_hash(builder)
