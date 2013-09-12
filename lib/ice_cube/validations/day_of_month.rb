@@ -24,6 +24,10 @@ module IceCube
         @day = day
       end
 
+      def type
+        :day
+      end
+
       StringBuilder.register_formatter(:day_of_month) do |entries|
         str = "on the #{StringBuilder.sentence(entries)} "
         str << (entries.size == 1 ? 'day of the month' : 'days of the month')
@@ -40,10 +44,6 @@ module IceCube
 
       def build_ical(builder)
         builder['BYMONTHDAY'] << day
-      end
-
-      def type
-        :day
       end
 
     end

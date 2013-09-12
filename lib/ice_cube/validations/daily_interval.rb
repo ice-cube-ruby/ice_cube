@@ -20,6 +20,10 @@ module IceCube
         @interval = interval
       end
 
+      def type
+        :day
+      end
+
       def build_s(builder)
         builder.base = interval == 1 ? 'Daily' : "Every #{interval} days"
       end
@@ -31,10 +35,6 @@ module IceCube
       def build_ical(builder)
         builder['FREQ'] << 'DAILY'
         builder['INTERVAL'] << interval unless interval == 1
-      end
-
-      def type
-        :day
       end
 
       def validate(time, schedule)

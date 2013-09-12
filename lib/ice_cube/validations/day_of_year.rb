@@ -21,14 +21,14 @@ module IceCube
         @day = day
       end
 
+      def type
+        :day
+      end
+
       StringBuilder.register_formatter(:day_of_year) do |entries|
         str = "on the #{StringBuilder.sentence(entries)} "
         str << (entries.size == 1 ? 'day of the year' : 'days of the year')
         str
-      end
-
-      def type
-        :day
       end
 
       def build_s(builder)

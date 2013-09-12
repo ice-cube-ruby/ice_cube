@@ -22,12 +22,12 @@ module IceCube
         @occ = occ
       end
 
-      StringBuilder.register_formatter(:day_of_week) do |segments|
-        'on the ' + segments.join(' and ')
-      end
-
       def type
         :day
+      end
+
+      StringBuilder.register_formatter(:day_of_week) do |segments|
+        'on the ' + segments.join(' and ')
       end
 
       def build_s(builder)

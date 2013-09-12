@@ -24,6 +24,10 @@ module IceCube
         @minute = minute
       end
 
+      def type
+        :min
+      end
+
       StringBuilder.register_formatter(:minute_of_hour) do |segments|
         str = "on the #{StringBuilder.sentence(segments)} "
         str << (segments.size == 1 ? 'minute of the hour' : 'minutes of the hour')
@@ -31,10 +35,6 @@ module IceCube
 
       def build_s(builder)
         builder.piece(:minute_of_hour) << StringBuilder.nice_number(minute)
-      end
-
-      def type
-        :min
       end
 
       def build_hash(builder)
