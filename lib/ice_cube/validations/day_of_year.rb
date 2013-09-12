@@ -25,12 +25,11 @@ module IceCube
         :day
       end
 
-      def validate(time, schedule)
-        days_in_year = TimeUtil.days_in_year(time)
-        the_day = day < 0 ? day + days_in_year : day
-        # compute the diff
-        diff = the_day - time.yday
-        diff >= 0 ? diff : diff + days_in_year
+      def validate(step_time, schedule)
+        days_in_year = TimeUtil.days_in_year(step_time)
+        yday = day < 0 ? day + days_in_year : day
+        offset = yday - step_time.yday
+        offset >= 0 ? offset : offset + days_in_year
       end
 
       def build_s(builder)

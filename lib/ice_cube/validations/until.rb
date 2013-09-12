@@ -29,8 +29,8 @@ module IceCube
         :dealbreaker
       end
 
-      def validate(t, schedule)
-        raise UntilExceeded if t > time
+      def validate(step_time, schedule)
+        raise UntilExceeded if step_time > time
       end
 
       def build_s(builder)

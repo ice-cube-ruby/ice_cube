@@ -30,9 +30,7 @@ module IceCube
       end
 
       def validate(time, schedule)
-        if rule.uses && rule.uses >= count
-          raise CountExceeded
-        end
+        raise CountExceeded if rule.uses && rule.uses >= count
       end
 
       def build_s(builder)

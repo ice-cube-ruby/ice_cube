@@ -25,11 +25,10 @@ module IceCube
         false
       end
 
-      def validate(time, schedule)
-        seconds = time.to_i - schedule.start_time.to_i
-        unless seconds % interval == 0
-          interval - (seconds % interval)
-        end
+      def validate(step_time, schedule)
+        seconds = step_time.to_i - schedule.start_time.to_i
+        offset = (seconds % interval).nonzero?
+        interval - offset if offset
       end
 
       def build_s(builder)
