@@ -21,6 +21,10 @@ module IceCube
         :hour
       end
 
+      def dst_adjust?
+        false
+      end
+
       def build_s(builder)
         builder.base = interval == 1 ? 'Hourly' : "Every #{interval} hours"
       end
@@ -32,10 +36,6 @@ module IceCube
       def build_ical(builder)
         builder['FREQ'] << 'HOURLY'
         builder['INTERVAL'] << interval unless interval == 1
-      end
-
-      def dst_adjust?
-        false
       end
 
       def validate(time, schedule)

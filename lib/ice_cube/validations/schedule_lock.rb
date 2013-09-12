@@ -22,6 +22,13 @@ module IceCube
         @type = type
       end
 
+      def dst_adjust?
+        case @type
+        when :sec, :min then false
+        else true
+        end
+      end
+
       # no -op
       def build_s(builder)
       end
@@ -32,13 +39,6 @@ module IceCube
 
       # no -op
       def build_hash(builder)
-      end
-
-      def dst_adjust?
-        case @type
-        when :sec, :min then false
-        else true
-        end
       end
     end
 
