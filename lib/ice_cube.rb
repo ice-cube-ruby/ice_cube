@@ -1,12 +1,13 @@
 require 'date'
 require 'ice_cube/deprecated'
-
+require 'i18n'
 # Use psych if we can
 begin
   require 'psych'
 rescue LoadError
   require 'yaml'
 end
+I18n.load_path += ['config/locales/en.yml']
 
 module IceCube
 

@@ -25,7 +25,7 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.base = interval == 1 ? 'Weekly' : "Every #{interval} weeks"
+        builder.base = interval == 1 ? I18n.t('ice_cube.weekly') : "#{I18n.t('ice_cube.every')} #{interval} #{I18n.t('ice_cube.weeks')}"
       end
 
       def build_ical(builder)

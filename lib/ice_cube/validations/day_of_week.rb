@@ -18,7 +18,7 @@ module IceCube
       attr_reader :day, :occ
 
       StringBuilder.register_formatter(:day_of_week) do |segments|
-        'on the ' + segments.join(' and ')
+        "#{I18n.t('ice_cube.on')} #{I18n.t('ice_cube.the')} " + segments.join(' ' + I18n.t('ice_cube.and') + ' ')
       end
 
       def type
@@ -26,7 +26,7 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.piece(:day_of_week) << "#{StringBuilder.nice_number(occ)} #{Date::DAYNAMES[day]}"
+        builder.piece(:day_of_week) << "#{StringBuilder.nice_number(occ)} #{I18n.t('date.day_names')[day]}"
       end
 
       def build_ical(builder)
