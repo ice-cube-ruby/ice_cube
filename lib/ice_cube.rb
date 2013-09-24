@@ -1,13 +1,6 @@
 require 'date'
 require 'ice_cube/deprecated'
 
-# Use psych if we can
-begin
-  require 'psych'
-rescue LoadError
-  require 'yaml'
-end
-
 module IceCube
 
   autoload :VERSION, 'ice_cube/version'
@@ -70,10 +63,6 @@ module IceCube
   ONE_HOUR =   ONE_MINUTE * 60
   ONE_DAY =    ONE_HOUR   * 24
   ONE_WEEK =   ONE_DAY    * 7
-
-  def self.use_psych?
-    @use_psych ||= defined?(Psych) && defined?(Psych::VERSION)
-  end
 
   # Defines the format used by IceCube when printing out Schedule#to_s.
   # Defaults to '%B %e, %Y'
