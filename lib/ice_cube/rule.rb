@@ -23,9 +23,8 @@ module IceCube
       h.nil? ? super : h.hash
     end
 
-    # Expected to be overridden by subclasses
     def to_ical
-      nil
+      raise MethodNotImplemented, "Expected to be overrridden by subclasses"
     end
 
     # Yaml implementation
@@ -38,9 +37,8 @@ module IceCube
       from_hash YAML::load(yaml)
     end
 
-    # Expected to be overridden by subclasses
     def to_hash
-      nil
+      raise MethodNotImplemented, "Expected to be overridden by subclasses"
     end
 
     # Convert from a hash and create a rule
