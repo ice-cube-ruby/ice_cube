@@ -82,7 +82,7 @@ module IceCube
     # keep it.  If it was serialized with a different offset than local TZ it
     # will lose the zone and not support DST.
     def self.restore_deserialized_offset(time, orig_offset_str)
-      return time if time.respond_to?(:time_zone) or
+      return time if time.respond_to?(:time_zone) ||
                      time.getlocal(orig_offset_str).utc_offset == time.utc_offset
       warn 'IceCube: parsed Time from nonlocal TZ. Use ActiveSupport to fix DST'
       time.localtime(orig_offset_str)
