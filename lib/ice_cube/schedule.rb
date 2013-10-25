@@ -4,7 +4,7 @@ module IceCube
 
   class Schedule
 
-    extend ::Deprecated
+    extend Deprecated
 
     # Get the start time
     attr_reader :start_time

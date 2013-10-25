@@ -2,7 +2,7 @@ module IceCube
 
   module Validations::Until
 
-    extend ::Deprecated
+    extend Deprecated
 
     # accessor
     def until_time
