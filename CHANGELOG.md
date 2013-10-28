@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.11.1 / 2013-10-28
+
+* [ENHANCEMENT] Move deprecated into IceCube namespace
+* [ENHANCEMENT] Standardize the exceptions that we raise
+* [BUGFIX]      Fix ActiveSupport edge case restoring serialized TZ
+
+## 0.11.0 / 2013-06-13
+
+* [FEATURE]     `schedule.last(n)` method (#117)
+* [FEATURE]     `previous_occurrence` & `previous_occurrences` methods (#170)
+* [BUGFIX]      Occurrence `to_s` accepts format to comply with Rails
+
 ## 0.10.1 / 2013-05-17
 
 * [BUGFIX]      Match time zone from schedule when finding times (#152)
