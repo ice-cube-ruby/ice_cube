@@ -26,6 +26,17 @@ describe IceCube::Schedule do
     schedule.start_time.should == Time.local(dt.year, dt.month, dt.day, dt.hour, dt.min, dt.sec)
   end
 
+  describe :initialize do
+    before { @old_tz = Time.zone }
+    after  { Time.zone = @old_tz }
+
+    it 'respects the user time zone' do
+      Time.zone = 'Pacific Time (US & Canada)'
+      schedule = IceCube::Schedule.new
+      schedule.start_time.formatted_offset.should == '-08:00'
+    end
+  end
+
   describe :duration do
 
     it 'should be based on end_time' do
