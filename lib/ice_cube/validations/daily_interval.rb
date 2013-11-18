@@ -10,14 +10,24 @@ module IceCube
       self
     end
 
-    # A validation for checking to make sure that a time
-    # is inside of a certain DailyInterval
     class Validation
 
       attr_reader :interval
 
       def initialize(interval)
         @interval = interval
+      end
+
+      def type
+        :day
+      end
+
+      def validate(step_time, schedule)
+        t0, t1 = schedule.start_time, step_time
+        days = Date.new(t1.year, t1.month, t1.day) -
+               Date.new(t0.year, t0.month, t0.day)
+        offset = (days % interval).nonzero?
+        interval - offset if offset
       end
 
       def build_s(builder)
@@ -30,22 +40,7 @@ module IceCube
 
       def build_ical(builder)
         builder['FREQ'] << 'DAILY'
-        unless interval == 1
-          builder['INTERVAL'] << interval
-        end
-      end
-
-      def type
-        :day
-      end
-
-      def validate(time, schedule)
-        time_date = Date.new(time.year, time.month, time.day)
-        start_date = Date.new(schedule.start_time.year, schedule.start_time.month, schedule.start_time.day)
-        days = time_date - start_date
-        unless days % interval === 0
-          interval - (days % interval)
-        end
+        builder['INTERVAL'] << interval unless interval == 1
       end
 
     end

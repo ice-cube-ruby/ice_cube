@@ -4,7 +4,7 @@ module IceCube
 
   class Schedule
 
-    extend ::Deprecated
+    extend Deprecated
 
     # Get the start time
     attr_reader :start_time
@@ -237,7 +237,7 @@ module IceCube
     def conflicts_with?(other_schedule, closing_time = nil)
       closing_time = TimeUtil.ensure_time closing_time
       unless terminating? || other_schedule.terminating? || closing_time
-        raise ArgumentError.new 'At least one schedule must be terminating to use #conflicts_with?'
+        raise ArgumentError, "One or both schedules must be terminating to use #conflicts_with?"
       end
       # Pick the terminating schedule, and other schedule
       # No need to reverse if terminating? or there is a closing time
@@ -313,12 +313,12 @@ module IceCube
 
     # Convert the schedule to yaml
     def to_yaml(*args)
-      IceCube::use_psych? ? Psych::dump(to_hash, *args) : YAML::dump(to_hash, *args)
+      YAML::dump(to_hash, *args)
     end
 
     # Load the schedule from yaml
     def self.from_yaml(yaml, options = {})
-      hash = IceCube::use_psych? ? Psych::load(yaml) : YAML::load(yaml)
+      hash = YAML::load(yaml)
       if match = yaml.match(/start_date: .+((?:-|\+)\d{2}:\d{2})$/)
         TimeUtil.restore_deserialized_offset(hash[:start_date], match[1])
       end

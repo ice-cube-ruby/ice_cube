@@ -3,7 +3,7 @@ require 'date'
 module IceCube
   module TimeUtil
 
-    extend ::Deprecated
+    extend Deprecated
 
     DAYS = {
       :sunday => 0, :monday => 1, :tuesday => 2, :wednesday => 3,
@@ -82,7 +82,7 @@ module IceCube
     # keep it.  If it was serialized with a different offset than local TZ it
     # will lose the zone and not support DST.
     def self.restore_deserialized_offset(time, orig_offset_str)
-      return time if time.respond_to?(:time_zone) or
+      return time if time.respond_to?(:time_zone) ||
                      time.getlocal(orig_offset_str).utc_offset == time.utc_offset
       warn 'IceCube: parsed Time from nonlocal TZ. Use ActiveSupport to fix DST'
       time.localtime(orig_offset_str)
@@ -113,21 +113,30 @@ module IceCube
     # Convert a symbol to a numeric month
     def self.sym_to_month(sym)
       return wday = sym if (1..12).include? sym
-      MONTHS.fetch(sym) { |k| raise KeyError, "No such month: #{k}" }
+      MONTHS.fetch(sym) do |k|
+        raise ArgumentError, "Expecting Fixnum or Symbol value for month. " \
+                             "No such month: #{k.inspect}"
+      end
     end
     deprecated_alias :symbol_to_month, :sym_to_month
 
     # Convert a symbol to a wday number
     def self.sym_to_wday(sym)
       return sym if (0..6).include? sym
-      DAYS.fetch(sym) { |k| raise KeyError, "No such weekday: #{k}" }
+      DAYS.fetch(sym) do |k|
+        raise ArgumentError, "Expecting Fixnum or Symbol value for weekday. " \
+                             "No such weekday: #{k.inspect}"
+      end
     end
     deprecated_alias :symbol_to_day, :sym_to_wday
 
     # Convert wday number to day symbol
     def self.wday_to_sym(wday)
       return sym = wday if DAYS.keys.include? wday
-      DAYS.invert.fetch(wday) { |i| raise KeyError, "No such wday number: #{i}" }
+      DAYS.invert.fetch(wday) do |i|
+        raise ArgumentError, "Expecting Fixnum value for weekday. " \
+                             "No such wday number: #{i.inspect}"
+      end
     end
 
     # Convert weekday from base sunday to the schedule's week start.

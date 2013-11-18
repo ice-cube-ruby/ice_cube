@@ -27,6 +27,10 @@ module IceCube
         @day = day
       end
 
+      def type
+        :wday
+      end
+
       def build_s(builder)
         builder.piece(:day) << day
       end
@@ -41,10 +45,6 @@ module IceCube
         if builder['BYDAY'].none? { |b| b.end_with?(ical_day) }
           builder['BYDAY'] << ical_day
         end
-      end
-
-      def type
-        :wday
       end
 
       StringBuilder.register_formatter(:day) do |validation_days|

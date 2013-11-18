@@ -2,7 +2,7 @@ module IceCube
 
   module Validations::Count
 
-    # accessor
+    # Value reader for limit
     def occurrence_count
       @count
     end
@@ -26,13 +26,11 @@ module IceCube
       end
 
       def type
-        :dealbreaker
+        :limit
       end
 
       def validate(time, schedule)
-        if rule.uses && rule.uses >= count
-          raise CountExceeded
-        end
+        raise CountExceeded if rule.uses && rule.uses >= count
       end
 
       def build_s(builder)

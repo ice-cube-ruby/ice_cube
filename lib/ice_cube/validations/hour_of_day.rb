@@ -2,8 +2,6 @@ module IceCube
 
   module Validations::HourOfDay
 
-    include Validations::Lock
-
     # Add hour of day validations
     def hour_of_day(*hours)
       hours.flatten.each do |hour|
@@ -20,11 +18,6 @@ module IceCube
 
       include Validations::Lock
 
-      StringBuilder.register_formatter(:hour_of_day) do |segments|
-        str = "on the #{StringBuilder.sentence(segments)} "
-        str << (segments.size == 1 ? 'hour of the day' : 'hours of the day')
-      end
-
       attr_reader :hour
       alias :value :hour
 
@@ -32,12 +25,12 @@ module IceCube
         @hour = hour
       end
 
-      def build_s(builder)
-        builder.piece(:hour_of_day) << StringBuilder.nice_number(hour)
-      end
-
       def type
         :hour
+      end
+
+      def build_s(builder)
+        builder.piece(:hour_of_day) << StringBuilder.nice_number(hour)
       end
 
       def build_hash(builder)
@@ -46,6 +39,11 @@ module IceCube
 
       def build_ical(builder)
         builder['BYHOUR'] << hour
+      end
+
+      StringBuilder.register_formatter(:hour_of_day) do |segments|
+        str = "on the #{StringBuilder.sentence(segments)} "
+        str << (segments.size == 1 ? 'hour of the day' : 'hours of the day')
       end
 
     end

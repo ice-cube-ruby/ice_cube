@@ -1,34 +1,49 @@
 module IceCube
 
-  # A validation mixin that will lock the +type field to
-  # +value or +schedule.start_time.send(type) if value is nil
-
+  # This validation mixin is used by the various "fixed-time" (e.g. day,
+  # day_of_month, hour_of_day) Validation and ScheduleLock::Validation modules.
+  # It is not a standalone rule validation like the others.
+  #
+  # Given the including Validation's defined +type+ field, it will lock
+  # to the specified +value+ or else the corresponding time unit from the
+  # schedule's start_time
+  #
   module Validations::Lock
 
-    INTERVALS = {:min => 60, :sec => 60, :month => 12, :wday => 7}
+    INTERVALS = {:min => 60, :sec => 60, :hour => 24, :month => 12, :wday => 7}
 
     def validate(time, schedule)
-      return send(:"validate_#{type}_lock", time, schedule) unless INTERVALS[type]
-      start = value || schedule.start_time.send(type)
-      start = INTERVALS[type] + start if start < 0 # handle negative values
-      start >= time.send(type) ? start - time.send(type) : INTERVALS[type] - time.send(type) + start
+      case type
+      when :day  then validate_day_lock(time, schedule)
+      when :hour then validate_hour_lock(time, schedule)
+      else validate_interval_lock(time, schedule)
+      end
     end
 
     private
+
+    # Validate if the current time unit matches the same unit from the schedule
+    # start time, returning the difference to the interval
+    #
+    def validate_interval_lock(time, schedule)
+      t0 = starting_unit(schedule.start_time)
+      t1 = time.send(type)
+      t0 >= t1 ? t0 - t1 : INTERVALS[type] - t1 + t0
+    end
 
     # Lock the hour if explicitly set by hour_of_day, but allow for the nearest
     # hour during DST start to keep the correct interval.
     #
     def validate_hour_lock(time, schedule)
-      hour = value || schedule.start_time.send(type)
-      hour = 24 + hour if hour < 0
-      if hour >= time.hour
-        hour - time.hour
+      h0 = starting_unit(schedule.start_time)
+      h1 = time.hour
+      if h0 >= h1
+        h0 - h1
       else
         if dst_offset = TimeUtil.dst_change(time)
-          hour - time.hour + dst_offset
+          h0 - h1 + dst_offset
         else
-          24 - time.hour + hour
+          24 - h1 + h0
         end
       end
     end
@@ -67,6 +82,12 @@ module IceCube
       end
 
       sleeps >= 0 ? sleeps : until_next_month
+    end
+
+    def starting_unit(start_time)
+      start = value || start_time.send(type)
+      start += INTERVALS[type] while start < 0
+      start
     end
 
   end

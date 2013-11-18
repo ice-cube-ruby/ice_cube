@@ -13,6 +13,10 @@ module IceCube
 
       attr_reader :interval
 
+      def initialize(interval)
+        @interval = interval
+      end
+
       def type
         :min
       end
@@ -21,33 +25,26 @@ module IceCube
         false
       end
 
-      def build_s(builder)
-        builder.base = interval == 1 ? 'Minutely' : "Every #{interval} minutes"
+      def validate(step_time, schedule)
+        t0, t1 = schedule.start_time.to_i, step_time.to_i
+        sec = (t1 - t1 % ONE_MINUTE) -
+              (t0 - t0 % ONE_MINUTE)
+        minutes = sec / ONE_MINUTE
+        offset = (minutes % interval).nonzero?
+        interval - offset if offset
       end
 
-      def build_ical(builder)
-        builder['FREQ'] << 'MINUTELY'
-        unless interval == 1
-          builder['INTERVAL'] << interval
-        end
+      def build_s(builder)
+        builder.base = interval == 1 ? 'Minutely' : "Every #{interval} minutes"
       end
 
       def build_hash(builder)
         builder[:interval] = interval
       end
 
-      def initialize(interval)
-        @interval = interval
-      end
-
-      def validate(time, schedule)
-        start_time = schedule.start_time
-        sec = (time.to_i - time.to_i % ONE_MINUTE) -
-          (start_time.to_i - start_time.to_i % ONE_MINUTE)
-        minutes = sec / ONE_MINUTE
-        unless minutes % interval == 0
-          interval - (minutes % interval)
-        end
+      def build_ical(builder)
+        builder['FREQ'] << 'MINUTELY'
+        builder['INTERVAL'] << interval unless interval == 1
       end
 
     end

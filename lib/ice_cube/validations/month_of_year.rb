@@ -25,6 +25,10 @@ module IceCube
         @month = month
       end
 
+      def type
+        :month
+      end
+
       def build_s(builder)
         builder.piece(:month_of_year) << Date::MONTHNAMES[month]
       end
@@ -35,10 +39,6 @@ module IceCube
 
       def build_ical(builder)
         builder['BYMONTH'] << month
-      end
-
-      def type
-        :month
       end
 
       StringBuilder.register_formatter(:month_of_year) do |segments|

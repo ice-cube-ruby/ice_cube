@@ -17,11 +17,6 @@ module IceCube
 
       include Validations::Lock
 
-      StringBuilder.register_formatter(:second_of_minute) do |segments|
-        str = "on the #{StringBuilder.sentence(segments)} "
-        str << (segments.size == 1 ? 'second of the minute' : 'seconds of the minute')
-      end
-
       attr_reader :second
       alias :value :second
 
@@ -43,6 +38,11 @@ module IceCube
 
       def build_ical(builder)
         builder['BYSECOND'] << second
+      end
+
+      StringBuilder.register_formatter(:second_of_minute) do |segments|
+        str = "on the #{StringBuilder.sentence(segments)} "
+        str << (segments.size == 1 ? 'second of the minute' : 'seconds of the minute')
       end
 
     end

@@ -50,7 +50,7 @@ describe IceCube, "::ValidatedRule" do
 
     it 'should match times with usec' do
       first_time = Time.new(2012, 12, 21, 12, 21, 12.12121212)
-      schedule = stub(:start_time => first_time)
+      schedule = double(:start_time => first_time)
       rule = IceCube::Rule.secondly
 
       rule.next_time(first_time + 1, schedule, nil).should == first_time + 1

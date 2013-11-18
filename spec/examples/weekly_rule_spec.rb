@@ -28,10 +28,10 @@ module IceCube
     end
 
     it 'should update previous interval' do
-      schedule = stub(start_time: t0 = Time.now)
+      schedule = double(start_time: t0 = Time.new(2013, 1, 1))
       rule = Rule.weekly(7)
       rule.interval(2)
-      rule.next_time(t0 + 1, schedule, nil).should == t0 + 14 * ONE_DAY
+      rule.next_time(t0 + 1, schedule, nil).should == Time.new(2013, 1, 15)
     end
 
     it 'should produce the correct number of days for @interval = 1 with no weekdays specified' do
