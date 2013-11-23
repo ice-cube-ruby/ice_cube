@@ -283,6 +283,22 @@ describe IceCube::Schedule do
 
   end
 
+  describe :all_occurrences_enumerator do
+    it 'should be equivalent to all_occurrences in terms of arrays' do
+      schedule = IceCube::Schedule.new(Time.now, :duration => IceCube::ONE_HOUR)
+      schedule.add_recurrence_rule IceCube::Rule.daily.until(Time.now + 3 * IceCube::ONE_DAY)
+      schedule.all_occurrences == schedule.all_occurrences_enumerator.to_a 
+    end
+  end
+
+  describe :remaining_occurrences_enumerator do
+    it 'should be equivalent to remaining_occurrences in terms of arrays' do
+      schedule = IceCube::Schedule.new(Time.now, :duration => IceCube::ONE_HOUR)
+      schedule.add_recurrence_rule IceCube::Rule.daily.until(Time.now + 3 * IceCube::ONE_DAY)
+      schedule.remaining_occurrences == schedule.remaining_occurrences_enumerator.to_a 
+    end
+  end
+
   describe :all_occurrences do
 
     it 'has end times for each occurrence' do
