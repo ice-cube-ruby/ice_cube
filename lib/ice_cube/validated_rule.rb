@@ -16,21 +16,32 @@ module IceCube
     include Validations::Count
     include Validations::Until
 
+    # Validations ordered for efficiency in sequence of:
+    # * descending intervals
+    # * boundary limits
+    # * base values by cardinality (n = 60, 60, 31, 24, 12, 7)
+    # * locks by cardinality (n = 365, 60, 60, 31, 24, 12, 7)
+    # * interval multiplier
+    VALIDATION_ORDER = [
+      :year, :month, :day, :wday, :hour, :min, :sec, :count, :until,
+      :base_sec, :base_min, :base_day, :base_hour, :base_month, :base_wday,
+      :day_of_year, :second_of_minute, :minute_of_hour, :day_of_month,
+      :hour_of_day, :month_of_year, :day_of_week,
+      :interval
+    ]
+
+    def initialize(interval = 1, *)
+      @validations = Hash.new
+    end
+
     # Compute the next time after (or including) the specified time in respect
     # to the given schedule
     def next_time(time, schedule, closing_time)
       @time = time
       @schedule = schedule
 
-      until finds_acceptable_time?
-        # Prevent a non-matching infinite loop
-        return nil if closing_time && @time.to_i > closing_time.to_i
-      end
+      return nil unless find_acceptable_time_before(closing_time)
 
-      # NOTE Uses may be 1 higher than proper here since end_time isn't
-      # validated in this class.  This is okay now, since we never expose it -
-      # but if we ever do - we should check that above this line, and return
-      # nil if end_time is past
       @uses += 1 if @time
       @time
     end
@@ -67,7 +78,6 @@ module IceCube
 
     # Get the collection that contains validations of a certain type
     def validations_for(key)
-      @validations ||= {}
       @validations[key] ||= []
     end
 
@@ -89,12 +99,17 @@ module IceCube
 
     private
 
-    # NOTE: optimization target, sort the rules by their type, year first
-    # so we can make bigger jumps more often
     def finds_acceptable_time?
-      @validations.all? do |name, validations_for_type|
-        validation_accepts_or_updates_time?(validations_for_type)
+      validation_names.all? do |type|
+        validation_accepts_or_updates_time?(@validations[type])
       end
+    end
+
+    def find_acceptable_time_before(boundary)
+      until finds_acceptable_time?
+        return false if past_closing_time?(boundary)
+      end
+      true
     end
 
     def validation_accepts_or_updates_time?(validations_for_type)
@@ -134,6 +149,14 @@ module IceCube
 
       # And then get the correct time out
       @time = wrapper.to_time
+    end
+
+    def past_closing_time?(closing_time)
+      closing_time && @time > closing_time
+    end
+
+    def validation_names
+      VALIDATION_ORDER & @validations.keys
     end
 
   end

@@ -2,6 +2,11 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe IceCube::Schedule, 'to_s' do
 
+  it 'should represent its start time by default' do
+    t0 = Time.local(2013, 2, 14)
+    IceCube::Schedule.new(t0).to_s.should == 'February 14, 2013'
+  end
+
   it 'should have a useful base to_s representation for a secondly rule' do
     IceCube::Rule.secondly.to_s.should == 'Secondly'
     IceCube::Rule.secondly(2).to_s.should == 'Every 2 seconds'
@@ -72,46 +77,56 @@ describe IceCube::Schedule, 'to_s' do
     ).to_s.should == 'Weekly on Sundays, Mondays, Tuesdays, Wednesdays, Thursdays, and Fridays'
   end
 
+  it 'should show start time for an empty schedule' do
+    schedule = IceCube::Schedule.new Time.local(2010, 3, 20)
+    schedule.to_s.should == "March 20, 2010"
+  end
+
   it 'should work with a single date' do
     schedule = IceCube::Schedule.new Time.local(2010, 3, 20)
-    schedule.add_recurrence_date Time.local(2010, 3, 20)
+    schedule.add_recurrence_time Time.local(2010, 3, 20)
     schedule.to_s.should == "March 20, 2010"
   end
 
   it 'should work with additional dates' do
     schedule = IceCube::Schedule.new Time.local(2010, 3, 20)
-    schedule.add_recurrence_date Time.local(2010, 3, 20)
-    schedule.add_recurrence_date Time.local(2010, 3, 21)
+    schedule.add_recurrence_time Time.local(2010, 3, 20)
+    schedule.add_recurrence_time Time.local(2010, 3, 21)
     schedule.to_s.should == 'March 20, 2010 / March 21, 2010'
   end
 
   it 'should order dates that are out of order' do
-    schedule = IceCube::Schedule.new Time.now
-    schedule.add_recurrence_date Time.local(2010, 3, 20)
-    schedule.add_recurrence_date Time.local(2010, 3, 19)
+    schedule = IceCube::Schedule.new(t0 = Time.local(2010, 3, 20))
+    schedule.add_recurrence_time t1 = Time.local(2010, 3, 19)
     schedule.to_s.should == 'March 19, 2010 / March 20, 2010'
   end
 
-  it 'should remove duplicate rdates' do
-    schedule = IceCube::Schedule.new Time.now
-    schedule.add_recurrence_date Time.local(2010, 3, 20)
-    schedule.add_recurrence_date Time.local(2010, 3, 20)
+  it 'should remove duplicated start time' do
+    schedule = IceCube::Schedule.new t0 = Time.local(2010, 3, 20)
+    schedule.add_recurrence_time t0
     schedule.to_s.should == 'March 20, 2010'
   end
 
+  it 'should remove duplicate rtimes' do
+    schedule = IceCube::Schedule.new t0 = Time.local(2010, 3, 19)
+    schedule.add_recurrence_time Time.local(2010, 3, 20)
+    schedule.add_recurrence_time Time.local(2010, 3, 20)
+    schedule.to_s.should == 'March 19, 2010 / March 20, 2010'
+  end
+
   it 'should work with rules and dates' do
-    schedule = IceCube::Schedule.new Time.local(2010, 3, 20)
-    schedule.add_recurrence_date Time.local(2010, 3, 20)
+    schedule = IceCube::Schedule.new Time.local(2010, 3, 19)
+    schedule.add_recurrence_time Time.local(2010, 3, 20)
     schedule.add_recurrence_rule IceCube::Rule.weekly
     schedule.to_s.should == 'March 20, 2010 / Weekly'
   end
 
-  it 'should work with rules and dates and exdates' do
+  it 'should work with rules and times and exception times' do
     schedule = IceCube::Schedule.new Time.local(2010, 3, 20)
     schedule.add_recurrence_rule IceCube::Rule.weekly
-    schedule.add_recurrence_date Time.local(2010, 3, 20)
-    schedule.add_exception_date Time.local(2010, 3, 20) # ignored
-    schedule.add_exception_date Time.local(2010, 3, 21)
+    schedule.add_recurrence_time Time.local(2010, 3, 20)
+    schedule.add_exception_time Time.local(2010, 3, 20) # ignored
+    schedule.add_exception_time Time.local(2010, 3, 21)
     schedule.to_s.should == 'Weekly / not on March 20, 2010 / not on March 21, 2010'
   end
 
@@ -134,6 +149,11 @@ describe IceCube::Schedule, 'to_s' do
   it 'should be able to say the second to last monday of the month' do
     rule_str = IceCube::Rule.monthly.day_of_week(:thursday => [-2]).to_s
     rule_str.should == 'Monthly on the 2nd to last Thursday'
+  end
+
+  it 'should join the first and last weekdays of the month' do
+    rule_str = IceCube::Rule.monthly.day_of_week(:thursday => [1, -1]).to_s
+    rule_str.should == 'Monthly on the 1st Thursday and last Thursday'
   end
 
   it 'should be able to say the days of the month something happens' do

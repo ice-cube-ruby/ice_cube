@@ -22,7 +22,7 @@ describe IceCube::Schedule, 'occurs_on?' do
     schedule.add_recurrence_rule IceCube::Rule.daily(2).until(Time.utc(1997, 12, 24))
     dates = schedule.occurrences(Time.utc(1997, 12, 31))
     offset = 0
-    (DateTime.civil(1997, 9, 2)..DateTime.civil(1997, 12, 24)).each do |date|
+    (Date.new(1997, 9, 2)..Date.new(1997, 12, 24)).each do |date|
       dates.should include(Time.utc(date.year, date.month, date.day)) if offset % 2 == 0
       dates.should_not include(Time.utc(date.year, date.month, date.day)) if offset % 2 != 0
       offset += 1

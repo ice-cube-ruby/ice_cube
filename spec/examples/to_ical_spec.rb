@@ -147,18 +147,18 @@ describe IceCube, 'to_ical' do
     schedule.to_ical.should == expectation
   end
 
-  it 'should be able to serialize a schedule with an rdate' do
+  it 'should be able to serialize a schedule with an rtime' do
     schedule = IceCube::Schedule.new(Time.utc(2010, 5, 10, 10, 0, 0))
-    schedule.add_recurrence_date Time.utc(2010, 6, 20, 5, 0, 0)
+    schedule.add_recurrence_time Time.utc(2010, 6, 20, 5, 0, 0)
     # test equality
     expectation = "DTSTART:20100510T100000Z\n"
     expectation << "RDATE:20100620T050000Z"
     schedule.to_ical.should == expectation
   end
 
-  it 'should be able to serialize a schedule with an exdate' do
+  it 'should be able to serialize a schedule with an exception time' do
     schedule = IceCube::Schedule.new(Time.utc(2010, 5, 10, 10, 0, 0))
-    schedule.add_exception_date Time.utc(2010, 6, 20, 5, 0, 0)
+    schedule.add_exception_time Time.utc(2010, 6, 20, 5, 0, 0)
     # test equality
     expectation = "DTSTART:20100510T100000Z\n"
     expectation << "EXDATE:20100620T050000Z"
@@ -198,6 +198,13 @@ describe IceCube, 'to_ical' do
     schedule.to_ical.should == "DTSTART;TZID=#{time.zone}:#{time.strftime('%Y%m%dT%H%M%S')}" # default false
   end
 
+  it 'should not have an rtime that duplicates start time' do
+    start = Time.utc(2012, 12, 12, 12, 0, 0)
+    schedule = IceCube::Schedule.new(start)
+    schedule.add_recurrence_time start
+    schedule.to_ical.should == "DTSTART:20121212T120000Z"
+  end
+
   it 'should be able to receive a to_ical in utc time' do
     time = Time.now
     schedule = IceCube::Schedule.new(Time.now)
@@ -234,6 +241,12 @@ describe IceCube, 'to_ical' do
     interval = 2
     rule = IceCube::Rule.send(:weekly, interval, :monday)
     rule.to_ical.should == "FREQ=WEEKLY;INTERVAL=#{interval};WKST=MO"
+  end
+
+  it 'should not repeat interval when updating rule' do
+    rule = IceCube::Rule.weekly
+    rule.interval(2)
+    rule.to_ical.should =~ /^FREQ=WEEKLY;INTERVAL=2/
   end
 
 end

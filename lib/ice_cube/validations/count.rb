@@ -2,14 +2,17 @@ module IceCube
 
   module Validations::Count
 
-    # accessor
+    # Value reader for limit
     def occurrence_count
       @count
     end
 
     def count(max)
+      unless max.nil? || max.is_a?(Fixnum)
+        raise ArgumentError, "Expecting Fixnum or nil value for count, got #{max.inspect}"
+      end
       @count = max
-      replace_validations_for(:count, [Validation.new(max, self)]) # replace
+      replace_validations_for(:count, max && [Validation.new(max, self)])
       self
     end
 
@@ -23,13 +26,11 @@ module IceCube
       end
 
       def type
-        :dealbreaker
+        :limit
       end
 
       def validate(time, schedule)
-        if rule.uses && rule.uses >= count
-          raise CountExceeded
-        end
+        raise CountExceeded if rule.uses && rule.uses >= count
       end
 
       def build_s(builder)

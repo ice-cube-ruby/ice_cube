@@ -2,9 +2,9 @@ module IceCube
 
   module Validations::YearlyInterval
 
-    def interval(interval = 1)
+    def interval(interval)
       @interval = interval
-      validations_for(:interval) << Validation.new(interval)
+      replace_validations_for(:interval, [Validation.new(interval)])
       clobber_base_validations(:year)
     end
 
@@ -12,8 +12,18 @@ module IceCube
 
       attr_reader :interval
 
+      def initialize(interval)
+        @interval = interval
+      end
+
       def type
         :year
+      end
+
+      def validate(step_time, schedule)
+        years = step_time.year - schedule.start_time.year
+        offset = (years % interval).nonzero?
+        interval - offset if offset
       end
 
       def build_s(builder)
@@ -28,17 +38,6 @@ module IceCube
         builder['FREQ'] << 'YEARLY'
         unless interval == 1
           builder['INTERVAL'] << interval
-        end
-      end
-
-      def initialize(interval)
-        @interval = interval
-      end
-
-      def validate(time, schedule)
-        years_to_start = time.year - schedule.start_time.year
-        unless years_to_start % interval == 0
-          interval - (years_to_start % interval)
         end
       end
 

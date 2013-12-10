@@ -4,7 +4,7 @@ module IceCube
 
   class Schedule
 
-    extend ::Deprecated
+    extend Deprecated
 
     # Get the start time
     attr_reader :start_time
@@ -21,6 +21,7 @@ module IceCube
       self.end_time = options[:end_time] if options[:end_time]
       @all_recurrence_rules = []
       @all_exception_rules = []
+      yield self if block_given?
     end
 
     # Set start_time
@@ -149,7 +150,7 @@ module IceCube
 
     # All of the occurrences
     def all_occurrences
-      raise ArgumentError.new('Rule must specify either an until date or a count to use #all_occurrences') unless terminating?
+      require_terminating_rules
       find_occurrences(start_time)
     end
 
@@ -171,8 +172,21 @@ module IceCube
       find_occurrences(from + 1, nil, 1).first
     end
 
+    # The previous occurrence from a given time
+    def previous_occurrence(from)
+      return nil if from <= start_time
+      find_occurrences(start_time, from - 1, nil, 1).last
+    end
+
+    # The previous n occurrences before a given time
+    def previous_occurrences(num, from)
+      return [] if from <= start_time
+      find_occurrences(start_time, from - 1, nil, num)
+    end
+
     # The remaining occurrences (same requirements as all_occurrences)
     def remaining_occurrences(from = nil)
+      require_terminating_rules
       from ||= TimeUtil.now(@start_time)
       find_occurrences(from)
     end
@@ -182,16 +196,20 @@ module IceCube
       find_occurrences(begin_time, closing_time)
     end
 
-    # Return a boolean indicating if an occurrence falls between
-    # two times
+    # Return a boolean indicating if an occurrence falls between two times
     def occurs_between?(begin_time, closing_time)
       !find_occurrences(begin_time, closing_time, 1).empty?
     end
 
-    # Return a boolean indicating if an occurrence is occurring between
-    # two times, inclusive
-    def occurring_between?(begin_time, closing_time)
-      occurs_between?(begin_time - duration + 1, closing_time + duration - 1)
+    # Return a boolean indicating if an occurrence is occurring between two
+    # times, inclusive of its duration. This counts zero-length occurrences
+    # that intersect the start of the range and within the range, but not
+    # occurrences at the end of the range since none of their duration
+    # intersects the range.
+    def occurring_between?(opening_time, closing_time)
+      opening_time = opening_time - duration
+      closing_time = closing_time - 1 if duration > 0
+      occurs_between?(opening_time, closing_time)
     end
 
     # Return a boolean indicating if an occurrence falls on a certain date
@@ -219,7 +237,7 @@ module IceCube
     def conflicts_with?(other_schedule, closing_time = nil)
       closing_time = TimeUtil.ensure_time closing_time
       unless terminating? || other_schedule.terminating? || closing_time
-        raise ArgumentError.new 'At least one schedule must be terminating to use #conflicts_with?'
+        raise ArgumentError, "One or both schedules must be terminating to use #conflicts_with?"
       end
       # Pick the terminating schedule, and other schedule
       # No need to reverse if terminating? or there is a closing time
@@ -262,14 +280,22 @@ module IceCube
       n.nil? ? occurrences.first : occurrences
     end
 
+    # Get the final n occurrences of a terminating schedule
+    # or the final one if no n is given
+    def last(n = nil)
+      require_terminating_rules
+      occurrences = find_occurrences(start_time, nil, nil, n || 1)
+      n.nil? ? occurrences.last : occurrences[-n..-1]
+    end
+
     # String serialization
     def to_s
       pieces = []
-      ed = extimes; rd = rtimes - ed
+      rd = recurrence_times_with_start_time - extimes
       pieces.concat rd.sort.map { |t| t.strftime(IceCube.to_s_time_format) }
-      pieces.concat rrules.map { |t| t.to_s }
+      pieces.concat rrules.map  { |t| t.to_s }
       pieces.concat exrules.map { |t| "not #{t.to_s}" }
-      pieces.concat ed.sort.map { |t| "not on #{t.strftime(IceCube.to_s_time_format)}" }
+      pieces.concat extimes.sort.map { |t| "not on #{t.strftime(IceCube.to_s_time_format)}" }
       pieces.join(' / ')
     end
 
@@ -278,21 +304,25 @@ module IceCube
       pieces = []
       pieces << "DTSTART#{IcalBuilder.ical_format(start_time, force_utc)}"
       pieces.concat recurrence_rules.map { |r| "RRULE:#{r.to_ical}" }
-      pieces.concat exception_rules.map { |r| "EXRULE:#{r.to_ical}" }
-      pieces.concat recurrence_times.map { |t| "RDATE#{IcalBuilder.ical_format(t, force_utc)}" }
-      pieces.concat exception_times.map { |t| "EXDATE#{IcalBuilder.ical_format(t, force_utc)}" }
+      pieces.concat exception_rules.map  { |r| "EXRULE:#{r.to_ical}" }
+      pieces.concat recurrence_times_without_start_time.map { |t| "RDATE#{IcalBuilder.ical_format(t, force_utc)}" }
+      pieces.concat exception_times.map  { |t| "EXDATE#{IcalBuilder.ical_format(t, force_utc)}" }
       pieces << "DTEND#{IcalBuilder.ical_format(end_time, force_utc)}" if end_time
       pieces.join("\n")
     end
 
     # Convert the schedule to yaml
     def to_yaml(*args)
-      IceCube::use_psych? ? Psych::dump(to_hash, *args) : YAML::dump(to_hash, *args)
+      YAML::dump(to_hash, *args)
     end
 
     # Load the schedule from yaml
     def self.from_yaml(yaml, options = {})
-      from_hash IceCube::use_psych? ? Psych::load(yaml) : YAML::load(yaml), options
+      hash = YAML::load(yaml)
+      if match = yaml.match(/start_date: .+((?:-|\+)\d{2}:\d{2})$/)
+        TimeUtil.restore_deserialized_offset(hash[:start_date], match[1])
+      end
+      from_hash hash, options
     end
 
     # Convert the schedule to a hash
@@ -361,7 +391,7 @@ module IceCube
 
     # Find all of the occurrences for the schedule between opening_time
     # and closing_time
-    def find_occurrences(opening_time, closing_time = nil, limit = nil, &block)
+    def find_occurrences(opening_time, closing_time = nil, limit = nil, tail_limit = nil, &block)
       opening_time = TimeUtil.ensure_time opening_time
       closing_time = TimeUtil.ensure_time closing_time
       opening_time += start_time.subsec - opening_time.subsec rescue 0
@@ -378,6 +408,7 @@ module IceCube
         break if closing_time && res > closing_time
         if res >= opening_time
           block_given? ? block.call(res) : (answers << res)
+          answers.shift if tail_limit && answers.length > tail_limit
           break if limit && answers.length == limit
         end
         time = res + 1
@@ -388,33 +419,19 @@ module IceCube
 
     # Get the next time after (or including) a specific time
     def next_time(time, closing_time)
-      min_time = nil
       loop do
-        @all_recurrence_rules.each do |rule|
+        min_time = recurrence_rules_with_implicit_start_occurrence.reduce(nil) do |min_time, rule|
           begin
-            if res = rule.next_time(time, self, closing_time)
-              if min_time.nil? || res < min_time
-                min_time = res
-              end
-            end
-          # Certain exceptions mean this rule no longer wants to play
+            new_time = rule.next_time(time, self, min_time || closing_time)
+            [min_time, new_time].compact.min
           rescue CountExceeded, UntilExceeded
-            next
+            min_time
           end
         end
-        # If there is no match, return nil
-        return nil unless min_time
-        # Now make sure that its not an exception_time, and if it is
-        # then keep looking
-        if exception_time?(min_time)
-          time = min_time + 1
-          min_time = nil
-          next
-        end
-        # Break, we're done
-        break
+        break nil unless min_time
+        next(time = min_time + 1) if exception_time?(min_time)
+        break Occurrence.new(min_time, min_time + duration)
       end
-      min_time
     end
 
     # Return a boolean indicating if any rule needs to be run from the start of time
@@ -428,6 +445,36 @@ module IceCube
     def exception_time?(time)
       @all_exception_rules.any? do |rule|
         rule.on?(time, self)
+      end
+    end
+
+    def require_terminating_rules
+      return true if terminating?
+      method_name = caller[0].split(' ').last
+      raise ArgumentError, "All recurrence rules must specify .until or .count to use #{method_name}"
+    end
+
+    def implicit_start_occurrence_rule
+      SingleOccurrenceRule.new(start_time)
+    end
+
+    def recurrence_times_without_start_time
+      recurrence_times.reject { |t| t == start_time }
+    end
+
+    def recurrence_times_with_start_time
+      if recurrence_rules.empty?
+        [start_time].concat recurrence_times_without_start_time
+      else
+        recurrence_times
+      end
+    end
+
+    def recurrence_rules_with_implicit_start_occurrence
+      if recurrence_rules.empty?
+        [implicit_start_occurrence_rule].concat @all_recurrence_rules
+      else
+        @all_recurrence_rules
       end
     end
 

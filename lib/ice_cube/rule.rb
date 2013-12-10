@@ -23,24 +23,22 @@ module IceCube
       h.nil? ? super : h.hash
     end
 
-    # Expected to be overridden by subclasses
     def to_ical
-      nil
+      raise MethodNotImplemented, "Expected to be overrridden by subclasses"
     end
 
     # Yaml implementation
     def to_yaml(*args)
-      IceCube::use_psych? ? Psych::dump(to_hash) : YAML::dump(to_hash, *args)
+      YAML::dump(to_hash, *args)
     end
 
     # From yaml
     def self.from_yaml(yaml)
-      from_hash IceCube::use_psych? ? Psych::load(yaml) : YAML::load(yaml)
+      from_hash YAML::load(yaml)
     end
 
-    # Expected to be overridden by subclasses
     def to_hash
-      nil
+      raise MethodNotImplemented, "Expected to be overridden by subclasses"
     end
 
     # Convert from a hash and create a rule
@@ -48,6 +46,7 @@ module IceCube
       hash = IceCube::FlexibleHash.new original_hash
       return nil unless match = hash[:rule_type].match(/\:\:(.+?)Rule/)
       rule = IceCube::Rule.send(match[1].downcase.to_sym, hash[:interval] || 1)
+      rule.interval(hash[:interval] || 1, TimeUtil.wday_to_sym(hash[:week_start] || 0)) if match[1] == "Weekly"
       rule.until(TimeUtil.deserialize_time(hash[:until])) if hash[:until]
       rule.count(hash[:count]) if hash[:count]
       hash[:validations] && hash[:validations].each do |key, value|

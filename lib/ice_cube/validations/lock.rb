@@ -1,45 +1,93 @@
 module IceCube
 
-  # A validation mixin that will lock the +type field to
-  # +value or +schedule.start_time.send(type) if value is nil
-
+  # This validation mixin is used by the various "fixed-time" (e.g. day,
+  # day_of_month, hour_of_day) Validation and ScheduleLock::Validation modules.
+  # It is not a standalone rule validation like the others.
+  #
+  # Given the including Validation's defined +type+ field, it will lock
+  # to the specified +value+ or else the corresponding time unit from the
+  # schedule's start_time
+  #
   module Validations::Lock
 
-    INTERVALS = { :hour => 24, :min => 60, :sec => 60, :month => 12, :wday => 7 }
+    INTERVALS = {:min => 60, :sec => 60, :hour => 24, :month => 12, :wday => 7}
+
     def validate(time, schedule)
-      return send(:"validate_#{type}_lock", time, schedule) unless INTERVALS[type]
-      start = value || schedule.start_time.send(type)
-      start = INTERVALS[type] + start if start < 0 # handle negative values
-      start >= time.send(type) ? start - time.send(type) : INTERVALS[type] - time.send(type) + start
+      case type
+      when :day  then validate_day_lock(time, schedule)
+      when :hour then validate_hour_lock(time, schedule)
+      else validate_interval_lock(time, schedule)
+      end
     end
 
     private
 
-    # Needs to be custom since we don't know the days in the month
-    # (meaning, its not a fixed interval)
-    def validate_day_lock(time, schedule)
-      start = value || schedule.start_time.day
-      days_in_this_month = TimeUtil.days_in_month(time)
-      # If this number is positive, then follow our normal procedure
-      if start > 0
-        return start >= time.day ? start - time.day : days_in_this_month - time.day + start
-      end
-      # If the number is negative, and it resolved against the current month
-      # puts it in the future, just return the difference
-      days_in_this_month = TimeUtil.days_in_month(time)
-      start_one = days_in_this_month + start + 1
-      if start_one >= time.day
-        return start_one - time.day
-      end
-      # Otherwise, we need to figure out the meaning of the value
-      # in the next month, and then figure out how to get there
-      days_in_next_month = TimeUtil.days_in_next_month(time)
-      start_two = days_in_next_month + start + 1
-      if start_two >= time.day
-        days_in_this_month + start_two - time.day
+    # Validate if the current time unit matches the same unit from the schedule
+    # start time, returning the difference to the interval
+    #
+    def validate_interval_lock(time, schedule)
+      t0 = starting_unit(schedule.start_time)
+      t1 = time.send(type)
+      t0 >= t1 ? t0 - t1 : INTERVALS[type] - t1 + t0
+    end
+
+    # Lock the hour if explicitly set by hour_of_day, but allow for the nearest
+    # hour during DST start to keep the correct interval.
+    #
+    def validate_hour_lock(time, schedule)
+      h0 = starting_unit(schedule.start_time)
+      h1 = time.hour
+      if h0 >= h1
+        h0 - h1
       else
-        days_in_next_month + start_two - time.day
+        if dst_offset = TimeUtil.dst_change(time)
+          h0 - h1 + dst_offset
+        else
+          24 - h1 + h0
+        end
       end
+    end
+
+    # For monthly rules that have no specified day value, the validation relies
+    # on the schedule start time and jumps to include every month even if it
+    # has fewer days than the schedule's start day.
+    #
+    # Negative day values (from month end) also include all months.
+    #
+    # Positive day values are taken literally so months with fewer days will
+    # be skipped.
+    #
+    def validate_day_lock(time, schedule)
+      days_in_month = TimeUtil.days_in_month(time)
+      date = Date.new(time.year, time.month, time.day)
+
+      if value && value < 0
+        start = TimeUtil.day_of_month(value, date)
+        month_overflow = days_in_month - TimeUtil.days_in_next_month(time)
+      elsif value && value > 0
+        start = value
+        month_overflow = 0
+      else
+        start = TimeUtil.day_of_month(schedule.start_time.day, date)
+        month_overflow = 0
+      end
+
+      sleeps = start - date.day
+
+      if value && value > 0
+        until_next_month = days_in_month + sleeps
+      else
+        until_next_month = start < 28 ? days_in_month : TimeUtil.days_to_next_month(date)
+        until_next_month += sleeps - month_overflow
+      end
+
+      sleeps >= 0 ? sleeps : until_next_month
+    end
+
+    def starting_unit(start_time)
+      start = value || start_time.send(type)
+      start += INTERVALS[type] while start < 0
+      start
     end
 
   end

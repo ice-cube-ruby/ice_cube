@@ -24,23 +24,17 @@ describe IceCube::Schedule do
     end
   end
 
-  it 'should respond to a single date event' do
-    start_date = Time.now
-    schedule = IceCube::Schedule.new(start_date)
-    schedule.add_recurrence_date(start_date + 2)
-    #check assumptions
-    dates = schedule.occurrences(start_date + 50)
-    dates.size.should == 1
-    dates[0].should == start_date + 2
+  it 'should return an added occurrence time' do
+    schedule = IceCube::Schedule.new(t0 = Time.now)
+    schedule.add_recurrence_time(t0 + 2)
+    schedule.occurrences(t0 + 50).should == [t0, t0 + 2]
   end
 
-  it 'should not return anything when given a single date and the same exclusion date' do
-    start_date = Time.now
-    schedule = IceCube::Schedule.new(start_date)
-    schedule.add_recurrence_date(start_date + 2)
-    schedule.add_exception_date(start_date + 2)
-    #check assumption
-    schedule.occurrences(start_date + 50 * IceCube::ONE_DAY).size.should == 0
+  it 'should not return an occurrence time that is excluded' do
+    schedule = IceCube::Schedule.new(t0 = Time.now)
+    schedule.add_recurrence_time(t0 + 2)
+    schedule.add_exception_time(t0 + 2)
+    schedule.occurrences(t0 + 50).should == [t0]
   end
 
   it 'should return properly with a combination of a recurrence and exception rule' do
@@ -55,7 +49,7 @@ describe IceCube::Schedule do
     start_date = Time.local 2012, 3, 1
     schedule = IceCube::Schedule.new(start_date)
     schedule.add_recurrence_rule IceCube::Rule.daily
-    schedule.add_exception_date(start_date + 1 * IceCube::ONE_DAY) # all days except tomorrow
+    schedule.add_exception_time(start_date + 1 * IceCube::ONE_DAY) # all days except tomorrow
     # check assumption
     dates = schedule.occurrences(start_date + 13 * IceCube::ONE_DAY) # 2 weeks
     dates.size.should == 13 # 2 weeks minus 1 day
@@ -132,19 +126,6 @@ describe IceCube::Schedule do
     dates = schedule.first(10)
     dates.each do |date|
       date.month.should == start_date.month
-      date.day.should == start_date.day
-      date.hour.should == start_date.hour
-      date.min.should == start_date.min
-      date.sec.should == start_date.sec
-    end
-  end
-
-  it 'occurs monthly' do
-    start_date = Time.now
-    schedule = IceCube::Schedule.new(start_date)
-    schedule.add_recurrence_rule IceCube::Rule.monthly
-    dates = schedule.first(10)
-    dates.each do |date|
       date.day.should == start_date.day
       date.hour.should == start_date.hour
       date.min.should == start_date.min
@@ -281,20 +262,20 @@ describe IceCube::Schedule do
     schedule.exrules.should == rules
   end
 
-  it 'can retrieve rdates from a schedule' do
+  it 'can retrieve recurrence times from a schedule' do
     schedule = IceCube::Schedule.new(Time.now)
-    dates = [Time.now, Time.now + 5, Time.now + 10]
-    dates.each { |d| schedule.add_recurrence_date(d) }
+    times = [Time.now, Time.now + 5, Time.now + 10]
+    times.each { |d| schedule.add_recurrence_time(d) }
     # pull the dates back out of the schedule and compare
-    schedule.rdates.should == dates
+    schedule.rtimes.should == times
   end
 
-  it 'can retrieve exdates from a schedule' do
+  it 'can retrieve exception_times from a schedule' do
     schedule = IceCube::Schedule.new(Time.now)
-    dates = [Time.now, Time.now + 5, Time.now + 10]
-    dates.each { |d| schedule.add_exception_date(d) }
+    times = [Time.now, Time.now + 5, Time.now + 10]
+    times.each { |d| schedule.add_exception_time(d) }
     # pull the dates back out of the schedule and compare
-    schedule.exdates.should == dates
+    schedule.extimes.should == times
   end
 
   it 'can reuse the same rule' do
@@ -361,38 +342,38 @@ describe IceCube::Schedule do
 
   it 'should be able to get back rdates from a schedule' do
     schedule = IceCube::Schedule.new DAY
-    schedule.add_recurrence_date DAY
-    schedule.add_recurrence_date(DAY + 2)
-    schedule.rdates.should == [DAY, DAY + 2]
+    schedule.add_recurrence_time DAY
+    schedule.add_recurrence_time(DAY + 2)
+    schedule.rtimes.should == [DAY, DAY + 2]
   end
 
-  it 'should be able to get back exdates from a schedule' do
+  it 'should be able to get back exception times from a schedule' do
     schedule = IceCube::Schedule.new DAY
-    schedule.add_exception_date DAY
-    schedule.add_exception_date(DAY + 2)
-    schedule.exdates.should == [DAY, DAY + 2]
+    schedule.add_exception_time DAY
+    schedule.add_exception_time(DAY + 2)
+    schedule.extimes.should == [DAY, DAY + 2]
   end
 
   it 'should allow calling of .first on a schedule with no arguments' do
     start_time = Time.now
     schedule = IceCube::Schedule.new(start_time)
-    schedule.add_recurrence_date start_time
+    schedule.add_recurrence_time start_time
     schedule.first.should == start_time
   end
 
-  it 'should be able to ignore nil dates that are inserted as part of a collection to add_recurrence_date' do
+  it 'should be able to ignore nil dates that are inserted as part of a collection to add_recurrence_time' do
     start_time = Time.now
     schedule = IceCube::Schedule.new(start_time)
-    schedule.add_recurrence_date start_time
-    schedule.add_recurrence_date start_time + IceCube::ONE_DAY
-    schedule.add_recurrence_date nil
+    schedule.add_recurrence_time start_time
+    schedule.add_recurrence_time start_time + IceCube::ONE_DAY
+    schedule.add_recurrence_time nil
     schedule.all_occurrences.should == [start_time, start_time + IceCube::ONE_DAY]
   end
 
   it 'should be able to use all_occurrences with no rules' do
     start_time = Time.now
     schedule = IceCube::Schedule.new(start_time)
-    schedule.add_recurrence_date start_time
+    schedule.add_recurrence_time start_time
     lambda do
       schedule.all_occurrences.should == [start_time]
     end.should_not raise_error
@@ -434,7 +415,7 @@ describe IceCube::Schedule do
     start_time = Time.local 2010, 5, 6, 10, 0, 0
     schedule = IceCube::Schedule.new(start_time, :duration => 3600)
     schedule.add_recurrence_rule IceCube::Rule.daily
-    schedule.add_exception_date Time.local(2010, 5, 6, 10, 21, 30)
+    schedule.add_exception_time Time.local(2010, 5, 6, 10, 21, 30)
     schedule.occurring_at?(Time.local(2010, 5, 6, 10, 21, 29)).should be_true
     schedule.occurring_at?(Time.local(2010, 5, 6, 10, 21, 30)).should be_false
     schedule.occurring_at?(Time.local(2010, 5, 6, 10, 21, 31)).should be_true
@@ -519,31 +500,31 @@ describe IceCube::Schedule do
   it 'should be able to exist on the 29th of each month crossing over february - github issue 6a' do
     schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 29))
     schedule.add_recurrence_rule IceCube::Rule.monthly
-    schedule.first(3).should == [Time.zone.local(2010, 1, 29), Time.zone.local(2010, 3, 29), Time.zone.local(2010, 4, 29)]
+    schedule.first(3).should == [Time.zone.local(2010, 1, 29), Time.zone.local(2010, 2, 28), Time.zone.local(2010, 3, 29)]
   end
 
   it 'should be able to exist on the 30th of each month crossing over february - github issue 6a' do
     schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 30))
     schedule.add_recurrence_rule IceCube::Rule.monthly
-    schedule.first(3).should == [Time.zone.local(2010, 1, 30), Time.zone.local(2010, 3, 30), Time.zone.local(2010, 4, 30)]
+    schedule.first(3).should == [Time.zone.local(2010, 1, 30), Time.zone.local(2010, 2, 28), Time.zone.local(2010, 3, 30)]
   end
 
   it 'should be able to exist ont he 31st of each month crossing over february - github issue 6a' do
     schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 31))
     schedule.add_recurrence_rule IceCube::Rule.monthly
-    schedule.first(3).should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 3, 31), Time.zone.local(2010, 5, 31)]
+    schedule.first(3).should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 2, 28), Time.zone.local(2010, 3, 31)]
   end
 
   it 'should deal with a yearly rule that has februaries with different mdays' do
     schedule = IceCube::Schedule.new(Time.local(2008, 2, 29))
     schedule.add_recurrence_rule IceCube::Rule.yearly
-    schedule.first(3).should == [Time.local(2008, 2, 29), Time.local(2012, 2, 29), Time.local(2016, 2, 29)]
+    schedule.first(3).should == [Time.local(2008, 2, 29), Time.local(2009, 2, 28), Time.local(2010, 2, 28)]
   end
 
   it 'should work with every other month even when the day of the month iterating on does not exist' do
     schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 31))
     schedule.add_recurrence_rule IceCube::Rule.monthly(2)
-    schedule.first(6).should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 3, 31), Time.zone.local(2010, 5, 31), Time.zone.local(2010, 7, 31), Time.zone.local(2011, 1, 31), Time.zone.local(2011, 3, 31)]
+    schedule.first(6).should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 3, 31), Time.zone.local(2010, 5, 31), Time.zone.local(2010, 7, 31), Time.zone.local(2010, 9, 30), Time.zone.local(2010, 11, 30)]
   end
 
   it 'should be able to go into february and stay on the same day' do
@@ -570,33 +551,12 @@ describe IceCube::Schedule do
     schedule.first(10).should == [Time.local(2010, 2, 29)]
   end
 
-  it 'should be able to go through a year of every month on a day that does not exist' do
-    schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 31))
-    schedule.add_recurrence_rule IceCube::Rule.monthly.until(Time.zone.local(2011, 2, 5))
-    schedule.all_occurrences.should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 3, 31), Time.zone.local(2010, 5, 31),
-                                 Time.zone.local(2010, 7, 31), Time.zone.local(2010, 8, 31), Time.zone.local(2010, 10, 31),
-                                 Time.zone.local(2010, 12, 31), Time.zone.local(2011, 1, 31)]
-  end
-
-  it 'should be able to go through a year of every 2 months on a day that does not exist' do
-    schedule = IceCube::Schedule.new(Time.zone.local(2010, 1, 31))
-    schedule.add_recurrence_rule IceCube::Rule.monthly(2).until(Time.zone.local(2011, 2, 5))
-    schedule.all_occurrences.should == [Time.zone.local(2010, 1, 31), Time.zone.local(2010, 3, 31), Time.zone.local(2010, 5, 31),
-                                        Time.zone.local(2010, 7, 31), Time.zone.local(2011, 1, 31)]
-  end
-
-  it 'should be able to go through a year of every 3 months on a day that does not exist' do
-    schedule = IceCube::Schedule.new(Time.local(2010, 1, 31))
-    schedule.add_recurrence_rule IceCube::Rule.monthly(3).until(Time.local(2011, 2, 5))
-    schedule.all_occurrences.should == [Time.local(2010, 1, 31), Time.local(2010, 7, 31), Time.local(2010, 10, 31), Time.local(2011, 1, 31)]
-  end
-
   it 'should have some convenient aliases' do
     start_time = Time.now
     schedule = IceCube::Schedule.new(start_time)
 
-    schedule.start_date.should == schedule.start_time
-    schedule.end_date.should == schedule.end_time
+    schedule.start_time.should == schedule.start_time
+    schedule.end_time.should == schedule.end_time
   end
 
   it 'should have some convenient alias for rrules' do
@@ -615,18 +575,18 @@ describe IceCube::Schedule do
     schedule.exrules.should == [daily, monthly]
   end
 
-  it 'should have some convenient alias for rdates' do
+  it 'should have some convenient alias for recurrence_times' do
     schedule = IceCube::Schedule.new(Time.now)
-    schedule.add_recurrence_date Time.local(2010, 8, 13)
-    schedule.rdate Time.local(2010, 8, 14)
-    schedule.rdates.should == [Time.local(2010, 8, 13), Time.local(2010, 8, 14)]
+    schedule.add_recurrence_time Time.local(2010, 8, 13)
+    schedule.rtime Time.local(2010, 8, 14)
+    schedule.rtimes.should == [Time.local(2010, 8, 13), Time.local(2010, 8, 14)]
   end
 
-  it 'should have some convenient alias for exdates' do
+  it 'should have some convenient alias for extimes' do
     schedule = IceCube::Schedule.new(Time.now)
-    schedule.add_exception_date Time.local(2010, 8, 13)
-    schedule.exdate Time.local(2010, 8, 14)
-    schedule.exdates.should == [Time.local(2010, 8, 13), Time.local(2010, 8, 14)]
+    schedule.add_exception_time Time.local(2010, 8, 13)
+    schedule.extime Time.local(2010, 8, 14)
+    schedule.extimes.should == [Time.local(2010, 8, 13), Time.local(2010, 8, 14)]
   end
 
   it 'should be able to have a rule and an exrule' do
@@ -679,7 +639,7 @@ describe IceCube::Schedule do
 
   it 'should use current date as start date when invoked with a nil parameter' do
     schedule = IceCube::Schedule.new nil
-    (Time.now - schedule.start_date).should be < 100
+    (Time.now - schedule.start_time).should be < 100
   end
 
   it 'should be able to get the occurrence count for a rule' do
@@ -689,16 +649,9 @@ describe IceCube::Schedule do
 
   it 'should be able to remove a count validation from a rule' do
     rule = IceCube::Rule.daily.count(5)
-    rule.occurrence_count.should == 5
     rule.count nil
-    rule.occurrence_count.should raise_error
-  end
-
-  it 'should be able to remove a count validation from a rule' do
-    rule = IceCube::Rule.daily.count(5)
-    rule.to_hash[:count].should == 5
-    rule.count nil
-    rule.to_hash[:count].should be_nil
+    rule.to_hash.should_not have_key(:count)
+    rule.occurrence_count.should be_nil
   end
 
   it 'should be able to remove an until validation from a rule' do

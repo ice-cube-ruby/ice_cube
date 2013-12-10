@@ -5,8 +5,11 @@ module IceCube
   module Validations::Day
 
     def day(*days)
-      days.each do |day|
-        day = TimeUtil.symbol_to_day(day) if day.is_a?(Symbol)
+      days.flatten.each do |day|
+        unless day.is_a?(Fixnum) || day.is_a?(Symbol)
+          raise ArgumentError, "expecting Fixnum or Symbol value for day, got #{day.inspect}"
+        end
+        day = TimeUtil.sym_to_wday(day)
         validations_for(:day) << Validation.new(day)
       end
       clobber_base_validations(:wday, :day)
@@ -24,6 +27,10 @@ module IceCube
         @day = day
       end
 
+      def type
+        :wday
+      end
+
       def build_s(builder)
         builder.piece(:day) << day
       end
@@ -38,10 +45,6 @@ module IceCube
         if builder['BYDAY'].none? { |b| b.end_with?(ical_day) }
           builder['BYDAY'] << ical_day
         end
-      end
-
-      def type
-        :wday
       end
 
       StringBuilder.register_formatter(:day) do |validation_days|

@@ -3,7 +3,10 @@ module IceCube
   module Validations::DayOfYear
 
     def day_of_year(*days)
-      days.each do |day|
+      days.flatten.each do |day|
+        unless day.is_a?(Fixnum)
+          raise ArgumentError, "expecting Fixnum value for day, got #{day.inspect}"
+        end
         validations_for(:day_of_year) << Validation.new(day)
       end
       clobber_base_validations(:month, :day, :wday)
@@ -14,18 +17,19 @@ module IceCube
 
       attr_reader :day
 
-      StringBuilder.register_formatter(:day_of_year) do |entries|
-        str = "on the #{StringBuilder.sentence(entries)} "
-        str << (entries.size == 1 ? 'day of the year' : 'days of the year')
-        str
-      end
-
       def initialize(day)
         @day = day
       end
 
       def type
         :day
+      end
+
+      def validate(step_time, schedule)
+        days_in_year = TimeUtil.days_in_year(step_time)
+        yday = day < 0 ? day + days_in_year : day
+        offset = yday - step_time.yday
+        offset >= 0 ? offset : offset + days_in_year
       end
 
       def build_s(builder)
@@ -40,12 +44,10 @@ module IceCube
         builder['BYYEARDAY'] << day
       end
 
-      def validate(time, schedule)
-        days_in_year = TimeUtil.days_in_year(time)
-        the_day = day < 0 ? day + days_in_year : day
-        # compute the diff
-        diff = the_day - time.yday
-        diff >= 0 ? diff : diff + days_in_year
+      StringBuilder.register_formatter(:day_of_year) do |entries|
+        str = "on the #{StringBuilder.sentence(entries)} "
+        str << (entries.size == 1 ? 'day of the year' : 'days of the year')
+        str
       end
 
     end

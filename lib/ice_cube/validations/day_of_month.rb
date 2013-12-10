@@ -2,10 +2,11 @@ module IceCube
 
   module Validations::DayOfMonth
 
-    include Validations::Lock
-
     def day_of_month(*days)
-      days.each do |day|
+      days.flatten.each do |day|
+        unless day.is_a?(Fixnum)
+          raise ArgumentError, "expecting Fixnum value for day, got #{day.inspect}"
+        end
         validations_for(:day_of_month) << Validation.new(day)
       end
       clobber_base_validations(:day, :wday)
@@ -16,17 +17,15 @@ module IceCube
 
       include Validations::Lock
 
-      StringBuilder.register_formatter(:day_of_month) do |entries|
-        str = "on the #{StringBuilder.sentence(entries)} "
-        str << (entries.size == 1 ? 'day of the month' : 'days of the month')
-        str
-      end
-
       attr_reader :day
       alias :value :day
 
       def initialize(day)
         @day = day
+      end
+
+      def type
+        :day
       end
 
       def build_s(builder)
@@ -41,8 +40,10 @@ module IceCube
         builder['BYMONTHDAY'] << day
       end
 
-      def type
-        :day
+      StringBuilder.register_formatter(:day_of_month) do |entries|
+        str = "on the #{StringBuilder.sentence(entries)} "
+        str << (entries.size == 1 ? 'day of the month' : 'days of the month')
+        str
       end
 
     end
