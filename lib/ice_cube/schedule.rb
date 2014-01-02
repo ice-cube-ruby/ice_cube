@@ -144,7 +144,7 @@ module IceCube
 
     # Get all of the occurrences from the start_time up until a
     # given Time
-    def occurrences(closing_time)
+    def occurrences(closing_time = nil)
       find_occurrences(start_time, closing_time)
     end
 
