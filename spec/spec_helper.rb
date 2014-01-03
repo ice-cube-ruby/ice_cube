@@ -9,6 +9,7 @@ require File.dirname(__FILE__) + '/../lib/ice_cube'
 
 DAY = Time.utc(2010, 3, 1)
 WEDNESDAY = Time.utc(2010, 6, 23, 5, 0, 0)
+
 WORLD_TIME_ZONES = [
   'America/Anchorage',  # -1000 / -0900
   'Europe/London',      # +0000 / +0100
@@ -48,4 +49,5 @@ RSpec.configure do |config|
       end
     end
   end
+
 end
