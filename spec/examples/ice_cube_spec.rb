@@ -661,7 +661,7 @@ describe IceCube::Schedule do
     rule.to_hash.should_not have_key(:until)
   end
 
-  it 'should not have ridiculous load times for minutely on next_occurrence' do
+  it 'should not have ridiculous load times for minutely on next_occurrence (from sidetiq)' do
     schedule = Schedule.new(now = Time.utc(2010, 1, 1)) do |s|
       s.add_recurrence_rule(Rule.minutely(1800))
     end
