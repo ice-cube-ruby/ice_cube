@@ -70,7 +70,7 @@ module IceCube
 
     # Whether this rule requires a full run
     def full_required?
-      !@count.nil? || (!@interval.nil? && @interval > 1)
+      !@count.nil?
     end
 
     # Convenience methods for creating Rules

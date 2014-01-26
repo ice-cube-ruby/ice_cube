@@ -15,7 +15,7 @@ describe IceCube::Schedule do
     let(:new_schedule) { described_class.load yaml }
 
     it 'creates a new object from a YAML string' do
-      new_schedule.start_time.should eq schedule.start_time
+      new_schedule.start_time.to_s.should eq schedule.start_time.to_s
     end
 
     context 'when yaml is blank' do

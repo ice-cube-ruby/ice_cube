@@ -7,7 +7,7 @@ module IceCube
       schedule = double(start_time: t0 = Time.now)
       rule = Rule.minutely(7)
       rule.interval(5)
-      rule.next_time(t0 + 1, schedule, nil).should == t0 + 5.minutes
+      rule.next_time(t0 + 1, schedule, nil).should == t0 + 5 * IceCube::ONE_MINUTE
     end
 
     it 'should work across DST start hour' do
@@ -41,6 +41,12 @@ module IceCube
       dates = schedule.first(3)
       dates.size.should == 3
       dates.should == [DAY, DAY + 3 * ONE_HOUR, DAY + 6 * ONE_HOUR]
+    end
+
+    it 'should produce the correct minutes starting with an offset' do
+      schedule = Schedule.new Time.new(2013, 11, 1, 1, 3, 0)
+      schedule.rrule Rule.minutely(5)
+      schedule.next_occurrence(Time.new(2013, 11, 1, 1, 4, 0)).should == Time.new(2013, 11, 1, 1, 8, 0)
     end
 
   end

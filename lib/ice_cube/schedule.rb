@@ -145,60 +145,78 @@ module IceCube
     # Get all of the occurrences from the start_time up until a
     # given Time
     def occurrences(closing_time)
-      find_occurrences(start_time, closing_time)
+      enumerate_occurrences(start_time, closing_time).to_a
     end
 
     # All of the occurrences
     def all_occurrences
       require_terminating_rules
-      find_occurrences(start_time)
+      enumerate_occurrences(start_time).to_a
+    end
+    
+    # Emit an enumerator based on the start time
+    def all_occurrences_enumerator
+      enumerate_occurrences(start_time)
     end
 
     # Iterate forever
     def each_occurrence(&block)
-      find_occurrences(start_time, &block)
+      enumerate_occurrences(start_time, &block).to_a
       self
     end
 
     # The next n occurrences after now
     def next_occurrences(num, from = nil)
       from ||= TimeUtil.now(@start_time)
-      find_occurrences(from + 1, nil, num)
+      enumerate_occurrences(from + 1, nil).take(num)
     end
 
     # The next occurrence after now (overridable)
     def next_occurrence(from = nil)
       from ||= TimeUtil.now(@start_time)
-      find_occurrences(from + 1, nil, 1).first
+      enumerate_occurrences(from + 1, nil).next()
     end
 
     # The previous occurrence from a given time
     def previous_occurrence(from)
       return nil if from <= start_time
-      find_occurrences(start_time, from - 1, nil, 1).last
+      enumerate_occurrences(start_time, from - 1).to_a.last
     end
 
     # The previous n occurrences before a given time
     def previous_occurrences(num, from)
       return [] if from <= start_time
-      find_occurrences(start_time, from - 1, nil, num)
+      a = enumerate_occurrences(start_time, from - 1).to_a
+      a.size > num ? a[-1*num,a.size] : a
     end
 
     # The remaining occurrences (same requirements as all_occurrences)
     def remaining_occurrences(from = nil)
       require_terminating_rules
       from ||= TimeUtil.now(@start_time)
-      find_occurrences(from)
+      enumerate_occurrences(from).to_a
+    end
+
+    # Returns an enumerator for all remaining occurrences
+    def remaining_occurrences_enumerator(from = nil)
+      from ||= TimeUtil.now(@start_time)
+      enumerate_occurrences(from)
     end
 
     # Occurrences between two times
     def occurrences_between(begin_time, closing_time)
-      find_occurrences(begin_time, closing_time)
+      enumerate_occurrences(begin_time, closing_time).to_a
     end
 
     # Return a boolean indicating if an occurrence falls between two times
     def occurs_between?(begin_time, closing_time)
-      !find_occurrences(begin_time, closing_time, 1).empty?
+      begin 
+        enumerate_occurrences(begin_time, closing_time).next()
+        true
+      rescue StopIteration
+        false
+      end
+
     end
 
     # Return a boolean indicating if an occurrence is occurring between two
@@ -247,6 +265,7 @@ module IceCube
       end
       # Go through each occurrence of the terminating schedule and determine
       # if the other occurs at that time
+      #
       last_time = nil
       terminating_schedule.each_occurrence do |time|
         if closing_time && time > closing_time
@@ -276,7 +295,7 @@ module IceCube
 
     # Get the first n occurrences, or the first occurrence if n is skipped
     def first(n = nil)
-      occurrences = find_occurrences start_time, nil, n || 1
+      occurrences = enumerate_occurrences(start_time).take(n || 1)
       n.nil? ? occurrences.first : occurrences
     end
 
@@ -284,7 +303,7 @@ module IceCube
     # or the final one if no n is given
     def last(n = nil)
       require_terminating_rules
-      occurrences = find_occurrences(start_time, nil, nil, n || 1)
+      occurrences = enumerate_occurrences(start_time).to_a
       n.nil? ? occurrences.last : occurrences[-n..-1]
     end
 
@@ -391,30 +410,27 @@ module IceCube
 
     # Find all of the occurrences for the schedule between opening_time
     # and closing_time
-    def find_occurrences(opening_time, closing_time = nil, limit = nil, tail_limit = nil, &block)
+    def enumerate_occurrences(opening_time, closing_time = nil, &block)
       opening_time = TimeUtil.ensure_time opening_time
       closing_time = TimeUtil.ensure_time closing_time
       opening_time += start_time.subsec - opening_time.subsec rescue 0
       reset
-      answers = []
       opening_time = start_time if opening_time < start_time
       # walk up to the opening time - and off we go
       # If we have rules with counts, we need to walk from the beginning of time,
       # otherwise opening_time
       time = full_required? ? start_time : opening_time
-      loop do
-        res = next_time(time, closing_time)
-        break unless res
-        break if closing_time && res > closing_time
-        if res >= opening_time
-          block_given? ? block.call(res) : (answers << res)
-          answers.shift if tail_limit && answers.length > tail_limit
-          break if limit && answers.length == limit
+      e = Enumerator.new do |yielder|
+        loop do
+          res = next_time(time, closing_time)
+          break unless res
+          break if closing_time && res > closing_time
+          if res >= opening_time
+            yielder.yield (block_given? ? block.call(res) : res)
+          end
+          time = res + 1
         end
-        time = res + 1
       end
-      # and return our answers
-      answers
     end
 
     # Get the next time after (or including) a specific time

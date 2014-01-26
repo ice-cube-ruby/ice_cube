@@ -661,28 +661,16 @@ describe IceCube::Schedule do
     rule.to_hash.should_not have_key(:until)
   end
 
-  # Full required for rules account for @interval
-
-  %w{Secondly Minutely Hourly Daily Weekly Monthly Yearly}.each do |t|
-
-    klass = eval "IceCube::#{t}Rule"
-    method = t.downcase.to_sym
-
-    describe klass do
-      describe :full_required? do
-
-        it 'should return true when interval is > 1' do
-          rule = IceCube::Rule.send(method, 2)
-          rule.full_required?.should be_true
-        end
-
-        it 'should return false when interval is <= 1' do
-          rule = IceCube::Rule.send(method)
-          rule.full_required?.should be_false
-        end
-
-      end
+  it 'should not have ridiculous load times for minutely on next_occurrence (from sidetiq)' do
+    schedule = Schedule.new(now = Time.utc(2010, 1, 1)) do |s|
+      s.add_recurrence_rule(Rule.minutely(1800))
     end
+    time = Time.now
+    10.times do
+      schedule.next_occurrence(Time.now)
+    end
+    total = Time.now - time
+    total.should be < 1
   end
 
 end
