@@ -662,15 +662,33 @@ describe IceCube::Schedule do
   end
 
   it 'should not have ridiculous load times for minutely on next_occurrence (from sidetiq)' do
-    schedule = Schedule.new(now = Time.utc(2010, 1, 1)) do |s|
-      s.add_recurrence_rule(Rule.minutely(1800))
+    quick_attempt_test do
+      IceCube::Schedule.new(Time.utc(2010, 1, 1)) do |s|
+        s.add_recurrence_rule(IceCube::Rule.minutely(1800))
+      end
     end
+  end
+
+  it 'should not have ridiculous load times for every 10 on next_occurrence #210' do
+    quick_attempt_test do
+      IceCube::Schedule.new(Time.utc(2010, 1, 1)) do |s|
+        s.add_recurrence_rule(IceCube::Rule.hourly.minute_of_hour(0, 10, 20, 30, 40, 50))
+      end
+    end
+    quick_attempt_test do
+      IceCube::Schedule.new(Time.utc(2010, 1, 1)) do |s|
+        s.add_recurrence_rule(IceCube::Rule.daily)
+      end
+    end
+  end
+
+  def quick_attempt_test
     time = Time.now
     10.times do
-      schedule.next_occurrence(Time.now)
+      (yield).next_occurrence(Time.now)
     end
     total = Time.now - time
-    total.should be < 1
+    total.should be < 0.1
   end
 
 end
