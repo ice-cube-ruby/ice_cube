@@ -17,7 +17,7 @@ module IceCube
     }
 
     # Provides a Time.now without the usec, in the reference zone or utc offset
-    def self.now(reference=Time.now)
+    def self.now(reference=Time.zone.now)
       match_zone(Time.at(Time.now.to_i), reference)
     end
 
