@@ -26,6 +26,15 @@ describe IceCube::Schedule do
     schedule.start_time.should == Time.local(dt.year, dt.month, dt.day, dt.hour, dt.min, dt.sec)
   end
 
+  describe :next_occurrence do
+
+    it 'should not raise an exception when calling next occurrence with no remaining occurrences' do
+      schedule = IceCube::Schedule.new Time.now
+      lambda { schedule.next_occurrence }.should_not raise_error
+    end
+
+  end
+
   describe :duration do
 
     it 'should be based on end_time' do

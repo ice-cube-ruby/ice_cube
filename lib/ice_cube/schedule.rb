@@ -174,7 +174,11 @@ module IceCube
     # The next occurrence after now (overridable)
     def next_occurrence(from = nil)
       from ||= TimeUtil.now(@start_time)
-      enumerate_occurrences(from + 1, nil).next()
+      begin
+        enumerate_occurrences(from + 1, nil).next()
+      rescue StopIteration
+        nil
+      end
     end
 
     # The previous occurrence from a given time
@@ -210,13 +214,12 @@ module IceCube
 
     # Return a boolean indicating if an occurrence falls between two times
     def occurs_between?(begin_time, closing_time)
-      begin 
+      begin
         enumerate_occurrences(begin_time, closing_time).next()
         true
       rescue StopIteration
         false
       end
-
     end
 
     # Return a boolean indicating if an occurrence is occurring between two
