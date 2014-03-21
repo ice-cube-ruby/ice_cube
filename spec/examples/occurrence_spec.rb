@@ -112,6 +112,11 @@ describe Occurrence do
       occurrence.overnight?.should be_false
     end
 
+    it 'is false for a zero-length occurrence on the last day of a month' do
+      occurrence = Occurrence.new(Time.local(2013, 3, 31))
+      occurrence.overnight?.should be_false
+    end
+
     it 'is false for a duration within a single day' do
       t0 = Time.local(2013, 2, 24, 8, 0, 0)
       occurrence = Occurrence.new(t0, t0 + 3600)
@@ -124,6 +129,12 @@ describe Occurrence do
       occurrence.overnight?.should be_false
     end
 
+    it 'is false for a duration that starts at midnight on the last day of a month' do
+      t0 = Time.local(2013, 3, 31, 0, 0, 0)
+      occurrence = Occurrence.new(t0, t0 + 3600)
+      occurrence.overnight?.should be_false
+    end
+
     it 'is false for a duration that ends at midnight' do
       t0 = Time.local(2013, 2, 24, 23, 0, 0)
       occurrence = Occurrence.new(t0, t0 + 3600)
@@ -132,6 +143,12 @@ describe Occurrence do
 
     it 'is true for a duration that crosses midnight' do
       t0 = Time.local(2013, 2, 24, 23, 0, 0)
+      occurrence = Occurrence.new(t0, t0 + 3601)
+      occurrence.overnight?.should be_true
+    end
+
+    it 'is true for a duration that crosses midnight on the last day of a month' do
+      t0 = Time.local(2013, 3, 31, 23, 0, 0)
       occurrence = Occurrence.new(t0, t0 + 3601)
       occurrence.overnight?.should be_true
     end

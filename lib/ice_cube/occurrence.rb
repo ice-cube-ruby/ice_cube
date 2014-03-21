@@ -93,7 +93,8 @@ module IceCube
     end
 
     def overnight?
-      midnight = Time.new(start_time.year, start_time.month, start_time.day + 1)
+      offset = start_time + 3600 * 24
+      midnight = Time.new(offset.year, offset.month, offset.day)
       midnight < end_time
     end
   end
