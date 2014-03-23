@@ -350,10 +350,13 @@ module IceCube
     # Convert the schedule to a hash
     def to_hash
       data = {}
-      data[:start_date] = TimeUtil.serialize_time(start_time)
+      data[:start_time] = TimeUtil.serialize_time(start_time)
+      data[:start_date] = data[:start_time] if IceCube.compatibility <= 11
       data[:end_time] = TimeUtil.serialize_time(end_time) if end_time
       data[:rrules] = recurrence_rules.map(&:to_hash)
-      data[:exrules] = exception_rules.map(&:to_hash)
+      if IceCube.compatibility <= 11 && exception_rules.any?
+        data[:exrules] = exception_rules.map(&:to_hash)
+      end
       data[:rtimes] = recurrence_times.map do |rt|
         TimeUtil.serialize_time(rt)
       end
