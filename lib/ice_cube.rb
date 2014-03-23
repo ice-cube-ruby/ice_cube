@@ -17,6 +17,7 @@ module IceCube
   autoload :StringBuilder, 'ice_cube/builders/string_builder'
 
   autoload :HashParser, 'ice_cube/parsers/hash_parser'
+  autoload :YamlParser, 'ice_cube/parsers/yaml_parser'
 
   autoload :CountExceeded, 'ice_cube/errors/count_exceeded'
   autoload :UntilExceeded, 'ice_cube/errors/until_exceeded'

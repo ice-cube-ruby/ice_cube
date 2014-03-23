@@ -340,11 +340,10 @@ module IceCube
 
     # Load the schedule from yaml
     def self.from_yaml(yaml, options = {})
-      hash = YAML::load(yaml)
-      if match = yaml.match(/start_date: .+((?:-|\+)\d{2}:\d{2})$/)
-        TimeUtil.restore_deserialized_offset(hash[:start_date], match[1])
+      YamlParser.new(yaml).to_schedule do |schedule|
+        Deprecated.schedule_options(schedule, options)
+        yield schedule if block_given?
       end
-      from_hash hash, options
     end
 
     # Convert the schedule to a hash
@@ -369,11 +368,7 @@ module IceCube
     # Load the schedule from a hash
     def self.from_hash(original_hash, options = {})
       HashParser.new(original_hash).to_schedule do |schedule|
-        if (start_date_override = options.delete(:start_date_override))
-          warn "IceCube: :start_date_override option deprecated. " \
-               "(please use a block { |s| s.start_time = override })"
-          schedule.start_time = start_date_override
-        end
+        Deprecated.schedule_options(schedule, options)
         yield schedule if block_given?
       end
     end

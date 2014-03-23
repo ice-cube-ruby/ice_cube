@@ -26,5 +26,13 @@ module IceCube
 			end
 		end
 
+    def self.schedule_options(schedule, options)
+      if options[:start_date_override]
+        warn "IceCube: :start_date_override option deprecated. " \
+          "(please use a block { |s| s.start_time = override })"
+        schedule.start_time = options[:start_date_override]
+      end
+    end
+
 	end
 end
