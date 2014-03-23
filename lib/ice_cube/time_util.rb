@@ -112,8 +112,8 @@ module IceCube
 
     # Convert a symbol to a numeric month
     def self.sym_to_month(sym)
-      return wday = sym if (1..12).include? sym
       MONTHS.fetch(sym) do |k|
+        return wday = sym.to_i if MONTHS.values.any? { |i| i.to_s == sym.to_s }
         raise ArgumentError, "Expecting Fixnum or Symbol value for month. " \
                              "No such month: #{k.inspect}"
       end
@@ -122,8 +122,8 @@ module IceCube
 
     # Convert a symbol to a wday number
     def self.sym_to_wday(sym)
-      return sym if (0..6).include? sym
       DAYS.fetch(sym) do |k|
+        return sym.to_i if DAYS.values.any? { |i| i.to_s == sym.to_s }
         raise ArgumentError, "Expecting Fixnum or Symbol value for weekday. " \
                              "No such weekday: #{k.inspect}"
       end

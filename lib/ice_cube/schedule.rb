@@ -368,28 +368,14 @@ module IceCube
 
     # Load the schedule from a hash
     def self.from_hash(original_hash, options = {})
-      original_hash[:start_date] = options[:start_date_override] if options[:start_date_override]
-      # And then deserialize
-      data = IceCube::FlexibleHash.new(original_hash)
-      schedule = IceCube::Schedule.new TimeUtil.deserialize_time(data[:start_date])
-      schedule.end_time = schedule.start_time + data[:duration] if data[:duration]
-      schedule.end_time = TimeUtil.deserialize_time(data[:end_time]) if data[:end_time]
-      data[:rrules] && data[:rrules].each { |h| schedule.rrule(IceCube::Rule.from_hash(h)) }
-      data[:exrules] && data[:exrules].each { |h| schedule.exrule(IceCube::Rule.from_hash(h)) }
-      data[:rtimes] && data[:rtimes].each do |t|
-        schedule.add_recurrence_time TimeUtil.deserialize_time(t)
+      HashParser.new(original_hash).to_schedule do |schedule|
+        if (start_date_override = options.delete(:start_date_override))
+          warn "IceCube: :start_date_override option deprecated. " \
+               "(please use a block { |s| s.start_time = override })"
+          schedule.start_time = start_date_override
+        end
+        yield schedule if block_given?
       end
-      data[:extimes] && data[:extimes].each do |t|
-        schedule.add_exception_time TimeUtil.deserialize_time(t)
-      end
-      # Also serialize old format for backward compat
-      data[:rdates] && data[:rdates].each do |t|
-        schedule.add_recurrence_time TimeUtil.deserialize_time(t)
-      end
-      data[:exdates] && data[:exdates].each do |t|
-        schedule.add_exception_time TimeUtil.deserialize_time(t)
-      end
-      schedule
     end
 
     # Determine if the schedule will end
