@@ -153,7 +153,7 @@ module IceCube
       require_terminating_rules
       enumerate_occurrences(start_time).to_a
     end
-    
+
     # Emit an enumerator based on the start time
     def all_occurrences_enumerator
       enumerate_occurrences(start_time)
@@ -414,8 +414,8 @@ module IceCube
     # Find all of the occurrences for the schedule between opening_time
     # and closing_time
     def enumerate_occurrences(opening_time, closing_time = nil, &block)
-      opening_time = TimeUtil.ensure_time opening_time
-      closing_time = TimeUtil.ensure_time closing_time
+      opening_time = TimeUtil.match_zone(opening_time, start_time)
+      closing_time = TimeUtil.match_zone(closing_time, start_time)
       opening_time += start_time.subsec - opening_time.subsec rescue 0
       reset
       opening_time = start_time if opening_time < start_time
