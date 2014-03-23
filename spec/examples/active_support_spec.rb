@@ -97,49 +97,63 @@ module IceCube
       it 'uses schedule zone for next_occurrences' do
         next_occurrences = schedule.next_occurrences(2, reference_time)
         next_occurrences.should == [Time.utc(2013, 1, 2), Time.utc(2013, 1, 3)]
-        next_occurrences.all? { |t| t.time_zone.should == schedule.start_time.time_zone }
+        next_occurrences.each do |t|
+          t.time_zone.should == schedule.start_time.time_zone
+        end
       end
 
       it 'uses schedule zone for remaining_occurrences' do
         remaining_occurrences = schedule.remaining_occurrences(reference_time + 1.day)
         remaining_occurrences.should == [Time.utc(2013, 1, 2), Time.utc(2013, 1, 3)]
-        remaining_occurrences.all? { |t| t.time_zone.should == schedule.start_time.time_zone }
+        remaining_occurrences.each do |t|
+          t.time_zone.should == schedule.start_time.time_zone
+        end
       end
 
       it 'uses schedule zone for occurrences' do
         occurrences = schedule.occurrences(reference_time + 1.day)
         occurrences.should == [Time.utc(2013, 1, 1), Time.utc(2013, 1, 2)]
-        occurrences.all? { |t| t.time_zone.should == schedule.start_time.time_zone }
+        occurrences.each do |t|
+          t.time_zone.should == schedule.start_time.time_zone
+        end
       end
 
       it 'uses schedule zone for occurrences_between' do
         occurrences_between = schedule.occurrences_between(reference_time, reference_time + 1.day)
         occurrences_between.should == [Time.utc(2013, 1, 1), Time.utc(2013, 1, 2)]
-        occurrences_between.all? { |t| t.time_zone.should == schedule.start_time.time_zone }
+        occurrences_between.each do |t|
+          t.time_zone.should == schedule.start_time.time_zone
+        end
       end
-      
+
       it "uses schedule zone for occurrences_between with a rule terminated by #count" do
         utc = Time.utc(2013, 1, 1).in_time_zone('UTC')
         s = Schedule.new(utc) { |s| s.add_recurrence_rule Rule.daily.count(3) }
         occurrences_between = s.occurrences_between(reference_time, reference_time + 1.day)
         occurrences_between.should == [Time.utc(2013, 1, 1), Time.utc(2013, 1, 2)]
-        occurrences_between.all? { |t| t.time_zone.should == schedule.start_time.time_zone }
+        occurrences_between.each do |t|
+          t.time_zone.should == schedule.start_time.time_zone
+        end
       end
-      
+
       it "uses schedule zone for occurrences_between with a rule terminated by #until" do
         utc = Time.utc(2013, 1, 1).in_time_zone('UTC')
         s = Schedule.new(utc) { |s| s.add_recurrence_rule Rule.daily.until(utc.advance(:days => 3)) }
         occurrences_between = s.occurrences_between(reference_time, reference_time + 1.day)
         occurrences_between.should == [Time.utc(2013, 1, 1), Time.utc(2013, 1, 2)]
-        occurrences_between.all? { |t| t.time_zone.should == schedule.start_time.time_zone }
+        occurrences_between.each do |t|
+          t.time_zone.should == schedule.start_time.time_zone
+        end
       end
-      
+
       it "uses schedule zone for occurrences_between with an unterminated rule" do
         utc = Time.utc(2013, 1, 1).in_time_zone('UTC')
         s = Schedule.new(utc) { |s| s.add_recurrence_rule Rule.daily }
         occurrences_between = s.occurrences_between(reference_time, reference_time + 1.day)
         occurrences_between.should == [Time.utc(2013, 1, 1), Time.utc(2013, 1, 2)]
-        occurrences_between.all? { |t| t.time_zone.should == schedule.start_time.time_zone }
+        occurrences_between.each do |t|
+          t.time_zone.should == schedule.start_time.time_zone
+        end
       end
 
     end
