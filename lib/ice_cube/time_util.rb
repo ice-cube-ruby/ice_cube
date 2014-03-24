@@ -72,7 +72,7 @@ module IceCube
       if time_or_hash.is_a?(Time)
         time_or_hash
       elsif time_or_hash.is_a?(Hash)
-        hash = FlexibleHash.new(hash)
+        hash = FlexibleHash.new(time_or_hash)
         hash[:time].in_time_zone(hash[:zone])
       end
     end
