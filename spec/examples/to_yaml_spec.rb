@@ -290,7 +290,7 @@ module IceCube
 
       symbol_yaml = Schedule.from_hash(symbol_data).to_yaml
       string_yaml = Schedule.from_hash(string_data).to_yaml
-      symbol_yaml.should == string_yaml
+      YAML.load(symbol_yaml).should == YAML.load(string_yaml)
     end
 
   end

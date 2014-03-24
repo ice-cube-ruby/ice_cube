@@ -9,6 +9,7 @@ module IceCube
       @hash = YAML::load(yaml)
       yaml.match(SERIALIZED_START) do |match|
         start_time = hash[:start_time] || hash[:start_date]
+        hash = FlexibleHash.new(@hash)
         TimeUtil.restore_deserialized_offset start_time, match[:tz]
       end
     end
