@@ -414,10 +414,10 @@ module IceCube
           break if closing_time && t1 > closing_time
           if TimeUtil.same_clock?(t0, t1) && recurrence_rules.any?(&:dst_adjust?)
             wind_back_dst
-            next t1 += 1
+            next (t1 += 1)
           end
           yielder << (block_given? ? block.call(t1) : t1) if t1 >= opening_time
-          t1 += 1
+          next (t1 += 1)
         end
       end
     end
@@ -429,12 +429,12 @@ module IceCube
           begin
             new_time = rule.next_time(time, self, min_time || closing_time)
             [min_time, new_time].compact.min
-          rescue CountExceeded, UntilExceeded
+          rescue StopIteration
             min_time
           end
         end
         break nil unless min_time
-        next(time = min_time + 1) if exception_time?(min_time)
+        next (time = min_time + 1) if exception_time?(min_time)
         break Occurrence.new(min_time, min_time + duration)
       end
     end
