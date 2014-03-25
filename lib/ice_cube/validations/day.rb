@@ -31,6 +31,10 @@ module IceCube
         :wday
       end
 
+      def dst_adjust?
+        true
+      end
+
       def build_s(builder)
         builder.piece(:day) << day
       end

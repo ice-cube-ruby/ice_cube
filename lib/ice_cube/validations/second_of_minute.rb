@@ -28,6 +28,10 @@ module IceCube
         :sec
       end
 
+      def dst_adjust?
+        false
+      end
+
       def build_s(builder)
         builder.piece(:second_of_minute) << StringBuilder.nice_number(second)
       end

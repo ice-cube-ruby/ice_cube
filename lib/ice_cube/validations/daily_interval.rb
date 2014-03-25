@@ -22,6 +22,10 @@ module IceCube
         :day
       end
 
+      def dst_adjust?
+        true
+      end
+
       def validate(step_time, schedule)
         t0, t1 = schedule.start_time, step_time
         days = Date.new(t1.year, t1.month, t1.day) -

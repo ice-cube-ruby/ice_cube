@@ -26,6 +26,10 @@ module IceCube
         :day
       end
 
+      def dst_adjust?
+        true
+      end
+
       def validate(step_time, schedule)
         wday = step_time.wday
         offset = (day < wday) ? (7 - wday + day) : (day - wday)

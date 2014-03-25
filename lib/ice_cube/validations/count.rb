@@ -29,6 +29,10 @@ module IceCube
         :limit
       end
 
+      def dst_adjust?
+        false
+      end
+
       def validate(time, schedule)
         raise CountExceeded if rule.uses && rule.uses >= count
       end

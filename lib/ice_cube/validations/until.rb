@@ -29,6 +29,10 @@ module IceCube
         :limit
       end
 
+      def dst_adjust?
+        false
+      end
+
       def validate(step_time, schedule)
         raise UntilExceeded if step_time > time
       end

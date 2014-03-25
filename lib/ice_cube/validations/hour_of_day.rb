@@ -29,6 +29,10 @@ module IceCube
         :hour
       end
 
+      def dst_adjust?
+        true
+      end
+
       def build_s(builder)
         builder.piece(:hour_of_day) << StringBuilder.nice_number(hour)
       end

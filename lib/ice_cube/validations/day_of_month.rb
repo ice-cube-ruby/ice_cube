@@ -28,6 +28,10 @@ module IceCube
         :day
       end
 
+      def dst_adjust?
+        true
+      end
+
       def build_s(builder)
         builder.piece(:day_of_month) << StringBuilder.nice_number(day)
       end

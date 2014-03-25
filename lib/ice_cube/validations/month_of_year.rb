@@ -29,6 +29,10 @@ module IceCube
         :month
       end
 
+      def dst_adjust?
+        true
+      end
+
       def build_s(builder)
         builder.piece(:month_of_year) << Date::MONTHNAMES[month]
       end

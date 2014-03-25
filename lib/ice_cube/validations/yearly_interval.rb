@@ -20,6 +20,10 @@ module IceCube
         :year
       end
 
+      def dst_adjust?
+        true
+      end
+
       def validate(step_time, schedule)
         years = step_time.year - schedule.start_time.year
         offset = (years % interval).nonzero?

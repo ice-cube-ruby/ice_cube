@@ -28,6 +28,10 @@ module IceCube
         :min
       end
 
+      def dst_adjust?
+        false
+      end
+
       def build_s(builder)
         builder.piece(:minute_of_hour) << StringBuilder.nice_number(minute)
       end

@@ -263,4 +263,36 @@ describe IceCube::Schedule, 'occurs_on?' do
     schedule.first(3).should == [Time.local(2010, 4, 10, 12, 0, 0), Time.local(2011, 4, 10, 12, 0, 0), Time.local(2012, 4, 10, 12, 0, 0)]
   end
 
+  it "skips double occurrences from end of DST" do
+    Time.zone = "America/Denver"
+    t0 = Time.zone.parse("Sun, 03 Nov 2013 01:30:00 MDT -06:00")
+    schedule = IceCube::Schedule.new(t0) { |s| s.rrule IceCube::Rule.daily.count(3) }
+    schedule.all_occurrences.should == [t0, t0 + 25*ONE_HOUR, t0 + 49*ONE_HOUR]
+  end
+
+  it "does not skip hourly rules over DST" do
+    Time.zone = "America/Denver"
+    t0 = Time.zone.parse("Sun, 03 Nov 2013 01:30:00 MDT -06:00")
+    schedule = IceCube::Schedule.new(t0) { |s| s.rrule IceCube::Rule.hourly.count(3) }
+    schedule.all_occurrences.should == [t0, t0 + ONE_HOUR, t0 + 2*ONE_HOUR]
+  end
+
+  it "does not skip minutely rules with minute of hour over DST" do
+    Time.zone = "America/Denver"
+    t0 = Time.zone.parse("Sun, 03 Nov 2013 01:30:00 MDT -06:00")
+    schedule = IceCube::Schedule.new(t0) { |s| s.rrule IceCube::Rule.hourly.count(3) }
+    schedule.rrule IceCube::Rule.minutely.minute_of_hour([0, 15, 30, 45])
+    schedule.first(5).should == [t0, t0 + 15*60, t0 + 30*60, t0 + 45*60, t0 + 60*60]
+  end
+
+  it "does not skip minutely rules with second of minute over DST" do
+    Time.zone = "America/Denver"
+    t0 = Time.zone.parse("Sun, 03 Nov 2013 01:30:00 MDT -06:00")
+    schedule = IceCube::Schedule.new(t0) { |s| s.rrule IceCube::Rule.hourly.count(3) }
+    schedule.rrule IceCube::Rule.minutely(15).second_of_minute(0)
+    schedule.first(5).should == [t0, t0 + 15*60, t0 + 30*60, t0 + 45*60, t0 + 60*60]
+  end
+
+
+
 end

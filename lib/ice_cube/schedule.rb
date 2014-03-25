@@ -397,25 +397,27 @@ module IceCube
 
     # Find all of the occurrences for the schedule between opening_time
     # and closing_time
+    # Iteration is unrolled in pairs to skip duplicate times in end of DST
     def enumerate_occurrences(opening_time, closing_time = nil, &block)
       opening_time = TimeUtil.match_zone(opening_time, start_time)
       closing_time = TimeUtil.match_zone(closing_time, start_time)
       opening_time += start_time.subsec - opening_time.subsec rescue 0
       reset
       opening_time = start_time if opening_time < start_time
-      # walk up to the opening time - and off we go
-      # If we have rules with counts, we need to walk from the beginning of time,
-      # otherwise opening_time
-      time = full_required? ? start_time : opening_time
+      t1 = full_required? ? start_time : opening_time
       e = Enumerator.new do |yielder|
         loop do
-          res = next_time(time, closing_time)
-          break unless res
-          break if closing_time && res > closing_time
-          if res >= opening_time
-            yielder.yield (block_given? ? block.call(res) : res)
+          break unless (t0 = next_time(t1, closing_time))
+          break if closing_time && t0 > closing_time
+          yielder << (block_given? ? block.call(t0) : t0) if t0 >= opening_time
+          break unless (t1 = next_time(t0 + 1, closing_time))
+          break if closing_time && t1 > closing_time
+          if TimeUtil.same_clock?(t0, t1) && recurrence_rules.any?(&:dst_adjust?)
+            wind_back_dst
+            next t1 += 1
           end
-          time = res + 1
+          yielder << (block_given? ? block.call(t1) : t1) if t1 >= opening_time
+          t1 += 1
         end
       end
     end
@@ -437,7 +439,8 @@ module IceCube
       end
     end
 
-    # Return a boolean indicating if any rule needs to be run from the start of time
+    # Indicate if any rule needs to be run from the start of time
+    # If we have rules with counts, we need to walk from the beginning of time
     def full_required?
       @all_recurrence_rules.any?(&:full_required?) ||
       @all_exception_rules.any?(&:full_required?)
@@ -478,6 +481,12 @@ module IceCube
         [implicit_start_occurrence_rule].concat @all_recurrence_rules
       else
         @all_recurrence_rules
+      end
+    end
+
+    def wind_back_dst
+      recurrence_rules.each do |rule|
+        rule.skipped_for_dst
       end
     end
 

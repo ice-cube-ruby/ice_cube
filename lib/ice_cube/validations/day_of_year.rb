@@ -25,6 +25,10 @@ module IceCube
         :day
       end
 
+      def dst_adjust?
+        true
+      end
+
       def validate(step_time, schedule)
         days_in_year = TimeUtil.days_in_year(step_time)
         yday = day < 0 ? day + days_in_year : day

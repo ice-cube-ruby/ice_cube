@@ -16,6 +16,8 @@ module IceCube
       :november => 11, :december => 12
     }
 
+    CLOCK_VALUES = [:year, :month, :day, :hour, :min, :sec]
+
     # Provides a Time.now without the usec, in the reference zone or utc offset
     def self.now(reference=Time.now)
       match_zone(Time.at(Time.now.to_i), reference)
@@ -208,6 +210,10 @@ module IceCube
       if time.dst? ^ one_hour_ago.dst?
         (time.utc_offset - one_hour_ago.utc_offset) / ONE_HOUR
       end
+    end
+
+    def self.same_clock?(t1, t2)
+      CLOCK_VALUES.all? { |i| t1.send(i) == t2.send(i) }
     end
 
     # A utility class for safely moving time around
