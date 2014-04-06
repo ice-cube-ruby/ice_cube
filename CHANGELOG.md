@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.0 / 2014-04-06
+
+* [FEATURE]     Rename to `start_time` as a hash key (see UPGRADING) (#102)
+* [FEATURE]     Notify of deprecated usage (#219)
+* [BUGFIX]      Skip double occurrences over DST (#189)
+* [BUGFIX]      Avoid symbolizing hash keys from input
+* [BUGFIX]      Ensure time comparisons are done in schedule time zone (#209)
+* [BUGFIX]      Occurrence#overnight? now works on the last day of the month (#218)
+
 ## 0.11.3 / 2014-02-07
 
 * [BUGFIX]      Fix a StopIteration leak
