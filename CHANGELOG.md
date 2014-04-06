@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.11.3 / 2014-02-07
+
+* [BUGFIX]      Fix a StopIteration leak
+
+## 0.11.2 / 2014-01-25
+
+* [ENHANCEMENT] Use Enumerator for schedule occurrences
+* [BUGFIX]      Fix high CPU usage on minutely schedules
+
 ## 0.11.1 / 2013-10-28
 
 * [ENHANCEMENT] Move deprecated into IceCube namespace
