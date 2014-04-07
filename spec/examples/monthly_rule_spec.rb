@@ -36,48 +36,48 @@ module IceCube
       schedule = double(start_time: t0 = Time.utc(2013, 5, 17))
       rule = Rule.monthly(3)
       rule.interval(1)
-      rule.next_time(t0 + 1, schedule, nil).should == t0 + 31.days
+      expect(rule.next_time(t0 + 1, schedule, nil)).to eq(t0 + 31.days)
     end
 
     it 'should produce the correct number of days for @interval = 1' do
       schedule = Schedule.new(t0 = Time.now)
       schedule.add_recurrence_rule Rule.monthly
       #check assumption
-      schedule.occurrences(t0 + 50 * ONE_DAY).size.should == 2
+      expect(schedule.occurrences(t0 + 50 * ONE_DAY).size).to eq(2)
     end
 
     it 'should produce the correct number of days for @interval = 2' do
       schedule = Schedule.new(t0 = Time.now)
       schedule.add_recurrence_rule Rule.monthly(2)
-      schedule.occurrences(t0 + 50 * ONE_DAY).size.should == 1
+      expect(schedule.occurrences(t0 + 50 * ONE_DAY).size).to eq(1)
     end
 
     it 'should produce the correct number of days for @interval = 1 with only the 1st and 15th' do
       schedule = Schedule.new(t0 = Time.utc(2010, 1, 1))
       schedule.add_recurrence_rule Rule.monthly.day_of_month(1, 15)
       #check assumption (1) (15) (1) (15)
-      schedule.occurrences(t0 + 50 * ONE_DAY).map(&:day).should == [1, 15, 1, 15]
+      expect(schedule.occurrences(t0 + 50 * ONE_DAY).map(&:day)).to eq([1, 15, 1, 15])
     end
 
     it 'should produce the correct number of days for @interval = 1 with only the 1st and last' do
       schedule = Schedule.new(t0 = Time.utc(2010, 1, 1))
       schedule.add_recurrence_rule Rule.monthly.day_of_month(1, -1)
       #check assumption (1) (31) (1)
-      schedule.occurrences(t0 + 60 * ONE_DAY).map(&:day).should == [1, 31, 1, 28, 1]
+      expect(schedule.occurrences(t0 + 60 * ONE_DAY).map(&:day)).to eq([1, 31, 1, 28, 1])
     end
 
     it 'should produce the correct number of days for @interval = 1 with only the first mondays' do
       schedule = Schedule.new(t0 = Time.utc(2010, 1, 1))
       schedule.add_recurrence_rule Rule.monthly.day_of_week(:monday => [1])
       #check assumption (month 1 monday) (month 2 monday)
-      schedule.occurrences(t0 + 50 * ONE_DAY).size.should == 2
+      expect(schedule.occurrences(t0 + 50 * ONE_DAY).size).to eq(2)
     end
 
     it 'should produce the correct number of days for @interval = 1 with only the last mondays' do
       schedule = Schedule.new(t0 = Time.utc(2010, 1, 1))
       schedule.add_recurrence_rule Rule.monthly.day_of_week(:monday => [-1])
       #check assumption (month 1 monday)
-      schedule.occurrences(t0 + 40 * ONE_DAY).size.should == 1
+      expect(schedule.occurrences(t0 + 40 * ONE_DAY).size).to eq(1)
     end
 
     it 'should produce the correct number of days for @interval = 1 with only the first and last mondays' do
@@ -86,7 +86,7 @@ module IceCube
       schedule = Schedule.new(t0)
       schedule.add_recurrence_rule Rule.monthly.day_of_week(:monday => [1, -2])
       #check assumption (12 months - 2 dates each)
-      schedule.occurrences(t1).size.should == 24
+      expect(schedule.occurrences(t1).size).to eq(24)
     end
 
     [:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday].each_with_index do |weekday, wday|
@@ -99,21 +99,21 @@ module IceCube
         it "should not skip a month when DST ends" do
           schedule.first(48).inject(nil) do |last_date, current_date|
             next current_date unless last_date
-            month_interval(current_date, last_date).should == 1
+            expect(month_interval(current_date, last_date)).to eq(1)
           end
         end
 
         it "should not change day when DST ends" do
           schedule.first(48).inject(nil) do |last_date, current_date|
             next current_date unless last_date
-            current_date.wday.should == wday
+            expect(current_date.wday).to eq(wday)
           end
         end
 
         it "should not change hour when DST ends" do
           schedule.first(48).inject(nil) do |last_date, current_date|
             next current_date unless last_date
-            current_date.hour.should == 0
+            expect(current_date.hour).to eq(0)
           end
         end
       end
@@ -122,33 +122,33 @@ module IceCube
     it 'should produce dates on a monthly interval for the last day of the month' do
       schedule = Schedule.new(t0 = Time.utc(2010, 3, 31, 0, 0, 0))
       schedule.add_recurrence_rule Rule.monthly
-      schedule.first(10).should == [
+      expect(schedule.first(10)).to eq([
         Time.utc(2010,  3, 31, 0, 0, 0), Time.utc(2010,  4, 30, 0, 0, 0),
         Time.utc(2010,  5, 31, 0, 0, 0), Time.utc(2010,  6, 30, 0, 0, 0),
         Time.utc(2010,  7, 31, 0, 0, 0), Time.utc(2010,  8, 31, 0, 0, 0),
         Time.utc(2010,  9, 30, 0, 0, 0), Time.utc(2010, 10, 31, 0, 0, 0),
         Time.utc(2010, 11, 30, 0, 0, 0), Time.utc(2010, 12, 31, 0, 0, 0)
-      ]
+      ])
     end
 
     it 'should produce dates on a monthly interval for latter days in the month near February' do
       schedule = Schedule.new(t0 = Time.utc(2010, 1, 29, 0, 0, 0))
       schedule.add_recurrence_rule Rule.monthly
-      schedule.first(3).should == [
+      expect(schedule.first(3)).to eq([
         Time.utc(2010, 1, 29, 0, 0, 0),
         Time.utc(2010, 2, 28, 0, 0, 0),
         Time.utc(2010, 3, 29, 0, 0, 0)
-      ]
+      ])
     end
 
     it 'should restrict to available days of month when specified' do
       schedule = Schedule.new(t0 = Time.utc(2013,1,31))
       schedule.add_recurrence_rule Rule.monthly.day_of_month(31)
-      schedule.first(3).should == [
+      expect(schedule.first(3)).to eq([
         Time.utc(2013, 1, 31),
         Time.utc(2013, 3, 31),
         Time.utc(2013, 5, 31)
-      ]
+      ])
     end
 
     def month_interval(current_date, last_date)

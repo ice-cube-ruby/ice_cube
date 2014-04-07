@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project = "ice-cube"
 
   s.add_development_dependency('rake')
-  s.add_development_dependency('rspec', '~> 2.12.0')
+  s.add_development_dependency('rspec', '>= 2.12.0')
   s.add_development_dependency('activesupport', '>= 3.0.0')
   s.add_development_dependency('tzinfo')
 end

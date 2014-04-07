@@ -7,64 +7,64 @@ module IceCube
 
     describe "#[]" do
       specify ":sym => :sym is found" do
-        hash[:sym].should be true
+        expect(hash[:sym]).to be true
       end
 
       specify "'sym' => :sym is found" do
-        hash["sym"].should be true
+        expect(hash["sym"]).to be true
       end
 
       specify "'str' => 'str' is found" do
-        hash["str"].should be true
+        expect(hash["str"]).to be true
       end
 
       specify ":str => 'str' is found" do
-        hash[:str].should be true
+        expect(hash[:str]).to be true
       end
 
       specify "other types are found" do
-        hash[1].should be true
+        expect(hash[1]).to be true
       end
 
       specify "missing keys are nil" do
-        hash[-1].should be nil
+        expect(hash[-1]).to be nil
       end
     end
 
     describe "#fetch" do
       it "yields missing keys" do
-        hash.fetch(-1) { |k| k == -1 }.should be true
+        expect(hash.fetch(-1) { |k| k == -1 }).to be true
       end
     end
 
     describe "#delete" do
       specify ":sym => :sym is found and removed" do
-        hash.delete(:sym).should be true
-        hash[:sym].should be nil
+        expect(hash.delete(:sym)).to be true
+        expect(hash[:sym]).to be nil
       end
 
       specify "'sym' => :sym is found and removed" do
-        hash.delete("sym").should be true
-        hash["sym"].should be nil
+        expect(hash.delete("sym")).to be true
+        expect(hash["sym"]).to be nil
       end
 
       specify "'str' => 'str' is found and removed" do
-        hash.delete("str").should be true
-        hash["str"].should be nil
+        expect(hash.delete("str")).to be true
+        expect(hash["str"]).to be nil
       end
 
       specify ":str => 'str' is found and removed" do
-        hash.delete(:str).should be true
-        hash[:str].should be nil
+        expect(hash.delete(:str)).to be true
+        expect(hash[:str]).to be nil
       end
 
       specify "other types are found and removed" do
-        hash.delete(1).should be true
-        hash[1].should be nil
+        expect(hash.delete(1)).to be true
+        expect(hash[1]).to be nil
       end
 
       specify "missing keys are nil" do
-        hash.delete(-1).should be nil
+        expect(hash.delete(-1)).to be nil
       end
     end
 
