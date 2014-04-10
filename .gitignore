@@ -5,3 +5,4 @@ Gemfile.lock
 coverage
 coverage.data
 *.gem
+.bundle
