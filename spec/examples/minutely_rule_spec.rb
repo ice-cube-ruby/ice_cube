@@ -4,7 +4,7 @@ module IceCube
   describe MinutelyRule do
 
     it 'should update previous interval' do
-      schedule = stub(start_time: t0 = Time.now)
+      schedule = double(start_time: t0 = Time.now)
       rule = Rule.minutely(7)
       rule.interval(5)
       rule.next_time(t0 + 1, schedule, nil).should == t0 + 5.minutes

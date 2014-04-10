@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe IceCube::YearlyRule, 'occurs_on?' do
 
   it 'should update previous interval' do
-    schedule = stub(start_time: t0 = Time.utc(2013, 5, 1))
+    schedule = double(start_time: t0 = Time.utc(2013, 5, 1))
     rule = Rule.yearly(3)
     rule.interval(1)
     rule.next_time(t0 + 1, schedule, nil).should == t0 + 365.days

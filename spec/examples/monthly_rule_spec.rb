@@ -20,7 +20,7 @@ module IceCube
     end
 
     it 'should update previous interval' do
-      schedule = stub(start_time: t0 = Time.utc(2013, 5, 17))
+      schedule = double(start_time: t0 = Time.utc(2013, 5, 17))
       rule = Rule.monthly(3)
       rule.interval(1)
       rule.next_time(t0 + 1, schedule, nil).should == t0 + 31.days
