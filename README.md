@@ -146,8 +146,8 @@ Schedule.from_hash(hash, :start_date_override => Time.now)
 
 ## Using your words
 
-ice_cube can provide ical or string representations of individual rules, or the
-whole schedule.
+ice_cube can provide ical or string representations of individual rules, and
+ical representations of a whole schedule.
 
 ```ruby
 rule = Rule.daily(2).day_of_week(:tuesday => [1, -1], :wednesday => [2])
