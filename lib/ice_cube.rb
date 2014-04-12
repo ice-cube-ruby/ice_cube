@@ -81,7 +81,7 @@ module IceCube
   # Retain backwards compatibility for schedules exported from older versions
   # This represents the version number, 11 = 0.11, 1.0 will be 100
   def self.compatibility
-    @compatibility ||= 11
+    @compatibility ||= (VERSION.to_f * 100).to_i
   end
 
   def self.compatibility=(version)
