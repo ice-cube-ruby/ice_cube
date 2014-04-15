@@ -251,7 +251,7 @@ schedule.add_recurrence_rule Rule.hourly
 schedule.add_recurrence_rule Rule.hourly(2).day(:monday)
 ```
 
-### Minutely (by minute of hour)
+### Minutely (every N minutes)
 
 ```ruby
 # every 10 minutes
@@ -261,7 +261,7 @@ schedule.add_recurrence_rule Rule.minutely(10)
 schedule.add_recurrence_rule Rule.minutely(90).day_of_week(:tuesday => [-1])
 ```
 
-### Secondly (by second of minute)
+### Secondly (every N seconds)
 
 ```ruby
 # every second
