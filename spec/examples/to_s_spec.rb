@@ -136,7 +136,7 @@ describe IceCube::Schedule, 'to_s' do
     schedule.to_s.should == schedule.rrules[0].to_s
   end
 
-  it 'should be able to say the last monday of the month' do
+  it 'should be able to say the last Thursday of the month' do
     rule_str = IceCube::Rule.monthly.day_of_week(:thursday => [-1]).to_s
     rule_str.should == 'Monthly on the last Thursday'
   end
