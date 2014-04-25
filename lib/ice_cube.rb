@@ -23,6 +23,8 @@ module IceCube
   autoload :HashBuilder, 'ice_cube/builders/hash_builder'
   autoload :StringBuilder, 'ice_cube/builders/string_builder'
 
+  autoload :IcalParser, 'ice_cube/ical_parser'
+
   autoload :CountExceeded, 'ice_cube/errors/count_exceeded'
   autoload :UntilExceeded, 'ice_cube/errors/until_exceeded'
   autoload :ZeroInterval, 'ice_cube/errors/zero_interval'
