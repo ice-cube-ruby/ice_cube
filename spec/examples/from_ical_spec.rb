@@ -83,7 +83,7 @@ describe IceCube::Rule, 'from_ical' do
     rule.should == IceCube::Rule.weekly(2, :monday)
   end
 
-	it 'test' do
+	it 'should return no occurrences after daily interval with count is over' do
 		schedule = IceCube::Schedule.new(Time.now)
 		schedule.add_recurrence_rule(IceCube::IcalParser.rule_from_ical("FREQ=DAILY;COUNT=5"))
 		schedule.occurrences_between(Time.now + 7.days, Time.now + 14.days).count.should == 0
