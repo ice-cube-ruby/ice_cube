@@ -159,12 +159,6 @@ module IceCube
       (wday - sym_to_wday(week_start)) % 7
     end
     deprecated_alias :normalize_weekday, :normalize_wday
-    
-    def self.ical_day_to_symbol(str)
-      day = ICAL_DAYS[str]
-      raise "No such day: #{str}" if day.nil?
-      day
-    end
 
     def self.ical_day_to_symbol(str)
       day = ICAL_DAYS[str]
