@@ -18,6 +18,7 @@ module IceCube
 
   autoload :HashParser, 'ice_cube/parsers/hash_parser'
   autoload :YamlParser, 'ice_cube/parsers/yaml_parser'
+  autoload :IcalParser, 'ice_cube/ical_parser'
 
   autoload :CountExceeded, 'ice_cube/errors/count_exceeded'
   autoload :UntilExceeded, 'ice_cube/errors/until_exceeded'
