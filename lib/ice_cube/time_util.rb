@@ -147,6 +147,13 @@ module IceCube
       end
     end
 
+    # Convert a symbol to an ical day (SU, MO)
+    def self.week_start(sym)
+      raise "No such day: #{sym}" unless DAYS.keys.include?(sym)
+      day = sym.to_s.upcase[0..1]
+      day
+    end
+
     # Convert weekday from base sunday to the schedule's week start.
     def self.normalize_wday(wday, week_start)
       (wday - sym_to_wday(week_start)) % 7

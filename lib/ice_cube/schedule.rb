@@ -429,6 +429,7 @@ module IceCube
           begin
             new_time = rule.next_time(time, self, min_time || closing_time)
             [min_time, new_time].compact.min
+          # Certain exceptions mean this rule no longer wants to play
           rescue StopIteration
             min_time
           rescue CountExceeded, UntilExceeded, ZeroInterval
