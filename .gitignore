@@ -6,3 +6,5 @@ coverage
 coverage.data
 *.gem
 .bundle
+*.idea
+/nbproject

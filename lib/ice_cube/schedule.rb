@@ -431,6 +431,8 @@ module IceCube
             [min_time, new_time].compact.min
           rescue StopIteration
             min_time
+          rescue CountExceeded, UntilExceeded, ZeroInterval
+            next
           end
         end
         break nil unless min_time

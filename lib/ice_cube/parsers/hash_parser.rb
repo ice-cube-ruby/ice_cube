@@ -53,7 +53,9 @@ module IceCube
     def apply_rrules(schedule, data)
       return unless data[:rrules]
       data[:rrules].each do |h|
-        schedule.rrule(IceCube::Rule.from_hash(h))
+        rrule = h.is_a?(IceCube::Rule) ? h : IceCube::Rule.from_hash(h)
+
+        schedule.rrule(rrule)
       end
     end
 
@@ -61,7 +63,9 @@ module IceCube
       return unless data[:exrules]
       warn "IceCube: :exrules deprecated. (This will be going away)"
       data[:exrules].each do |h|
-        schedule.exrule(IceCube::Rule.from_hash(h))
+        rrule = h.is_a?(IceCube::Rule) ? h : IceCube::Rule.from_hash(h)
+
+        schedule.exrule(rrule)
       end
     end
 
