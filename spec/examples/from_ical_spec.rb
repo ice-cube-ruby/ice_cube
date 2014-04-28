@@ -4,23 +4,23 @@ require 'active_support/time'
 describe IceCube::Rule, 'from_ical' do
 
   it 'should return a IceCube DailyRule class for a basic daily rule' do
-  	rule = IceCube::IcalParser.rule_from_ical "FREQ=DAILY"
-  	rule.class.should == IceCube::DailyRule
+    rule = IceCube::IcalParser.rule_from_ical "FREQ=DAILY"
+    rule.class.should == IceCube::DailyRule
   end
 
   it 'should return a IceCube WeeklyRule class for a basic monthly rule' do
-  	rule = IceCube::IcalParser.rule_from_ical "FREQ=WEEKLY"
-  	rule.class.should == IceCube::WeeklyRule
+    rule = IceCube::IcalParser.rule_from_ical "FREQ=WEEKLY"
+    rule.class.should == IceCube::WeeklyRule
   end
 
   it 'should return a IceCube MonthlyRule class for a basic monthly rule' do
-  	rule = IceCube::IcalParser.rule_from_ical "FREQ=MONTHLY"
-  	rule.class.should == IceCube::MonthlyRule
+    rule = IceCube::IcalParser.rule_from_ical "FREQ=MONTHLY"
+    rule.class.should == IceCube::MonthlyRule
   end
 
   it 'should return a IceCube YearlyRule class for a basic yearly rule' do
-  	rule = IceCube::IcalParser.rule_from_ical "FREQ=YEARLY"
-  	rule.class.should == IceCube::YearlyRule
+    rule = IceCube::IcalParser.rule_from_ical "FREQ=YEARLY"
+    rule.class.should == IceCube::YearlyRule
   end
 
   it 'should be able to parse a .day rule' do
