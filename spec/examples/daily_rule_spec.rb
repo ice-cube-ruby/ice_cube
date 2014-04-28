@@ -44,6 +44,13 @@ describe IceCube::DailyRule, 'occurs_on?' do
       ]
     end
 
+    it 'should update previous interval' do
+      schedule = double(start_time: t0 = Time.now)
+      rule = IceCube::Rule.daily(7)
+      rule.interval(5)
+      rule.next_time(t0 + 1, schedule, nil).should == t0 + 5 * IceCube::ONE_DAY
+    end
+
     it 'should include nearest time to DST start when locking hour_of_day' do
       schedule = IceCube::Schedule.new(t0 = Time.local(2013, 3, 9, 2, 0, 0))
       schedule.add_recurrence_rule IceCube::Rule.daily.hour_of_day(2)

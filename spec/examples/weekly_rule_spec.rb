@@ -42,6 +42,13 @@ describe IceCube::WeeklyRule, 'occurs_on?' do
       ]
     end
 
+    it 'should update previous interval' do
+      schedule = double(start_time: t0 = Time.now)
+      rule = IceCube::Rule.weekly(7)
+      rule.interval(2)
+      rule.next_time(t0 + 1, schedule, nil).should == t0 + 14 * IceCube::ONE_DAY
+    end
+
   end
 
   it 'should update previous interval' do
