@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe IceCube, 'from_ical' do
+describe IceCube::Rule, 'from_ical' do
 
 	it 'should return a IceCube DailyRule class for a basic daily rule' do
 		rule = IceCube::Rule.from_ical "FREQ=DAILY"
@@ -31,7 +31,7 @@ describe IceCube, 'from_ical' do
 		rule = IceCube::Rule.from_ical("FREQ=DAILY;BYDAY=-1TU,-2TU")
     rule.should == IceCube::Rule.daily.day_of_week(:tuesday => [-1, -2])
 	end
-  
+
 	it 'should be able to parse both .day and .day_of_week rules' do
 		rule = IceCube::Rule.from_ical("FREQ=DAILY;BYDAY=MO,-1TU,-2TU")
     rule.should == IceCube::Rule.daily.day_of_week(:tuesday => [-1, -2]).day(:monday)
@@ -73,6 +73,16 @@ describe IceCube, 'from_ical' do
 		rule.should == IceCube::Rule.weekly.count(5)
 	end
 
+  it 'should be able to parse a rule with an interval' do
+    rule = IceCube::Rule.from_ical("FREQ=DAILY;INTERVAL=2")
+    rule.should == IceCube::Rule.daily.interval(2)
+  end
+
+  it 'should be able to parse week start (WKST)' do
+    rule = IceCube::Rule.from_ical("FREQ=WEEKLY;INTERVAL=2;WKST=MO")
+    rule.should == IceCube::Rule.weekly(2, :monday)
+  end
+
 	it 'test' do
 		schedule = IceCube::Schedule.new(Time.now)
 		schedule.add_recurrence_rule(IceCube::Rule.from_ical("FREQ=DAILY;COUNT=5"))
@@ -80,4 +90,276 @@ describe IceCube, 'from_ical' do
 		#schedule.occurrences_between(Time.now, Time.now + 7.days).count.should == 5
 		schedule.occurrences_between(Time.now + 7.days, Time.now + 14.days).count.should == 0
 	end
+end
+
+describe IceCube::Schedule, "from_ical" do
+
+  ical_string = <<-ICAL
+DTSTART:20130314T201500Z
+DTEND:20130314T201545Z
+RRULE:FREQ=WEEKLY;BYDAY=TH;UNTIL=20130531T100000Z
+ICAL
+
+  ical_string_woth_multiple_exdates = <<-ICAL
+DTSTART;TZID=America/Denver:20130731T143000
+DTEND;TZID=America/Denver:20130731T153000
+RRULE:FREQ=WEEKLY;UNTIL=20140730T203000Z;BYDAY=MO,WE,FR
+EXDATE;TZID=America/Denver:20130823T143000
+EXDATE;TZID=America/Denver:20130812T143000
+EXDATE;TZID=America/Denver:20130807T143000
+ICAL
+
+
+  def sorted_ical(ical)
+    ical.split(/\n/).sort.map { |field|
+      k, v = field.split(':')
+      v = v.split(';').sort.join(';') if k == 'RRULE'
+
+      "#{ k }:#{ v }"
+    }.join("\n")
+  end
+
+  context "instantiation" do
+    it "loads an ICAL string" do
+      IceCube::Schedule.from_ical(ical_string).should be_a(IceCube::Schedule)
+    end
+  end
+
+  context "daily frequency" do
+    it 'matches simple daily' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.daily)
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles counts' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.daily.count(4))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles intervals' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.daily(4))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles intervals and counts' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.daily(4).count(10))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles until dates' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.daily.until(start_time + 15.days))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+  end
+
+  context 'weekly frequency' do
+    it 'matches simple weekly' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.weekly)
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles weekdays' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.weekly.day(:monday, :thursday))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles intervals' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.weekly(2))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles intervals and counts' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.weekly(2).count(4))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles intervals and counts on given weekdays' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.weekly(2).day(:monday, :wednesday).count(4))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+  end
+
+  context 'monthly frequency' do
+    it 'matches simple monthly' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.monthly)
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles intervals' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.monthly(2))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles intervals and counts' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.monthly(2).count(5))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles intervals and counts on specific days' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.monthly(2).day_of_month(1, 15).count(5))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+  end
+
+  context 'yearly frequency' do
+    it 'matches simple yearly' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.yearly)
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles intervals' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.yearly(2))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles a specific day' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.yearly.day_of_year(15))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles specific days' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.yearly.day_of_year(1, 15, -1))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles counts' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.yearly.count(5))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles specific months' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.yearly.month_of_year(:january, :december))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles specific months and counts' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.yearly.month_of_year(:january, :december).count(15))
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+  end
+
+
+  context "exceptions" do
+    it 'handles single EXDATE lines' do
+      start_time = Time.now
+
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(IceCube::Rule.daily)
+      schedule.add_exception_time(Time.now + 2.days)
+
+      ical = schedule.to_ical
+      sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
+    end
+
+    it 'handles mulitple EXDATE lines' do
+      schedule = IceCube::Schedule.from_ical ical_string_woth_multiple_exdates
+      schedule.exception_times.count.should == 3
+    end
+  end
 end

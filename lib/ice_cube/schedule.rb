@@ -333,6 +333,28 @@ module IceCube
       pieces.join("\n")
     end
 
+    def self.from_ical(ical_string, options = {})
+      data = {}
+      ical_string.each_line do |line|
+        (property, value) = line.split(':')
+        (property, tzid) = property.split(';')
+        case property
+        when 'DTSTART'
+          data[:start_date] = Time.parse(value)
+        when 'DTEND'
+          data[:end_time] = Time.parse(value)
+          when 'EXDATE'
+          data[:extimes] ||= []
+          data[:extimes] += value.split(',').map{|v| Time.parse(v)}
+        when 'DURATION'
+          data[:duration] # FIXME
+        when 'RRULE'
+          data[:rrules] = [IceCube::Rule.from_ical(value)]
+        end
+      end
+      from_hash data
+    end
+
     # Convert the schedule to yaml
     def to_yaml(*args)
       YAML::dump(to_hash, *args)
@@ -429,7 +451,6 @@ module IceCube
           begin
             new_time = rule.next_time(time, self, min_time || closing_time)
             [min_time, new_time].compact.min
-          # Certain exceptions mean this rule no longer wants to play
           rescue StopIteration
             min_time
           rescue CountExceeded, UntilExceeded, ZeroInterval
