@@ -85,13 +85,13 @@ schedule.previous_occurrences(3, from_time)
 
 
 # or give the schedule a duration and ask if occurring_at?
-schedule = Schedule.new(now, :duration => 3600)
+schedule = IceCube::Schedule.new(now, :duration => 3600)
 schedule.add_recurrence_rule Rule.daily
 schedule.occurring_at?(now + 1800) # true
 schedule.occurring_between?(t1, t2)
 
 # using end_time also sets the duration 
-schedule = Schedule.new(start = Time.now, :end_time => start + 3600)
+schedule = IceCube::Schedule.new(start = Time.now, :end_time => start + 3600)
 schedule.add_recurrence_rule Rule.daily
 schedule.occurring_at?(start + 3599) # true
 schedule.occurring_at?(start + 3600) # false
@@ -133,13 +133,13 @@ safely) serialize schedule objects in and out of your data store
 
 ``` ruby
 yaml = schedule.to_yaml
-Schedule.from_yaml(yaml)
+IceCube::Schedule.from_yaml(yaml)
 
 hash = schedule.to_hash
-Schedule.from_hash(hash)
+IceCube::Schedule.from_hash(hash)
 
-Schedule.from_yaml(yaml, :start_date_override => Time.now)
-Schedule.from_hash(hash, :start_date_override => Time.now)
+IceCube::Schedule.from_yaml(yaml, :start_date_override => Time.now)
+IceCube::Schedule.from_hash(hash, :start_date_override => Time.now)
 ```
 
 ---
