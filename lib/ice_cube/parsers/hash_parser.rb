@@ -26,13 +26,13 @@ module IceCube
       data = IceCube::FlexibleHash.new(hash.dup)
 
       if (start_date = data.delete(:start_date))
-				warn "IceCube: :start_date deprecated. (please use :start_time)"
+        warn "IceCube: :start_date is deprecated, please use :start_time at: #{ caller[0] }"
         data[:start_time] = start_date
       end
 
       {:rdates => :rtimes, :exdates => :extimes}.each do |old_key, new_key|
         if (times = data.delete(old_key))
-          warn "IceCube: :#{old_key} deprecated. (please use :#{new_key})"
+          warn "IceCube: :#{old_key} is deprecated, please use :#{new_key} at: #{ caller[0] }"
           (data[new_key] ||= []).concat times
         end
       end
@@ -59,7 +59,7 @@ module IceCube
 
     def apply_exrules(schedule, data)
       return unless data[:exrules]
-      warn "IceCube: :exrules deprecated. (This will be going away)"
+      warn "IceCube: :exrules is deprecated, and will be removed in a future release. at: #{ caller[0] }"
       data[:exrules].each do |h|
         schedule.exrule(IceCube::Rule.from_hash(h))
       end
