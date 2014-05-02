@@ -7,7 +7,7 @@ module IceCube
         (property, tzid) = property.split(';')
         case property
         when 'DTSTART'
-          data[:start_date] = Time.parse(value)
+          data[:start_time] = Time.parse(value)
         when 'DTEND'
           data[:end_time] = Time.parse(value)
         when 'EXDATE'
