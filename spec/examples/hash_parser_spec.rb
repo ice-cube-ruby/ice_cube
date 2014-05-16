@@ -17,6 +17,18 @@ module IceCube
         let(:hash) { {start_time: t, end_time: t + 1800, duration: 3600} }
         its(:duration) { should == 1800 }
       end
+
+      describe "with an initial nil" do
+        let(:hash) { nil }
+
+        it 'has no recurrence rules' do
+          schedule.recurrence_rules.should be_empty
+        end
+
+        it 'has no exception rules' do
+          schedule.exception_rules.should be_empty
+        end
+      end
     end
 
 
