@@ -149,7 +149,7 @@ module IceCube
 
     # Convert a symbol to an ical day (SU, MO)
     def self.week_start(sym)
-      raise "No such day: #{sym}" unless DAYS.keys.include?(sym)
+      raise ArgumentError, "Invalid day: #{str}" unless DAYS.keys.include?(sym)
       day = sym.to_s.upcase[0..1]
       day
     end
@@ -162,7 +162,7 @@ module IceCube
 
     def self.ical_day_to_symbol(str)
       day = ICAL_DAYS[str]
-      raise "No such day: #{str}" if day.nil?
+      raise ArgumentError, "Invalid day: #{str}" if day.nil?
       day
     end
 
