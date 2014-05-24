@@ -21,7 +21,7 @@ module IceCube
       attr_reader :interval, :week_start
 
       def initialize(interval, week_start)
-        @interval = interval
+        @interval = interval.to_i
         @week_start = week_start
       end
 

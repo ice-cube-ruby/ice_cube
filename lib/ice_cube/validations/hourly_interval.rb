@@ -14,7 +14,7 @@ module IceCube
       attr_reader :interval
 
       def initialize(interval)
-        @interval = interval
+        @interval = interval.to_i
       end
 
       def type
