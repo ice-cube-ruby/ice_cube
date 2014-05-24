@@ -380,11 +380,13 @@ module IceCube
     end
 
     def self.dump(schedule)
+      return schedule if schedule.nil? || schedule == ""
       schedule.to_yaml
     end
 
     def self.load(yaml)
-      from_yaml(yaml) unless yaml.nil? || yaml.empty?
+      return yaml if yaml.nil? || yaml == ""
+      from_yaml(yaml)
     end
 
     private
