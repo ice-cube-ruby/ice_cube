@@ -35,7 +35,7 @@ schedule.add_recurrence_rule(
 
 ---
 
-With ice_cube, you can specify (in increasing order of precendence):
+With ice_cube, you can specify (in increasing order of precedence):
 
 * Recurrence Rules - Rules on how to include recurring times in a schedule
 * Recurrence Times - To specifically include in a schedule
