@@ -48,6 +48,12 @@ module IceCube
         expect { TimeUtil.sym_to_month(:neveruary) }.to raise_error
       end
     end
+    
+    describe :deserialize_time do
+      it 'supports ISO8601 time strings' do
+        expect(TimeUtil.deserialize_time('2014-04-04T18:30:00+08:00')).to eq(Time.utc(2014, 4, 4, 10, 30, 0)) 
+      end
+    end
 
   end
 end
