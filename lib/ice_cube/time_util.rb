@@ -18,7 +18,6 @@ module IceCube
     }
 
     CLOCK_VALUES = [:year, :month, :day, :hour, :min, :sec]
-    ISO8601 = /^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):?(\d\d))?$/
 
     # Provides a Time.now without the usec, in the reference zone or utc offset
     def self.now(reference=Time.now)
@@ -73,12 +72,13 @@ module IceCube
 
     # Deserialize a time serialized with serialize_time or in ISO8601 string format
     def self.deserialize_time(time_or_hash)
-      if time_or_hash.is_a?(Time)
+      case time_or_hash
+      when Time
         time_or_hash
-      elsif time_or_hash.is_a?(Hash)
+      when Hash
         hash = FlexibleHash.new(time_or_hash)
         hash[:time].in_time_zone(hash[:zone])
-      elsif time_or_hash.is_a?(String) && time_or_hash =~ ISO8601
+      when String
         Time.parse(time_or_hash)
       end
     end
