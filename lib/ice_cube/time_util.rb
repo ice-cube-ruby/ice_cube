@@ -1,4 +1,5 @@
 require 'date'
+require 'time'
 
 module IceCube
   module TimeUtil
@@ -69,13 +70,16 @@ module IceCube
       end
     end
 
-    # Deserialize a time serialized with serialize_time
+    # Deserialize a time serialized with serialize_time or in ISO8601 string format
     def self.deserialize_time(time_or_hash)
-      if time_or_hash.is_a?(Time)
+      case time_or_hash
+      when Time
         time_or_hash
-      elsif time_or_hash.is_a?(Hash)
+      when Hash
         hash = FlexibleHash.new(time_or_hash)
         hash[:time].in_time_zone(hash[:zone])
+      when String
+        Time.parse(time_or_hash)
       end
     end
 
