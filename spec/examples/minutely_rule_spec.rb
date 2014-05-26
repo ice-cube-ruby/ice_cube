@@ -2,9 +2,14 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 module IceCube
   describe MinutelyRule, 'interval validation' do
-    it 'converts a string integer to an actual int' do
-      rule = Rule.minutely("1")
-      rule.instance_variable_get(:@interval).should == 1
+    it 'converts a string integer to an actual int when using the interval method' do
+      rule = Rule.minutely.interval("2")
+      rule.validations_for(:interval).first.interval.should == 2
+    end
+
+    it 'converts a string integer to an actual int when using the initializer' do
+      rule = Rule.minutely("3")
+      rule.validations_for(:interval).first.interval.should == 3
     end
 
     it 'raises an argument error when a bad value is passed' do
@@ -12,6 +17,13 @@ module IceCube
         rule = Rule.minutely("invalid")
       }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass an integer.")
     end
+
+    it 'raises an argument error when a bad value is passed when using the interval method' do
+      expect {
+        rule = Rule.minutely.interval("invalid")
+      }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass an integer.")
+    end
+
   end
 
   describe MinutelyRule do
