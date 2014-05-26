@@ -58,6 +58,7 @@ module IceCube
     autoload :Day, 'ice_cube/validations/day'
     autoload :DayOfYear, 'ice_cube/validations/day_of_year'
 
+    autoload :IntervalValidator, 'ice_cube/validations/interval_validator'
   end
 
   # Define some useful constants
