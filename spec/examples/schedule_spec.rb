@@ -354,6 +354,14 @@ describe IceCube::Schedule do
 
     let(:nonsense) { IceCube::Rule.monthly.day_of_week(:monday => [1]).day_of_month(31) }
 
+    it 'should respect the end_time' do
+      st = Time.now
+      et = Time.now + 120
+      schedule = IceCube::Schedule.new(st, end_time: et)
+      schedule.rrule IceCube::Rule.minutely
+      schedule.next_occurrences(5).size.should == 2
+    end
+
     it 'should be able to calculate next occurrences ignoring excluded times' do
       start_time = Time.now
       schedule = IceCube::Schedule.new start_time
