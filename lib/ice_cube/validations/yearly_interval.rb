@@ -6,6 +6,7 @@ module IceCube
       @interval = normalized_interval(interval)
       replace_validations_for(:interval, [Validation.new(@interval)])
       clobber_base_validations(:year)
+      self
     end
 
     class Validation
