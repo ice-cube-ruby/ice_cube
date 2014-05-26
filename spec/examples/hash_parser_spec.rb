@@ -17,9 +17,16 @@ module IceCube
         let(:hash) { {start_time: t, end_time: t + 1800, duration: 3600} }
         its(:duration) { should == 1800 }
       end
+
+      describe 'when passed a nil value' do
+        it 'does not raise an error' do
+          expect {
+            IceCube::HashParser.new(nil).to_schedule.should
+          }.not_to raise_error
+        end
+      end
     end
 
 
   end
 end
-
