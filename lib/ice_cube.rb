@@ -57,7 +57,6 @@ module IceCube
     autoload :DayOfWeek, 'ice_cube/validations/day_of_week'
     autoload :Day, 'ice_cube/validations/day'
     autoload :DayOfYear, 'ice_cube/validations/day_of_year'
-
   end
 
   # Define some useful constants

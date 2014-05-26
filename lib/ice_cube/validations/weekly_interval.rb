@@ -5,9 +5,9 @@ module IceCube
   module Validations::WeeklyInterval
 
     def interval(interval, week_start = :sunday)
-      @interval = interval
+      @interval = normalized_interval(interval)
       @week_start = TimeUtil.wday_to_sym(week_start)
-      replace_validations_for(:interval, [Validation.new(interval, week_start)])
+      replace_validations_for(:interval, [Validation.new(@interval, week_start)])
       clobber_base_validations(:day)
       self
     end

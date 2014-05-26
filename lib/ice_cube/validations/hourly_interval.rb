@@ -3,8 +3,8 @@ module IceCube
   module Validations::HourlyInterval
 
     def interval(interval)
-      @interval = interval
-      replace_validations_for(:interval, [Validation.new(interval)])
+      @interval = normalized_interval(interval)
+      replace_validations_for(:interval, [Validation.new(@interval)])
       clobber_base_validations(:hour)
       self
     end
