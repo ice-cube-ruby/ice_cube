@@ -21,7 +21,7 @@ module IceCube
       attr_reader :interval, :week_start
 
       def initialize(interval, week_start)
-        @interval = interval.to_i
+        @interval = Validations::IntervalValidator.validate(interval)
         @week_start = week_start
       end
 

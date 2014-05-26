@@ -15,7 +15,7 @@ module IceCube
       attr_reader :interval
 
       def initialize(interval)
-        @interval = interval
+        @interval = Validations::IntervalValidator.validate(interval)
       end
 
       def type
