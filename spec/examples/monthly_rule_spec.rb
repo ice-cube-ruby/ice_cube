@@ -4,17 +4,17 @@ module IceCube
   describe MonthlyRule, 'interval validation' do
     it 'converts a string integer to an actual int when using the interval method' do
       rule = Rule.monthly.interval("2")
-      rule.validations_for(:interval).first.interval.should == 2
+      expect(rule.validations_for(:interval).first.interval).to eq(2)
     end
 
     it 'converts a string integer to an actual int when using the initializer' do
       rule = Rule.monthly("3")
-      rule.validations_for(:interval).first.interval.should == 3
+      expect(rule.validations_for(:interval).first.interval).to eq(3)
     end
 
     it 'converts a string integer to an actual int' do
       rule = Rule.monthly("1")
-      rule.instance_variable_get(:@interval).should == 1
+      expect(rule.instance_variable_get(:@interval)).to eq(1)
     end
 
     it 'raises an argument error when a bad value is passed' do

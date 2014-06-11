@@ -4,12 +4,12 @@ module IceCube
   describe WeeklyRule, 'interval validation' do
     it 'converts a string integer to an actual int when using the interval method' do
       rule = Rule.weekly.interval("2")
-      rule.validations_for(:interval).first.interval.should == 2
+      expect(rule.validations_for(:interval).first.interval).to eq(2)
     end
 
     it 'converts a string integer to an actual int when using the initializer' do
       rule = Rule.weekly("3")
-      rule.validations_for(:interval).first.interval.should == 3
+      expect(rule.validations_for(:interval).first.interval).to eq(3)
     end
 
     it 'raises an argument error when a bad value is passed' do
