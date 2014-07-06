@@ -155,4 +155,3 @@ describe Occurrence do
   end
 
 end
-

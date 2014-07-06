@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe IceCube::Schedule, 'occurs_on?' do
+describe IceCube::Schedule do
 
   # DST in 2010 is March 14th at 2am
   it 'crosses a daylight savings time boundary with a recurrence rule in local time, by utc conversion' do

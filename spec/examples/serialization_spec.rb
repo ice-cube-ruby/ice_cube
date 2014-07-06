@@ -43,4 +43,3 @@ describe IceCube::Schedule do
 
   end
 end
-

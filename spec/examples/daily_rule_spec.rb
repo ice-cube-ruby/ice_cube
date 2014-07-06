@@ -25,7 +25,7 @@ module IceCube
     end
   end
 
-  describe DailyRule, 'occurs_on?' do
+  describe DailyRule do
 
     context :system_time_zone => 'America/Vancouver' do
 

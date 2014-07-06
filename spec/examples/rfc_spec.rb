@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe IceCube::Schedule, 'occurs_on?' do
+describe IceCube::Schedule do
 
   it 'should ~ daily for 10 occurrences' do
     schedule = IceCube::Schedule.new(Time.utc(2010, 9, 2))

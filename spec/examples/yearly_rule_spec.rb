@@ -25,7 +25,7 @@ describe IceCube::YearlyRule, 'interval validation' do
 
 end
 
-describe IceCube::YearlyRule, 'occurs_on?' do
+describe IceCube::YearlyRule do
 
   it 'should update previous interval' do
     schedule = double(start_time: t0 = Time.utc(2013, 5, 1))
