@@ -86,7 +86,7 @@ module IceCube
 
     def starting_unit(start_time)
       start = value || start_time.send(type)
-      start += INTERVALS[type] while start < 0
+      start = start % INTERVALS[type] if start < 0
       start
     end
 
