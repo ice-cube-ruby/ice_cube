@@ -713,6 +713,14 @@ describe IceCube::Schedule do
       include_examples :occurs_on?
     end
 
+    context 'across DST' do
+      let(:start_time) { Time.local(2010, 3, 2, 0, 0, 0) }
+      before { schedule.add_recurrence_rule(IceCube::Rule.monthly) }
+      it 'determines local midnight with time change' do
+        schedule.occurs_on?(Date.new(2010, 7, 2)).should be_true
+      end
+    end
+
     it 'should be true for multiple rtimes' do
       schedule = IceCube::Schedule.new(Time.local(2010, 7, 10, 16))
       schedule.add_recurrence_time(Time.local(2010, 7, 11, 16))
