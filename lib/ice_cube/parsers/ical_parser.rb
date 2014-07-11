@@ -67,11 +67,6 @@ module IceCube
         when "BYYEARDAY"
           params[:validations][:day_of_year] = value.split(',').collect{ |v| v.to_i }
         when "BYSETPOS"
-          #days = []
-          #value.split(',').each do |pos|
-          #  days = params[:validations][:day_of_week][pos.to_i]
-          #end
-          #params[:validations][:day_of_week] = days
         else
           raise "Invalid or unsupported rrule command : #{name}"
         end
