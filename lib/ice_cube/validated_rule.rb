@@ -127,15 +127,11 @@ module IceCube
 
     def validation_accepts_or_updates_time?(validations_for_type)
       res = validated_results(validations_for_type)
-      # If there is any nil, then we're set - otherwise choose the lowest
-      if res.any? { |r| r.nil? || r == 0 }
-        true
-      else
-        return nil if res.all? { |r| r === true } # allow quick escaping
-        res.reject! { |r| r.nil? || r == 0 || r === true }
-        shift_time_by_validation(res, validations_for_type)
-        false
-      end
+      return true if res.any? { |r| r.nil? || r == 0 }
+      return nil if res.all? { |r| r == true }
+      res.reject! { |r| r == true }
+      shift_time_by_validation(res, validations_for_type)
+      false
     end
 
     def validated_results(validations_for_type)
