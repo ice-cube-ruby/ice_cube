@@ -130,7 +130,7 @@ module IceCube
       return true if res.any? { |r| r.nil? || r == 0 }
       return nil if res.all? { |r| r == true }
       res.reject! { |r| r == true }
-      shift_time_by_validation(res, validations_for_type)
+      shift_time_by_validation(res, validations_for_type.first)
       false
     end
 
@@ -140,9 +140,8 @@ module IceCube
       end
     end
 
-    def shift_time_by_validation(res, vals)
+    def shift_time_by_validation(res, validation)
       return unless (interval = res.min)
-      validation = vals.first
       wrapper = TimeUtil::TimeWrapper.new(@time, validation.dst_adjust?)
       wrapper.add(validation.type, interval)
       wrapper.clear_below(validation.type)
