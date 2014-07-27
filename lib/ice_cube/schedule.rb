@@ -252,7 +252,7 @@ module IceCube
     # @param [Time] closing_time - the last time to consider
     # @return [Boolean] whether or not the schedules conflict at all
     def conflicts_with?(other_schedule, closing_time = nil)
-      closing_time = TimeUtil.ensure_time closing_time
+      closing_time = TimeUtil.ensure_time(closing_time)
       unless terminating? || other_schedule.terminating? || closing_time
         raise ArgumentError, "One or both schedules must be terminating to use #conflicts_with?"
       end
@@ -400,10 +400,10 @@ module IceCube
       opening_time = TimeUtil.match_zone(opening_time, start_time)
       closing_time = TimeUtil.match_zone(closing_time, start_time)
       opening_time += start_time.subsec - opening_time.subsec rescue 0
-      reset
       opening_time = start_time if opening_time < start_time
-      t1 = full_required? ? start_time : opening_time
       Enumerator.new do |yielder|
+        reset
+        t1 = full_required? ? start_time : opening_time
         loop do
           break unless (t0 = next_time(t1, closing_time))
           break if closing_time && t0 > closing_time
