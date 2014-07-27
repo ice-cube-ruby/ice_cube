@@ -39,7 +39,7 @@ module IceCube
         d1 = Date.new(t1.year, t1.month, t1.day)
         days = (d1 - TimeUtil.normalize_wday(d1.wday, week_start)) -
                (d0 - TimeUtil.normalize_wday(d0.wday, week_start))
-        offset = ((days / 7) % interval).nonzero?
+        offset = ((days.to_i / 7) % interval).nonzero?
         (interval - offset) * 7 if offset
       end
 
