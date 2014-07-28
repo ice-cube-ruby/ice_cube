@@ -19,7 +19,7 @@ describe IceCube::Schedule do
     schedule.start_time.should == t1
   end
 
-  it 'converts initialized DateTime to Time' do
+  it 'converts initialized DateTime to Time', expect_warnings: true do
     dt = DateTime.new(2013, 2, 14, 0, 32, 0)
     schedule = IceCube::Schedule.new(dt)
     schedule.start_time.should be_a Time
@@ -494,12 +494,12 @@ describe IceCube::Schedule do
 
   end
 
-  describe :start_date= do
+  describe :start_time= do
 
     it 'should modify start date in rrule_occurrence_heads when changed' do
       schedule = IceCube::Schedule.new(Time.now - 1000)
       schedule.rrule IceCube::Rule.daily
-      schedule.start_time = (start_date = Time.now)
+      schedule.start_time = (start_time = Time.now)
       (Time.now - schedule.first.start_time).should be < 100
     end
 
@@ -545,40 +545,6 @@ describe IceCube::Schedule do
       schedule = IceCube::Schedule.new Time.now
       rule = IceCube::Rule.daily
       schedule.remove_recurrence_rule(rule).should == []
-    end
-
-  end
-
-  describe :remove_exception_rule do
-
-    it 'should be able to one rule based on the comparator' do
-      schedule = IceCube::Schedule.new Time.now
-      schedule.exrule IceCube::Rule.daily
-      schedule.exrule IceCube::Rule.daily(2)
-      schedule.remove_exception_rule schedule.exrules.first
-      schedule.exrules.count.should == 1
-    end
-
-    it 'should be able to remove multiple rules based on the comparator' do
-      schedule = IceCube::Schedule.new Time.now
-      schedule.exrule IceCube::Rule.daily
-      schedule.exrule IceCube::Rule.daily
-      schedule.remove_exception_rule schedule.exrules.first
-      schedule.exrules.should be_empty
-    end
-
-    it 'should return the rule that was removed' do
-      schedule = IceCube::Schedule.new Time.now
-      rule = IceCube::Rule.daily
-      schedule.exrule rule
-      rule2 = schedule.remove_exception_rule rule
-      [rule].should == rule2
-    end
-
-    it 'should return [] if nothing was removed' do
-      schedule = IceCube::Schedule.new Time.now
-      rule = IceCube::Rule.daily
-      schedule.remove_exception_rule(rule).should == []
     end
 
   end

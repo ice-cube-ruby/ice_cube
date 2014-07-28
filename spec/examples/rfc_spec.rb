@@ -72,8 +72,8 @@ describe IceCube::Schedule do
   end
 
   it 'should ~ every other week' do
-    start_date = Time.utc(1997, 9, 2)
-    schedule = IceCube::Schedule.new(start_date)
+    start_time = Time.utc(1997, 9, 2)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.weekly(2)
     dates = schedule.occurrences(Time.utc(1997, 12, 31))
     #check assumption
@@ -86,8 +86,8 @@ describe IceCube::Schedule do
 
   #
   it 'should ~ weekly on tuesday and thursday for 5 weeks (a)' do
-    start_date = Time.utc(1997, 9, 2)
-    schedule = IceCube::Schedule.new(start_date)
+    start_time = Time.utc(1997, 9, 2)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.weekly.until(Time.utc(1997, 10, 6)).day(:tuesday, :thursday)
     dates = schedule.occurrences(Time.utc(1997, 12, 1))
     expectation = []
@@ -97,8 +97,8 @@ describe IceCube::Schedule do
   end
 
   it 'should ~ weekly on tuesday and thursday for 5 weeks (b)' do
-    start_date = Time.utc(1997, 9, 2)
-    schedule = IceCube::Schedule.new(start_date)
+    start_time = Time.utc(1997, 9, 2)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.weekly.day(:tuesday, :thursday).count(10)
     dates = schedule.occurrences(Time.utc(1997, 12, 1))
     expectation = []
@@ -109,8 +109,8 @@ describe IceCube::Schedule do
 
   #
   it 'should ~ every other week on monday, wednesday and friday until december 24, 1997 but starting on tuesday september 2, 1997' do
-    start_date = Time.utc(1997, 9, 2)
-    schedule = IceCube::Schedule.new(start_date)
+    start_time = Time.utc(1997, 9, 2)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.weekly(2).until(Time.utc(1997, 12, 24)).day(:monday, :wednesday, :friday)
     dates = schedule.occurrences(Time.utc(1997, 12, 24))
     expectation = []
@@ -122,8 +122,8 @@ describe IceCube::Schedule do
   end
 
   it 'should ~ every other week on tuesday and thursday for 8 occurrences' do
-    start_date = Time.utc(1997, 9, 2)
-    schedule = IceCube::Schedule.new(start_date)
+    start_time = Time.utc(1997, 9, 2)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.weekly(2).day(:tuesday, :thursday).count(8)
     dates = schedule.occurrences(Time.utc(1997, 11, 1))
     expectation = []
@@ -133,8 +133,8 @@ describe IceCube::Schedule do
   end
 
   it 'should ~ monthly on the 1st friday for ten occurrences' do
-    start_date = Time.utc(1997, 9, 5)
-    schedule = IceCube::Schedule.new(start_date)
+    start_time = Time.utc(1997, 9, 5)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_week(:friday => [1]).count(10)
     dates = schedule.occurrences(Time.utc(1998, 7, 1))
     expectation = [Time.utc(1997, 9, 5), Time.utc(1997, 10, 3), Time.utc(1997, 11, 7), Time.utc(1997, 12, 5), Time.utc(1998, 1, 2), Time.utc(1998, 2, 6), Time.utc(1998, 3, 6), Time.utc(1998, 4, 3), Time.utc(1998, 5, 1), Time.utc(1998, 6, 5)]
@@ -142,8 +142,8 @@ describe IceCube::Schedule do
   end
 
   it 'should ~ monthly on the first friday until december 24, 1997' do
-    start_date = Time.utc(1997, 9, 5)
-    schedule = IceCube::Schedule.new(start_date)
+    start_time = Time.utc(1997, 9, 5)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.monthly.until(Time.utc(1997, 12, 24)).day_of_week(:friday => [1])
     dates = schedule.occurrences(Time.utc(1998, 12, 24))
     expectation = [Time.utc(1997, 9, 5), Time.utc(1997, 10, 3), Time.utc(1997, 11, 7), Time.utc(1997, 12, 5)]
@@ -151,8 +151,8 @@ describe IceCube::Schedule do
   end
 
   it 'should ~ every other month on the 1st and last sunday of the month for 10 occurrences' do
-    start_date = Time.utc(1997, 9, 7)
-    schedule = IceCube::Schedule.new(start_date)
+    start_time = Time.utc(1997, 9, 7)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.monthly(2).day_of_week(:sunday => [1, -1]).count(10)
     dates = schedule.occurrences(Time.utc(1998, 12, 1))
     expectation = [Time.utc(1997, 9, 7), Time.utc(1997, 9, 28), Time.utc(1997, 11, 2), Time.utc(1997, 11, 30), Time.utc(1998, 1, 4), Time.utc(1998, 1, 25), Time.utc(1998, 3, 1), Time.utc(1998, 3, 29), Time.utc(1998, 5, 3), Time.utc(1998, 5, 31)]
@@ -160,8 +160,8 @@ describe IceCube::Schedule do
   end
 
   it 'should ~ monthly on the second to last monday of the month for 6 months' do
-    start_date = Time.utc(1997, 9, 22)
-    schedule = IceCube::Schedule.new(start_date)
+    start_time = Time.utc(1997, 9, 22)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_week(:monday => [-2]).count(6)
     dates = schedule.occurrences(Time.utc(1998, 3, 1))
     expectation = [Time.utc(1997, 9, 22), Time.utc(1997, 10, 20), Time.utc(1997, 11, 17), Time.utc(1997, 12, 22), Time.utc(1998, 1, 19), Time.utc(1998, 2, 16)]
@@ -169,8 +169,8 @@ describe IceCube::Schedule do
   end
 
   it 'should ~ monthly on the third to last day of the month, 6 times' do
-    start_date = Time.utc(1997, 9, 28)
-    schedule = IceCube::Schedule.new(start_date)
+    start_time = Time.utc(1997, 9, 28)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_month(-3).count(6)
     dates = schedule.occurrences(Time.utc(1998, 2, 26))
     expectation = [Time.utc(1997, 9, 28), Time.utc(1997, 10, 29), Time.utc(1997, 11, 28), Time.utc(1997, 12, 29), Time.utc(1998, 1, 29), Time.utc(1998, 2, 26)]
@@ -178,8 +178,8 @@ describe IceCube::Schedule do
   end
 
   it 'should ~ monthly on the 2nd and 15th of the month for 10 occurrences' do
-    start_date = Time.utc(1997, 9, 2)
-    schedule = IceCube::Schedule.new(start_date)
+    start_time = Time.utc(1997, 9, 2)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_month(2, 15).count(10)
     dates = schedule.occurrences(Time.utc(1998, 1, 16))
     expectation = [Time.utc(1997, 9, 2), Time.utc(1997, 9, 15), Time.utc(1997, 10, 2), Time.utc(1997, 10, 15), Time.utc(1997, 11, 2), Time.utc(1997, 11, 15), Time.utc(1997, 12, 2), Time.utc(1997, 12, 15), Time.utc(1998, 1, 2), Time.utc(1998, 1, 15)]
@@ -187,8 +187,8 @@ describe IceCube::Schedule do
   end
 
   it 'should ~ monthly on the 1st and last days of the month for 10 occurrences' do
-    start_date = Time.utc(1997, 9, 30)
-    schedule = IceCube::Schedule.new(start_date)
+    start_time = Time.utc(1997, 9, 30)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_month(1, -1).count(10)
     dates = schedule.occurrences(Time.utc(1998, 2, 2))
     expectation = [Time.utc(1997, 9, 30), Time.utc(1997, 10, 1), Time.utc(1997, 10, 31), Time.utc(1997, 11, 1), Time.utc(1997, 11, 30), Time.utc(1997, 12, 1), Time.utc(1997, 12, 31), Time.utc(1998, 1, 1), Time.utc(1998, 1, 31), Time.utc(1998, 2, 1)]
@@ -295,33 +295,33 @@ describe IceCube::Schedule do
   end
 
   it 'should ~ every 3 hours from 9am to 5pm on a specific day' do
-    start_date = Time.utc(1997, 9, 2, 9, 0, 0)
-    schedule = IceCube::Schedule.new(start_date)
+    start_time = Time.utc(1997, 9, 2, 9, 0, 0)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.hourly(3).until(Time.utc(1997, 9, 2, 17, 0, 0))
     dates = schedule.all_occurrences
     dates.should == [Time.utc(1997, 9, 2, 9, 0, 0), Time.utc(1997, 9, 2, 12, 0, 0), Time.utc(1997, 9, 2, 15, 0, 0)]
   end
 
   it 'should ~ every 15 minutes for 6 occurrences' do
-    start_date = Time.utc(1997, 9, 2, 9, 0, 0)
-    schedule = IceCube::Schedule.new(start_date)
+    start_time = Time.utc(1997, 9, 2, 9, 0, 0)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.minutely(15).count(6)
     dates = schedule.all_occurrences
     dates.should == [Time.utc(1997, 9, 2, 9, 0, 0), Time.utc(1997, 9, 2, 9, 15, 0), Time.utc(1997, 9, 2, 9, 30, 0), Time.utc(1997, 9, 2, 9, 45, 0), Time.utc(1997, 9, 2, 10, 0, 0), Time.utc(1997, 9, 2, 10, 15, 0)]
   end
 
   it 'should ~ every hour and a half for 4 occurrences' do
-    start_date = Time.utc(1997, 9, 2, 9, 0, 0)
-    schedule = IceCube::Schedule.new(start_date)
+    start_time = Time.utc(1997, 9, 2, 9, 0, 0)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.minutely(90).count(4)
     dates = schedule.all_occurrences
     dates.should == [Time.utc(1997, 9, 2, 9, 0, 0), Time.utc(1997, 9, 2, 10, 30, 0), Time.utc(1997, 9, 2, 12, 0, 0), Time.utc(1997, 9, 2, 13, 30, 0)]
   end
 
   it 'should ~ every 20 minutes from 9am to 4:40pm every day (a)' do
-    start_date = Time.utc(1997, 9, 2, 8, 0, 0)
+    start_time = Time.utc(1997, 9, 2, 8, 0, 0)
     end_date = Time.utc(1997, 9, 2, 10, 20, 0)
-    schedule = IceCube::Schedule.new(start_date)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily.hour_of_day(9, 10, 11, 12, 13, 14, 15, 16).minute_of_hour(0, 20, 40).until(end_date)
     dates = schedule.all_occurrences
     expecation = [Time.utc(1997, 9, 2, 9), Time.utc(1997, 9, 2, 9, 20), Time.utc(1997, 9, 2, 9, 40), Time.utc(1997, 9, 2, 10, 0), Time.utc(1997, 9, 2, 10, 20)]

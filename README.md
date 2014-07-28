@@ -137,9 +137,6 @@ IceCube::Schedule.from_yaml(yaml)
 
 hash = schedule.to_hash
 IceCube::Schedule.from_hash(hash)
-
-IceCube::Schedule.from_yaml(yaml, :start_date_override => Time.now)
-IceCube::Schedule.from_hash(hash, :start_date_override => Time.now)
 ```
 
 ---
@@ -231,7 +228,7 @@ schedule.add_recurrence_rule Rule.yearly(4).day_of_year(-1)
 ### Yearly (by month of year)
 
 ```ruby
-# every year on the same day as start_date but in january and february
+# every year on the same day as start_time but in january and february
 schedule.add_recurrence_rule Rule.yearly.month_of_year(:january, :februrary)
 
 # every third year in march

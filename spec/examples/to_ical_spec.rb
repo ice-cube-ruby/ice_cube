@@ -126,27 +126,6 @@ describe IceCube, 'to_ical' do
     schedule.to_ical.should == expectation
   end
 
-  it 'should be able to serialize a schedule with one exrule' do
-    Time.zone ='Pacific Time (US & Canada)'
-    schedule = IceCube::Schedule.new(Time.zone.local(2010, 5, 10, 9, 0, 0))
-    schedule.add_exception_rule IceCube::Rule.weekly
-    # test equality
-    expectation= "DTSTART;TZID=PDT:20100510T090000\n"
-    expectation<< 'EXRULE:FREQ=WEEKLY'
-    schedule.to_ical.should == expectation
-  end
-
-  it 'should be able to serialize a schedule with multiple exrules' do
-    Time.zone ='Eastern Time (US & Canada)'
-    schedule = IceCube::Schedule.new(Time.zone.local(2010, 10, 20, 4, 30, 0))
-    schedule.add_exception_rule IceCube::Rule.weekly.day_of_week(:monday => [2, -1])
-    schedule.add_exception_rule IceCube::Rule.hourly
-    expectation = "DTSTART;TZID=EDT:20101020T043000\n"
-    expectation<< "EXRULE:FREQ=WEEKLY;BYDAY=2MO,-1MO\n"
-    expectation<< "EXRULE:FREQ=HOURLY"
-    schedule.to_ical.should == expectation
-  end
-
   it 'should be able to serialize a schedule with an rtime' do
     schedule = IceCube::Schedule.new(Time.utc(2010, 5, 10, 10, 0, 0))
     schedule.add_recurrence_time Time.utc(2010, 6, 20, 5, 0, 0)

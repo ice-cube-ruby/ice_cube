@@ -1,5 +1,5 @@
 ---
-:start_date: 2011-11-16 11:31:58.441381000 -05:00
+:start_time: 2011-11-16 11:31:58.441381000 -05:00
 :rrules:
 - :rule_type: IceCube::MinutelyRule
   :interval: 60
@@ -14,7 +14,6 @@
     - 16
     :minute_of_hour:
     - 0
-:exrules: []
 :rdates: []
 :exdates: []
 :duration: 3600

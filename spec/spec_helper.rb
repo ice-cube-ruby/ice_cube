@@ -7,6 +7,8 @@ end
 
 require File.dirname(__FILE__) + '/../lib/ice_cube'
 
+IceCube.compatibility = 12
+
 DAY = Time.utc(2010, 3, 1)
 WEDNESDAY = Time.utc(2010, 6, 23, 5, 0, 0)
 
@@ -17,6 +19,9 @@ WORLD_TIME_ZONES = [
 ]
 
 RSpec.configure do |config|
+  Dir[File.dirname(__FILE__) + '/support/**/*'].each { |f| require f }
+
+  config.include WarningHelpers
 
   config.around :each, :if_active_support_time => true do |example|
     example.run if defined? ActiveSupport
@@ -47,6 +52,12 @@ RSpec.configure do |config|
       when Array then Time.stub!(:now).and_return Time.local(*time_args)
       when Time  then Time.stub!(:now).and_return time_args
       end
+    end
+  end
+
+  config.around :each, expect_warnings: true do |example|
+    capture_warnings do
+      example.run
     end
   end
 

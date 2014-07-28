@@ -146,28 +146,28 @@ module IceCube
     # This is a bug because to_datetime will always convert to system local time
     it 'should be able to roll forward times and get back times in an array - TimeWithZone', :if_active_support_time => true do
       Time.zone = "Eastern Time (US & Canada)"
-      start_date = Time.zone.local(2011, 11, 5, 12, 0, 0)
-      schedule = Schedule.new(start_date)
+      start_time = Time.zone.local(2011, 11, 5, 12, 0, 0)
+      schedule = Schedule.new(start_time)
       schedule = Schedule.from_yaml(schedule.to_yaml) # round trip
-      ice_cube_start_date = schedule.start_time
-      ice_cube_start_date.should == start_date
-      ice_cube_start_date.utc_offset.should == start_date.utc_offset
+      ice_cube_start_time = schedule.start_time
+      ice_cube_start_time.should == start_time
+      ice_cube_start_time.utc_offset.should == start_time.utc_offset
     end
 
     it 'should be able to roll forward times and get back times in an array - Time' do
-      start_date = Time.now
-      schedule = Schedule.new(start_date)
+      start_time = Time.now
+      schedule = Schedule.new(start_time)
       schedule = Schedule.from_yaml(schedule.to_yaml) # round trip
-      ice_cube_start_date = schedule.start_time
-      ice_cube_start_date.to_s.should == start_date.to_s
-      ice_cube_start_date.class.should == Time
-      ice_cube_start_date.utc_offset.should == start_date.utc_offset
+      ice_cube_start_time = schedule.start_time
+      ice_cube_start_time.to_s.should == start_time.to_s
+      ice_cube_start_time.class.should == Time
+      ice_cube_start_time.utc_offset.should == start_time.utc_offset
     end
 
     it 'should be able to go back and forth to yaml and then call occurrences' do
-      start_date = Time.local(2011, 5, 10, 12, 0, 0)
-      schedule1 = Schedule.new(start_date)
-      schedule1.add_recurrence_time start_date
+      start_time = Time.local(2011, 5, 10, 12, 0, 0)
+      schedule1 = Schedule.new(start_time)
+      schedule1.add_recurrence_time start_time
       schedule2 = Schedule.from_yaml(schedule1.to_yaml) # round trip
 
       end_time = Time.now + ONE_DAY
@@ -182,16 +182,16 @@ module IceCube
     end
 
     it 'crazy shit' do
-      start_date = Time.zone.now
-      schedule = Schedule.new(start_date)
+      start_time = Time.zone.now
+      schedule = Schedule.new(start_time)
 
       schedule.add_recurrence_rule Rule.weekly.day(:wednesday)
-      schedule.add_recurrence_time start_date
+      schedule.add_recurrence_time start_time
 
       schedule = Schedule.from_hash(schedule.to_hash)
       schedule = Schedule.from_yaml(schedule.to_yaml)
 
-      schedule.occurrences(start_date + ONE_DAY * 14)
+      schedule.occurrences(start_time + ONE_DAY * 14)
     end
 
     it 'should be able to make a round trip to hash with a duration' do
@@ -213,9 +213,9 @@ module IceCube
       rt_schedule.start_time.utc_offset.should == schedule.start_time.utc_offset
     end
 
-    it 'should be backward compatible with old yaml Time format' do
+    it 'should be backward compatible with old yaml Time format', expect_warnings: true do
       pacific_time = 'Pacific Time (US & Canada)'
-      yaml = "---\n:end_time:\n:rdates: []\n:rrules: []\n:duration:\n:exdates: []\n:exrules: []\n:start_date: 2010-10-18T14:35:47-07:00"
+      yaml = "---\n:end_time:\n:rdates: []\n:rrules: []\n:duration:\n:exdates: []\n:start_time: 2010-10-18T14:35:47-07:00"
       schedule = Schedule.from_yaml(yaml)
       schedule.start_time.should be_a(Time)
     end
@@ -262,7 +262,7 @@ module IceCube
       offset = time.utc_offset
       rule = Rule.daily.until(time)
       rule = Rule.from_yaml(rule.to_yaml)
-      rule.until_date.utc_offset.should == offset
+      rule.until_time.utc_offset.should == offset
     end
 
     it 'should be able to bring a Rule to_yaml and back with a count' do
@@ -285,8 +285,8 @@ module IceCube
 
     it 'should be able to bring in a schedule with a rule from hash with symbols or strings' do
       time = Time.zone.now
-      symbol_data = { :start_date => time, :rrules =>   [ { :validations => { :day => [1] }, :rule_type => "IceCube::DailyRule", :interval => 1 } ], :exrules => [], :rtimes => [], :extimes => [] }
-      string_data = { 'start_date' => time, 'rrules' => [ { 'validations' => { 'day' => [1] }, 'rule_type' => "IceCube::DailyRule", 'interval' => 1 } ], 'exrules' => [], 'rtimes' => [], 'extimes' => [] }
+      symbol_data = { :start_time => time, :rrules =>   [ { :validations => { :day => [1] }, :rule_type => "IceCube::DailyRule", :interval => 1 } ], :rtimes => [], :extimes => [] }
+      string_data = { 'start_time' => time, 'rrules' => [ { 'validations' => { 'day' => [1] }, 'rule_type' => "IceCube::DailyRule", 'interval' => 1 } ], 'rtimes' => [], 'extimes' => [] }
 
       symbol_yaml = Schedule.from_hash(symbol_data).to_yaml
       string_yaml = Schedule.from_hash(string_data).to_yaml

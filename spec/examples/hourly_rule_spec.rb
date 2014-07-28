@@ -59,8 +59,8 @@ module IceCube
     end
 
     it 'should produce the correct days for @interval = 3' do
-      start_date = DAY
-      schedule = Schedule.new(start_date)
+      start_time = DAY
+      schedule = Schedule.new(start_time)
       schedule = Schedule.from_yaml(schedule.to_yaml)
       schedule.add_recurrence_rule Rule.hourly(3)
       #check assumption (3) -- (1) 2 (3) 4 (5) 6

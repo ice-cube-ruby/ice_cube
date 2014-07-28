@@ -48,7 +48,7 @@ module IceCube
           expect { Schedule.from_yaml(schedule.to_yaml) }.to_not raise_error
         end
 
-        it 'should parse an old schedule properly' do
+        it 'should parse an old schedule properly', expect_warnings: true do
           file = File.read(File.dirname(__FILE__) + '/../data/issue40.yml')
           schedule = Schedule.from_yaml(file)
           schedule.start_time.year.should == 2011
@@ -126,7 +126,7 @@ module IceCube
 
         require 'active_support/time'
 
-        it 'should not hang next_time on DST boundary [#98]' do # set local to Sweden
+        it 'should not hang next_time on DST boundary [#98]', expect_warnings: true do # set local to Sweden
           schedule = Schedule.from_yaml <<-EOS
           :start_date: 2012-09-03 0:00:00.000000000 +00:00
           :end_time: 2022-09-15 0:00:00.000000000 +00:00
@@ -141,7 +141,7 @@ module IceCube
           times = schedule.occurrences(Date.new(2013, 07, 13).to_time)
         end
 
-        it 'should still include date over DST boundary [#98]' do # set local to Sweden
+        it 'should still include date over DST boundary [#98]', expect_warnings: true do # set local to Sweden
           schedule = Schedule.from_yaml <<-EOS
           :start_date: 2012-09-03 15:00:00.000000000 +00:00
           :end_time: 2022-09-15 15:00:00.000000000 +00:00
