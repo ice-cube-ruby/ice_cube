@@ -30,8 +30,22 @@ module IceCube
       :interval
     ]
 
+    attr_reader :validations
+
     def initialize(interval = 1, *)
       @validations = Hash.new
+    end
+
+    def base_interval_validation
+      @validations[:interval].first
+    end
+
+    def other_interval_validations
+      Array(@validations[base_interval_validation.type])
+    end
+
+    def base_interval_type
+      base_interval_validation.type
     end
 
     # Compute the next time after (or including) the specified time in respect

@@ -403,7 +403,7 @@ module IceCube
       opening_time = start_time if opening_time < start_time
       Enumerator.new do |yielder|
         reset
-        t1 = full_required? ? start_time : opening_time
+        t1 = full_required? ? start_time : realign(opening_time)
         loop do
           break unless (t0 = next_time(t1, closing_time))
           break if closing_time && t0 > closing_time
@@ -486,6 +486,28 @@ module IceCube
       recurrence_rules.each do |rule|
         rule.skipped_for_dst
       end
+    end
+
+    # If any rule has validations for values within the period, (overriding the
+    # interval from start time, e.g.  `day[_of_week]`), and the opening time is
+    # offset from the interval multiplier such that it might miss the first
+    # correct occurrence (e.g. repeat is every N weeks, but selecting from end
+    # of week N-1, the first jump would go to end of week N and miss any
+    # earlier validations in the week). This realigns the opening time to
+    # the start of the interval's correct period (e.g. move to start of week N)
+    # TODO: check if this is needed for validations other than `:wday`
+    #
+    def realign(opening_time)
+      time = TimeUtil::TimeWrapper.new(opening_time)
+      recurrence_rules.each do |rule|
+        wday_validations = rule.other_interval_validations.select { |v| v.type == :wday } or next
+        interval = rule.base_interval_validation.validate(opening_time, self).to_i
+        offset = wday_validations
+          .map { |v| v.validate(opening_time, self).to_i }
+          .reduce(0) { |least, i| i > 0 && i <= interval && (i < least || least == 0) ? i : least }
+        time.add(rule.base_interval_type, 7 - time.to_time.wday) if offset > 0
+      end
+      time.to_time
     end
 
   end
