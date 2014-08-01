@@ -308,14 +308,24 @@ describe IceCube::Schedule do
     dates.should == [start_time + IceCube::ONE_DAY * 2, start_time + IceCube::ONE_DAY * 3, start_time + IceCube::ONE_DAY * 4]
   end
 
-  it 'should use start date on a bi-weekly recurrence pattern to find the occurrences_between when interval > 1' do
-    start_time = Time.local(2011, 3, 20)
+  describe "using occurs_between with a biweekly schedule" do
+    [[0, 1, 2], [0, 6, 1], [5, 1, 6], [6, 5, 7]].each do |wday, offset, lead|
+      start_week    = Time.utc(2014, 1, 5)
+      expected_week =  start_week + 2.weeks
+      offset_wday   = (wday + offset) % 7
 
-    schedule = IceCube::Schedule.new(start_time)
-    schedule.add_recurrence_rule IceCube::Rule.weekly(2).day(:sunday)
+      context "starting on weekday #{wday} selecting weekday #{offset} with a #{lead} day advance window" do
+        let(:biweekly)      { Rule.weekly(2).day(0, 1, 2, 3, 4, 5, 6) }
+        let(:schedule)      { Schedule.new(start_week + wday.days) { |s| s.rrule biweekly } }
+        let(:expected_date) { expected_week + offset_wday.days }
+        let(:range)         { [expected_date - lead.days, expected_date] }
 
-    occurrences = schedule.occurrences_between(Time.local(2012, 7, 7), Time.local(2012, 7, 9))
-    occurrences.should == [Time.local(2012, 7, 8)]
+        it "should include weekday #{offset_wday} of the expected week" do
+          expect(schedule.occurrences_between(range.first, range.last)).to include expected_date
+        end
+      end
+
+    end
   end
 
   it 'should be able to tell us when there is at least one occurrence between two dates' do
