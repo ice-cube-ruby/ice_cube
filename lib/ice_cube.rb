@@ -34,8 +34,7 @@ module IceCube
   autoload :YearlyRule, 'ice_cube/rules/yearly_rule'
 
   module Validations
-
-    autoload :Lock, 'ice_cube/validations/lock'
+    autoload :FixedValue, 'ice_cube/validations/fixed_value'
     autoload :ScheduleLock, 'ice_cube/validations/schedule_lock'
 
     autoload :Count, 'ice_cube/validations/count'

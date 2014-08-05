@@ -12,9 +12,7 @@ module IceCube
       end
     end
 
-    class Validation
-
-      include Validations::Lock
+    class Validation < Validations::FixedValue
 
       attr_reader :type, :value
 

@@ -1,14 +1,14 @@
 module IceCube
 
-  # This validation mixin is used by the various "fixed-time" (e.g. day,
-  # day_of_month, hour_of_day) Validation and ScheduleLock::Validation modules.
-  # It is not a standalone rule validation like the others.
+  # This abstract validation class is used by the various "fixed-time" (e.g.
+  # day, day_of_month, hour_of_day) Validation and ScheduleLock::Validation
+  # modules. It is not a standalone rule validation module like the others.
   #
-  # Given the including Validation's defined +type+ field, it will lock
-  # to the specified +value+ or else the corresponding time unit from the
-  # schedule's start_time
+  # Given the including Validation's defined +type+ field, it will lock to the
+  # specified +value+ or else the corresponding time unit from the schedule's
+  # start_time
   #
-  module Validations::Lock
+  class Validations::FixedValue
 
     INTERVALS = {:min => 60, :sec => 60, :hour => 24, :month => 12, :wday => 7}
 
