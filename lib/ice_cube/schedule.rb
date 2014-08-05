@@ -167,13 +167,13 @@ module IceCube
 
     # The next n occurrences after now
     def next_occurrences(num, from = nil)
-      from ||= TimeUtil.now(@start_time)
+      from = TimeUtil.match_zone(from, start_time) || TimeUtil.now(start_time)
       enumerate_occurrences(from + 1, nil).take(num)
     end
 
     # The next occurrence after now (overridable)
     def next_occurrence(from = nil)
-      from ||= TimeUtil.now(@start_time)
+      from = TimeUtil.match_zone(from, start_time) || TimeUtil.now(start_time)
       enumerate_occurrences(from + 1, nil).next
     rescue StopIteration
       nil
@@ -181,12 +181,14 @@ module IceCube
 
     # The previous occurrence from a given time
     def previous_occurrence(from)
+      from = TimeUtil.match_zone(from, start_time) or raise ArgumentError, "Time required, got #{time.inspect}"
       return nil if from <= start_time
       enumerate_occurrences(start_time, from - 1).to_a.last
     end
 
     # The previous n occurrences before a given time
     def previous_occurrences(num, from)
+      from = TimeUtil.match_zone(from, start_time) or raise ArgumentError, "Time required, got #{time.inspect}"
       return [] if from <= start_time
       a = enumerate_occurrences(start_time, from - 1).to_a
       a.size > num ? a[-1*num,a.size] : a
@@ -231,7 +233,7 @@ module IceCube
 
     # Return a boolean indicating if an occurrence falls on a certain date
     def occurs_on?(date)
-      date = TimeUtil.ensure_date date
+      date = TimeUtil.ensure_date(date)
       begin_time = TimeUtil.beginning_of_date(date, start_time)
       closing_time = TimeUtil.end_of_date(date, start_time)
       occurs_between?(begin_time, closing_time)
@@ -239,6 +241,7 @@ module IceCube
 
     # Determine if the schedule is occurring at a given time
     def occurring_at?(time)
+      time = TimeUtil.match_zone(time, start_time) or raise ArgumentError, "Time required, got #{time.inspect}"
       if duration > 0
         return false if exception_time?(time)
         occurs_between?(time - duration + 1, time)

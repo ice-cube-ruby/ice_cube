@@ -36,19 +36,20 @@ module IceCube
       end
     end
 
-    def self.match_zone(time, reference)
-      return unless time = ensure_time(time)
-      if reference.respond_to? :time_zone
-        time.in_time_zone(reference.time_zone)
-      else
-        if reference.utc?
-          time.utc
-        elsif reference.zone
-          time.getlocal
-        else
-          time.getlocal(reference.utc_offset)
-        end
-      end
+    def self.match_zone(input_time, reference)
+      return unless time = ensure_time(input_time)
+      time = if reference.respond_to? :time_zone
+               time.in_time_zone(reference.time_zone)
+             else
+               if reference.utc?
+                 time.utc
+               elsif reference.zone
+                 time.getlocal
+               else
+                 time.getlocal(reference.utc_offset)
+               end
+             end
+      (Date === input_time) ? beginning_of_date(time, reference) : time
     end
 
     # Ensure that this is either nil, or a time

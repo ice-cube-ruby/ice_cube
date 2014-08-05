@@ -33,6 +33,14 @@ describe IceCube::Schedule do
       lambda { schedule.next_occurrence }.should_not raise_error
     end
 
+    it "should not skip ahead a day when called with a date" do
+      schedule = IceCube::Schedule.new(Time.utc(2014, 1, 1, 12, 34, 56)) do |s|
+        s.add_recurrence_rule IceCube::Rule.hourly
+      end
+      next_hour = schedule.next_occurrence(Date.new(2014, 1, 2))
+      expect( next_hour ).to eq Time.utc(2014, 1, 2, 00, 34 , 56)
+    end
+
   end
 
   describe :duration do
@@ -50,6 +58,20 @@ describe IceCube::Schedule do
       conflicting_options = {:end_time => start + 600, :duration => 1200}
       schedule = IceCube::Schedule.new(start, conflicting_options)
       schedule.duration.should == 600
+    end
+
+  end
+
+  describe :occurring_at? do
+
+    it "should not capture multiple days when called with a date" do
+      schedule = IceCube::Schedule.new do |s|
+        s.start_time = Time.utc(2013, 12, 31, 23, 59, 50)
+        s.duration = 20
+        s.add_recurrence_rule IceCube::Rule.daily(2)
+      end
+      expect( schedule.occurring_at?(Date.new(2014, 1, 1)) ).to eq true
+      expect( schedule.occurring_at?(Date.new(2014, 1, 2)) ).to eq false
     end
 
   end
@@ -375,6 +397,15 @@ describe IceCube::Schedule do
       schedule.next_occurrences(1).should be_empty
     end
 
+    it "should not skip ahead a day when called with a date" do
+      schedule = IceCube::Schedule.new(Time.utc(2014, 1, 1, 12, 34, 56)) do |s|
+        s.add_recurrence_rule IceCube::Rule.hourly
+      end
+      next_hours = schedule.next_occurrences(2, Date.new(2014, 1, 2))
+      expect( next_hours ).to eq [Time.utc(2014, 1, 2, 00, 34 , 56),
+                                  Time.utc(2014, 1, 2, 01, 34 , 56)]
+    end
+
   end
 
   describe :next_occurrence do
@@ -438,6 +469,14 @@ describe IceCube::Schedule do
       previous.should be_nil
     end
 
+    it "should not skip back a day when called with a date" do
+      schedule = IceCube::Schedule.new(Time.utc(2014, 1, 1, 12, 34, 56)) do |s|
+        s.add_recurrence_rule IceCube::Rule.hourly
+      end
+      prev_hour = schedule.previous_occurrence(Date.new(2014, 1, 2))
+      expect( prev_hour ).to eq Time.utc(2014, 1, 1, 23, 34 , 56)
+    end
+
   end
 
   describe :previous_occurrences do
@@ -464,6 +503,15 @@ describe IceCube::Schedule do
       schedule.add_recurrence_rule IceCube::Rule.daily
       previous = schedule.previous_occurrences(2, t0)
       previous.should == []
+    end
+
+    it "should not skip back a day when called with a date" do
+      schedule = IceCube::Schedule.new(Time.utc(2014, 1, 1, 12, 34, 56)) do |s|
+        s.add_recurrence_rule IceCube::Rule.hourly
+      end
+      prev_hours = schedule.previous_occurrences(2, Date.new(2014, 1, 2))
+      expect( prev_hours ).to eq [Time.utc(2014, 1, 1, 22, 34 , 56),
+                                  Time.utc(2014, 1, 1, 23, 34 , 56)]
     end
 
   end
