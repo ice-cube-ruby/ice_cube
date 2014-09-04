@@ -1,6 +1,7 @@
 # ice_cube - Easy schedule expansion
 
 [![Build Status][travis-ice_cube-png]][travis-ice_cube]
+[![Gem Version](https://badge.fury.io/rb/ice_cube.svg)](http://badge.fury.io/rb/ice_cube)
 
 ```bash
 gem install ice_cube
