@@ -28,9 +28,11 @@ describe Occurrence do
     end
 
     it "accepts a format option to comply with ActiveSupport" do
-      occurrence = Occurrence.new(Time.now)
+      require 'active_support/core_ext/time'
+      time_now = Time.current
+      occurrence = Occurrence.new(time_now)
 
-      expect { occurrence.to_s(:short) }.not_to raise_error
+      expect(occurrence.to_s(:short)).to eq time_now.to_s(:short)
     end
   end
 
