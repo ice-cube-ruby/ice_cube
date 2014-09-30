@@ -254,6 +254,14 @@ describe IceCube::Schedule do
     schedule.rrules.should == rules
   end
 
+  it 'can retrieve exrules from a schedule' do
+    schedule = IceCube::Schedule.new(Time.now)
+    rules = [IceCube::Rule.daily, IceCube::Rule.monthly, IceCube::Rule.yearly]
+    rules.each { |r| schedule.add_exception_rule(r) }
+    # pull the rules back out of the schedule and compare
+    schedule.exrules.should == rules
+  end
+
   it 'can retrieve recurrence times from a schedule' do
     schedule = IceCube::Schedule.new(Time.now)
     times = [Time.now, Time.now + 5, Time.now + 10]
@@ -569,6 +577,14 @@ describe IceCube::Schedule do
     schedule.rrules.should == [daily, monthly]
   end
 
+  it 'should have some convenient alias for exrules' do
+    schedule = IceCube::Schedule.new(Time.now)
+    daily = IceCube::Rule.daily; monthly = IceCube::Rule.monthly
+    schedule.add_exception_rule daily
+    schedule.exrule monthly
+    schedule.exrules.should == [daily, monthly]
+  end
+
   it 'should have some convenient alias for recurrence_times' do
     schedule = IceCube::Schedule.new(Time.now)
     schedule.add_recurrence_time Time.local(2010, 8, 13)
@@ -581,6 +597,14 @@ describe IceCube::Schedule do
     schedule.add_exception_time Time.local(2010, 8, 13)
     schedule.extime Time.local(2010, 8, 14)
     schedule.extimes.should == [Time.local(2010, 8, 13), Time.local(2010, 8, 14)]
+  end
+
+  it 'should be able to have a rule and an exrule' do
+    schedule = IceCube::Schedule.new(Time.local(2010, 8, 27, 10))
+    schedule.rrule IceCube::Rule.daily
+    schedule.exrule IceCube::Rule.daily.day(:friday)
+    schedule.occurs_on?(Date.new(2010, 8, 27)).should be_false
+    schedule.occurs_on?(Date.new(2010, 8, 28)).should be_true
   end
 
   it 'should always generate the correct number of days for .first' do
