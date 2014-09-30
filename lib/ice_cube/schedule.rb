@@ -332,6 +332,11 @@ module IceCube
       pieces.join("\n")
     end
 
+    # Load the schedule from ical
+    def self.from_ical(ical, options = {})
+      IcalParser.schedule_from_ical(ical, options)
+    end
+
     # Convert the schedule to yaml
     def to_yaml(*args)
       YAML::dump(to_hash, *args)
