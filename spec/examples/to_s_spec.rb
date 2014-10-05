@@ -2,6 +2,10 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe IceCube::Schedule, 'to_s' do
 
+  before :each do
+    I18n.locale = :en
+  end
+
   it 'should represent its start time by default' do
     t0 = Time.local(2013, 2, 14)
     IceCube::Schedule.new(t0).to_s.should == 'February 14, 2013'

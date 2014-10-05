@@ -34,9 +34,6 @@ module IceCube
 
     module Helpers
 
-      NUMBER_SUFFIX = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th']
-      SPECIAL_SUFFIX = { 11 => 'th', 12 => 'th', 13 => 'th', 14 => 'th' }
-
       # influenced by ActiveSupport's to_sentence
       def sentence(array)
         case array.length
@@ -48,13 +45,22 @@ module IceCube
       end
 
       def nice_number(number)
-        return 'last' if number == -1
-        suffix = SPECIAL_SUFFIX[number] || NUMBER_SUFFIX[number.abs % 10]
-        if number < -1
-          number.abs.to_s << suffix << ' to last'
-        else
-          number.to_s << suffix
-        end
+        literal_ordinal(number) || ordinalize(number)
+      end
+
+      def ordinalize(number)
+        "#{number}#{ordinal(number)}"
+      end
+
+      def literal_ordinal(number)
+        I18n.t("ice_cube.integer.literal_ordinals")[number]
+      end
+
+      def ordinal(number)
+        ord = I18n.t("ice_cube.integer.ordinals")[number] ||
+          I18n.t("ice_cube.integer.ordinals")[number % 10] ||
+          I18n.t('ice_cube.integer.ordinals')[:default]
+        number >= 0 ? ord : I18n.t("ice_cube.integer.negative", ordinal: ord)
       end
 
     end
