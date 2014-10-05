@@ -44,7 +44,7 @@ module IceCube
       end
 
       StringBuilder.register_formatter(:month_of_year) do |segments|
-        "in #{StringBuilder.sentence(segments)}"
+        "#{I18n.t("ice_cube.in")} #{StringBuilder.sentence(segments)}"
       end
 
     end

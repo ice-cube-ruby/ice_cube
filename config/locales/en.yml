@@ -1,0 +1,52 @@
+en:
+  ice_cube:
+    times:
+      other: '%{count} times'
+      one: '%{count} time'
+    days_of_month:
+      other: '%{segments} days of the month'
+      one: '%{segments} day of the month'
+    days_of_year:
+      other: '%{segments} days of the year'
+      one: '%{segments} day of the year'
+    at_hours_of_the_day:
+      other: on the %{segments} hours of the day
+      one: on the %{segments} hour of the day
+    on_minutes_of_hour:
+      other: on the %{segments} minutes of the hour
+      one: on the %{segments} minute of the hour
+    at_seconds_of_minute:
+      other: at the %{segments} seconds
+      one: at the %{segments} second
+    on_seconds_of_minute:
+      other: on the %{segments} seconds of the minute
+      one: on the %{segments} second of the minute
+    'on': on the %{sentence}
+    in: in
+    integer:
+      negative: '%{ordinal} to last'
+      literal_ordinals:
+        -1: last
+        -2: 2nd to last
+      ordinals:
+        default: th
+        1: st
+        2: nd
+        3: rd
+        11: th
+        12: th
+        13: th
+    on_weekends: on Weekends
+    on_weekdays: on Weekdays
+    days_on:
+      - Sundays
+      - Mondays
+      - Tuesdays
+      - Wednesdays
+      - Thursdays
+      - Fridays
+      - Saturdays
+    on_days: on %{days}
+  support:
+    array:
+      two_words_connector: ' and '

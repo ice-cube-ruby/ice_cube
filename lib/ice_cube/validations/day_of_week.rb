@@ -62,7 +62,8 @@ module IceCube
       end
 
       StringBuilder.register_formatter(:day_of_week) do |segments|
-        'on the ' + segments.join(' and ')
+        sentence = segments.join(I18n.t('support.array.two_words_connector'))
+        I18n.t('ice_cube.on', sentence: sentence)
       end
 
     end

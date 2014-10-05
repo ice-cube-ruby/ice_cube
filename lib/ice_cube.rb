@@ -1,5 +1,8 @@
 require 'date'
 require 'ice_cube/deprecated'
+require 'i18n'
+
+I18n.load_path += Dir[File.expand_path('../../config/locales/*{rb,yml}', __FILE__)]
 
 module IceCube
 
