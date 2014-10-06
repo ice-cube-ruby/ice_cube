@@ -315,9 +315,11 @@ module IceCube
       rd = recurrence_times_with_start_time - extimes
       pieces.concat rd.sort.map { |t| t.strftime(IceCube.to_s_time_format) }
       pieces.concat rrules.map  { |t| t.to_s }
-      pieces.concat exrules.map { |t| "not #{t.to_s}" }
-      pieces.concat extimes.sort.map { |t| "not on #{t.strftime(IceCube.to_s_time_format)}" }
-      pieces.join(' / ')
+      pieces.concat exrules.map { |t| I18n.t('ice_cube.not', target: t.to_s) }
+      pieces.concat extimes.sort.map { |t|
+        I18n.t('ice_cube.not_on', target: t.strftime(IceCube.to_s_time_format))
+      }
+      pieces.join(I18n.t('ice_cube.pieces_connector'))
     end
 
     # Serialize this schedule to_ical

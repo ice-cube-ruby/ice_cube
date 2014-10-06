@@ -1,8 +1,38 @@
 en:
   ice_cube:
+    pieces_connector: ' / '
+    not: 'not %{target}'
+    not_on: 'not on %{target}'
+    date:
+      formats:
+        default: '%B %-d, %Y'
+      month_names:
+      -
+      - January
+      - February
+      - March
+      - April
+      - May
+      - June
+      - July
+      - August
+      - September
+      - October
+      - November
+      - December
+      day_names:
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
     times:
       other: '%{count} times'
       one: '%{count} time'
+    until: 'until %{date}'
+    days_of_week: '%{segments} %{day}'
     days_of_month:
       other: '%{segments} days of the month'
       one: '%{segments} day of the month'
@@ -21,13 +51,35 @@ en:
     on_seconds_of_minute:
       other: on the %{segments} seconds of the minute
       one: on the %{segments} second of the minute
+    each_second:
+      one: Secondly
+      other: Every %{count} seconds
+    each_minute:
+      one: Minutely
+      other: Every %{count} minutes
+    each_hour:
+      one: Hourly
+      other: Every %{count} hours
+    each_day:
+      one: Daily
+      other: Every %{count} days
+    each_week:
+      one: Weekly
+      other: Every %{count} weeks
+    each_month:
+      one: Monthly
+      other: Every %{count} months
+    each_year:
+      one: Yearly
+      other: Every %{count} years
     'on': on the %{sentence}
-    in: in
+    in: 'in %{target}'
     integer:
       negative: '%{ordinal} to last'
       literal_ordinals:
         -1: last
         -2: 2nd to last
+      ordinal: '%{number}%{ordinal}'
       ordinals:
         default: th
         1: st
@@ -47,6 +99,18 @@ en:
       - Fridays
       - Saturdays
     on_days: on %{days}
-  support:
     array:
+      last_word_connector: ', and '
       two_words_connector: ' and '
+      words_connector: ', '
+    string:
+      format:
+        day: '%{rest} %{current}'
+        day_of_week: '%{rest} %{current}'
+        day_of_month: '%{rest} %{current}'
+        day_of_year: '%{rest} %{current}'
+        hour_of_day: '%{rest} %{current}'
+        minute_of_hour: '%{rest} %{current}'
+        until: '%{rest} %{current}'
+        count: '%{rest} %{current}'
+        default: '%{rest} %{current}'
