@@ -13,14 +13,18 @@ module IceCube
     end
 
     def to_s
-      @types.each_with_object(@base || '') do |(type, segments), str|
+      string = @base || ''
+      @types.each do |type, segments|
         if f = self.class.formatter(type)
-          str << ' ' << f.call(segments)
+          current = f.call(segments)
         else
           next if segments.empty?
-          str << ' ' << self.class.sentence(segments)
+          current = self.class.sentence(segments)
         end
+        f = I18n.t('ice_cube.string.format')[type] ? type : 'default'
+        string = I18n.t("ice_cube.string.format.#{f}", rest: string, current: current)
       end
+      string
     end
 
     def self.formatter(type)
@@ -39,8 +43,8 @@ module IceCube
         case array.length
         when 0 ; ''
         when 1 ; array[0].to_s
-        when 2 ; "#{array[0]} and #{array[1]}"
-        else ; "#{array[0...-1].join(', ')}, and #{array[-1]}"
+        when 2 ; "#{array[0]}#{I18n.t('ice_cube.array.two_words_connector')}#{array[1]}"
+        else ; "#{array[0...-1].join(I18n.t('ice_cube.array.words_connector'))}#{I18n.t('ice_cube.array.last_word_connector')}#{array[-1]}"
         end
       end
 
@@ -49,7 +53,7 @@ module IceCube
       end
 
       def ordinalize(number)
-        "#{number}#{ordinal(number)}"
+        I18n.t('ice_cube.integer.ordinal', number: number, ordinal: ordinal(number))
       end
 
       def literal_ordinal(number)
