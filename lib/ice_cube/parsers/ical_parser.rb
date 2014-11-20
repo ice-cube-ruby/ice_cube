@@ -36,7 +36,7 @@ module IceCube
         when 'COUNT'
           params[:count] = value.to_i
         when 'UNTIL'
-          params[:until] = DateTime.parse(value).to_time.utc
+          params[:until] = Time.parse(value).utc
         when 'WKST'
           params[:wkst] = TimeUtil.ical_day_to_symbol(value)
         when 'BYSECOND'
