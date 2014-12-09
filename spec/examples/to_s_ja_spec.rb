@@ -1,10 +1,13 @@
-# -*- coding: utf-8 -*-
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe IceCube::Schedule, 'to_s' do
 
   before :each do
     I18n.locale = :ja
+  end
+
+  after :all do
+    I18n.locale = :en
   end
 
   it 'should represent its start time by default' do

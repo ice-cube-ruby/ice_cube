@@ -457,8 +457,8 @@ describe IceCube::Schedule do
       t0 = Time.utc(2013, 5, 18, 12, 34)
       schedule = IceCube::Schedule.new(t0)
       schedule.add_recurrence_rule IceCube::Rule.daily
-      previous = schedule.previous_occurrence(t0 + 2 * ONE_DAY)
-      previous.should == t0 + ONE_DAY
+      previous = schedule.previous_occurrence(t0 + 2 * IceCube::ONE_DAY)
+      previous.should == t0 + IceCube::ONE_DAY
     end
 
     it 'returns nil given the start time' do
@@ -485,16 +485,16 @@ describe IceCube::Schedule do
       t0 = Time.utc(2013, 5, 18, 12, 34)
       schedule = IceCube::Schedule.new(t0)
       schedule.add_recurrence_rule IceCube::Rule.daily
-      previous = schedule.previous_occurrences(2, t0 + 3 * ONE_DAY)
-      previous.should == [t0 + ONE_DAY, t0 + 2 * ONE_DAY]
+      previous = schedule.previous_occurrences(2, t0 + 3 * IceCube::ONE_DAY)
+      previous.should == [t0 + IceCube::ONE_DAY, t0 + 2 * IceCube::ONE_DAY]
     end
 
     it 'limits the returned occurrences to a given count' do
       t0 = Time.utc(2013, 5, 18, 12, 34)
       schedule = IceCube::Schedule.new(t0)
       schedule.add_recurrence_rule IceCube::Rule.daily
-      previous = schedule.previous_occurrences(999, t0 + 2 * ONE_DAY)
-      previous.should == [t0, t0 + ONE_DAY]
+      previous = schedule.previous_occurrences(999, t0 + 2 * IceCube::ONE_DAY)
+      previous.should == [t0, t0 + IceCube::ONE_DAY]
     end
 
     it 'returns empty array given the start time' do
@@ -531,7 +531,7 @@ describe IceCube::Schedule do
       t1 = Time.utc(2013, 5, 31, 12, 34)
       schedule = IceCube::Schedule.new(t0)
       schedule.add_recurrence_rule IceCube::Rule.daily.until(t1 + 1)
-      schedule.last(2).should == [t1 - ONE_DAY, t1]
+      schedule.last(2).should == [t1 - IceCube::ONE_DAY, t1]
     end
 
     it 'raises an error for a non-terminating schedule' do
