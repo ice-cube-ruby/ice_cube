@@ -313,11 +313,12 @@ module IceCube
     def to_s
       pieces = []
       rd = recurrence_times_with_start_time - extimes
-      pieces.concat rd.sort.map { |t| t.strftime(IceCube.to_s_time_format) }
+      pieces.concat rd.sort.map { |t| I18n.l(t, format: IceCube.to_s_time_format) }
       pieces.concat rrules.map  { |t| t.to_s }
       pieces.concat exrules.map { |t| I18n.t('ice_cube.not', target: t.to_s) }
       pieces.concat extimes.sort.map { |t|
-        I18n.t('ice_cube.not_on', target: t.strftime(IceCube.to_s_time_format))
+        target = I18n.l(t, format: IceCube.to_s_time_format)
+        I18n.t('ice_cube.not_on', target: target)
       }
       pieces.join(I18n.t('ice_cube.pieces_connector'))
     end

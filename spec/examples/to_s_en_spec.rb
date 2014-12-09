@@ -100,8 +100,8 @@ describe IceCube::Schedule, 'to_s' do
   end
 
   it 'should order dates that are out of order' do
-    schedule = IceCube::Schedule.new(t0 = Time.local(2010, 3, 20))
-    schedule.add_recurrence_time t1 = Time.local(2010, 3, 19)
+    schedule = IceCube::Schedule.new Time.local(2010, 3, 20)
+    schedule.add_recurrence_time Time.local(2010, 3, 19)
     schedule.to_s.should == 'March 19, 2010 / March 20, 2010'
   end
 
@@ -112,7 +112,7 @@ describe IceCube::Schedule, 'to_s' do
   end
 
   it 'should remove duplicate rtimes' do
-    schedule = IceCube::Schedule.new t0 = Time.local(2010, 3, 19)
+    schedule = IceCube::Schedule.new Time.local(2010, 3, 19)
     schedule.add_recurrence_time Time.local(2010, 3, 20)
     schedule.add_recurrence_time Time.local(2010, 3, 20)
     schedule.to_s.should == 'March 19, 2010 / March 20, 2010'
