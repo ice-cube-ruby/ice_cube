@@ -1,3 +1,4 @@
+# encoding: utf-8
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe IceCube::Schedule, 'to_s' do
