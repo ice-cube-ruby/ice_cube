@@ -213,8 +213,8 @@ describe IceCube::Schedule do
     dates = schedule.all_occurrences
     dates.each { |d| d.utc?.should == false }
     dates.should == [Time.zone.local(2010, 11, 6, 5, 0, 0),
-      Time.zone.local(2010, 11, 7, 5, 0, 0), Time.zone.local(2010, 11, 8, 5, 0, 0),
-      Time.zone.local(2010, 11, 9, 5, 0, 0)]
+                     Time.zone.local(2010, 11, 7, 5, 0, 0), Time.zone.local(2010, 11, 8, 5, 0, 0),
+                     Time.zone.local(2010, 11, 9, 5, 0, 0)]
   end
 
   # here we purposely put a local time that is before the range ends, to
@@ -228,8 +228,8 @@ describe IceCube::Schedule do
     dates = schedule.all_occurrences
     dates.each { |d| d.utc?.should == true }
     dates.should == [Time.utc(2010, 11, 6, 5, 0, 0),
-      Time.utc(2010, 11, 7, 5, 0, 0), Time.utc(2010, 11, 8, 5, 0, 0),
-      Time.utc(2010, 11, 9, 5, 0, 0)]
+                     Time.utc(2010, 11, 7, 5, 0, 0), Time.utc(2010, 11, 8, 5, 0, 0),
+                     Time.utc(2010, 11, 9, 5, 0, 0)]
   end
 
   it 'works with a monthly rule iterating on UTC' do
@@ -310,22 +310,50 @@ describe IceCube::Schedule do
 
   describe "using occurs_between with a biweekly schedule" do
     [[0, 1, 2], [0, 6, 1], [5, 1, 6], [6, 5, 7]].each do |wday, offset, lead|
-      start_week    = Time.utc(2014, 1, 5)
-      expected_week =  start_week + 2.weeks
-      offset_wday   = (wday + offset) % 7
+      start_week = Time.utc(2014, 1, 5)
+      expected_week = start_week + 2.weeks
+      offset_wday = (wday + offset) % 7
 
       context "starting on weekday #{wday} selecting weekday #{offset} with a #{lead} day advance window" do
-        let(:biweekly)      { Rule.weekly(2).day(0, 1, 2, 3, 4, 5, 6) }
-        let(:schedule)      { Schedule.new(start_week + wday.days) { |s| s.rrule biweekly } }
+        let(:biweekly) { IceCube::Rule.weekly(2).day(0, 1, 2, 3, 4, 5, 6) }
+        let(:schedule) { IceCube::Schedule.new(start_week + wday.days) { |s| s.rrule biweekly } }
         let(:expected_date) { expected_week + offset_wday.days }
-        let(:range)         { [expected_date - lead.days, expected_date] }
+        let(:range) { [expected_date - lead.days, expected_date] }
 
         it "should include weekday #{offset_wday} of the expected week" do
           expect(schedule.occurrences_between(range.first, range.last)).to include expected_date
         end
       end
-
     end
+  end
+
+  describe "using occurs_between with a weekly schedule" do
+    [[6, 5, 7]].each do |wday, offset, lead|
+      start_week = Time.utc(2014, 1, 5)
+      expected_week = start_week + 1.weeks
+      offset_wday = (wday + offset) % 7
+
+      context "starting on weekday #{wday} selecting weekday #{offset} with a #{lead} day advance window" do
+        let(:weekly) { IceCube::Rule.weekly(1).day(0, 1, 2, 3, 4, 5, 6) }
+        let(:schedule) { IceCube::Schedule.new(start_week + wday.days) { |s| s.rrule weekly } }
+        let(:expected_date) { expected_week + offset_wday.days }
+        let(:range) { [expected_date - lead.days, expected_date] }
+
+        it "should include weekday #{offset_wday} of the expected week" do
+          expect(schedule.occurrences_between(range.first, range.last)).to include expected_date
+          expect(schedule.occurrences_between(range.first, range.last).first).to eq(start_week + wday.days)
+        end
+      end
+    end
+  end
+
+  it 'should produce correct days for bi-weekly interval, starting on a non-sunday' do
+    schedule = IceCube::Schedule.new(t0 = Time.local(2015, 3, 3))
+    schedule.add_recurrence_rule IceCube::Rule.weekly(2, :monday).day(:tuesday)
+    #check assumption
+    range_start = Time.local(2015, 3, 15)
+    times = schedule.occurrences_between(range_start, range_start + IceCube::ONE_WEEK)
+    times.first.should == Time.local(2015, 3, 17)
   end
 
   it 'should be able to tell us when there is at least one occurrence between two dates' do
