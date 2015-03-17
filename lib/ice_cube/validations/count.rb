@@ -51,7 +51,7 @@ module IceCube
 
       StringBuilder.register_formatter(:count) do |segments|
         count = segments.first
-        I18n.t('ice_cube.times', count: count)
+        IceCube::I18n.t('ice_cube.times', count: count)
       end
 
     end

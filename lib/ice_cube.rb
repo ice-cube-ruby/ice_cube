@@ -1,8 +1,8 @@
 require 'date'
 require 'ice_cube/deprecated'
-require 'i18n'
+require 'ice_cube/i18n'
 
-I18n.load_path += Dir[File.expand_path('../../config/locales/*{rb,yml}', __FILE__)]
+IceCube::I18n.detect_backend!
 
 module IceCube
 
@@ -72,7 +72,7 @@ module IceCube
   # Defines the format used by IceCube when printing out Schedule#to_s.
   # Defaults to '%B %e, %Y'
   def self.to_s_time_format
-    I18n.t("ice_cube.date.formats.default")
+    IceCube::I18n.t("ice_cube.date.formats.default")
   end
 
   # Sets the format used by IceCube when printing out Schedule#to_s.

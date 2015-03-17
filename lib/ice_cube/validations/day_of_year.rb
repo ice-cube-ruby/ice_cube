@@ -50,8 +50,8 @@ module IceCube
 
       StringBuilder.register_formatter(:day_of_year) do |entries|
         str =  StringBuilder.sentence(entries)
-        sentence = I18n.t('ice_cube.days_of_year', count: entries.size, segments: str)
-        I18n.t('ice_cube.on', sentence: sentence)
+        sentence = IceCube::I18n.t('ice_cube.days_of_year', count: entries.size, segments: str)
+        IceCube::I18n.t('ice_cube.on', sentence: sentence)
       end
 
     end

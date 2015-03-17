@@ -44,8 +44,8 @@ module IceCube
 
       StringBuilder.register_formatter(:day_of_month) do |entries|
         sentence = StringBuilder.sentence(entries)
-        str = I18n.t('ice_cube.days_of_month', count: entries.size, segments: sentence)
-        I18n.t('ice_cube.on', sentence: str)
+        str = IceCube::I18n.t('ice_cube.days_of_month', count: entries.size, segments: sentence)
+        IceCube::I18n.t('ice_cube.on', sentence: str)
       end
 
     end

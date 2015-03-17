@@ -35,7 +35,7 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.base = I18n.t('ice_cube.each_day', count: interval)
+        builder.base = IceCube::I18n.t('ice_cube.each_day', count: interval)
       end
 
       def build_hash(builder)

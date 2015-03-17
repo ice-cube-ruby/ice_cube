@@ -45,10 +45,10 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.piece(:day_of_week) << I18n.t(
+        builder.piece(:day_of_week) << IceCube::I18n.t(
           'ice_cube.days_of_week',
           segments: StringBuilder.nice_number(occ),
-          day: I18n.t('ice_cube.date.day_names')[day]
+          day: IceCube::I18n.t('ice_cube.date.day_names')[day]
         )
       end
 
@@ -66,8 +66,8 @@ module IceCube
       end
 
       StringBuilder.register_formatter(:day_of_week) do |segments|
-        sentence = segments.join(I18n.t('ice_cube.array.two_words_connector'))
-        I18n.t('ice_cube.on', sentence: sentence)
+        sentence = segments.join(IceCube::I18n.t('ice_cube.array.two_words_connector'))
+        IceCube::I18n.t('ice_cube.on', sentence: sentence)
       end
 
     end

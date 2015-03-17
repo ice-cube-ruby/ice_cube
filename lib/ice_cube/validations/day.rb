@@ -54,13 +54,13 @@ module IceCube
         validation_days.sort!
         # pick the right shortening, if applicable
         if validation_days == [0, 6]
-          I18n.t('ice_cube.on_weekends')
+          IceCube::I18n.t('ice_cube.on_weekends')
         elsif validation_days == (1..5).to_a
-          I18n.t('ice_cube.on_weekdays')
+          IceCube::I18n.t('ice_cube.on_weekdays')
         else
-          day_names = ->(d){ "#{I18n.t("ice_cube.days_on")[d]}" }
+          day_names = ->(d){ "#{IceCube::I18n.t("ice_cube.days_on")[d]}" }
           segments = validation_days.map(&day_names)
-          I18n.t('ice_cube.on_days', days: StringBuilder.sentence(segments))
+          IceCube::I18n.t('ice_cube.on_days', days: StringBuilder.sentence(segments))
         end
       end
 

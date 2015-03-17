@@ -44,7 +44,7 @@ module IceCube
 
       StringBuilder.register_formatter(:minute_of_hour) do |segments|
         str = StringBuilder.sentence(segments)
-        I18n.t('ice_cube.on_minutes_of_hour', count: segments.size, segments: str)
+        IceCube::I18n.t('ice_cube.on_minutes_of_hour', count: segments.size, segments: str)
       end
 
     end
