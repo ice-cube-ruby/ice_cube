@@ -27,6 +27,11 @@ module IceCube
       raise MethodNotImplemented, "Expected to be overrridden by subclasses"
     end
 
+    # Convert from ical string and create a rule
+    def self.from_ical(ical)
+      IceCube::IcalParser.rule_from_ical(ical)
+    end
+
     # Yaml implementation
     def to_yaml(*args)
       YAML::dump(to_hash, *args)
