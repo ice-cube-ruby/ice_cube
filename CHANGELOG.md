@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.13.0 / 2015-05-26
+
+* [FEATURE] from_ical!
+
 ## 0.12.1 / 2014-07-04
 
 * [FEATURE]    Deprecation message improvements
