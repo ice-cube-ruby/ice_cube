@@ -132,12 +132,17 @@ the schedule's start_time. Schedule start times are supported as:
 ice_cube implements its own hash-based .to_yaml, so you can quickly (and
 safely) serialize schedule objects in and out of your data store
 
+It also supports serialization to/from `ICAL`.
+
 ``` ruby
 yaml = schedule.to_yaml
 IceCube::Schedule.from_yaml(yaml)
 
 hash = schedule.to_hash
 IceCube::Schedule.from_hash(hash)
+
+ical = schedule.to_ical
+IceCube::Schedule.from_ical(ical)
 ```
 
 ---
