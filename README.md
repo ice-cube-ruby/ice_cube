@@ -43,7 +43,7 @@ With ice_cube, you can specify (in increasing order of precedence):
 * Recurrence Times - To specifically include in a schedule
 * Exception Times - To specifically exclude from a schedule
 
-Example: Specifying a recurrence with an exception time (ActiveRecord:
+Example: Specifying a recurrence with an exception time
 
 ```ruby
 schedule = IceCube::Schedule.new(now = Time.now) do |s|
