@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/../spec_helper'
+require 'benchmark'
 
 describe IceCube::Schedule do
 
@@ -503,6 +504,19 @@ describe IceCube::Schedule do
       t0 = Time.utc(2015, 10, 1, 12, 00)
       schedule = IceCube::Schedule.new(t0, :duration => IceCube::ONE_HOUR)
       schedule.occurs_between?(t0 + IceCube::ONE_HOUR, t0 + 2 * IceCube::ONE_HOUR, true).should be_true
+    end
+    
+    it 'should quickly fetch a future time from a recurring schedule' do
+      t0 = Time.utc(2000, 10, 1, 00, 00)
+      t1 = Time.utc(2015, 10, 1, 12, 00)
+      schedule = IceCube::Schedule.new(t0, :duration => IceCube::ONE_HOUR - 1)
+      schedule.add_recurrence_rule IceCube::Rule.hourly
+      occ = nil
+      timing = Benchmark.realtime do
+        occ = schedule.remaining_occurrences_enumerator(t1, true).take(1)
+      end
+      timing.should < 0.1
+      occ.should == [t1]
     end
 
   end
