@@ -77,9 +77,10 @@ schedule.last(2) # [now + 1.day, now + 2.days]
 schedule.last    # now + 2.days
 
 # or the next occurrence
-schedule.next_occurrence(from_time)     # defaults to Time.now
-schedule.next_occurrences(3, from_time) # defaults to Time.now
-schedule.remaining_occurrences          # for terminating schedules
+schedule.next_occurrence(from_time)           # defaults to Time.now
+schedule.next_occurrences(3, from_time)       # defaults to Time.now
+schedule.next_occurrences(3, from_time, true) # include prior occurrences with duration overlapping from_time
+schedule.remaining_occurrences                # for terminating schedules
 
 # or the previous occurrence
 schedule.previous_occurrence(from_time)
