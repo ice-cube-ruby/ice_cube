@@ -25,11 +25,11 @@ module IceCube
     end
 
     def self._parse_in_tzid(value, tzid)
-      t = Time.parse(value)
+      time_parser = Time
       if tzid
-        t = t.in_time_zone(ActiveSupport::TimeZone[tzid.split("=")[1]])
+        time_parser = ActiveSupport::TimeZone.new(tzid.split('=')[1]) || Time
       end
-      t
+      time_parser.parse(value)
     end
 
     def self.rule_from_ical(ical)
