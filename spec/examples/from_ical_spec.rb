@@ -145,6 +145,10 @@ module IceCube
           schedule = IceCube::Schedule.from_ical(ical_string_with_time_zones)
           expect(schedule.exception_times[0].time_zone).to eq ActiveSupport::TimeZone.new("America/Chicago")
         end
+        it "adding the offset doesnt also change the time" do
+          schedule = IceCube::Schedule.from_ical(ical_string_with_time_zones)
+          expect(schedule.exception_times[0].hour).to eq 14
+        end
       end
     end
 
