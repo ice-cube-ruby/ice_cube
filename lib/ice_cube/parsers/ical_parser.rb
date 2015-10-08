@@ -18,7 +18,8 @@ module IceCube
         when 'RRULE'
           data[:rrules] = [rule_from_ical(value)]
         when 'RDATE'
-          data[:rdates] = SingleOccurrenceRule.new(Time.parse(value))
+          data[:rdates] ||= []
+          data[:rdates] += [value]
         end
       end
       Schedule.from_hash data
