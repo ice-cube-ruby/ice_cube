@@ -17,6 +17,8 @@ module IceCube
           data[:duration] # FIXME
         when 'RRULE'
           data[:rrules] = [rule_from_ical(value)]
+        when 'RDATE'
+          data[:rdate] = SingleOccurrenceRule.new(Time.parse(value))
         end
       end
       Schedule.from_hash data
