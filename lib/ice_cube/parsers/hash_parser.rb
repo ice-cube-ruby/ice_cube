@@ -33,7 +33,7 @@ module IceCube
       {:rdates => :rtimes, :exdates => :extimes}.each do |old_key, new_key|
         if (times = data.delete(old_key))
           warn "IceCube: :#{old_key} is deprecated, please use :#{new_key} at: #{ caller[0] }"
-          data[new_key] = (data[new_key] || []) + times
+          (data[new_key] ||= []).concat times
         end
       end
 
