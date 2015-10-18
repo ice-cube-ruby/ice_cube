@@ -563,6 +563,24 @@ describe IceCube::Schedule do
 
   end
 
+  describe :add_exception_rule do
+    it 'should throw argument error for nil rule' do
+      schedule = IceCube::Schedule.new(Time.now)
+      lambda do
+        schedule.add_exception_rule(nil)
+      end.should raise_error ArgumentError, 'Rule cannot be nil'
+    end
+  end
+
+  describe :add_recurrence_rule do
+    it 'should throw argument error for nil rule' do
+      schedule = IceCube::Schedule.new(Time.now)
+      lambda do
+        schedule.add_recurrence_rule(nil)
+      end.should raise_error ArgumentError, 'Rule cannot be nil'
+    end
+  end
+
   describe :remove_recurrence_rule do
 
     it 'should be able to one rule based on the comparator' do
