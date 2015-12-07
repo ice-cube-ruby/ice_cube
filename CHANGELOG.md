@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.13.1 / 2015-12-07
+
+* Added i18n support!
+
 ## 0.13.0 / 2015-05-26
 
 * [FEATURE] from_ical!
