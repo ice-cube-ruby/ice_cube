@@ -363,6 +363,12 @@ module IceCube
         schedule.exception_times.count.should == 3
       end
     end
-  end
 
+    it 'parses multiple rules' do
+      source = "DTSTART;TZID=CDT:20151005T185038\nRRULE:FREQ=WEEKLY;BYDAY=MO" \
+               ",TU\nRRULE:FREQ=WEEKLY;INTERVAL=2;WKST=SU;BYDAY=FR"
+      schedule = IceCube::Schedule.from_ical(source)
+      expect(schedule.recurrence_rules.size).to eq(2)
+    end
+  end
 end
