@@ -17,6 +17,9 @@ module IceCube
           data[:duration] # FIXME
         when 'RRULE'
           data[:rrules] = [rule_from_ical(value)]
+        when 'RDATE'
+          data[:rtimes] ||= []
+          data[:rtimes] += value.split(',').map{|v| Time.parse(v)}
         end
       end
       Schedule.from_hash data
