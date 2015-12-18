@@ -45,9 +45,9 @@ module IceCube
     end
 
     # Add a recurrence time to the schedule
-    def add_recurrence_time(time)
+    def add_recurrence_time(time, whole_day=false)
       return nil if time.nil?
-      rule = SingleOccurrenceRule.new(time)
+      rule = SingleOccurrenceRule.new(time, whole_day)
       add_recurrence_rule rule
       time
     end
@@ -56,9 +56,9 @@ module IceCube
     deprecated_alias :add_recurrence_date, :add_recurrence_time
 
     # Add an exception time to the schedule
-    def add_exception_time(time)
+    def add_exception_time(time, whole_day=false)
       return nil if time.nil?
-      rule = SingleOccurrenceRule.new(time)
+      rule = SingleOccurrenceRule.new(time, whole_day)
       add_exception_rule rule
       time
     end
@@ -102,9 +102,14 @@ module IceCube
     end
     alias :exrules :exception_rules
 
+    # Get the recurrence rule objects that are on the schedule
+    def recurrence_rule_objects
+      @all_recurrence_rules.select { |r| r.is_a?(SingleOccurrenceRule) }
+    end
+
     # Get the recurrence times that are on the schedule
     def recurrence_times
-      @all_recurrence_rules.select { |r| r.is_a?(SingleOccurrenceRule) }.map(&:time)
+      recurrence_rule_objects.map(&:time)
     end
     alias :rtimes :recurrence_times
     deprecated_alias :rdates, :rtimes
@@ -122,9 +127,14 @@ module IceCube
     deprecated_alias :remove_recurrence_date, :remove_recurrence_time
     deprecated_alias :remove_rdate, :remove_rtime
 
+    # Get the exception rule objects that are on the schedule
+    def exception_rule_objects
+      @all_exception_rules.select { |r| r.is_a?(SingleOccurrenceRule) }
+    end
+
     # Get the exception times that are on the schedule
     def exception_times
-      @all_exception_rules.select { |r| r.is_a?(SingleOccurrenceRule) }.map(&:time)
+      exception_rule_objects.map(&:time)
     end
     alias :extimes :exception_times
     deprecated_alias :exdates, :extimes
@@ -325,12 +335,14 @@ module IceCube
 
     # Serialize this schedule to_ical
     def to_ical(force_utc = false)
+      rdate_rules  = recurrence_rule_objects.reject { |r| r.time == start_time }
+      exdate_rules = exception_rule_objects
       pieces = []
       pieces << "DTSTART#{IcalBuilder.ical_format(start_time, force_utc)}"
       pieces.concat recurrence_rules.map { |r| "RRULE:#{r.to_ical}" }
       pieces.concat exception_rules.map  { |r| "EXRULE:#{r.to_ical}" }
-      pieces.concat recurrence_times_without_start_time.map { |t| "RDATE#{IcalBuilder.ical_format(t, force_utc)}" }
-      pieces.concat exception_times.map  { |t| "EXDATE#{IcalBuilder.ical_format(t, force_utc)}" }
+      pieces.concat rdate_rules.map      { |r| "RDATE#{IcalBuilder.ical_format(r.time, force_utc, r)}" }
+      pieces.concat exdate_rules.map     { |r| "EXDATE#{IcalBuilder.ical_format(r.time, force_utc, r)}" }
       pieces << "DTEND#{IcalBuilder.ical_format(end_time, force_utc)}" if end_time
       pieces.join("\n")
     end

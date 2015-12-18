@@ -35,12 +35,20 @@ module IceCube
       IceCube::I18n.l(time, format: '%Y%m%dT%H%M%SZ') # utc time
     end
 
-    def self.ical_format(time, force_utc)
+    def self.ical_format(time, force_utc, rule=nil)
       time = time.dup.utc if force_utc
-      if time.utc?
-        ":#{IceCube::I18n.l(time, format: '%Y%m%dT%H%M%SZ')}" # utc time
+      if rule && rule.whole_day?
+        result = ";VALUE=DATE"
+        hms = ""
       else
-        ";TZID=#{IceCube::I18n.l(time, format: '%Z:%Y%m%dT%H%M%S')}" # local time specified
+        result = ""
+        hms = "T%H%M%S"
+        time.utc? and hms << "Z"
+      end
+      if time.utc?
+        result << ":#{IceCube::I18n.l(time, format: "%Y%m%d#{hms}")}" # utc time
+      else
+        result << ";TZID=#{IceCube::I18n.l(time, format: "%Z:%Y%m%d#{hms}")}" # local time specified
       end
     end
 

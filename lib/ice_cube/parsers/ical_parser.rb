@@ -1,28 +1,60 @@
+
 module IceCube
+
   class IcalParser
+
+    TimeInfo = Struct.new(:time_value, :whole_day)
+
+    class << self
+      attr_accessor :use_extensions
+    end
+    @use_extensions = !! ENV["ICE_CUBE_ICAL_EXTS"]
+
     def self.schedule_from_ical(ical_string, options = {})
-      data = {}
+      data = { :extimes => [], :rtimes => [], :extimes_infos => [], :rtimes_infos => [] }
       ical_string.each_line do |line|
-        (property, value) = line.split(':')
+        next if use_extensions && line =~ /^\s*(#|$)/
+        (property, value) = line.strip.split(':')
         (property, tzid) = property.split(';')
+        if use_extensions && date_only_string?(property) && value.nil?
+          # Special case, if full line is a YYYYMMDD value, then treat it as RDATE
+          property, value = 'RDATE', property
+        end
         case property
         when 'DTSTART'
           data[:start_time] = Time.parse(value)
         when 'DTEND'
           data[:end_time] = Time.parse(value)
         when 'EXDATE'
-          data[:extimes] ||= []
-          data[:extimes] += value.split(',').map{|v| Time.parse(v)}
+          data[:extimes] += set_date_data(property, value, :extimes_infos, data)
         when 'DURATION'
           data[:duration] # FIXME
         when 'RRULE'
           data[:rrules] = [rule_from_ical(value)]
         when 'RDATE'
-          data[:rtimes] ||= []
-          data[:rtimes] += value.split(',').map{|v| Time.parse(v)}
+          data[:rtimes] += set_date_data(property, value, :rtimes_infos, data)
         end
       end
       Schedule.from_hash data
+    end
+
+    def self.set_date_data(property, value, info_key, data)
+      time_strings = value.split(',')
+      time_values  = time_strings.map { |v| Time.parse(v) }
+
+      infos = (0...time_strings.size).map { |i|
+        info = TimeInfo.new
+        info.time_value = time_values[i]
+        info.whole_day  = date_only_string?(time_strings[i])
+        info
+      }
+      data[info_key] += infos
+
+      time_values
+    end
+
+    def self.date_only_string?(str)
+      str =~ /^\d{4}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])$/ # yyyymmdd for year 0000-9999
     end
 
     def self.rule_from_ical(ical)

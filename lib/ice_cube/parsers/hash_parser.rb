@@ -70,16 +70,16 @@ module IceCube
     end
 
     def apply_rtimes(schedule, data)
-      return unless data[:rtimes]
-      data[:rtimes].each do |t|
-        schedule.add_recurrence_time TimeUtil.deserialize_time(t)
+      return unless data[:rtimes_infos]
+      data[:rtimes_infos].each do |info|
+        schedule.add_recurrence_time(TimeUtil.deserialize_time(info.time_value), info.whole_day)
       end
     end
 
     def apply_extimes(schedule, data)
-      return unless data[:extimes]
-      data[:extimes].each do |t|
-        schedule.add_exception_time TimeUtil.deserialize_time(t)
+      return unless data[:extimes_infos]
+      data[:extimes_infos].each do |info|
+        schedule.add_exception_time(TimeUtil.deserialize_time(info.time_value), info.whole_day)
       end
     end
 

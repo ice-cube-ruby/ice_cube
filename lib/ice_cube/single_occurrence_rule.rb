@@ -4,8 +4,9 @@ module IceCube
 
     attr_reader :time
 
-    def initialize(time)
+    def initialize(time, whole_day=false)
       @time = TimeUtil.ensure_time time
+      @whole_day = whole_day
     end
 
     # Always terminating
@@ -13,14 +14,14 @@ module IceCube
       true
     end
 
-    # Override from Rule, so any RDATE or EXDATE values may be used without HH:MM:SS defined.
+    # Override from Rule, so any RDATE or EXDATE values may be used without a time defined.
     #
     def on?(time, schedule)
       next_time(time, schedule, time).to_i == time.to_i || whole_day? && same_day?(time)
     end
 
     def whole_day?
-      time.hour == 0 && time.min == 0 && time.sec == 0
+      @whole_day
     end
 
     def same_day?(other)
