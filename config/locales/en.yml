@@ -69,13 +69,13 @@ en:
     on_weekends: on Weekends
     on_weekdays: on Weekdays
     days_on:
-      - Sundays
-      - Mondays
-      - Tuesdays
-      - Wednesdays
-      - Thursdays
-      - Fridays
-      - Saturdays
+    - Sundays
+    - Mondays
+    - Tuesdays
+    - Wednesdays
+    - Thursdays
+    - Fridays
+    - Saturdays
     on_days: on %{days}
     array:
       last_word_connector: ', and '
@@ -92,7 +92,6 @@ en:
         until: '%{rest} %{current}'
         count: '%{rest} %{current}'
         default: '%{rest} %{current}'
-
   date:
     abbr_day_names:
     - Sun

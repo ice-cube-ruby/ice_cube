@@ -60,13 +60,13 @@ ja:
     on_weekends: 週末
     on_weekdays: 平日
     days_on:
-      - 日曜
-      - 月曜
-      - 火曜
-      - 水曜
-      - 木曜
-      - 金曜
-      - 土曜
+    - 日曜
+    - 月曜
+    - 火曜
+    - 水曜
+    - 木曜
+    - 金曜
+    - 土曜
     on_days: '%{days}'
     array:
       last_word_connector: '、'
