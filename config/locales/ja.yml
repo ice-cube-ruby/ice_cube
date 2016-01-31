@@ -6,28 +6,6 @@ ja:
     date:
       formats:
         default: '%Y年%m月%d日'
-      month_names:
-      -
-      - 1月
-      - 2月
-      - 3月
-      - 4月
-      - 5月
-      - 6月
-      - 7月
-      - 8月
-      - 9月
-      - 10月
-      - 11月
-      - 12月
-      day_names:
-      - 日曜
-      - 月曜
-      - 火曜
-      - 水曜
-      - 木曜
-      - 金曜
-      - 土曜
     times:
       other: '%{count}回'
       one: '%{count}回'
@@ -105,3 +83,48 @@ ja:
         until: '%{current}%{rest}'
         count: '%{rest}%{current}'
         default: '%{rest}%{current}'
+  date:
+    abbr_day_names:
+    - 日
+    - 月
+    - 火
+    - 水
+    - 木
+    - 金
+    - 土
+    abbr_month_names:
+    -
+    - 1月
+    - 2月
+    - 3月
+    - 4月
+    - 5月
+    - 6月
+    - 7月
+    - 8月
+    - 9月
+    - 10月
+    - 11月
+    - 12月
+    day_names:
+    - 日曜
+    - 月曜
+    - 火曜
+    - 水曜
+    - 木曜
+    - 金曜
+    - 土曜
+    month_names:
+    -
+    - 1月
+    - 2月
+    - 3月
+    - 4月
+    - 5月
+    - 6月
+    - 7月
+    - 8月
+    - 9月
+    - 10月
+    - 11月
+    - 12月

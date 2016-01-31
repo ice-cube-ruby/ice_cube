@@ -6,28 +6,6 @@ en:
     date:
       formats:
         default: '%B %-d, %Y'
-      month_names:
-      -
-      - January
-      - February
-      - March
-      - April
-      - May
-      - June
-      - July
-      - August
-      - September
-      - October
-      - November
-      - December
-      day_names:
-      - Sunday
-      - Monday
-      - Tuesday
-      - Wednesday
-      - Thursday
-      - Friday
-      - Saturday
     times:
       other: '%{count} times'
       one: '%{count} time'

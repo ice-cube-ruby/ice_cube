@@ -6,28 +6,6 @@ es:
     date:
       formats:
         default: '%-d de %B de %Y'
-      month_names:
-        -
-        - Enero
-        - Febrero
-        - Marzo
-        - Abril
-        - Mayo
-        - Junio
-        - Julio
-        - Agosto
-        - Septiembre
-        - Octubre
-        - Noviembre
-        - Diciembre
-      day_names:
-        - Domingo
-        - Lunes
-        - Martes
-        - Miércoles
-        - Jueves
-        - Viernes
-        - Sábado
     times:
       other: '%{count} veces'
       one: '%{count} vez'

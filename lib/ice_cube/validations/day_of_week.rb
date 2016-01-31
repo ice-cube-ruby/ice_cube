@@ -48,7 +48,7 @@ module IceCube
         builder.piece(:day_of_week) << IceCube::I18n.t(
           'ice_cube.days_of_week',
           segments: StringBuilder.nice_number(occ),
-          day: IceCube::I18n.t('ice_cube.date.day_names')[day]
+          day: IceCube::I18n.t('date.day_names')[day]
         )
       end
 

@@ -32,7 +32,7 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.piece(:month_of_year) << IceCube::I18n.t("ice_cube.date.month_names")[month]
+        builder.piece(:month_of_year) << IceCube::I18n.t("date.month_names")[month]
       end
 
       def build_hash(builder)
