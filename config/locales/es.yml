@@ -70,13 +70,13 @@ es:
     on_weekends: en fin de semana
     on_weekdays: en días laborables
     days_on:
-      - los domingos
-      - los lunes
-      - los martes
-      - los miércoles
-      - los jueves
-      - los viernes
-      - los sábados
+    - los domingos
+    - los lunes
+    - los martes
+    - los miércoles
+    - los jueves
+    - los viernes
+    - los sábados
     on_days: '%{days}'
     array:
       last_word_connector: ' y '
@@ -93,50 +93,48 @@ es:
         until: '%{rest} %{current}'
         count: '%{rest} %{current}'
         default: '%{rest} %{current}'
-
   date:
     day_names:
-      - Domingo
-      - Lunes
-      - Martes
-      - Miércoles
-      - Jueves
-      - Viernes
-      - Sábado
+    - Domingo
+    - Lunes
+    - Martes
+    - Miércoles
+    - Jueves
+    - Viernes
+    - Sábado
     abbr_day_names:
-      - Dom
-      - Lun
-      - Mar
-      - Mie
-      - Jue
-      - Vie
-      - Sab
-    # Don't forget the nil at the beginning; there's no such thing as a 0th month
+    - Dom
+    - Lun
+    - Mar
+    - Mie
+    - Jue
+    - Vie
+    - Sab
     month_names:
-      -
-      - Enero
-      - Febrero
-      - Marzo
-      - Abril
-      - Mayo
-      - Junio
-      - Julio
-      - Agosto
-      - Septiembre
-      - Octubre
-      - Noviembre
-      - Diciembre
+    -
+    - Enero
+    - Febrero
+    - Marzo
+    - Abril
+    - Mayo
+    - Junio
+    - Julio
+    - Agosto
+    - Septiembre
+    - Octubre
+    - Noviembre
+    - Diciembre
     abbr_month_names:
-      -
-      - Ene
-      - Feb
-      - Mar
-      - Abr
-      - May
-      - Jun
-      - Jul
-      - Ago
-      - Sep
-      - Oct
-      - Nov
-      - Dic
+    -
+    - Ene
+    - Feb
+    - Mar
+    - Abr
+    - May
+    - Jun
+    - Jul
+    - Ago
+    - Sep
+    - Oct
+    - Nov
+    - Dic
