@@ -58,27 +58,30 @@ describe IceCube::YearlyRule do
     expect(schedule.occurrences(start_time + 370 * IceCube::ONE_DAY)).to eq([start_time])
   end
 
-  it 'should produce the correct number of days for @interval = 1 when you specify months' do
+  it 'should produce the correct days for @interval = 1 when you specify months' do
     start_time = Time.utc(2010, 1, 1)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.yearly.month_of_year(:january, :april, :november)
-    #check assumption
-    expect(schedule.occurrences(Time.utc(2010, 12, 31)).size).to eq(3)
+
+    months_of_year = [Time.utc(2010,1,1), Time.utc(2010,4,1), Time.utc(2010,11,1)]
+    expect(schedule.occurrences(Time.utc(2010, 12, 31))).to eq months_of_year
   end
 
-  it 'should produce the correct number of days for @interval = 1 when you specify days' do
+  it 'should produce the correct days for @interval = 1 when you specify days' do
     start_time = Time.utc(2010, 1, 1)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.yearly.day_of_year(155, 200)
-    #check assumption
-    expect(schedule.occurrences(Time.utc(2010, 12, 31)).size).to eq(2)
+
+    days_of_year = [Time.utc(2010, 6, 4), Time.utc(2010, 7, 19)]
+    expect(schedule.occurrences(Time.utc(2010, 12, 31))).to eq days_of_year
   end
 
-  it 'should produce the correct number of days for @interval = 1 when you specify negative days' do
+  it 'should produce the correct days for @interval = 1 when you specify negative days' do
     schedule = IceCube::Schedule.new(Time.utc(2010, 1, 1))
     schedule.add_recurrence_rule IceCube::Rule.yearly.day_of_year(100, -1)
-    #check assumption
-    expect(schedule.occurrences(Time.utc(2010, 12, 31)).size).to eq(2)
+
+    days_of_year = [Time.utc(2010, 4, 10), Time.utc(2010, 12, 31)]
+    expect(schedule.occurrences(Time.utc(2010, 12, 31))).to eq days_of_year
   end
 
 end
