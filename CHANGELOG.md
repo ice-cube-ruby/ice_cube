@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.14.0 / 2016-02-23
+
+* Added span option for occurrence methods
+
 ## 0.13.1 / 2015-12-07
 
 * Added i18n support!
