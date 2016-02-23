@@ -166,15 +166,15 @@ module IceCube
     end
 
     # The next n occurrences after now
-    def next_occurrences(num, from = nil, spans = false)
+    def next_occurrences(num, from = nil, options = {})
       from = TimeUtil.match_zone(from, start_time) || TimeUtil.now(start_time)
-      enumerate_occurrences(from + 1, nil, spans).take(num)
+      enumerate_occurrences(from + 1, nil, options).take(num)
     end
 
     # The next occurrence after now (overridable)
-    def next_occurrence(from = nil, spans = false)
+    def next_occurrence(from = nil, options = {})
       from = TimeUtil.match_zone(from, start_time) || TimeUtil.now(start_time)
-      enumerate_occurrences(from + 1, nil, spans).next
+      enumerate_occurrences(from + 1, nil, options).next
     rescue StopIteration
       nil
     end
@@ -195,26 +195,26 @@ module IceCube
     end
 
     # The remaining occurrences (same requirements as all_occurrences)
-    def remaining_occurrences(from = nil, spans = false)
+    def remaining_occurrences(from = nil, options = {})
       require_terminating_rules
       from ||= TimeUtil.now(@start_time)
-      enumerate_occurrences(from, nil, spans).to_a
+      enumerate_occurrences(from, nil, options).to_a
     end
 
     # Returns an enumerator for all remaining occurrences
-    def remaining_occurrences_enumerator(from = nil, spans = false)
+    def remaining_occurrences_enumerator(from = nil, options = {})
       from ||= TimeUtil.now(@start_time)
-      enumerate_occurrences(from, nil, spans)
+      enumerate_occurrences(from, nil, options)
     end
 
     # Occurrences between two times
-    def occurrences_between(begin_time, closing_time, spans = false)
-      enumerate_occurrences(begin_time, closing_time, spans).to_a
+    def occurrences_between(begin_time, closing_time, options = {})
+      enumerate_occurrences(begin_time, closing_time, options).to_a
     end
 
     # Return a boolean indicating if an occurrence falls between two times
-    def occurs_between?(begin_time, closing_time, spans = false)
-      enumerate_occurrences(begin_time, closing_time, spans).next
+    def occurs_between?(begin_time, closing_time, options = {})
+      enumerate_occurrences(begin_time, closing_time, options).next
       true
     rescue StopIteration
       false
@@ -226,7 +226,7 @@ module IceCube
     # occurrences at the end of the range since none of their duration
     # intersects the range.
     def occurring_between?(opening_time, closing_time)
-      occurs_between?(opening_time, closing_time, true)
+      occurs_between?(opening_time, closing_time, :spans => true)
     end
 
     # Return a boolean indicating if an occurrence falls on a certain date
@@ -402,12 +402,12 @@ module IceCube
     # Find all of the occurrences for the schedule between opening_time
     # and closing_time
     # Iteration is unrolled in pairs to skip duplicate times in end of DST
-    def enumerate_occurrences(opening_time, closing_time = nil, spans = false, &block)
+    def enumerate_occurrences(opening_time, closing_time = nil, options = {}, &block)
       opening_time = TimeUtil.match_zone(opening_time, start_time)
       closing_time = TimeUtil.match_zone(closing_time, start_time)
       opening_time += start_time.subsec - opening_time.subsec rescue 0
       opening_time = start_time if opening_time < start_time
-      spans = false if duration == 0
+      spans = options[:spans] == true && duration != 0
       Enumerator.new do |yielder|
         reset
         t1 = full_required? ? start_time : realign((spans ? opening_time - duration : opening_time))
