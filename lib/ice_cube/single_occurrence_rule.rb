@@ -13,6 +13,11 @@ module IceCube
       true
     end
 
+    # Never overrides duration
+    def duration
+      nil
+    end
+
     def next_time(t, schedule, closing_time)
       unless closing_time && closing_time < t
         time if time.to_i >= t.to_i

@@ -44,6 +44,16 @@ module IceCube
       @end_time = start_time + seconds
     end
 
+    # Return the maximum value between schedule's duration and
+    # the durations of all the recurrence and exception rules included
+    # in this schedule
+    def max_duration
+      all_durations = [duration]
+      all_durations += @all_recurrence_rules.map { |r| r.duration }.compact
+      all_durations += @all_exception_rules.map { |r| r.duration }.compact
+      all_durations.max
+    end
+
     # Add a recurrence time to the schedule
     def add_recurrence_time(time)
       return nil if time.nil?
@@ -240,9 +250,14 @@ module IceCube
     # Determine if the schedule is occurring at a given time
     def occurring_at?(time)
       time = TimeUtil.match_zone(time, start_time) or raise ArgumentError, "Time required, got #{time.inspect}"
-      if duration > 0
+      if max_duration > 0
         return false if exception_time?(time)
-        occurs_between?(time - duration + 1, time)
+        begin
+          enumerate_occurrences(time, time, :spans => true).next
+          true
+        rescue StopIteration
+          false
+        end
       else
         occurs_at?(time)
       end
@@ -410,10 +425,10 @@ module IceCube
       closing_time = TimeUtil.match_zone(closing_time, start_time)
       opening_time += start_time.subsec - opening_time.subsec rescue 0
       opening_time = start_time if opening_time < start_time
-      spans = options[:spans] == true && duration != 0
+      spans = options[:spans] == true && max_duration != 0
       Enumerator.new do |yielder|
         reset
-        t1 = full_required? ? start_time : realign((spans ? opening_time - duration : opening_time))
+        t1 = full_required? ? start_time : realign((spans ? opening_time - max_duration : opening_time))
         loop do
           break unless (t0 = next_time(t1, closing_time))
           break if closing_time && t0 > closing_time
@@ -437,17 +452,30 @@ module IceCube
     # Get the next time after (or including) a specific time
     def next_time(time, closing_time)
       loop do
-        min_time = recurrence_rules_with_implicit_start_occurrence.reduce(nil) do |min_time, rule|
+        min_time_with_duration = recurrence_rules_with_implicit_start_occurrence.reduce(nil) do |min_time_with_duration, rule|
+          min_time = (min_time_with_duration && min_time_with_duration[0]) || nil
           begin
             new_time = rule.next_time(time, self, min_time || closing_time)
-            [min_time, new_time].compact.min
+            new_time_with_duration = [new_time, rule.duration]
+
+            if new_time.nil?
+              min_time_with_duration
+            elsif min_time.nil?
+              new_time_with_duration
+            elsif new_time < min_time
+              new_time_with_duration
+            else
+              min_time_with_duration
+            end
           rescue StopIteration
-            min_time
+            (min_time && [min_time, rule.duration]) || nil
           end
         end
+        min_time = (min_time_with_duration && min_time_with_duration[0]) || nil
+        rule_duration = (min_time_with_duration && min_time_with_duration[1]) || nil
         break nil unless min_time
         next (time = min_time + 1) if exception_time?(min_time)
-        break Occurrence.new(min_time, min_time + duration)
+        break Occurrence.new(min_time, min_time + (rule_duration || duration))
       end
     end
 

@@ -76,6 +76,44 @@ describe :occurring_between? do
     schedule.occurring_between?(start_time - 2, start_time - 1).should be_false
   end
 
+  describe "with a rule overriding schedule's duration" do
+    let(:start_time) { Time.local(2012, 7, 7, 7) }
+    let(:end_time)   { start_time + 30 }
+
+    let(:schedule) do
+      IceCube::Schedule.new(start_time, :duration => 1).tap do |schedule|
+        schedule.rrule IceCube::Rule.daily.override_duration(30)
+      end
+    end
+
+    it 'should affirm an occurrence that spans the range exactly' do
+      schedule.occurring_between?(start_time, end_time).should be_true
+    end
+
+    it 'should affirm an occurrence entirely contained within the range' do
+      schedule.occurring_between?(start_time + 1, end_time - 1).should be_true
+    end
+
+    it 'should affirm an occurrence spanning across the start of the range' do
+      schedule.occurring_between?(start_time - 1, start_time + 1).should be_true
+    end
+
+    it 'should affirm an occurrence spanning across the end of the range' do
+      schedule.occurring_between?(end_time - 1, end_time + 1).should be_true
+    end
+
+    it 'should affirm an occurrence spanning across the range entirely' do
+      schedule.occurring_between?(start_time - 1, end_time + 1).should be_true
+    end
+
+    it 'should deny an occurrence before the range' do
+      schedule.occurring_between?(end_time + 1, end_time + 2).should be_false
+    end
+
+    it 'should deny an occurrence after the range' do
+      schedule.occurring_between?(start_time - 2, start_time - 1).should be_false
+    end
+  end
 end
 
 describe :next_occurrence do
@@ -114,7 +152,6 @@ describe :next_occurrence do
     schedule.add_recurrence_rule Rule.hourly
     schedule.next_occurrence(schedule.start_time).should == schedule.start_time + 30 * ONE_MINUTE
   end
-
 end
 
 describe :next_occurrences do
@@ -170,5 +207,4 @@ describe :next_occurrences do
     schedule.rrule Rule.daily
     schedule.next_occurrences(5).should == schedule.next_occurrences(5)
   end
-
 end

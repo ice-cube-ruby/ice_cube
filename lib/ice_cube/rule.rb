@@ -11,6 +11,11 @@ module IceCube
       until_time || occurrence_count
     end
 
+    # Does this rule override the schedule's duration?
+    def overrides_duration?
+      !duration.nil?
+    end
+
     def ==(rule)
       if rule.is_a? Rule
         hash = to_hash
