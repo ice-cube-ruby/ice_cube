@@ -239,7 +239,7 @@ schedule.add_recurrence_rule IceCube::Rule.yearly(4).day_of_year(-1)
 
 ```ruby
 # every year on the same day as start_time but in january and february
-schedule.add_recurrence_rule IceCube::Rule.yearly.month_of_year(:january, :februrary)
+schedule.add_recurrence_rule IceCube::Rule.yearly.month_of_year(:january, :february)
 
 # every third year in march
 schedule.add_recurrence_rule IceCube::Rule.yearly(3).month_of_year(:march)
