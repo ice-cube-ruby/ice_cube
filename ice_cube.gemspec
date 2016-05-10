@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
 
   s.version       = IceCube::VERSION
   s.platform      = Gem::Platform::RUBY
-  s.files         = Dir['lib/**/*.rb']
+  s.files         = Dir['lib/**/*.rb', 'config/**/*.yml']
   s.test_files    = Dir.glob('spec/*.rb')
   s.require_paths = ['lib']
   s.has_rdoc      = true
@@ -21,4 +21,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency('rspec', '~> 2.12.0')
   s.add_development_dependency('activesupport', '>= 3.0.0')
   s.add_development_dependency('tzinfo')
+  s.add_development_dependency('i18n')
 end

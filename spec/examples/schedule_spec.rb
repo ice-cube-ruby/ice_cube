@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/../spec_helper'
+require 'benchmark'
 
 describe IceCube::Schedule do
 
@@ -451,14 +452,91 @@ describe IceCube::Schedule do
 
   end
 
+  describe :spans do
+
+    it 'should find occurrence in past with duration beyond the start time' do
+      t0 = Time.utc(2015, 10, 1, 15, 31)
+      schedule = IceCube::Schedule.new(t0, :duration => 2 * IceCube::ONE_HOUR)
+      schedule.add_recurrence_rule IceCube::Rule.daily
+      next_occ = schedule.next_occurrence(t0 + IceCube::ONE_HOUR, :spans => true)
+      next_occ.should == t0
+    end
+
+    it 'should include occurrence in past with duration beyond the start time' do
+      t0 = Time.utc(2015, 10, 1, 15, 31)
+      schedule = IceCube::Schedule.new(t0, :duration => 2 * IceCube::ONE_HOUR)
+      schedule.add_recurrence_rule IceCube::Rule.daily.count(2)
+      occs = schedule.next_occurrences(10, t0 + IceCube::ONE_HOUR, :spans => true)
+      occs.should == [t0, t0 + IceCube::ONE_DAY]
+    end
+
+    it 'should allow duration span on remaining_occurrences' do
+      t0 = Time.utc(2015, 10, 1, 00, 00)
+      schedule = IceCube::Schedule.new(t0, :duration => IceCube::ONE_DAY)
+      schedule.add_recurrence_rule IceCube::Rule.daily.count(3)
+      occs = schedule.remaining_occurrences(t0 + IceCube::ONE_DAY + IceCube::ONE_HOUR, :spans => true)
+      occs.should == [t0 + IceCube::ONE_DAY, t0 + 2 * IceCube::ONE_DAY]
+    end
+
+    it 'should include occurrences with duration spanning the requested start time' do
+      t0 = Time.utc(2015, 10, 1, 15, 31)
+      schedule = IceCube::Schedule.new(t0, :duration => 30 * IceCube::ONE_DAY)
+      long_event = schedule.remaining_occurrences_enumerator(t0 + IceCube::ONE_DAY, :spans => true).take(1)
+      long_event.should == [t0]
+    end
+    
+    it 'should find occurrences between including previous one with duration spanning start' do
+      t0 = Time.utc(2015, 10, 1, 10, 00)
+      schedule = IceCube::Schedule.new(t0, :duration => IceCube::ONE_HOUR)
+      schedule.add_recurrence_rule IceCube::Rule.hourly.count(10)
+      occs = schedule.occurrences_between(t0 + IceCube::ONE_HOUR + 1, t0 + 3 * IceCube::ONE_HOUR + 1, :spans => true)
+      occs.length.should == 3
+    end
+
+    it 'should include long occurrences starting before and ending after' do
+      t0 = Time.utc(2015, 10, 1, 00, 00)
+      schedule = IceCube::Schedule.new(t0, :duration => IceCube::ONE_DAY)
+      occs = schedule.occurrences_between(t0 + IceCube::ONE_HOUR, t0 + IceCube::ONE_DAY - IceCube::ONE_HOUR, :spans => true)
+      occs.should == [t0]
+    end
+
+    it 'should not find occurrence with duration ending on start time' do
+      t0 = Time.utc(2015, 10, 1, 12, 00)
+      schedule = IceCube::Schedule.new(t0, :duration => IceCube::ONE_HOUR)
+      schedule.occurs_between?(t0 + IceCube::ONE_HOUR, t0 + 2 * IceCube::ONE_HOUR, :spans => true).should be_false
+    end
+    
+    it 'should quickly fetch a future time from a recurring schedule' do
+      t0 = Time.utc(2000, 10, 1, 00, 00)
+      t1 = Time.utc(2015, 10, 1, 12, 00)
+      schedule = IceCube::Schedule.new(t0, :duration => IceCube::ONE_HOUR - 1)
+      schedule.add_recurrence_rule IceCube::Rule.hourly
+      occ = nil
+      timing = Benchmark.realtime do
+        occ = schedule.remaining_occurrences_enumerator(t1, :spans => true).take(1)
+      end
+      timing.should < 0.1
+      occ.should == [t1]
+    end
+    
+    it 'should not include occurrence ending on start time' do
+      t0 = Time.utc(2015, 10, 1, 10, 00)
+      schedule = IceCube::Schedule.new(t0, :duration => IceCube::ONE_HOUR / 2)
+      schedule.add_recurrence_rule IceCube::Rule.minutely(30).count(6)
+      third_occ = schedule.next_occurrence(t0 + IceCube::ONE_HOUR, :spans => true)
+      third_occ.should == t0 + IceCube::ONE_HOUR
+    end
+
+  end
+
   describe :previous_occurrence do
 
     it 'returns the previous occurrence for a time in the schedule' do
       t0 = Time.utc(2013, 5, 18, 12, 34)
       schedule = IceCube::Schedule.new(t0)
       schedule.add_recurrence_rule IceCube::Rule.daily
-      previous = schedule.previous_occurrence(t0 + 2 * ONE_DAY)
-      previous.should == t0 + ONE_DAY
+      previous = schedule.previous_occurrence(t0 + 2 * IceCube::ONE_DAY)
+      previous.should == t0 + IceCube::ONE_DAY
     end
 
     it 'returns nil given the start time' do
@@ -485,16 +563,16 @@ describe IceCube::Schedule do
       t0 = Time.utc(2013, 5, 18, 12, 34)
       schedule = IceCube::Schedule.new(t0)
       schedule.add_recurrence_rule IceCube::Rule.daily
-      previous = schedule.previous_occurrences(2, t0 + 3 * ONE_DAY)
-      previous.should == [t0 + ONE_DAY, t0 + 2 * ONE_DAY]
+      previous = schedule.previous_occurrences(2, t0 + 3 * IceCube::ONE_DAY)
+      previous.should == [t0 + IceCube::ONE_DAY, t0 + 2 * IceCube::ONE_DAY]
     end
 
     it 'limits the returned occurrences to a given count' do
       t0 = Time.utc(2013, 5, 18, 12, 34)
       schedule = IceCube::Schedule.new(t0)
       schedule.add_recurrence_rule IceCube::Rule.daily
-      previous = schedule.previous_occurrences(999, t0 + 2 * ONE_DAY)
-      previous.should == [t0, t0 + ONE_DAY]
+      previous = schedule.previous_occurrences(999, t0 + 2 * IceCube::ONE_DAY)
+      previous.should == [t0, t0 + IceCube::ONE_DAY]
     end
 
     it 'returns empty array given the start time' do
@@ -531,7 +609,7 @@ describe IceCube::Schedule do
       t1 = Time.utc(2013, 5, 31, 12, 34)
       schedule = IceCube::Schedule.new(t0)
       schedule.add_recurrence_rule IceCube::Rule.daily.until(t1 + 1)
-      schedule.last(2).should == [t1 - ONE_DAY, t1]
+      schedule.last(2).should == [t1 - IceCube::ONE_DAY, t1]
     end
 
     it 'raises an error for a non-terminating schedule' do

@@ -38,7 +38,8 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.piece(:until) << "until #{time.strftime(IceCube.to_s_time_format)}"
+        date = IceCube::I18n.l(time, format: IceCube.to_s_time_format)
+        builder.piece(:until) << IceCube::I18n.t('ice_cube.until', date: date)
       end
 
       def build_hash(builder)

@@ -1,5 +1,8 @@
 require 'date'
 require 'ice_cube/deprecated'
+require 'ice_cube/i18n'
+
+IceCube::I18n.detect_backend!
 
 module IceCube
 
@@ -69,7 +72,7 @@ module IceCube
   # Defines the format used by IceCube when printing out Schedule#to_s.
   # Defaults to '%B %e, %Y'
   def self.to_s_time_format
-    @to_s_time_format ||= '%B %e, %Y'
+    IceCube::I18n.t("ice_cube.date.formats.default")
   end
 
   # Sets the format used by IceCube when printing out Schedule#to_s.
@@ -80,7 +83,7 @@ module IceCube
   # Retain backwards compatibility for schedules exported from older versions
   # This represents the version number, 11 = 0.11, 1.0 will be 100
   def self.compatibility
-    @compatibility ||= 11
+    @compatibility ||= IceCube::VERSION.scan(/\d+/)[0..1].join.to_i
   end
 
   def self.compatibility=(version)
