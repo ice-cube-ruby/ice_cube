@@ -2,12 +2,12 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe IceCube::YearlyRule, 'interval validation' do
   it 'converts a string integer to an actual int when using the interval method' do
-    rule = Rule.yearly.interval("2")
+    rule = IceCube::Rule.yearly.interval("2")
     rule.validations_for(:interval).first.interval.should == 2
   end
 
   it 'converts a string integer to an actual int when using the initializer' do
-    rule = Rule.yearly("3")
+    rule = IceCube::Rule.yearly("3")
     rule.validations_for(:interval).first.interval.should == 3
   end
 

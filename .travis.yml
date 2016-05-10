@@ -1,4 +1,6 @@
 script: "bundle exec rspec spec"
+before_install:
+  - gem install bundler
 notifications:
   email:
     - john.crepezzi@gmail.com
@@ -10,3 +12,4 @@ rvm:
   - 1.9.3
   - 2.0.0
   - 2.1
+  - 2.2

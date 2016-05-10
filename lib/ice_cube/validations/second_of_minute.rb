@@ -43,8 +43,8 @@ module IceCube
       end
 
       StringBuilder.register_formatter(:second_of_minute) do |segments|
-        str = "on the #{StringBuilder.sentence(segments)} "
-        str << (segments.size == 1 ? 'second of the minute' : 'seconds of the minute')
+        str = StringBuilder.sentence(segments)
+        IceCube::I18n.t('ice_cube.on_seconds_of_minute', count: segments.size, segments: str)
       end
 
     end

@@ -140,19 +140,17 @@ module IceCube
       true
     end
 
+    # Returns true if all validations for the current rule match
+    # otherwise false and shifts to the first (largest) unmatched offset
+    #
     def validation_accepts_or_updates_time?(validations_for_type)
-      res = validated_results(validations_for_type)
-      return true if res.any? { |r| r.nil? || r == 0 }
-      return nil if res.all? { |r| r == true }
-      res.reject! { |r| r == true }
+      res = validations_for_type.each_with_object([]) do |validation, offsets|
+        r = validation.validate(@time, @schedule)
+        return true if r.nil? || r == 0
+        offsets << r
+      end
       shift_time_by_validation(res, validations_for_type.first)
       false
-    end
-
-    def validated_results(validations_for_type)
-      validations_for_type.map do |validation|
-        validation.validate(@time, @schedule)
-      end
     end
 
     def shift_time_by_validation(res, validation)

@@ -44,8 +44,8 @@ module IceCube
       end
 
       StringBuilder.register_formatter(:hour_of_day) do |segments|
-        str = "on the #{StringBuilder.sentence(segments)} "
-        str << (segments.size == 1 ? 'hour of the day' : 'hours of the day')
+        str = StringBuilder.sentence(segments)
+        IceCube::I18n.t('ice_cube.at_hours_of_the_day', count: segments.size, segments: str)
       end
 
     end
