@@ -142,6 +142,15 @@ module IceCube
         it "sets the time zone of the start time" do
           schedule = IceCube::Schedule.from_ical(ical_string_with_time_zones)
           expect(schedule.start_time.time_zone).to eq ActiveSupport::TimeZone.new("America/Denver")
+          expect(schedule.start_time.is_a?(Time)).to be true
+          expect(schedule.start_time.is_a?(ActiveSupport::TimeWithZone)).to be true
+        end
+
+        it "treats UTC as a Time rather than TimeWithZone" do
+          schedule = IceCube::Schedule.from_ical(ical_string)
+          expect(schedule.start_time.utc_offset).to eq 0
+          expect(schedule.start_time.is_a?(Time)).to be true
+          expect(schedule.start_time.is_a?(ActiveSupport::TimeWithZone)).to be false
         end
 
         it "uses the system time if a time zone is not explicity provided" do
