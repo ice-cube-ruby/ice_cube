@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/../spec_helper'
+require 'timecop'
 
 include IceCube
 
@@ -117,12 +118,15 @@ describe :next_occurrence do
 
   it 'should get the next occurrence across the daylight savings time boundary' do
     # 2016 daylight savings time cutoff is Sunday March 13
-    Time.zone = 'America/New_York'
-    start_time = Time.zone.local(2016, 3, 13, 12, 0, 0)
-    next_time = Time.zone.local(2016, 3, 14, 12, 0, 0)
-    schedule = Schedule.new(start_time, :end_time => start_time + 14 * 24 * ONE_HOUR)
-    schedule.add_recurrence_rule(Rule.daily)
-    schedule.next_occurrence(schedule.start_time).should == next_time
+    # Time.zone = 'America/New_York'
+    start_time = Time.zone.local(2016, 3, 13, 0, 0, 0)
+    expected_next_time = Time.zone.local(2016, 3, 13, 5, 0, 0)
+    schedule = Schedule.new(start_time)
+    schedule.add_recurrence_rule(Rule.hourly(interval=4))
+
+    Timecop.freeze(start_time) do
+      schedule.next_occurrence(schedule.start_time).should == expected_next_time
+    end
   end
 end
 
