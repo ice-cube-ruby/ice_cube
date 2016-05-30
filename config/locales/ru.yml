@@ -5,29 +5,29 @@ ru:
     not_on: 'не в %{target}'
     date:
       formats:
-        default: '%d %B %Y'
+        default: '%-d %B %Y'
       month_names:
       -
-      - Январь
-      - Февраль
-      - Март
-      - Апрель
-      - Май
-      - Июнь
-      - Июль
-      - Август
-      - Сентябрь
-      - Октябрь
-      - Ноябрь
-      - Декабрь
+      - январь
+      - февраль
+      - март
+      - апрель
+      - май
+      - июнь
+      - июль
+      - август
+      - сентябрь
+      - октябрь
+      - ноябрь
+      - декабрь
       day_names:
-      - Воскресенье
-      - Понедельник
-      - Вторник
-      - Среда
-      - Четверг
-      - Пятница
-      - Суббота
+      - воскресенье
+      - понедельник
+      - вторник
+      - среда
+      - четверг
+      - пятница
+      - суббота
     times:
       other: '%{count} раза'
       many: '%{count} раз'
@@ -36,15 +36,15 @@ ru:
     until: 'до %{date}'
     days_of_week: '%{segments} %{day}'
     days_of_month:
-      other: '%{segments} дней в месяц'
-      many: '%{segments} дней в месяц'
-      few: '%{segments} дня в месяц'
-      one: '%{segments} день в месяц'
+      other: '%{segments} день месяца'
+      many: '%{segments} день месяца'
+      few: '%{segments} день месяца'
+      one: '%{segments} день месяца'
     days_of_year:
-      other: '%{segments} дней в году'
-      many: '%{segments} дней в году'
-      few: '%{segments} дня в году'
-      one: '%{segments} день в году'
+      other: '%{segments} день года'
+      many: '%{segments} день года'
+      few: '%{segments} день года'
+      one: '%{segments} день года'
     at_hours_of_the_day:
       other: в %{segments} часы дня
       many: в %{segments} часы дня
@@ -55,16 +55,11 @@ ru:
       many: в %{segments} минуты часа
       few: в %{segments} минуты часа
       one: в %{segments} минуту часа
-    at_seconds_of_minute:
-      other: через %{segments} секунды
-      many: через %{segments} секунды
-      few: через %{segments} секунды
-      one: через %{segments} секунду
     on_seconds_of_minute:
-      other: на %{segments} секунды минуты
-      many: на %{segments} секунды минуты
-      few: на %{segments} секунды минуты
-      one: на %{segments} секунду минуты
+      other: на %{segments} секунде минуты
+      many: на %{segments} секунде минуты
+      few: на %{segments} секунде минуты
+      one: на %{segments} секунде минуты
     each_second:
       one: Ежесекундно
       few: Каждые %{count} секунды
@@ -109,14 +104,8 @@ ru:
         -2: предпоследний
       ordinal: '%{number}%{ordinal}'
       ordinals:
-        default: ый
-        1: ый
-        2: ой
-        3: ий
-        11: ый
-        12: ый
-        13: ый
-    on_weekends: нв выходных
+        default: ''
+    on_weekends: на выходных
     on_weekdays: по будням
     days_on:
       - воскресеньям
@@ -154,18 +143,18 @@ ru:
     - Сб
     abbr_month_names:
     -
-    - янв.
-    - февр.
-    - марта
-    - апр.
-    - мая
-    - июня
-    - июля
-    - авг.
-    - сент.
-    - окт.
-    - нояб.
-    - дек.
+    - Янв.
+    - Февр.
+    - Марта
+    - Апр.
+    - Мая
+    - Июня
+    - Июля
+    - Авг.
+    - Сент.
+    - Окт.
+    - Нояб.
+    - Дек.
     day_names:
     - Воскресенье
     - Понедельник
@@ -173,25 +162,25 @@ ru:
     - Среда
     - Четверг
     - Пятница
-    - Воскресенье
+    - Суббота
     formats:
       default: "%d.%m.%Y"
       short: "%d %b"
       long: "%d %B %Y"
     month_names:
     -
-    - Январь
-    - Февраль
-    - Март
-    - Апрель
-    - Май
-    - Июнь
-    - Июль
-    - Август
-    - Сентябрь
-    - Октябрь
-    - Ноябрь
-    - Декабрь
+    - Января
+    - Февраля
+    - Марта
+    - Апреля
+    - Мая
+    - Июня
+    - Июля
+    - Августа
+    - Сентября
+    - Октября
+    - Ноября
+    - Декабря
     order:
     - :day
     - :month
