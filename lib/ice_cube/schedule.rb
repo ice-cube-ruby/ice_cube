@@ -181,14 +181,14 @@ module IceCube
 
     # The previous occurrence from a given time
     def previous_occurrence(from)
-      from = TimeUtil.match_zone(from, start_time) or raise ArgumentError, "Time required, got #{time.inspect}"
+      from = TimeUtil.match_zone(from, start_time) or raise ArgumentError, "Time required, got #{from.inspect}"
       return nil if from <= start_time
       enumerate_occurrences(start_time, from - 1).to_a.last
     end
 
     # The previous n occurrences before a given time
     def previous_occurrences(num, from)
-      from = TimeUtil.match_zone(from, start_time) or raise ArgumentError, "Time required, got #{time.inspect}"
+      from = TimeUtil.match_zone(from, start_time) or raise ArgumentError, "Time required, got #{from.inspect}"
       return [] if from <= start_time
       a = enumerate_occurrences(start_time, from - 1).to_a
       a.size > num ? a[-1*num,a.size] : a
