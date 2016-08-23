@@ -1,5 +1,7 @@
-require "date"
-require "time"
+require 'date'
+require 'time'
+require 'active_support'
+require 'active_support/core_ext'
 
 module IceCube
   module TimeUtil
@@ -191,6 +193,36 @@ module IceCube
       this_weekday_in_month_count = ((days_in_month(time) - first_occurrence + 1) / 7.0).ceil
       nth_occurrence_of_weekday = (time.mday - first_occurrence) / 7 + 1
       [nth_occurrence_of_weekday, this_weekday_in_month_count]
+    end
+
+    # Use Activesupport CoreExt functions to manipulate time
+    def self.start_of_month time
+      time.beginning_of_month
+    end
+
+    # Use Activesupport CoreExt functions to manipulate time
+    def self.end_of_month time
+      time.end_of_month
+    end
+
+    # Use Activesupport CoreExt functions to manipulate time
+    def self.start_of_year time
+      time.beginning_of_year
+    end
+
+    # Use Activesupport CoreExt functions to manipulate time
+    def self.end_of_year time
+      time.end_of_year
+    end
+
+    # Use Activesupport CoreExt functions to manipulate time
+    def self.previous_month time
+      time - 1.month
+    end
+
+    # Use Activesupport CoreExt functions to manipulate time
+    def self.previous_year time
+      time - 1.year
     end
 
     # Get the days in the month for +time
