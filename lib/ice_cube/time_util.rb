@@ -58,7 +58,7 @@ module IceCube
     end
 
     # Ensure that this is either nil, or a time
-    def self.ensure_time(time, date_eod = false)
+    def self.ensure_time(time, reference = nil, date_eod = false)
       case time
       when DateTime
         warn "IceCube: DateTime support is deprecated (please use Time) at: #{ caller[2] }"
