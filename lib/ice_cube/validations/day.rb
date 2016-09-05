@@ -5,6 +5,8 @@ module IceCube
   module Validations::Day
 
     def day(*days)
+      days = days.flatten
+      return self if days.empty?
       days.flatten.each do |day|
         unless day.is_a?(Fixnum) || day.is_a?(Symbol)
           raise ArgumentError, "expecting Fixnum or Symbol value for day, got #{day.inspect}"

@@ -102,6 +102,14 @@ module IceCube
       expect { schedule.add_recurrence_rule Rule.weekly.day(["1", "3"]) }.to raise_error
     end
 
+    it 'should ignore weekday validation when no days are specified' do
+      schedule = Schedule.new(t0 = WEDNESDAY)
+      schedule.add_recurrence_rule Rule.weekly(2).day([])
+
+      times = schedule.occurrences(t0 + 3 * ONE_WEEK)
+      expect(times).to eq [t0, t0 + 2 * ONE_WEEK]
+    end
+
     it 'should produce the correct number of days for @interval = 2 with only one day per week' do
       schedule = Schedule.new(t0 = WEDNESDAY)
       schedule.add_recurrence_rule Rule.weekly(2).day(:wednesday)
