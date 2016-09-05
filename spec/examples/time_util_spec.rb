@@ -102,10 +102,15 @@ module IceCube
 
       WORLD_TIME_ZONES.each do |zone|
         context "in #{zone}", :system_time_zone => zone do
+          let(:utc_time)   { Time.utc(2014, 1, 1, 0, 0, 1) }
           let(:local_time) { Time.local(2014, 1, 1, 0, 0, 1) }
 
-          it 'converts Date to beginning of date of reference time' do
+          it 'converts Date to beginning of date of local reference time' do
             expect(TimeUtil.match_zone(date, local_time)).to eq local_time - 1
+          end
+
+          it 'converts Date to beginning of date of UTC reference time' do
+            expect(TimeUtil.match_zone(date, utc_time)).to eq utc_time - 1
           end
         end
       end
