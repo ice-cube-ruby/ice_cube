@@ -232,6 +232,21 @@ describe IceCube::Schedule do
       Time.utc(2010, 11, 9, 5, 0, 0)]
   end
 
+  WORLD_TIME_ZONES.each do |zone|
+    context "in #{zone}", :system_time_zone => zone do
+      it 'works with a until date that is a Date, but the start date is UTC' do
+        start_time = Time.utc(2016, 1, 1, 0, 0, 0)
+        schedule = IceCube::Schedule.new(start_time)
+        schedule.add_recurrence_rule IceCube::Rule.daily.until(Date.new(2016, 1, 2))
+        times = schedule.all_occurrences
+        expect(times).to eq [
+                          Time.utc(2016, 1, 1, 0, 0, 0),
+                          Time.utc(2016, 1, 2, 0, 0, 0)
+                        ]
+      end
+    end
+  end
+
   it 'works with a monthly rule iterating on UTC' do
     start_time = Time.utc(2010, 4, 24, 15, 45, 0)
     schedule = IceCube::Schedule.new(start_time)

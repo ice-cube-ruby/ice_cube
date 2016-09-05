@@ -42,7 +42,7 @@ module IceCube
     end
 
     def self.match_zone(input_time, reference)
-      return unless time = ensure_time(input_time)
+      return unless time = ensure_time(input_time, reference)
       time = if reference.respond_to? :time_zone
                time.in_time_zone(reference.time_zone)
              else
@@ -65,9 +65,13 @@ module IceCube
         Time.local(time.year, time.month, time.day, time.hour, time.min, time.sec)
       when Date
         if date_eod
-          end_of_date(time)
+          end_of_date(time, reference)
         else
-          time.to_time
+          if reference
+            build_in_zone([time.year, time.month, time.day], reference)
+          else
+            time.to_time
+          end
         end
       else
         time
