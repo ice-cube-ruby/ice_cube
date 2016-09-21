@@ -147,6 +147,70 @@ module IceCube
       ]
     end
 
+    it 'should produce correct next occurrences on biweekly tuesdays when monday is the week start' do
+      schedule = Schedule.new(t0 = Time.utc(2012, 2, 7)) # this was a tuesday
+      schedule.add_recurrence_rule Rule.weekly(2, :monday).day(:tuesday)
+      occurrences = 17.times.map do |n|
+        now = t0 + (n * ONE_DAY)
+        "#{now.to_date.iso8601} (#{now.wday}) => #{schedule.next_occurrences(1, now)[0].to_date.iso8601}"
+      end
+      expected = (<<-TXT
+        2012-02-07 (2) => 2012-02-21
+        2012-02-08 (3) => 2012-02-21
+        2012-02-09 (4) => 2012-02-21
+        2012-02-10 (5) => 2012-02-21
+        2012-02-11 (6) => 2012-02-21
+        2012-02-12 (0) => 2012-02-21
+        2012-02-13 (1) => 2012-02-21
+        2012-02-14 (2) => 2012-02-21
+        2012-02-15 (3) => 2012-02-21
+        2012-02-16 (4) => 2012-02-21
+        2012-02-17 (5) => 2012-02-21
+        2012-02-18 (6) => 2012-02-21
+        2012-02-19 (0) => 2012-02-21
+        2012-02-20 (1) => 2012-02-21
+        2012-02-21 (2) => 2012-03-06
+        2012-02-22 (3) => 2012-03-06
+        2012-02-23 (4) => 2012-03-06
+        TXT
+      ).split("\n").map(&:strip)
+      expected.each_with_index do |time, i|
+        expect(occurrences[i]).to eq(time)
+      end
+    end
+
+    it 'should produce correct next occurrences on biweekly sundays when monday is the week start' do
+      schedule = Schedule.new(t0 = Time.utc(2012, 2, 12)) # this was a sunday
+      schedule.add_recurrence_rule Rule.weekly(2, :monday).day(:sunday)
+      occurrences = 17.times.map do |n|
+        now = t0 + (n * ONE_DAY)
+        "#{now.to_date.iso8601} (#{now.wday}) => #{schedule.next_occurrences(1, now)[0].to_date.iso8601}"
+      end
+      expected = (<<-TXT
+        2012-02-12 (0) => 2012-02-26
+        2012-02-13 (1) => 2012-02-26
+        2012-02-14 (2) => 2012-02-26
+        2012-02-15 (3) => 2012-02-26
+        2012-02-16 (4) => 2012-02-26
+        2012-02-17 (5) => 2012-02-26
+        2012-02-18 (6) => 2012-02-26
+        2012-02-19 (0) => 2012-02-26
+        2012-02-20 (1) => 2012-02-26
+        2012-02-21 (2) => 2012-02-26
+        2012-02-22 (3) => 2012-02-26
+        2012-02-23 (4) => 2012-02-26
+        2012-02-24 (5) => 2012-02-26
+        2012-02-25 (6) => 2012-02-26
+        2012-02-26 (0) => 2012-03-11
+        2012-02-27 (1) => 2012-03-11
+        2012-02-28 (2) => 2012-03-11
+        TXT
+      ).split("\n").map(&:strip)
+      expected.each_with_index do |time, i|
+        expect(occurrences[i]).to eq(time)
+      end
+    end
+
     it 'should start weekly rules on sunday by default' do
       schedule = Schedule.new(t0 = Time.local(2012,2,7))
       schedule.add_recurrence_rule Rule.weekly(2).day(:tuesday, :sunday)

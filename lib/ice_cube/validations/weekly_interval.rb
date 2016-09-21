@@ -40,6 +40,9 @@ module IceCube
         days = (d1 - TimeUtil.normalize_wday(d1.wday, week_start)) -
                (d0 - TimeUtil.normalize_wday(d0.wday, week_start))
         offset = ((days.to_i / 7) % interval).nonzero?
+        #on schedules with start_week on Monday, the offset calculated
+        #on Sunday is inaccurate due to using wday method that returns 0 for Sunday(instead of 6 as the last day of week)
+#        offset = offset + 1 if offset && week_start == :monday && d1.wday == 0
         (interval - offset) * 7 if offset
       end
 
