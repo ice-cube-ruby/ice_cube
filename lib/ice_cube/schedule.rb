@@ -510,21 +510,18 @@ module IceCube
     # earlier validations in the week). This realigns the opening time to
     # the start of the interval's correct period (e.g. move to start of week N)
     #
-    # Should only apply to WeeklyRule, use wkst as place to go back to
+    # TODO: check if this is needed for validations other than `:wday`
     def realign(opening_time)
       time = TimeUtil::TimeWrapper.new(opening_time)
       recurrence_rules.each do |rule|
 
-# fix from here: https://github.com/seejohnrun/ice_cube/pull/284/commits/e6305efc87d5f8b555c23e78ededaea3b89e68ea
         wday_validations = rule.other_interval_validations.select { |v| v.type == :wday } or next
         interval = rule.base_interval_validation.validate(opening_time, self).to_i
         offset = wday_validations
           .map { |v| v.validate(opening_time, self).to_i }
           .reduce(0) { |least, i| i > 0 && i <= interval && (i < least || least == 0) ? i : least }
-        time.add(rule.base_interval_type, 7 - time.to_time.wday) if offset > 0
 
-#        next unless rule.respond_to?(:week_start)
-#        time.add(rule.base_interval_type, TimeUtil.sym_to_wday(rule.week_start) - time.to_time.wday)
+        time.add(rule.base_interval_type, 7 - TimeUtil.normalize_wday(time.to_time.wday, rule.week_start)) if offset > 0
       end
       time.to_time
     end
