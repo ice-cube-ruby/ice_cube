@@ -211,6 +211,17 @@ module IceCube
       end
     end
 
+    it 'should include first occurrence on biweekly sundays when monday is the week start' do
+      schedule = Schedule.new(t0 = Time.utc(2012, 2, 12)) # this was a sunday
+      schedule.add_recurrence_rule Rule.weekly(2, :monday).day(:sunday)
+      expect(schedule.occurrences_between(t0 - ONE_WEEK, t0 + 3 * (ONE_WEEK))).to eq(
+        [
+          Time.utc(2012, 2, 12),
+          Time.utc(2012, 2, 26),
+        ]
+      )
+    end
+
     it 'should start weekly rules on sunday by default' do
       schedule = Schedule.new(t0 = Time.local(2012,2,7))
       schedule.add_recurrence_rule Rule.weekly(2).day(:tuesday, :sunday)
