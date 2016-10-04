@@ -50,7 +50,8 @@ module IceCube
     def self.from_hash(original_hash)
       hash = IceCube::FlexibleHash.new original_hash
       return nil unless match = hash[:rule_type].match(/\:\:(.+?)Rule/)
-      rule = IceCube::Rule.send(match[1].downcase.to_sym, hash[:interval] || 1)
+      init_arg = (match[1] == "SingleOccurrence") ? hash[:time] : (hash[:interval] || 1)
+      rule = IceCube::Rule.send(match[1].downcase.to_sym, init_arg)
       rule.interval(hash[:interval] || 1, TimeUtil.wday_to_sym(hash[:week_start] || 0)) if match[1] == "Weekly"
       rule.until(TimeUtil.deserialize_time(hash[:until])) if hash[:until]
       rule.count(hash[:count]) if hash[:count]
@@ -114,6 +115,10 @@ module IceCube
       # Yearly Rule
       def yearly(interval = 1)
         YearlyRule.new(interval)
+      end
+
+      def singleoccurrence(time = Time.current)
+        SingleOccurrenceRule.new(time)
       end
 
     end
