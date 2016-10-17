@@ -108,7 +108,7 @@ schedule.each_occurrence { |t| puts t }
 ```
 
 The reason that schedules have durations and not individual rules, is to
-maintain compatability with the ical
+maintain compatibility with the ical
 RFC: http://www.kanzaki.com/docs/ical/rrule.html
 
 To limit schedules use `count` or `until` on the recurrence rules. Setting `end_time` on the schedule just sets the duration (from the start time) for each occurrence.
@@ -239,12 +239,12 @@ schedule.add_recurrence_rule IceCube::Rule.yearly(4).day_of_year(-1)
 
 ```ruby
 # every year on the same day as start_time but in january and february
-schedule.add_recurrence_rule IceCube::Rule.yearly.month_of_year(:january, :februrary)
+schedule.add_recurrence_rule IceCube::Rule.yearly.month_of_year(:january, :february)
 
 # every third year in march
 schedule.add_recurrence_rule IceCube::Rule.yearly(3).month_of_year(:march)
 
-# for programatic convenience (same as above)
+# for programmatic convenience (same as above)
 schedule.add_recurrence_rule IceCube::Rule.yearly(3).month_of_year(3)
 ```
 
