@@ -6,8 +6,8 @@ module IceCube
 
     def day(*days)
       days.flatten.each do |day|
-        unless day.is_a?(Fixnum) || day.is_a?(Symbol)
-          raise ArgumentError, "expecting Fixnum or Symbol value for day, got #{day.inspect}"
+        unless day.is_a?(IntegerUtil.klass) || day.is_a?(Symbol)
+          raise ArgumentError, "expecting #{IntegerUtil.klass} or Symbol value for day, got #{day.inspect}"
         end
         day = TimeUtil.sym_to_wday(day)
         validations_for(:day) << Validation.new(day)
