@@ -367,6 +367,16 @@ module IceCube
         schedule = IceCube::Schedule.from_ical ical_string_with_multiple_exdates
         schedule.exception_times.count.should == 3
       end
+
+      it 'should raise ArgumentError when parsing an invalid rule type' do
+        str = 'FREQ=FAKE'
+        lambda { Rule.from_ical(str) }.should raise_error(ArgumentError, 'Invalid rule frequency type: Fake')
+      end
+
+      it 'should raise ArgumentError when parsing an invalid validation type' do
+        str = 'FREQ=DAILY;FAKE=23'
+        lambda { Rule.from_ical(str) }.should raise_error(ArgumentError, 'Invalid rule validation type: FAKE')
+      end
     end
 
     describe 'multiple rules' do
