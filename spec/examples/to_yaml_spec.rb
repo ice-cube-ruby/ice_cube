@@ -293,5 +293,15 @@ module IceCube
       YAML.load(symbol_yaml).should == YAML.load(string_yaml)
     end
 
+    it 'should raise an ArgumentError when trying to deserialize an invalid rule type' do
+      data = {:rule_type => 'IceCube::FakeRule', :interval => 1}
+      lambda { Rule.from_hash(data) }.should raise_error(ArgumentError, 'Invalid rule frequency type: Fake')
+    end
+
+    it 'should raise an ArgumentError when trying to deserialize an invalid validation' do
+      data = {:validations => {:fake => []}, :rule_type => 'IceCube::DailyRule', :interval => 1}
+      lambda { Rule.from_hash(data) }.should raise_error(ArgumentError, 'Invalid rule validation type: fake')
+    end
+
   end
 end
