@@ -5,6 +5,7 @@
 * Validate rules (and raise ArgumentError) on invalid `from_hash`
 * Make the iCal parser use the `from_hash` implementation under the hood
 * Added i18n translations for Russian, Swedish, and German
+* Raise ArgumentError on invalid from_ical (empty)
 
 ## 0.14.0 / 2016-02-23
 
