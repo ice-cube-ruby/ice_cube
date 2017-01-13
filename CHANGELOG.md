@@ -1,5 +1,10 @@
 # Changelog
 
+## Current
+
+* Validate rules (and raise ArgumentError) on invalid `from_hash`
+* Make the iCal parser use the `from_hash` implementation under the hood
+
 ## 0.14.0 / 2016-02-23
 
 * Added span option for occurrence methods
