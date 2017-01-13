@@ -385,6 +385,14 @@ module IceCube
         schedule.recurrence_rules.count.should == 2
       end
     end
+
+    describe 'invalid rules' do
+      it 'handles invalid rules' do
+        expect {
+          IceCube::Schedule.from_ical "RRULE::"
+        }.to raise_error(ArgumentError)
+      end
+    end
   end
 
 end
