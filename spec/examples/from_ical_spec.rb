@@ -385,6 +385,21 @@ module IceCube
         schedule.recurrence_rules.count.should == 2
       end
     end
+
+    describe 'invalid ical data' do
+      shared_examples_for('an invalid ical string') do
+        it do
+          expect {
+            IceCube::Schedule.from_ical(ical_str)
+          }.to raise_error(ArgumentError) # TODO replace with real ad
+        end
+      end
+
+      describe 'empty rules' do
+        let(:ical_str) { 'RRULE::' }
+        it_behaves_like 'an invalid ical string'
+      end
+    end
   end
 
 end

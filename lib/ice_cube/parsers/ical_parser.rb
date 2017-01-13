@@ -24,6 +24,8 @@ module IceCube
     end
 
     def self.rule_from_ical(ical)
+      raise ArgumentError, 'empty ical rule' if ical.nil?
+
       validations = {}
       params = {validations: validations, interval: 1}
 
