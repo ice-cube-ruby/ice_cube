@@ -7,7 +7,7 @@ IceCube::I18n.detect_backend!
 module IceCube
 
   autoload :VERSION, 'ice_cube/version'
-
+  autoload :IntegerUtil, 'ice_cube/integer_util'
   autoload :TimeUtil, 'ice_cube/time_util'
   autoload :FlexibleHash, 'ice_cube/flexible_hash'
 
