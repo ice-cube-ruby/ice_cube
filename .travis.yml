@@ -7,7 +7,6 @@ notifications:
 branches:
   only:
     - master
-    - v0.7
 rvm:
   - 1.9.3
   - 2.0.0
