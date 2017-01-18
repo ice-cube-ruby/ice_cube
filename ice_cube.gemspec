@@ -21,5 +21,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency('rspec', '~> 2.12.0')
   s.add_development_dependency('activesupport', ['>= 3.0.0', ('<5' if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.2.2'))].compact)
   s.add_development_dependency('tzinfo')
+  s.add_development_dependency('timecop')
   s.add_development_dependency('i18n')
 end

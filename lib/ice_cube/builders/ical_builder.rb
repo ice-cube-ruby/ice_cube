@@ -36,11 +36,11 @@ module IceCube
     end
 
     def self.ical_format(time, force_utc)
-      time = time.dup.utc if force_utc
+      time = time.dup.utc if force_utc || !time.respond_to?('time_zone')
       if time.utc?
-        ":#{IceCube::I18n.l(time, format: '%Y%m%dT%H%M%SZ')}" # utc time
+        ":#{IceCube::I18n.l(time.utc, format: '%Y%m%dT%H%M%SZ')}" # utc time
       else
-        ";TZID=#{IceCube::I18n.l(time, format: '%Z:%Y%m%dT%H%M%S')}" # local time specified
+        ";TZID=#{time.time_zone.name}:#{IceCube::I18n.l(time, format: '%Y%m%dT%H%M%S')}" # local time specified
       end
     end
 
