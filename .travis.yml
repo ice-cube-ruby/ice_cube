@@ -4,6 +4,7 @@ before_install:
 notifications:
   email:
     - john.crepezzi@gmail.com
+    - andrew@avit.ca
 branches:
   only:
     - master
