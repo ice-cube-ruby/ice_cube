@@ -4,12 +4,28 @@ before_install:
 notifications:
   email:
     - john.crepezzi@gmail.com
+    - andrew@avit.ca
 branches:
   only:
     - master
-    - v0.7
 rvm:
   - 1.9.3
-  - 2.0.0
+  - 2.0
   - 2.1
   - 2.2
+  - 2.3
+  - ruby-head
+env:
+  - RAILS_VERSION='~> 3.2'
+  - RAILS_VERSION='~> 4.2'
+  - RAILS_VERSION='~> 5.0'
+matrix:
+  exclude:
+    - rvm: 1.9.3
+      env: RAILS_VERSION='~> 5.0'
+    - rvm: 2.0
+      env: RAILS_VERSION='~> 5.0'
+    - rvm: 2.1
+      env: RAILS_VERSION='~> 5.0'
+    - rvm: 2.2
+      env: RAILS_VERSION='~> 5.0'

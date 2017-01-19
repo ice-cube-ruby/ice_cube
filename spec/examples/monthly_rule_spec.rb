@@ -36,7 +36,7 @@ module IceCube
       schedule = double(start_time: t0 = Time.utc(2013, 5, 17))
       rule = Rule.monthly(3)
       rule.interval(1)
-      rule.next_time(t0 + 1, schedule, nil).should == t0 + 31.days
+      rule.next_time(t0 + 1, schedule, nil).should == t0 + (IceCube::ONE_DAY * 31)
     end
 
     it 'should produce the correct number of days for @interval = 1' do

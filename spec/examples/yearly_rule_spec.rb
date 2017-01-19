@@ -31,7 +31,7 @@ describe IceCube::YearlyRule do
     schedule = double(start_time: t0 = Time.utc(2013, 5, 1))
     rule = Rule.yearly(3)
     rule.interval(1)
-    rule.next_time(t0 + 1, schedule, nil).should == t0 + 365.days
+    rule.next_time(t0 + 1, schedule, nil).should == t0 + (IceCube::ONE_DAY * 365)
   end
 
   it 'should be able to specify complex yearly rules' do
