@@ -89,7 +89,7 @@ module IceCube
     it 'should return no occurrences after daily interval with count is over' do
       schedule = IceCube::Schedule.new(Time.now)
       schedule.add_recurrence_rule(IceCube::Rule.from_ical("FREQ=DAILY;COUNT=5"))
-      schedule.occurrences_between(Time.now + 7.days, Time.now + 14.days).count.should == 0
+      schedule.occurrences_between(Time.now + (IceCube::ONE_DAY * 7), Time.now + (IceCube::ONE_DAY * 14)).count.should == 0
     end
 
   end
@@ -177,7 +177,7 @@ module IceCube
         start_time = Time.now
 
         schedule = IceCube::Schedule.new(start_time)
-        schedule.add_recurrence_rule(IceCube::Rule.daily.until(start_time + 15.days))
+        schedule.add_recurrence_rule(IceCube::Rule.daily.until(start_time + (IceCube::ONE_DAY * 15)))
 
         ical = schedule.to_ical
         sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))
@@ -357,7 +357,7 @@ module IceCube
 
         schedule = IceCube::Schedule.new(start_time)
         schedule.add_recurrence_rule(IceCube::Rule.daily)
-        schedule.add_exception_time(Time.now + 2.days)
+        schedule.add_exception_time(Time.now + (IceCube::ONE_DAY * 2))
 
         ical = schedule.to_ical
         sorted_ical(IceCube::Schedule.from_ical(ical).to_ical).should eq(sorted_ical(ical))

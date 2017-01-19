@@ -334,14 +334,14 @@ describe IceCube::Schedule do
   describe "using occurs_between with a biweekly schedule" do
     [[0, 1, 2], [0, 6, 1], [5, 1, 6], [6, 5, 7]].each do |wday, offset, lead|
       start_week    = Time.utc(2014, 1, 5)
-      expected_week =  start_week + 2.weeks
+      expected_week =  start_week + (IceCube::ONE_DAY * 14)
       offset_wday   = (wday + offset) % 7
 
       context "starting on weekday #{wday} selecting weekday #{offset} with a #{lead} day advance window" do
         let(:biweekly)      { Rule.weekly(2).day(0, 1, 2, 3, 4, 5, 6) }
-        let(:schedule)      { Schedule.new(start_week + wday.days) { |s| s.rrule biweekly } }
-        let(:expected_date) { expected_week + offset_wday.days }
-        let(:range)         { [expected_date - lead.days, expected_date] }
+        let(:schedule)      { Schedule.new(start_week + (IceCube::ONE_DAY * wday)) { |s| s.rrule biweekly } }
+        let(:expected_date) { expected_week + (IceCube::ONE_DAY * offset_wday) }
+        let(:range)         { [expected_date - (IceCube::ONE_DAY * lead), expected_date] }
 
         it "should include weekday #{offset_wday} of the expected week" do
           expect(schedule.occurrences_between(range.first, range.last)).to include expected_date
