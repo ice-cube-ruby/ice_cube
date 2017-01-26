@@ -12,7 +12,7 @@ describe :remaining_occurrences do
     schedule.remaining_occurrences(start_time).size.should == 24 - schedule.start_time.hour
   end
 
-  it 'should get the proper ramining occurrences past the end of the year' do
+  it 'should get the proper remaining occurrences past the end of the year' do
     start_time = Time.now
     schedule = Schedule.new(start_time)
     schedule.add_recurrence_rule(Rule.hourly.until(start_time + ONE_DAY))
