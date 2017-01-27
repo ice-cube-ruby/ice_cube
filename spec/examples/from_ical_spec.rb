@@ -399,6 +399,36 @@ module IceCube
         let(:ical_str) { 'RRULE::' }
         it_behaves_like 'an invalid ical string'
       end
+
+      describe 'invalid rules' do
+        let(:ical_str) { 'RRULE::A' }
+        it_behaves_like 'an invalid ical string'
+      end
+
+      describe 'incomplete rule' do
+        let(:ical_str) { 'RRULE:FREQ' }
+        it_behaves_like 'an invalid ical string'
+      end
+
+      describe 'invalid rule with invalid sensitive key' do
+        let(:ical_str) { 'RRULE:FREQ=WEKLY;WKST=SU' }
+        it_behaves_like 'an invalid ical string'
+      end
+
+      describe 'invalid rule with invalid value' do
+        let(:ical_str) { 'RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR;WKST=SE' }
+        it_behaves_like 'an invalid ical string'
+      end
+
+      describe 'invalid rule with invalid key' do
+        let(:ical_str) { 'RRULE:FREQ=WEEKLY;BDAY=MO,WE,FR;WKST=SU' }
+        it_behaves_like 'an invalid ical string'
+      end
+
+      describe 'invalid rule with attempt to execute code' do
+        let(:ical_str) { 'RRULE:FREQ=to_yaml' }
+        it_behaves_like 'an invalid ical string'
+      end
     end
   end
 
