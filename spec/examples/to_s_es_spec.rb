@@ -137,7 +137,6 @@ describe IceCube::Schedule, 'to_s' do
   end
 
   it 'should work with a single rrule' do
-    pending 'remove dependency'
     schedule = IceCube::Schedule.new Time.local(2010, 3, 20)
     schedule.add_recurrence_rule IceCube::Rule.weekly.day_of_week(:monday => [1])
     expect(schedule.to_s).to eq(schedule.rrules[0].to_s)
@@ -154,9 +153,8 @@ describe IceCube::Schedule, 'to_s' do
   end
 
   it 'should be able to say the second to last monday of the month' do
-    pending 'penultimo'
     rule_str = IceCube::Rule.monthly.day_of_week(:thursday => [-2]).to_s
-    expect(rule_str).to eq('Mensualmente del segundo al último Jueves del mes')
+    expect(rule_str).to eq('Mensualmente en el penúltimo Jueves')
   end
 
   it 'should be able to say the days of the month something happens' do

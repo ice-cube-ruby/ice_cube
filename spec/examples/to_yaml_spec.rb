@@ -144,7 +144,7 @@ module IceCube
 
     # This test will fail when not run in Eastern Time
     # This is a bug because to_datetime will always convert to system local time
-    it 'should be able to roll forward times and get back times in an array - TimeWithZone', :if_active_support_time => true do
+    it 'should be able to roll forward times and get back times in an array - TimeWithZone' do
       Time.zone = "Eastern Time (US & Canada)"
       start_time = Time.zone.local(2011, 11, 5, 12, 0, 0)
       schedule = Schedule.new(start_time)

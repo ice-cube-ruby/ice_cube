@@ -4,11 +4,10 @@ require File.dirname(__FILE__) + '/../spec_helper'
 # ActiveSupport gets loaded by other specs.
 
 module IceCube
-  describe TimeUtil, :if_active_support_time => false do
+  describe TimeUtil do
 
     before do
-      expect_any_instance_of(Time).to receive(:respond_to?).with(:time_zone).
-        at_least(1).times.and_return(false)
+      raise 'ActiveSupport should not be loaded' if defined?(ActiveSuppport)
     end
 
     WORLD_TIME_ZONES.each do |zone|
