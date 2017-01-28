@@ -66,19 +66,19 @@ describe IceCube::YearlyRule do
     schedule.occurrences(Time.utc(2010, 12, 31)).size.should == 3
   end
 
-  it 'should produce the correct number of days for @interval = 1 when you specify days' do
+  it 'should produce the correct days for @interval = 1 when you specify days' do
     start_time = Time.utc(2010, 1, 1)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.yearly.day_of_year(155, 200)
     #check assumption
-    schedule.occurrences(Time.utc(2010, 12, 31)).size.should == 2
+    schedule.occurrences(Time.utc(2010, 12, 31)).should match_array [Time.utc(2010, 6, 4), Time.utc(2010, 7, 19)]
   end
 
-  it 'should produce the correct number of days for @interval = 1 when you specify negative days' do
+  it 'should produce the correct days for @interval = 1 when you specify negative days' do
     schedule = IceCube::Schedule.new(Time.utc(2010, 1, 1))
     schedule.add_recurrence_rule IceCube::Rule.yearly.day_of_year(100, -1)
     #check assumption
-    schedule.occurrences(Time.utc(2010, 12, 31)).size.should == 2
+    schedule.occurrences(Time.utc(2010, 12, 31)).should match_array [Time.utc(2010, 4, 10), Time.utc(2010, 12, 31)]
   end
 
 end

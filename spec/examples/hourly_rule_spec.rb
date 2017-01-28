@@ -42,10 +42,10 @@ module IceCube
         schedule = Schedule.new(t0 = Time.local(2013, 11, 3, 0, 0, 0))
         schedule.add_recurrence_rule Rule.hourly
         schedule.first(4).should == [
-          Time.local(2013, 11, 3, 0, 0, 0),             # -0700
-          Time.local(2013, 11, 3, 1, 0, 0) - ONE_HOUR,  # -0700
-          Time.local(2013, 11, 3, 1, 0, 0),             # -0800
-          Time.local(2013, 11, 3, 2, 0, 0),             # -0800
+          Time.new(2013, 11, 3, 0, 0, 0, '-07:00'),
+          Time.new(2013, 11, 3, 1, 0, 0, '-07:00'),
+          Time.new(2013, 11, 3, 1, 0, 0, '-08:00'),
+          Time.new(2013, 11, 3, 2, 0, 0, '-08:00')
         ]
       end
 
