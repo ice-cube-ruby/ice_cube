@@ -23,6 +23,12 @@ RSpec.configure do |config|
 
   config.include WarningHelpers
 
+  config.before :each do |example|
+    if example.metadata[:requires_active_support]
+      raise 'ActiveSupport required but not present' unless defined?(ActiveSupport)
+    end
+  end
+
   config.around :each do |example|
     if zone = example.metadata[:system_time_zone]
       @orig_zone = ENV['TZ']
