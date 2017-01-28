@@ -99,7 +99,7 @@ module IceCube
 
     it 'should raise an error on invalid input' do
       schedule = Schedule.new(t0 = WEDNESDAY)
-      expect { schedule.add_recurrence_rule Rule.weekly.day(["1", "3"]) }.to raise_error
+      expect { schedule.add_recurrence_rule Rule.weekly.day(["1", "3"]) }.to raise_error(ArgumentError)
     end
 
     it 'should ignore weekday validation when no days are specified' do
@@ -166,7 +166,7 @@ module IceCube
     end
 
     it 'should validate week_start input' do
-      expect { Rule.weekly(2, :someday) }.to raise_error
+      expect { Rule.weekly(2, :someday) }.to raise_error(ArgumentError)
     end
 
   end

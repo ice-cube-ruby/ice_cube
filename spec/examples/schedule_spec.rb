@@ -107,7 +107,7 @@ describe IceCube::Schedule do
       end
       expect do
         schedules.first.conflicts_with?(schedules.last)
-      end.to raise_error ArgumentError
+      end.to raise_error(ArgumentError)
     end
 
     it 'should not raise error if both are non-terminating closing time present' do
@@ -361,7 +361,7 @@ describe IceCube::Schedule do
       schedule.rrule IceCube::Rule.daily
       expect do
         schedule.all_occurrences
-      end.to raise_error ArgumentError
+      end.to raise_error(ArgumentError)
     end
 
     it 'should consider count limits separately for multiple rules' do
@@ -615,7 +615,7 @@ describe IceCube::Schedule do
     it 'raises an error for a non-terminating schedule' do
       schedule = IceCube::Schedule.new
       schedule.add_recurrence_rule IceCube::Rule.daily
-      expect { schedule.last }.to raise_error
+      expect { schedule.last }.to raise_error(ArgumentError)
     end
 
   end
@@ -625,7 +625,7 @@ describe IceCube::Schedule do
     it 'should modify start date in rrule_occurrence_heads when changed' do
       schedule = IceCube::Schedule.new(Time.now - 1000)
       schedule.rrule IceCube::Rule.daily
-      schedule.start_time = (start_time = Time.now)
+      schedule.start_time = Time.now
       expect(Time.now - schedule.first.start_time).to be < 100
     end
 

@@ -54,8 +54,8 @@ module IceCube
       end
 
       it 'raises an error for bad input' do
-        expect { TimeUtil.wday_to_sym(:anyday) }.to raise_error
-        expect { TimeUtil.wday_to_sym(17) }.to raise_error
+        expect { TimeUtil.wday_to_sym(:anyday) }.to raise_error(ArgumentError)
+        expect { TimeUtil.wday_to_sym(17) }.to raise_error(ArgumentError)
       end
     end
 
@@ -70,8 +70,8 @@ module IceCube
       end
 
       it 'raises an error for bad input' do
-        expect { TimeUtil.sym_to_wday(:anyday) }.to raise_error
-        expect { TimeUtil.sym_to_wday(17) }.to raise_error
+        expect { TimeUtil.sym_to_wday(:anyday) }.to raise_error(ArgumentError)
+        expect { TimeUtil.sym_to_wday(17) }.to raise_error(ArgumentError)
       end
     end
 
@@ -85,8 +85,8 @@ module IceCube
       end
 
       it 'raises an error for bad input' do
-        expect { TimeUtil.sym_to_month(13) }.to raise_error
-        expect { TimeUtil.sym_to_month(:neveruary) }.to raise_error
+        expect { TimeUtil.sym_to_month(13) }.to raise_error(ArgumentError)
+        expect { TimeUtil.sym_to_month(:neveruary) }.to raise_error(ArgumentError)
       end
     end
 
