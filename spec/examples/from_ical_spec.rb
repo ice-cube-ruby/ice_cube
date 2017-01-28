@@ -94,7 +94,7 @@ module IceCube
 
   end
 
-  describe Schedule, 'from_ical' do
+  describe Schedule, 'from_ical', system_time_zone: "America/Chicago" do
 
     ical_string = <<-ICAL.gsub(/^\s*/, '')
   DTSTART:20130314T201500Z
@@ -102,7 +102,14 @@ module IceCube
   RRULE:FREQ=WEEKLY;BYDAY=TH;UNTIL=20130531T100000Z
   ICAL
 
-    ical_string_with_multiple_exdates = <<-ICAL.gsub(/^\s*/, '')
+  ical_string_with_time_zones = <<-ICAL.gsub(/^\s*/,'')
+  DTSTART;TZID=America/Denver:20130731T143000
+  DTEND:20130731T153000
+  RRULE:FREQ=WEEKLY
+  EXDATE;TZID=America/Chicago:20130823T143000
+  ICAL
+
+  ical_string_with_multiple_exdates = <<-ICAL.gsub(/^\s*/, '')
   DTSTART;TZID=America/Denver:20130731T143000
   DTEND;TZID=America/Denver:20130731T153000
   RRULE:FREQ=WEEKLY;UNTIL=20140730T203000Z;BYDAY=MO,WE,FR
@@ -129,6 +136,28 @@ module IceCube
     describe "instantiation" do
       it "loads an ICAL string" do
         expect(IceCube::Schedule.from_ical(ical_string)).to be_a(IceCube::Schedule)
+      end
+
+      describe "parsing time zones" do
+        it "sets the time zone of the start time" do
+          schedule = IceCube::Schedule.from_ical(ical_string_with_time_zones)
+          expect(schedule.start_time.time_zone).to eq ActiveSupport::TimeZone.new("America/Denver")
+        end
+
+        it "uses the system time if a time zone is not explicity provided" do
+          schedule = IceCube::Schedule.from_ical(ical_string_with_time_zones)
+          expect(schedule.end_time).not_to respond_to :time_zone
+        end
+
+        it "sets the time zone of the exception times" do
+          schedule = IceCube::Schedule.from_ical(ical_string_with_time_zones)
+          expect(schedule.exception_times[0].time_zone).to eq ActiveSupport::TimeZone.new("America/Chicago")
+        end
+
+        it "adding the offset doesnt also change the time" do
+          schedule = IceCube::Schedule.from_ical(ical_string_with_time_zones)
+          expect(schedule.exception_times[0].hour).to eq 14
+        end
       end
     end
 
@@ -240,7 +269,6 @@ module IceCube
     describe 'monthly frequency' do
       it 'matches simple monthly' do
         start_time = Time.now
-
         schedule = IceCube::Schedule.new(start_time)
         schedule.add_recurrence_rule(IceCube::Rule.monthly)
 
