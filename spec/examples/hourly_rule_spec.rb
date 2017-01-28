@@ -26,7 +26,7 @@ module IceCube
       end
     end
 
-    context :system_time_zone => 'America/Vancouver' do
+    context 'in Vancouver time', :system_time_zone => 'America/Vancouver' do
 
       it 'should work across DST start hour' do
         schedule = Schedule.new(t0 = Time.local(2013, 3, 10, 1, 0, 0))

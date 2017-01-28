@@ -27,7 +27,7 @@ module IceCube
 
   describe DailyRule do
 
-    context :system_time_zone => 'America/Vancouver' do
+    describe 'in Vancouver time', :system_time_zone => 'America/Vancouver' do
 
       it 'should include nearest time in DST start hour' do
         schedule = Schedule.new(t0 = Time.local(2013, 3, 9, 2, 30, 0))

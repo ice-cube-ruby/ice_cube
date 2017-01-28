@@ -31,10 +31,10 @@ RSpec.configure do |config|
 
   config.around :each do |example|
     if zone = example.metadata[:system_time_zone]
-      @orig_zone = ENV['TZ']
+      orig_zone = ENV['TZ']
       ENV['TZ'] = zone
       example.run
-      ENV['TZ'] = @orig_zone
+      ENV['TZ'] = orig_zone
     else
       example.run
     end
