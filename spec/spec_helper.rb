@@ -49,8 +49,8 @@ RSpec.configure do |config|
   config.before :each do
     if time_args = @example.metadata[:system_time]
       case time_args
-      when Array then Time.stub!(:now).and_return Time.local(*time_args)
-      when Time  then Time.stub!(:now).and_return time_args
+      when Array then allow(Time).to receive(:now).and_return Time.local(*time_args)
+      when Time  then allow(Time).to receive(:now).and_return time_args
       end
     end
   end

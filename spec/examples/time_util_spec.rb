@@ -46,11 +46,11 @@ module IceCube
 
     describe :wday_to_sym do
       it 'converts 0..6 to weekday symbols' do
-        TimeUtil.wday_to_sym(1).should == :monday
+        expect(TimeUtil.wday_to_sym(1)).to eq(:monday)
       end
 
       it 'returns weekday symbols as is' do
-        TimeUtil.wday_to_sym(:monday).should == :monday
+        expect(TimeUtil.wday_to_sym(:monday)).to eq(:monday)
       end
 
       it 'raises an error for bad input' do
@@ -61,12 +61,12 @@ module IceCube
 
     describe :sym_to_wday do
       it 'converts weekday symbols to 0..6 wday numbers' do
-        TimeUtil.sym_to_wday(:monday).should == 1
+        expect(TimeUtil.sym_to_wday(:monday)).to eq(1)
 
       end
 
       it 'returns wday numbers as is' do
-        TimeUtil.sym_to_wday(1).should == 1
+        expect(TimeUtil.sym_to_wday(1)).to eq(1)
       end
 
       it 'raises an error for bad input' do
@@ -77,11 +77,11 @@ module IceCube
 
     describe :sym_to_month do
       it 'converts month symbols to 1..12 month numbers' do
-        TimeUtil.sym_to_month(:january).should == 1
+        expect(TimeUtil.sym_to_month(:january)).to eq(1)
       end
 
       it 'returns month numbers as is' do
-        TimeUtil.sym_to_month(12).should == 12
+        expect(TimeUtil.sym_to_month(12)).to eq(12)
       end
 
       it 'raises an error for bad input' do

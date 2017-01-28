@@ -11,20 +11,20 @@ describe IceCube, "::ValidatedRule" do
         first = Time.new(2013, 2, 25, 0, 0, 0)
         schedule = IceCube::Schedule.new(first)
         schedule.add_recurrence_rule rule
-        rule.next_time(first, schedule, nil).should == first
+        expect(rule.next_time(first, schedule, nil)).to eq(first)
       end
 
       it "Should return the next month when starting one second in the future" do
         first = Time.new(2013, 2, 25, 0, 0, 0)
         schedule = IceCube::Schedule.new(first)
         schedule.add_recurrence_rule rule
-        rule.next_time(first + 1, schedule, nil).should == Time.new(2013, 3, 25, 0, 0, 0)
+        expect(rule.next_time(first + 1, schedule, nil)).to eq(Time.new(2013, 3, 25, 0, 0, 0))
       end
 
       it 'should return the next month near end of longer month [#171]' do
         schedule = IceCube::Schedule.new(Date.new 2013, 1, 1)
         [27, 28, 29, 30, 31].each do |day|
-          rule.next_time(Time.new(2013, 1, day), schedule, nil).should == Time.new(2013, 2, 1)
+          expect(rule.next_time(Time.new(2013, 1, day), schedule, nil)).to eq(Time.new(2013, 2, 1))
         end
       end
 
@@ -38,11 +38,11 @@ describe IceCube, "::ValidatedRule" do
         }
 
         it "should not return the same time on a DST edge when starting one second in the future (results in infinite loop [#98])" do
-          rule.next_time(first + 1, schedule, nil).to_s.should_not == first.to_s
+          expect(rule.next_time(first + 1, schedule, nil).to_s).not_to eq(first.to_s)
         end
 
         it "previous failing test with DST edge taken into account" do
-          rule.next_time(first + 1.hour + 1.second, schedule, nil).to_s.should_not == first.to_s
+          expect(rule.next_time(first + 1.hour + 1.second, schedule, nil).to_s).not_to eq(first.to_s)
         end
       end
 
@@ -53,7 +53,7 @@ describe IceCube, "::ValidatedRule" do
       schedule = double(:start_time => first_time)
       rule = IceCube::Rule.secondly
 
-      rule.next_time(first_time + 1, schedule, nil).should == first_time + 1
+      expect(rule.next_time(first_time + 1, schedule, nil)).to eq(first_time + 1)
     end
   end
 end
