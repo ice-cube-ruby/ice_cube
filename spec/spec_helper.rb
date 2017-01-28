@@ -40,19 +40,9 @@ RSpec.configure do |config|
     end
   end
 
-  config.before :each do |example|
-    if time_args = example.metadata[:system_time]
-      case time_args
-      when Array then allow(Time).to receive(:now).and_return Time.local(*time_args)
-      when Time  then allow(Time).to receive(:now).and_return time_args
-      end
-    end
-  end
-
   config.around :each, expect_warnings: true do |example|
     capture_warnings do
       example.run
     end
   end
-
 end
