@@ -23,35 +23,20 @@ RSpec.configure do |config|
 
   config.include WarningHelpers
 
-  config.around :each, :if_active_support_time => true do |example|
-    example.run if defined? ActiveSupport
-  end
-
-  config.around :each, :if_active_support_time => false do |example|
-    unless defined? ActiveSupport
-      stubbed_active_support = ::ActiveSupport = Module.new
-      example.run
-      Object.send :remove_const, :ActiveSupport
+  config.before :each do |example|
+    if example.metadata[:requires_active_support]
+      raise 'ActiveSupport required but not present' unless defined?(ActiveSupport)
     end
   end
 
   config.around :each do |example|
     if zone = example.metadata[:system_time_zone]
-      @orig_zone = ENV['TZ']
+      orig_zone = ENV['TZ']
       ENV['TZ'] = zone
       example.run
-      ENV['TZ'] = @orig_zone
+      ENV['TZ'] = orig_zone
     else
       example.run
-    end
-  end
-
-  config.before :each do
-    if time_args = @example.metadata[:system_time]
-      case time_args
-      when Array then Time.stub!(:now).and_return Time.local(*time_args)
-      when Time  then Time.stub!(:now).and_return time_args
-      end
     end
   end
 
@@ -60,5 +45,4 @@ RSpec.configure do |config|
       example.run
     end
   end
-
 end

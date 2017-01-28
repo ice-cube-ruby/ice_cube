@@ -8,11 +8,11 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily.count(20)
     dates = schedule.first(20)
-    dates.size.should == 20
+    expect(dates.size).to eq(20)
     #check assumptions
     dates.each do |date|
-      date.utc?.should_not == true
-      date.hour.should == 5
+      expect(date.utc?).not_to eq(true)
+      expect(date.hour).to eq(5)
     end
   end
 
@@ -22,11 +22,11 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily.count(20)
     dates = schedule.first(20)
-    dates.size.should == 20
+    expect(dates.size).to eq(20)
     #check assumptions
     dates.each do |date|
-      date.utc?.should_not == true
-      date.hour.should == 5
+      expect(date.utc?).not_to eq(true)
+      expect(date.hour).to eq(5)
     end
   end
 
@@ -38,7 +38,7 @@ describe IceCube::Schedule do
     dates = schedule.occurrences(start_time + 20 * IceCube::ONE_DAY)
     last = start_time
     dates.each do |date|
-      date.hour.should == 5
+      expect(date.hour).to eq(5)
       last = date
     end
   end
@@ -51,7 +51,7 @@ describe IceCube::Schedule do
     #check assumption
     distance_in_hours = 0
     dates.each do |d|
-      d.should == start_time + IceCube::ONE_HOUR * distance_in_hours
+      expect(d).to eq(start_time + IceCube::ONE_HOUR * distance_in_hours)
       distance_in_hours += 2
     end
   end
@@ -64,7 +64,7 @@ describe IceCube::Schedule do
     #check assumption
     distance_in_minutes = 0
     dates.each do |d|
-      d.should == start_time + IceCube::ONE_MINUTE * distance_in_minutes
+      expect(d).to eq(start_time + IceCube::ONE_MINUTE * distance_in_minutes)
       distance_in_minutes += 30
     end
   end
@@ -77,7 +77,7 @@ describe IceCube::Schedule do
     #check assumption
     distance_in_seconds = 0
     dates.each do |d|
-      d.should == start_time + distance_in_seconds
+      expect(d).to eq(start_time + distance_in_seconds)
       distance_in_seconds += 120
     end
   end
@@ -89,9 +89,9 @@ describe IceCube::Schedule do
     dates = schedule.first(10)
     #check assumption
     dates.each do |d|
-      d.hour.should == start_time.hour
-      d.min.should == start_time.min
-      d.sec.should == start_time.sec
+      expect(d.hour).to eq(start_time.hour)
+      expect(d.min).to eq(start_time.min)
+      expect(d.sec).to eq(start_time.sec)
     end
   end
 
@@ -102,10 +102,10 @@ describe IceCube::Schedule do
     dates = schedule.first(10)
     #check assumption
     dates.each do |d|
-      d.day.should == start_time.day
-      d.hour.should == start_time.hour
-      d.min.should == start_time.min
-      d.sec.should == start_time.sec
+      expect(d.day).to eq(start_time.day)
+      expect(d.hour).to eq(start_time.hour)
+      expect(d.min).to eq(start_time.min)
+      expect(d.sec).to eq(start_time.sec)
     end
   end
 
@@ -116,11 +116,11 @@ describe IceCube::Schedule do
     dates = schedule.first(10)
     #check assumption
     dates.each do |d|
-      d.month.should == start_time.month
-      d.day.should == start_time.day
-      d.hour.should == start_time.hour
-      d.min.should == start_time.min
-      d.sec.should == start_time.sec
+      expect(d.month).to eq(start_time.month)
+      expect(d.day).to eq(start_time.day)
+      expect(d.hour).to eq(start_time.hour)
+      expect(d.min).to eq(start_time.min)
+      expect(d.sec).to eq(start_time.sec)
     end
   end
 
@@ -130,7 +130,7 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily.until(end_date)
     #make sure we end on the proper time
-    schedule.all_occurrences.last.should == end_date
+    expect(schedule.all_occurrences.last).to eq(end_date)
   end
 
   it 'UTC - has an until date on a rule that is over a DST from the start date' do
@@ -139,7 +139,7 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily.until(end_date)
     #make sure we end on the proper time
-    schedule.all_occurrences.last.should == end_date
+    expect(schedule.all_occurrences.last).to eq(end_date)
   end
 
   it 'LOCAL - has an until date on a rule that is over a DST from the start date (other direction)' do
@@ -148,7 +148,7 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily.until(end_date)
     #make sure we end on the proper time
-    schedule.all_occurrences.last.should == end_date
+    expect(schedule.all_occurrences.last).to eq(end_date)
   end
 
   it 'UTC - has an until date on a rule that is over a DST from the start date (other direction)' do
@@ -157,7 +157,7 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily.until(end_date)
     #make sure we end on the proper time
-    schedule.all_occurrences.last.should == end_date
+    expect(schedule.all_occurrences.last).to eq(end_date)
   end
 
   it 'LOCAL - has an end date on a rule that is over a DST from the start date' do
@@ -166,7 +166,7 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily
     #make sure we end on the proper time
-    schedule.occurrences(end_date).last.should == end_date
+    expect(schedule.occurrences(end_date).last).to eq(end_date)
   end
 
   it 'UTC - has an end date on a rule that is over a DST from the start date' do
@@ -175,7 +175,7 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily
     #make sure we end on the proper time
-    schedule.occurrences(end_date).last.should == end_date
+    expect(schedule.occurrences(end_date).last).to eq(end_date)
   end
 
   it 'LOCAL - has an end date on a rule that is over a DST from the start date (other direction)' do
@@ -184,7 +184,7 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily
     #make sure we end on the proper time
-    schedule.occurrences(end_date).last.should == end_date
+    expect(schedule.occurrences(end_date).last).to eq(end_date)
   end
 
   it 'UTC - has an end date on a rule that is over a DST from the start date (other direction)' do
@@ -193,88 +193,88 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily
     #make sure we end on the proper time
-    schedule.occurrences(end_date).last.should == end_date
+    expect(schedule.occurrences(end_date).last).to eq(end_date)
   end
 
   it 'local - should make dates on interval over dst - github issue 4' do
     start_time = Time.local(2010, 3, 12, 19, 0, 0)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily(3)
-    schedule.first(3).should == [Time.local(2010, 3, 12, 19, 0, 0), Time.local(2010, 3, 15, 19, 0, 0), Time.local(2010, 3, 18, 19, 0, 0)]
+    expect(schedule.first(3)).to eq([Time.local(2010, 3, 12, 19, 0, 0), Time.local(2010, 3, 15, 19, 0, 0), Time.local(2010, 3, 18, 19, 0, 0)])
   end
 
   it 'local - should make dates on monthly interval over dst - github issue 4' do
     start_time = Time.local(2010, 3, 12, 19, 0, 0)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.monthly(2)
-    schedule.first(6).should == [Time.local(2010, 3, 12, 19, 0, 0), Time.local(2010, 5, 12, 19, 0, 0), Time.local(2010, 7, 12, 19, 0, 0),
-                                 Time.local(2010, 9, 12, 19, 0, 0), Time.local(2010, 11, 12, 19, 0, 0), Time.local(2011, 1, 12, 19, 0, 0)]
+    expect(schedule.first(6)).to eq([Time.local(2010, 3, 12, 19, 0, 0), Time.local(2010, 5, 12, 19, 0, 0), Time.local(2010, 7, 12, 19, 0, 0),
+                                 Time.local(2010, 9, 12, 19, 0, 0), Time.local(2010, 11, 12, 19, 0, 0), Time.local(2011, 1, 12, 19, 0, 0)])
   end
 
   it 'local - should make dates on monthly interval over dst - github issue 4' do
     start_time = Time.local(2010, 3, 12, 19, 0, 0)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.monthly
-    schedule.first(10).should == [Time.local(2010, 3, 12, 19, 0, 0), Time.local(2010, 4, 12, 19, 0, 0), Time.local(2010, 5, 12, 19, 0, 0),
+    expect(schedule.first(10)).to eq([Time.local(2010, 3, 12, 19, 0, 0), Time.local(2010, 4, 12, 19, 0, 0), Time.local(2010, 5, 12, 19, 0, 0),
                                   Time.local(2010, 6, 12, 19, 0, 0), Time.local(2010, 7, 12, 19, 0, 0), Time.local(2010, 8, 12, 19, 0, 0),
                                   Time.local(2010, 9, 12, 19, 0, 0), Time.local(2010, 10, 12, 19, 0, 0), Time.local(2010, 11, 12, 19, 0, 0),
-                                  Time.local(2010, 12, 12, 19, 0, 0)]
+                                  Time.local(2010, 12, 12, 19, 0, 0)])
   end
 
   it 'local - should make dates on yearly interval over dst - github issue 4' do
     start_time = Time.local(2010, 3, 12, 19, 0, 0)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.yearly(2)
-    schedule.first(3).should == [Time.local(2010, 3, 12, 19, 0, 0), Time.local(2012, 3, 12, 19, 0, 0), Time.local(2014, 3, 12, 19, 0, 0)]
+    expect(schedule.first(3)).to eq([Time.local(2010, 3, 12, 19, 0, 0), Time.local(2012, 3, 12, 19, 0, 0), Time.local(2014, 3, 12, 19, 0, 0)])
   end
 
   it "local - should make dates on monthly (day of week) inverval over dst - github issue 5" do
     start_time = Time.local(2010, 3, 7, 12, 0, 0)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_week(:sunday => [1])
-    schedule.first(3).should == [Time.local(2010, 3, 7, 12, 0, 0), Time.local(2010, 4, 4, 12, 0, 0), Time.local(2010, 5, 2, 12, 0, 0)]
+    expect(schedule.first(3)).to eq([Time.local(2010, 3, 7, 12, 0, 0), Time.local(2010, 4, 4, 12, 0, 0), Time.local(2010, 5, 2, 12, 0, 0)])
   end
 
   it "local - should make dates on monthly (day of month) inverval over dst - github issue 5" do
     start_time = Time.local(2010, 3, 1, 12, 0, 0)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_month(1)
-    schedule.first(3).should == [Time.local(2010, 3, 1, 12, 0, 0), Time.local(2010, 4, 1, 12, 0, 0), Time.local(2010, 5, 1, 12, 0, 0)]
+    expect(schedule.first(3)).to eq([Time.local(2010, 3, 1, 12, 0, 0), Time.local(2010, 4, 1, 12, 0, 0), Time.local(2010, 5, 1, 12, 0, 0)])
   end
 
   it "local - should make dates on weekly (day) inverval over dst - github issue 5" do
     start_time = Time.local(2010, 3, 7, 12, 0, 0)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.weekly.day(:sunday)
-    schedule.first(3).should == [Time.local(2010, 3, 7, 12, 0, 0), Time.local(2010, 3, 14, 12, 0, 0), Time.local(2010, 3, 21, 12, 0, 0)]
+    expect(schedule.first(3)).to eq([Time.local(2010, 3, 7, 12, 0, 0), Time.local(2010, 3, 14, 12, 0, 0), Time.local(2010, 3, 21, 12, 0, 0)])
   end
 
   it "local - should make dates on monthly (day of year) inverval over dst - github issue 5" do
     start_time = Time.local(2010, 3, 7, 12, 0, 0)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_year(1)
-    schedule.first(3).should == [Time.local(2011, 1, 1, 12, 0, 0), Time.local(2012, 1, 1, 12, 0, 0), Time.local(2013, 1, 1, 12, 0, 0)]
+    expect(schedule.first(3)).to eq([Time.local(2011, 1, 1, 12, 0, 0), Time.local(2012, 1, 1, 12, 0, 0), Time.local(2013, 1, 1, 12, 0, 0)])
   end
 
   it "local - should make dates on monthly (month_of_year) inverval over dst - github issue 5" do
     start_time = Time.local(2010, 3, 7, 12, 0, 0)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.yearly.month_of_year(:april).day_of_month(10)
-    schedule.first(3).should == [Time.local(2010, 4, 10, 12, 0, 0), Time.local(2011, 4, 10, 12, 0, 0), Time.local(2012, 4, 10, 12, 0, 0)]
+    expect(schedule.first(3)).to eq([Time.local(2010, 4, 10, 12, 0, 0), Time.local(2011, 4, 10, 12, 0, 0), Time.local(2012, 4, 10, 12, 0, 0)])
   end
 
   it "skips double occurrences from end of DST" do
     Time.zone = "America/Denver"
     t0 = Time.zone.parse("Sun, 03 Nov 2013 01:30:00 MDT -06:00")
     schedule = IceCube::Schedule.new(t0) { |s| s.rrule IceCube::Rule.daily.count(3) }
-    schedule.all_occurrences.should == [t0, t0 + 25*ONE_HOUR, t0 + 49*ONE_HOUR]
+    expect(schedule.all_occurrences).to eq([t0, t0 + 25*ONE_HOUR, t0 + 49*ONE_HOUR])
   end
 
   it "does not skip hourly rules over DST" do
     Time.zone = "America/Denver"
     t0 = Time.zone.parse("Sun, 03 Nov 2013 01:30:00 MDT -06:00")
     schedule = IceCube::Schedule.new(t0) { |s| s.rrule IceCube::Rule.hourly.count(3) }
-    schedule.all_occurrences.should == [t0, t0 + ONE_HOUR, t0 + 2*ONE_HOUR]
+    expect(schedule.all_occurrences).to eq([t0, t0 + ONE_HOUR, t0 + 2*ONE_HOUR])
   end
 
   it "does not skip minutely rules with minute of hour over DST" do
@@ -282,7 +282,7 @@ describe IceCube::Schedule do
     t0 = Time.zone.parse("Sun, 03 Nov 2013 01:30:00 MDT -06:00")
     schedule = IceCube::Schedule.new(t0) { |s| s.rrule IceCube::Rule.hourly.count(3) }
     schedule.rrule IceCube::Rule.minutely.minute_of_hour([0, 15, 30, 45])
-    schedule.first(5).should == [t0, t0 + 15*60, t0 + 30*60, t0 + 45*60, t0 + 60*60]
+    expect(schedule.first(5)).to eq([t0, t0 + 15*60, t0 + 30*60, t0 + 45*60, t0 + 60*60])
   end
 
   it "does not skip minutely rules with second of minute over DST" do
@@ -290,7 +290,7 @@ describe IceCube::Schedule do
     t0 = Time.zone.parse("Sun, 03 Nov 2013 01:30:00 MDT -06:00")
     schedule = IceCube::Schedule.new(t0) { |s| s.rrule IceCube::Rule.hourly.count(3) }
     schedule.rrule IceCube::Rule.minutely(15).second_of_minute(0)
-    schedule.first(5).should == [t0, t0 + 15*60, t0 + 30*60, t0 + 45*60, t0 + 60*60]
+    expect(schedule.first(5)).to eq([t0, t0 + 15*60, t0 + 30*60, t0 + 45*60, t0 + 60*60])
   end
 
 
