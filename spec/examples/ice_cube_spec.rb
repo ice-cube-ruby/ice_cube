@@ -338,8 +338,8 @@ describe IceCube::Schedule do
       offset_wday   = (wday + offset) % 7
 
       context "starting on weekday #{wday} selecting weekday #{offset} with a #{lead} day advance window" do
-        let(:biweekly)      { Rule.weekly(2).day(0, 1, 2, 3, 4, 5, 6) }
-        let(:schedule)      { Schedule.new(start_week + (IceCube::ONE_DAY * wday)) { |s| s.rrule biweekly } }
+        let(:biweekly)      { IceCube::Rule.weekly(2).day(0, 1, 2, 3, 4, 5, 6) }
+        let(:schedule)      { IceCube::Schedule.new(start_week + (IceCube::ONE_DAY * wday)) { |s| s.rrule biweekly } }
         let(:expected_date) { expected_week + (IceCube::ONE_DAY * offset_wday) }
         let(:range)         { [expected_date - (IceCube::ONE_DAY * lead), expected_date] }
 
