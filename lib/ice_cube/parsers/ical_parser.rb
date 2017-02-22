@@ -31,6 +31,7 @@ module IceCube
 
       ical.split(';').each do |rule|
         (name, value) = rule.split('=')
+        raise ArgumentError, "Invalid iCal rule component" if value.nil?
         value.strip!
         case name
         when 'FREQ'

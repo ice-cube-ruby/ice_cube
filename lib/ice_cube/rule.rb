@@ -73,18 +73,30 @@ module IceCube
       # Convert from a hash and create a rule
       def from_hash(original_hash)
         hash = IceCube::FlexibleHash.new original_hash
-        return nil unless match = hash[:rule_type].match(/\:\:(.+?)Rule/)
+
+        unless hash[:rule_type] && match = hash[:rule_type].match(/\:\:(.+?)Rule/)
+          raise ArgumentError, 'Invalid rule type'
+        end
 
         interval_type = match[1].downcase.to_sym
-        raise ArgumentError, "Invalid rule frequency type: #{match[1]}" unless INTERVAL_TYPES.include?(interval_type)
+
+        unless INTERVAL_TYPES.include?(interval_type)
+          raise ArgumentError, "Invalid rule frequency type: #{match[1]}"
+        end
 
         rule = IceCube::Rule.send(interval_type, hash[:interval] || 1)
-        rule.interval(hash[:interval] || 1, TimeUtil.wday_to_sym(hash[:week_start] || 0)) if match[1] == "Weekly"
+
+        if match[1] == "Weekly"
+          rule.interval(hash[:interval] || 1, TimeUtil.wday_to_sym(hash[:week_start] || 0))
+        end
+
         rule.until(TimeUtil.deserialize_time(hash[:until])) if hash[:until]
         rule.count(hash[:count]) if hash[:count]
+
         hash[:validations] && hash[:validations].each do |name, args|
           apply_validation(rule, name, args)
         end
+
         rule
       end
 
@@ -92,7 +104,11 @@ module IceCube
 
       def apply_validation(rule, name, args)
         name = name.to_sym
-        raise ArgumentError, "Invalid rule validation type: #{name}" unless ValidatedRule::VALIDATION_ORDER.include?(name)
+
+        unless ValidatedRule::VALIDATION_ORDER.include?(name)
+          raise ArgumentError, "Invalid rule validation type: #{name}"
+        end
+
         args.is_a?(Array) ? rule.send(name, *args) : rule.send(name, args)
       end
 
