@@ -42,6 +42,13 @@ describe IceCube::Schedule do
       expect( next_hour ).to eq Time.utc(2014, 1, 2, 00, 34 , 56)
     end
 
+    it "should give precedence to rule duration and return an occurrence with that duration" do
+      schedule = IceCube::Schedule.new(Time.now, :duration => IceCube::ONE_HOUR * 4) do |s|
+        s.add_recurrence_rule IceCube::Rule.daily.override_duration(IceCube::ONE_HOUR * 2)
+      end
+      next_occurrence = schedule.next_occurrence(Time.now)
+      next_occurrence.duration.should == IceCube::ONE_HOUR * 2
+    end
   end
 
   describe :duration do
@@ -61,6 +68,30 @@ describe IceCube::Schedule do
       expect(schedule.duration).to eq(600)
     end
 
+    it 'should return schedule duration even though a rule duration exists' do
+      schedule = IceCube::Schedule.new(Time.now, :duration => IceCube::ONE_HOUR * 4) do |s|
+        s.add_recurrence_rule IceCube::Rule.daily.override_duration(ONE_HOUR)
+      end
+      schedule.duration.should == IceCube::ONE_HOUR * 4
+    end
+  end
+
+  describe :max_duration do
+    it 'should get the maximum duration between the schedule and all the recurrence/exception rules in schedule' do
+      start = Time.now
+      schedule = IceCube::Schedule.new(start)
+      schedule.max_duration.should == 0
+      schedule.duration = 100
+      schedule.max_duration.should == 100
+      schedule.add_recurrence_rule IceCube::Rule.daily
+      schedule.max_duration.should == 100
+      schedule.add_recurrence_rule IceCube::Rule.daily(2).override_duration(50)
+      schedule.max_duration.should == 100
+      schedule.add_recurrence_rule IceCube::Rule.daily(3).override_duration(200)
+      schedule.max_duration.should == 200
+      schedule.add_exception_rule IceCube::Rule.daily(4).override_duration(300)
+      schedule.max_duration.should == 300
+    end
   end
 
   describe :occurring_at? do
@@ -75,6 +106,24 @@ describe IceCube::Schedule do
       expect( schedule.occurring_at?(Date.new(2014, 1, 2)) ).to eq false
     end
 
+    it "should give precedence to rule duration" do
+      schedule = IceCube::Schedule.new do |s|
+        s.start_time = Time.utc(2014, 1, 1, 0, 0, 0)
+        s.duration = IceCube::ONE_HOUR
+        s.add_recurrence_rule IceCube::Rule.daily
+      end
+      schedule2 = IceCube::Schedule.new do |s|
+        s.start_time = Time.utc(2014, 1, 1, 0, 0, 0)
+        s.duration = IceCube::ONE_HOUR
+        s.add_recurrence_rule IceCube::Rule.daily.override_duration(IceCube::ONE_HOUR * 2)
+      end
+      expect( schedule.occurring_at?(Time.utc(2014, 1, 1, 0, 30, 0)) ).to eq true
+      expect( schedule.occurring_at?(Time.utc(2014, 1, 1, 1, 30, 0)) ).to eq false
+
+      expect( schedule2.occurring_at?(Time.utc(2014, 1, 1, 0, 30, 0)) ).to eq true
+      expect( schedule2.occurring_at?(Time.utc(2014, 1, 1, 1, 30, 0)) ).to eq true
+      expect( schedule2.occurring_at?(Time.utc(2014, 1, 1, 2, 30, 0)) ).to eq false
+    end
   end
 
   describe :recurrence_times do
@@ -282,6 +331,27 @@ describe IceCube::Schedule do
       expect(conflict).to be_falsey
     end
 
+    it 'should give precedence to rule duration for checking conflicts, negative case' do
+      start_time = Time.now
+      start_time2 = Time.now + 2 * IceCube::ONE_HOUR
+      schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR * 3)
+      schedule1.rrule IceCube::Rule.daily.override_duration(IceCube::ONE_HOUR)
+      schedule2 = IceCube::Schedule.new(start_time2, :duration => IceCube::ONE_HOUR)
+      schedule2.rrule IceCube::Rule.daily
+      conflict = schedule1.conflicts_with?(schedule2, start_time + IceCube::ONE_WEEK)
+      conflict.should be_false
+    end
+
+    it 'should give precedence to rule duration for checking conflicts, positive case' do
+      start_time = Time.now
+      start_time2 = Time.now + 2 * IceCube::ONE_HOUR
+      schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
+      schedule1.rrule IceCube::Rule.daily.override_duration(IceCube::ONE_HOUR * 3)
+      schedule2 = IceCube::Schedule.new(start_time2, :duration => IceCube::ONE_HOUR)
+      schedule2.rrule IceCube::Rule.daily
+      conflict = schedule1.conflicts_with?(schedule2, start_time + IceCube::ONE_WEEK)
+      conflict.should be_true
+    end
   end
 
   describe :each do
@@ -312,7 +382,6 @@ describe IceCube::Schedule do
       schedule.each_occurrence { |t| answers << t }
       expect(answers).to eq([t0, t1])
     end
-
   end
 
   describe :all_occurrences_enumerator do
@@ -484,7 +553,7 @@ describe IceCube::Schedule do
       long_event = schedule.remaining_occurrences_enumerator(t0 + IceCube::ONE_DAY, :spans => true).take(1)
       expect(long_event).to eq([t0])
     end
-    
+
     it 'should find occurrences between including previous one with duration spanning start' do
       t0 = Time.utc(2015, 10, 1, 10, 00)
       schedule = IceCube::Schedule.new(t0, :duration => IceCube::ONE_HOUR)
@@ -505,7 +574,7 @@ describe IceCube::Schedule do
       schedule = IceCube::Schedule.new(t0, :duration => IceCube::ONE_HOUR)
       expect(schedule.occurs_between?(t0 + IceCube::ONE_HOUR, t0 + 2 * IceCube::ONE_HOUR, :spans => true)).to be_falsey
     end
-    
+
     it 'should quickly fetch a future time from a recurring schedule' do
       t0 = Time.utc(2000, 10, 1, 00, 00)
       t1 = Time.utc(2015, 10, 1, 12, 00)
@@ -518,7 +587,7 @@ describe IceCube::Schedule do
       expect(timing).to be < 0.1
       expect(occ).to eq([t1])
     end
-    
+
     it 'should not include occurrence ending on start time' do
       t0 = Time.utc(2015, 10, 1, 10, 00)
       schedule = IceCube::Schedule.new(t0, :duration => IceCube::ONE_HOUR / 2)
@@ -527,6 +596,21 @@ describe IceCube::Schedule do
       expect(third_occ).to eq(t0 + IceCube::ONE_HOUR)
     end
 
+    it 'should give precedence to rule duration, negative case' do
+      t0 = Time.utc(2014, 1, 1, 0, 0, 0)
+      schedule = IceCube::Schedule.new(t0, :duration => IceCube::ONE_HOUR * 2)
+      schedule.add_recurrence_rule IceCube::Rule.daily.count(2).override_duration(IceCube::ONE_HOUR / 2)
+      occs = schedule.next_occurrences(10, t0 + IceCube::ONE_HOUR, :spans => true)
+      occs.should == [t0 + IceCube::ONE_DAY]
+    end
+
+    it 'should give precedence to rule duration, positive case' do
+      t0 = Time.utc(2014, 1, 1, 0, 0, 0)
+      schedule = IceCube::Schedule.new(t0, :duration => IceCube::ONE_HOUR / 2)
+      schedule.add_recurrence_rule IceCube::Rule.daily.count(2).override_duration(IceCube::ONE_HOUR * 2)
+      occs = schedule.next_occurrences(10, t0 + IceCube::ONE_HOUR, :spans => true)
+      occs.should == [t0, t0 + IceCube::ONE_DAY]
+    end
   end
 
   describe :previous_occurrence do

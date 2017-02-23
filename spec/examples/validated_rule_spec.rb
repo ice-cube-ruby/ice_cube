@@ -45,7 +45,6 @@ describe IceCube, "::ValidatedRule" do
           expect(rule.next_time(first + 1.hour + 1.second, schedule, nil).to_s).not_to eq(first.to_s)
         end
       end
-
     end
 
     it 'should match times with usec' do
@@ -56,4 +55,48 @@ describe IceCube, "::ValidatedRule" do
       expect(rule.next_time(first_time + 1, schedule, nil)).to eq(first_time + 1)
     end
   end
+
+  describe "duration validation" do
+    let(:rule) { IceCube::Rule.monthly }
+
+    it "should respond to :override_duration" do
+      rule.respond_to?(:override_duration).should == true
+    end
+
+    describe "#duration" do
+      it "should return nil if if no duration validation set" do
+        rule.duration.should == nil
+      end
+
+      it "should return the duration set with validation" do
+        rule.override_duration(IceCube::ONE_DAY).duration.should == IceCube::ONE_DAY
+      end
+    end
+
+    describe "#overrides_duration?" do
+      it "should return true with duration validation" do
+        rule.override_duration(IceCube::ONE_DAY).overrides_duration?.should == true
+      end
+
+      it "should return false if no duration validation set" do
+        rule.overrides_duration?.should == false
+      end
+    end
+
+    it "should not affect string builder" do
+      rule.to_s.should == rule.override_duration(IceCube::ONE_DAY).to_s
+    end
+
+    it "should export :duration to hash" do
+      rule.to_hash.should_not have_key :duration
+      rule.override_duration(IceCube::ONE_DAY).to_hash[:duration].should == IceCube::ONE_DAY
+    end
+
+    it "should not export duration to ICAL" do
+      rule.to_ical.should == rule.override_duration(IceCube::ONE_DAY).to_ical
+    end
+  end
+
+
+
 end
