@@ -165,6 +165,16 @@ module IceCube
       ])
     end
 
+    it 'should find the next date on a biweekly sunday searching from a few days before the date' do
+      t0 = Time.utc(2017, 1, 15, 9, 0, 0)
+      t1 = Time.utc(2017, 1, 24)
+      t2 = t0 + (2 * ONE_WEEK)
+      schedule = Schedule.new(t0, :duration => IceCube::ONE_HOUR)
+      schedule.add_recurrence_rule Rule.weekly(2, :sunday).day(:sunday)
+      t3 = schedule.next_occurrence(t1, :spans => true)
+      expect(t3).to eq(t2)
+    end
+
     it 'should validate week_start input' do
       expect { Rule.weekly(2, :someday) }.to raise_error(ArgumentError)
     end
