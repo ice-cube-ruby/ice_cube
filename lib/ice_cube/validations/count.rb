@@ -8,8 +8,8 @@ module IceCube
     end
 
     def count(max)
-      unless max.nil? || max.is_a?(Fixnum)
-        raise ArgumentError, "Expecting Fixnum or nil value for count, got #{max.inspect}"
+      unless max.nil? || max.is_a?(Integer)
+        raise ArgumentError, "Expecting Integer or nil value for count, got #{max.inspect}"
       end
       @count = max
       replace_validations_for(:count, max && [Validation.new(max, self)])

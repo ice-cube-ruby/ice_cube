@@ -4,8 +4,8 @@ module IceCube
 
     def month_of_year(*months)
       months.flatten.each do |month|
-        unless month.is_a?(Fixnum) || month.is_a?(Symbol)
-          raise ArgumentError, "expecting Fixnum or Symbol value for month, got #{month.inspect}"
+        unless month.is_a?(Integer) || month.is_a?(Symbol)
+          raise ArgumentError, "expecting Integer or Symbol value for month, got #{month.inspect}"
         end
         month = TimeUtil.sym_to_month(month)
         validations_for(:month_of_year) << Validation.new(month)
