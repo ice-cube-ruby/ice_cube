@@ -135,7 +135,7 @@ module IceCube
     def self.sym_to_month(sym)
       MONTHS.fetch(sym) do |k|
         MONTHS.values.detect { |i| i.to_s == k.to_s } or
-        raise ArgumentError, "Expecting Fixnum or Symbol value for month. " \
+        raise ArgumentError, "Expecting Integer or Symbol value for month. " \
                              "No such month: #{k.inspect}"
       end
     end
@@ -145,7 +145,7 @@ module IceCube
     def self.sym_to_wday(sym)
       DAYS.fetch(sym) do |k|
         DAYS.values.detect { |i| i.to_s == k.to_s } or
-        raise ArgumentError, "Expecting Fixnum or Symbol value for weekday. " \
+        raise ArgumentError, "Expecting Integer or Symbol value for weekday. " \
                              "No such weekday: #{k.inspect}"
       end
     end
@@ -155,7 +155,7 @@ module IceCube
     def self.wday_to_sym(wday)
       return sym = wday if DAYS.keys.include? wday
       DAYS.invert.fetch(wday) do |i|
-        raise ArgumentError, "Expecting Fixnum value for weekday. " \
+        raise ArgumentError, "Expecting Integer value for weekday. " \
                              "No such wday number: #{i.inspect}"
       end
     end
