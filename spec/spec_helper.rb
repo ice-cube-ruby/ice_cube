@@ -1,11 +1,12 @@
+require "bundler/setup"
+require 'ice_cube'
+
 begin
   require 'simplecov'
   SimpleCov.start
 rescue LoadError
   # okay
 end
-
-require File.dirname(__FILE__) + '/../lib/ice_cube'
 
 IceCube.compatibility = 12
 
