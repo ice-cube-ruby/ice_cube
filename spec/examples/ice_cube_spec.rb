@@ -91,7 +91,7 @@ describe IceCube::Schedule do
     expect(schedule.all_occurrences).to eq([])
   end
 
-  it 'should be able to be schedules at 1:st:st and 2:st:st every day' do
+  it 'should be able to schedule at hour 1,2 with start min/sec every day' do
     start_time = Time.utc(2007, 9, 2, 9, 15, 25)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily.hour_of_day(1, 2).count(6)
@@ -101,7 +101,7 @@ describe IceCube::Schedule do
                      Time.utc(2007, 9, 5, 1, 15, 25), Time.utc(2007, 9, 5, 2, 15, 25)])
   end
 
-  it 'should be able to be schedules at 1:0:st and 2:0:st every day' do
+  it 'should be able to schedule at hour 1,2 at min 0 with start sec every day' do
     start_time = Time.utc(2007, 9, 2, 9, 15, 25)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily.hour_of_day(1, 2).minute_of_hour(0).count(6)
