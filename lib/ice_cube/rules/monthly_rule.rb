@@ -3,6 +3,7 @@ module IceCube
   class MonthlyRule < ValidatedRule
 
     include Validations::MonthlyInterval
+    include Validations::MonthlyBySetPos
 
     def initialize(interval = 1, week_start = :sunday)
       super

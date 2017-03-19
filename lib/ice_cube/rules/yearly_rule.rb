@@ -3,6 +3,7 @@ module IceCube
   class YearlyRule < ValidatedRule
 
     include Validations::YearlyInterval
+    include Validations::YearlyBySetPos
 
     def initialize(interval = 1, week_start = :sunday)
       super
