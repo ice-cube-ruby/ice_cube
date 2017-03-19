@@ -3,3 +3,4 @@ require "bundler/gem_tasks"
 
 RSpec::Core::RakeTask.new(:spec)
 task :build => :spec
+task :default => :spec

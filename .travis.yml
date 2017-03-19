@@ -1,4 +1,5 @@
-script: "bundle exec rspec spec"
+sudo: false
+language: ruby
 before_install:
   - gem install bundler
 notifications:
