@@ -130,8 +130,8 @@ describe IceCube::Schedule, 'to_s' do
     schedule = IceCube::Schedule.new Time.local(2010, 3, 20)
     schedule.add_recurrence_rule IceCube::Rule.weekly
     schedule.add_recurrence_time Time.local(2010, 3, 20)
-    schedule.add_exception_date Time.local(2010, 3, 20) # ignored
-    schedule.add_exception_date Time.local(2010, 3, 21)
+    schedule.add_exception_time Time.local(2010, 3, 20) # ignored
+    schedule.add_exception_time Time.local(2010, 3, 21)
     # TODO: this text should be improved to add sentence connector
     expect(schedule.to_s).to eq('Semanalmente, excepto el 20 de Marzo de 2010, excepto el 21 de Marzo de 2010')
   end
