@@ -12,10 +12,10 @@ branches:
 rvm:
   - 1.9.3
   - 2.0
-  - 2.1
-  - 2.2
-  - 2.3
-  - 2.4
+  - 2.1.10
+  - 2.2.6
+  - 2.3.3
+  - 2.4.0
   - ruby-head
 env:
   - RAILS_VERSION='~> 3.2'
@@ -27,7 +27,7 @@ matrix:
       env: RAILS_VERSION='~> 5.0'
     - rvm: 2.0
       env: RAILS_VERSION='~> 5.0'
-    - rvm: 2.1
+    - rvm: 2.1.10
       env: RAILS_VERSION='~> 5.0'
-    - rvm: 2.2
+    - rvm: 2.2.6
       env: RAILS_VERSION='~> 5.0'
