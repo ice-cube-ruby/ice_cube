@@ -22,7 +22,7 @@ module IceCube
         .map { |v| v.validate(step_time, start_time).to_i }
         .reduce(0) { |least, i| i > 0 && i <= interval && (i < least || least == 0) ? i : least }
 
-      7 - step_time.wday if offset > 0
+      7 - TimeUtil.normalize_wday(step_time.wday, week_start) if offset > 0
     end
 
   end
