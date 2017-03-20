@@ -52,10 +52,10 @@ module IceCube
     end
 
     it 'should update previous interval' do
-      schedule = double(start_time: t0 = Time.new(2013, 1, 1))
+      t0 = Time.new(2013, 1, 1)
       rule = Rule.weekly(7)
       rule.interval(2)
-      expect(rule.next_time(t0 + 1, schedule, nil)).to eq(Time.new(2013, 1, 15))
+      expect(rule.next_time(t0 + 1, t0, nil)).to eq(t0 + 2 * ONE_WEEK)
     end
 
     it 'should produce the correct number of days for @interval = 1 with no weekdays specified' do

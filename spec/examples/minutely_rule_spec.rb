@@ -29,10 +29,10 @@ module IceCube
   describe MinutelyRule do
 
     it 'should update previous interval' do
-      schedule = double(start_time: t0 = Time.now)
+      t0 = Time.now
       rule = Rule.minutely(7)
       rule.interval(5)
-      expect(rule.next_time(t0 + 1, schedule, nil)).to eq(t0 + 5 * IceCube::ONE_MINUTE)
+      expect(rule.next_time(t0 + 1, t0, nil)).to eq(t0 + 5 * IceCube::ONE_MINUTE)
     end
 
     it 'should work across DST start hour' do

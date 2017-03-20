@@ -28,10 +28,10 @@ end
 describe IceCube::YearlyRule do
 
   it 'should update previous interval' do
-    schedule = double(start_time: t0 = Time.utc(2013, 5, 1))
+    t0 = Time.utc(2013, 5, 1)
     rule = Rule.yearly(3)
     rule.interval(1)
-    expect(rule.next_time(t0 + 1, schedule, nil)).to eq(t0 + (IceCube::ONE_DAY * 365))
+    expect(rule.next_time(t0 + 1, t0, nil)).to eq(t0 + (IceCube::ONE_DAY * 365))
   end
 
   it 'should be able to specify complex yearly rules' do

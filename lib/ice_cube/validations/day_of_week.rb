@@ -30,7 +30,7 @@ module IceCube
         true
       end
 
-      def validate(step_time, schedule)
+      def validate(step_time, start_time)
         wday = step_time.wday
         offset = (day < wday) ? (7 - wday + day) : (day - wday)
         wrapper = TimeUtil::TimeWrapper.new(step_time)

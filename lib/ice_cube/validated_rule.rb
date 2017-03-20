@@ -49,10 +49,10 @@ module IceCube
     end
 
     # Compute the next time after (or including) the specified time in respect
-    # to the given schedule
-    def next_time(time, schedule, closing_time)
+    # to the given start time
+    def next_time(time, start_time, closing_time)
       @time = time
-      @schedule = schedule
+      @start_time = start_time
 
       return nil unless find_acceptable_time_before(closing_time)
 
@@ -145,7 +145,7 @@ module IceCube
     #
     def validation_accepts_or_updates_time?(validations_for_type)
       res = validations_for_type.each_with_object([]) do |validation, offsets|
-        r = validation.validate(@time, @schedule)
+        r = validation.validate(@time, @start_time)
         return true if r.nil? || r == 0
         offsets << r
       end

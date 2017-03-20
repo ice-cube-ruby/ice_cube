@@ -439,7 +439,7 @@ module IceCube
       loop do
         min_time = recurrence_rules_with_implicit_start_occurrence.reduce(nil) do |min_time, rule|
           begin
-            new_time = rule.next_time(time, self, min_time || closing_time)
+            new_time = rule.next_time(time, start_time, min_time || closing_time)
             [min_time, new_time].compact.min
           rescue StopIteration
             min_time
@@ -462,7 +462,7 @@ module IceCube
     # is excluded from the schedule
     def exception_time?(time)
       @all_exception_rules.any? do |rule|
-        rule.on?(time, self)
+        rule.on?(time, start_time)
       end
     end
 
@@ -515,9 +515,9 @@ module IceCube
       time = TimeUtil::TimeWrapper.new(opening_time)
       recurrence_rules.each do |rule|
         wday_validations = rule.other_interval_validations.select { |v| v.type == :wday } or next
-        interval = rule.base_interval_validation.validate(opening_time, self).to_i
+        interval = rule.base_interval_validation.validate(opening_time, start_time).to_i
         offset = wday_validations
-          .map { |v| v.validate(opening_time, self).to_i }
+          .map { |v| v.validate(opening_time, start_time).to_i }
           .reduce(0) { |least, i| i > 0 && i <= interval && (i < least || least == 0) ? i : least }
         time.add(rule.base_interval_type, 7 - time.to_time.wday) if offset > 0
       end
