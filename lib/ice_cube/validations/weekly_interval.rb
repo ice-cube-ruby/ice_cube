@@ -12,10 +12,6 @@ module IceCube
       self
     end
 
-    def week_start
-      @week_start
-    end
-
     class Validation
 
       attr_reader :interval, :week_start

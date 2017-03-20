@@ -32,7 +32,7 @@ module IceCube
 
     attr_reader :validations
 
-    def initialize(interval = 1, *)
+    def initialize(interval = 1)
       @validations = Hash.new
     end
 
