@@ -13,6 +13,18 @@ module IceCube
       reset
     end
 
+    def wday_offset(step_time, start_time)
+      wday_validations = other_interval_validations.select { |v| v.type == :wday }
+      return if wday_validations.none?
+
+      interval = base_interval_validation.validate(step_time, start_time).to_i
+      offset = wday_validations
+        .map { |v| v.validate(step_time, start_time).to_i }
+        .reduce(0) { |least, i| i > 0 && i <= interval && (i < least || least == 0) ? i : least }
+
+      7 - step_time.wday if offset > 0
+    end
+
   end
 
 end

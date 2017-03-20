@@ -68,6 +68,9 @@ module IceCube
       @validations[:interval].any? &:dst_adjust?
     end
 
+    def wday_offset(step_time, start_time)
+    end
+
     def to_s
       builder = StringBuilder.new
       @validations.each do |name, validations|
