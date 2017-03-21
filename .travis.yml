@@ -23,6 +23,8 @@ env:
   - RAILS_VERSION='~> 5.0'
 matrix:
   exclude:
+
+    # Rails 5 only runs on ruby 2.3 and up
     - rvm: 1.9.3
       env: RAILS_VERSION='~> 5.0'
     - rvm: 2.0
@@ -31,3 +33,9 @@ matrix:
       env: RAILS_VERSION='~> 5.0'
     - rvm: 2.2.6
       env: RAILS_VERSION='~> 5.0'
+
+    # Rails 3 no longer runs on ruby 2.4 and up
+    - rvm: 2.4.0
+      env: RAILS_VERSION='~> 3.2'
+    - rvm: ruby-head
+      env: RAILS_VERSION='~> 3.2'
