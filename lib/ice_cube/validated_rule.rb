@@ -36,6 +36,13 @@ module IceCube
       @validations = Hash.new
     end
 
+    # Reset the uses on the rule to 0
+    def reset
+      @time = nil
+      @start_time = nil
+      @uses = 0
+    end
+
     def base_interval_validation
       @validations[:interval].first
     end
