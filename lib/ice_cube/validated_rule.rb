@@ -59,12 +59,16 @@ module IceCube
     # to the given start time
     def next_time(time, start_time, closing_time)
       @time = time
-      @start_time = start_time
+      @start_time ||= realign(time, start_time)
 
       return nil unless find_acceptable_time_before(closing_time)
 
       @uses += 1 if @time
       @time
+    end
+
+    def realign(opening_time, start_time)
+      start_time
     end
 
     def skipped_for_dst
@@ -73,9 +77,6 @@ module IceCube
 
     def dst_adjust?
       @validations[:interval].any? &:dst_adjust?
-    end
-
-    def wday_offset(step_time, start_time)
     end
 
     def to_s

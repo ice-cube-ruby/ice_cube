@@ -413,7 +413,7 @@ module IceCube
       spans = options[:spans] == true && duration != 0
       Enumerator.new do |yielder|
         reset
-        t1 = full_required? ? start_time : realign(opening_time) - (spans ? duration : 0)
+        t1 = full_required? ? start_time : opening_time - (spans ? duration : 0)
         loop do
           break unless (t0 = next_time(t1, closing_time))
           break if closing_time && t0 > closing_time
@@ -500,23 +500,6 @@ module IceCube
       recurrence_rules.each do |rule|
         rule.skipped_for_dst
       end
-    end
-
-    # If any rule has validations for values within the period, (overriding the
-    # interval from start time, e.g.  `day[_of_week]`), and the opening time is
-    # offset from the interval multiplier such that it might miss the first
-    # correct occurrence (e.g. repeat is every N weeks, but selecting from end
-    # of week N-1, the first jump would go to end of week N and miss any
-    # earlier validations in the week). This realigns the opening time to
-    # the start of the interval's correct period (e.g. move to start of week N)
-    #
-    def realign(opening_time)
-      time = TimeUtil::TimeWrapper.new(opening_time)
-      recurrence_rules.each do |rule|
-        offset = rule.wday_offset(opening_time, start_time)
-        time.add(:day, offset) if offset
-      end
-      time.to_time
     end
 
   end

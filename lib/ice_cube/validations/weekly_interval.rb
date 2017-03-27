@@ -30,6 +30,7 @@ module IceCube
       end
 
       def validate(step_time, start_time)
+        return if step_time < start_time
         t0, t1 = start_time, step_time
         d0 = Date.new(t0.year, t0.month, t0.day)
         d1 = Date.new(t1.year, t1.month, t1.day)

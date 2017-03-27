@@ -175,6 +175,14 @@ module IceCube
       expect(t3).to eq(t2)
     end
 
+    it 'finds correct next_occurrence for biweekly rules' do
+      schedule = IceCube::Schedule.new(Time.utc(2016, 3, 3))
+      schedule.add_recurrence_rule IceCube::Rule.weekly(2).day(:sunday)
+
+      result = schedule.next_occurrence(Time.utc(2016, 3, 3))
+      expect(result).to eq Time.utc(2016, 3, 13)
+    end
+
     it 'should validate week_start input' do
       expect { Rule.weekly(2, :someday) }.to raise_error(ArgumentError)
     end
