@@ -46,7 +46,7 @@ module IceCube
 
     # Add a recurrence time to the schedule
     def add_recurrence_time(time)
-      return nil if time.nil?
+      return if time.nil?
       rule = SingleOccurrenceRule.new(time)
       add_recurrence_rule rule
       time
@@ -57,7 +57,7 @@ module IceCube
 
     # Add an exception time to the schedule
     def add_exception_time(time)
-      return nil if time.nil?
+      return if time.nil?
       rule = SingleOccurrenceRule.new(time)
       add_exception_rule rule
       time
@@ -68,6 +68,7 @@ module IceCube
 
     # Add a recurrence rule to the schedule
     def add_recurrence_rule(rule)
+      return if rule.nil?
       @all_recurrence_rules << rule unless @all_recurrence_rules.include?(rule)
     end
     alias :rrule :add_recurrence_rule
@@ -80,6 +81,7 @@ module IceCube
 
     # Add an exception rule to the schedule
     def add_exception_rule(rule)
+      return if rule.nil?
       @all_exception_rules << rule unless @all_exception_rules.include?(rule)
     end
     alias :exrule :add_exception_rule
