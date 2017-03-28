@@ -29,7 +29,7 @@ module IceCube
         true
       end
 
-      def validate(step_time, schedule)
+      def validate(step_time, start_time)
         days_in_year = TimeUtil.days_in_year(step_time)
         yday = day < 0 ? day + days_in_year + 1 : day
         offset = yday - step_time.yday

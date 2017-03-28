@@ -25,8 +25,8 @@ module IceCube
         true
       end
 
-      def validate(step_time, schedule)
-        t0, t1 = schedule.start_time, step_time
+      def validate(step_time, start_time)
+        t0, t1 = start_time, step_time
         months = (t1.month - t0.month) +
                  (t1.year - t0.year) * 12
         offset = (months % interval).nonzero?

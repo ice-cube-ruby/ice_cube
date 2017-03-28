@@ -33,7 +33,7 @@ module IceCube
         false
       end
 
-      def validate(time, schedule)
+      def validate(time, start_time)
         raise CountExceeded if rule.uses && rule.uses >= count
       end
 

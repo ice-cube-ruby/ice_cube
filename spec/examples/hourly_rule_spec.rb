@@ -52,10 +52,10 @@ module IceCube
     end
 
     it 'should update previous interval' do
-      schedule = double(start_time: t0 = Time.now)
+      t0 = Time.now
       rule = Rule.hourly(7)
       rule.interval(5)
-      expect(rule.next_time(t0 + 1, schedule, nil)).to eq(t0 + 5 * ONE_HOUR)
+      expect(rule.next_time(t0 + 1, t0, nil)).to eq(t0 + 5 * ONE_HOUR)
     end
 
     it 'should produce the correct days for @interval = 3' do

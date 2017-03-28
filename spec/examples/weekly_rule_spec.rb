@@ -52,10 +52,10 @@ module IceCube
     end
 
     it 'should update previous interval' do
-      schedule = double(start_time: t0 = Time.new(2013, 1, 1))
+      t0 = Time.new(2013, 1, 1)
       rule = Rule.weekly(7)
       rule.interval(2)
-      expect(rule.next_time(t0 + 1, schedule, nil)).to eq(Time.new(2013, 1, 15))
+      expect(rule.next_time(t0 + 1, t0, nil)).to eq(t0 + 2 * ONE_WEEK)
     end
 
     it 'should produce the correct number of days for @interval = 1 with no weekdays specified' do
@@ -175,8 +175,73 @@ module IceCube
       expect(t3).to eq(t2)
     end
 
+    it 'finds correct next_occurrence for biweekly rules' do
+      schedule = IceCube::Schedule.new(Time.utc(2016, 3, 3))
+      schedule.add_recurrence_rule IceCube::Rule.weekly(2).day(:sunday)
+
+      result = schedule.next_occurrence(Time.utc(2016, 3, 3))
+      expect(result).to eq Time.utc(2016, 3, 13)
+    end
+
     it 'should validate week_start input' do
       expect { Rule.weekly(2, :someday) }.to raise_error(ArgumentError)
+    end
+
+    it 'should produce correct days for bi-weekly interval, starting on a non-sunday' do
+      schedule = IceCube::Schedule.new(t0 = Time.local(2015, 3, 3))
+      schedule.add_recurrence_rule IceCube::Rule.weekly(2, :monday).day(:tuesday)
+      range_start = Time.local(2015, 3, 15)
+      times = schedule.occurrences_between(range_start, range_start + IceCube::ONE_WEEK)
+      expect(times.first).to eq Time.local(2015, 3, 17)
+    end
+
+    it 'should produce correct days for monday-based bi-weekly interval, starting on a sunday' do
+      schedule = IceCube::Schedule.new(t0 = Time.local(2015, 3, 1))
+      schedule.add_recurrence_rule IceCube::Rule.weekly(2, :monday).day(:sunday)
+      range_start = Time.local(2015, 3, 1)
+      times = schedule.occurrences_between(range_start, range_start + IceCube::ONE_WEEK)
+      expect(times.first).to eq Time.local(2015, 3, 1)
+    end
+
+    describe "using occurs_between with a biweekly schedule" do
+      [[0, 1, 2], [0, 6, 1], [5, 1, 6], [6, 5, 7]].each do |wday, offset, lead|
+        start_week    = Time.utc(2014, 1, 5)
+        expected_week =  start_week + (IceCube::ONE_DAY * 14)
+        offset_wday   = (wday + offset) % 7
+
+        context "starting on weekday #{wday} selecting weekday #{offset} with a #{lead} day advance window" do
+          let(:biweekly)      { IceCube::Rule.weekly(2).day(0, 1, 2, 3, 4, 5, 6) }
+          let(:schedule)      { IceCube::Schedule.new(start_week + (IceCube::ONE_DAY * wday)) { |s| s.rrule biweekly } }
+          let(:expected_date) { expected_week + (IceCube::ONE_DAY * offset_wday) }
+          let(:range)         { [expected_date - (IceCube::ONE_DAY * lead), expected_date] }
+
+          it "should include weekday #{offset_wday} of the expected week" do
+            expect(schedule.occurrences_between(range.first, range.last)).to include expected_date
+          end
+        end
+      end
+    end
+
+    describe "using occurs_between with a weekly schedule" do
+      [[6, 5, 7]].each do |wday, offset, lead|
+        start_week    = Time.utc(2014, 1, 5)
+        expected_week = start_week + ONE_WEEK
+        offset_wday   = (wday + offset) % 7
+
+        context "starting on weekday #{wday} selecting weekday #{offset} with a #{lead} day advance window" do
+          let(:weekly)        { IceCube::Rule.weekly(1).day(0, 1, 2, 3, 4, 5, 6) }
+          let(:schedule)      { IceCube::Schedule.new(start_week + wday * IceCube::ONE_DAY) { |s| s.rrule weekly } }
+          let(:expected_date) { expected_week + offset_wday * IceCube::ONE_DAY }
+          let(:range)         { [expected_date - lead * ONE_DAY, expected_date] }
+
+          it "should include weekday #{offset_wday} of the expected week" do
+            wday_of_start_week = start_week + wday * IceCube::ONE_DAY
+
+            expect(schedule.occurrences_between(range.first, range.last)).to include expected_date
+            expect(schedule.occurrences_between(range.first, range.last).first).to eq(wday_of_start_week)
+          end
+        end
+      end
     end
 
   end
