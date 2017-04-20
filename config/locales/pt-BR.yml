@@ -35,13 +35,13 @@ pt-BR:
     days_of_week: '%{segments} %{day}'
     days_of_month:
       other: '%{segments} dias do mês'
-      one: '%{segments} dia do mês'
+      one: '%{segments} dia'
     days_of_year:
       other: '%{segments} dias do ano'
-      one: '%{segments} dia do ano'
+      one: '%{segments} dia'
     at_hours_of_the_day:
-      other: às %{segments} horas do dia
-      one: à %{segments} hora do dia
+      other: às %{segments} horas
+      one: à %{segments} hora
     on_minutes_of_hour:
       other: aos %{segments} minutos
       one: ao %{segments} minuto
