@@ -21,13 +21,13 @@ module IceCube
     def realign(step_time, start_time)
       time = TimeUtil::TimeWrapper.new(start_time)
       offset = wday_offset(step_time, start_time)
-      time.add(:day, offset) if offset
+      time.add(:day, offset)
       time.to_time
     end
 
     def wday_offset(step_time, start_time)
       wday_validations = other_interval_validations.select { |v| v.type == :wday }
-      return if wday_validations.none?
+      return 0 if wday_validations.none?
 
       days = (step_time - start_time).to_i / ONE_DAY
       interval = base_interval_validation.validate(step_time, start_time).to_i
