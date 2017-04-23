@@ -145,6 +145,13 @@ module IceCube
       ])
     end
 
+    #    February 2012
+    # Su Mo Tu We Th Fr Sa
+    #           1  2  3  4
+    #  5  6  7  8  9 10 11
+    # 12 13 14 15 16 17 18
+    # 19 20 21 22 23 24 25
+    # 26 27 28 29
     it 'should start weekly rules on monday when monday is the week start' do
       schedule = Schedule.new(t0 = Time.local(2012, 2, 7))
       schedule.add_recurrence_rule Rule.weekly(2, :monday).day(:tuesday, :sunday)
@@ -175,12 +182,42 @@ module IceCube
       expect(t3).to eq(t2)
     end
 
-    it 'finds correct next_occurrence for biweekly rules' do
+    #      March 2016
+    # Su Mo Tu We Th Fr Sa
+    #        1  2  3  4  5
+    #  6  7  8  9 10 11 12
+    # 13 14 15 16 17 18 19
+    # 20 21 22 23 24 25 26
+    # 27 28 29 30 31
+    it 'finds correct next_occurrence for biweekly rules realigned from beginning of start week' do
       schedule = IceCube::Schedule.new(Time.utc(2016, 3, 3))
       schedule.add_recurrence_rule IceCube::Rule.weekly(2).day(:sunday)
 
       result = schedule.next_occurrence(Time.utc(2016, 3, 3))
       expect(result).to eq Time.utc(2016, 3, 13)
+    end
+
+    #     January 2017
+    # Su Mo Tu We Th Fr Sa
+    #  1  2  3  4  5  6  7
+    #  8  9 10 11 12 13 14
+    # 15 16 17 18 19 20 21
+    # 22 23 24 25 26 27 28
+    # 29 30 31
+    it 'finds correct next_occurrence for biweekly rules realigned from skipped week' do
+      schedule = IceCube::Schedule.new(Time.utc(2017, 1, 2))
+      schedule.add_recurrence_rule IceCube::Rule.weekly(2).day(:monday, :tuesday)
+
+      result = schedule.next_occurrence(Time.utc(2017, 1, 9))
+      expect(result).to eq Time.utc(2017, 1, 16)
+    end
+
+    it 'finds correct previous_occurrence for biweekly rule realigned from skipped week' do
+      schedule = IceCube::Schedule.new(Time.utc(2017, 1, 2))
+      schedule.add_recurrence_rule IceCube::Rule.weekly(2).day(:monday, :tuesday)
+
+      result = schedule.previous_occurrence(Time.utc(2017, 1, 9))
+      expect(result).to eq Time.utc(2017, 1, 3)
     end
 
     it 'should validate week_start input' do

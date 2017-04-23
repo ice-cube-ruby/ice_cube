@@ -60,6 +60,7 @@ module IceCube
     def next_time(time, start_time, closing_time)
       @time = time
       @start_time ||= realign(time, start_time)
+      @time = @start_time if @time < @start_time
 
       return nil unless find_acceptable_time_before(closing_time)
 
