@@ -13,21 +13,33 @@ module IceCube
       reset
     end
 
-    # Calculate the effective start time for when the given start time is later
-    # in the week than one of the weekday validations, such that times could be
-    # missed by a 7-day jump using the weekly interval, or when selecting from a
-    # date that is misaligned from the schedule interval.
+    # Move the effective start time to correct for when the schedule has
+    # validations earlier in the week than the selected start time, e.g.
+    #
+    #     Schedule.new(wednesday).weekly(2).day(:monday)
+    #
+    # The effective start time gets realigned to the second next Monday, jumping
+    # over the gap week for the interval (2). Without realignment, the correct
+    # Monday occurrence would be missed when the schedule performs a 7-day jump
+    # into the next interval week, arriving on the Wednesday. This corrects any
+    # selections from dates that are misaligned to the schedule interval.
     #
     def realign(step_time, start_time)
       time = TimeUtil::TimeWrapper.new(start_time)
       offset = wday_offset(step_time, start_time)
-      time.add(:day, offset) if offset
+      time.add(:day, offset)
       time.to_time
     end
 
+    # Calculate how many days to the first wday validation in the correct
+    # interval week. This may move backwards within the week if starting in an
+    # interval week with earlier validations.
+    #
     def wday_offset(step_time, start_time)
+      return 0 if step_time == start_time
+
       wday_validations = other_interval_validations.select { |v| v.type == :wday }
-      return if wday_validations.none?
+      return 0 if wday_validations.none?
 
       days = (step_time - start_time).to_i / ONE_DAY
       interval = base_interval_validation.validate(step_time, start_time).to_i
