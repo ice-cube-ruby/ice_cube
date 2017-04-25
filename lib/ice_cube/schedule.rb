@@ -386,6 +386,19 @@ module IceCube
       recurrence_rules.empty? || recurrence_rules.all?(&:terminating?)
     end
 
+    def hash
+      [
+        TimeUtil.hash(start_time), duration,
+        *@all_recurrence_rules.map(&:hash).sort!,
+        *@all_exception_rules.map(&:hash).sort!
+      ].hash
+    end
+
+    def eql?(other)
+      self.hash == other.hash
+    end
+    alias == eql?
+
     def self.dump(schedule)
       return schedule if schedule.nil? || schedule == ""
       schedule.to_yaml

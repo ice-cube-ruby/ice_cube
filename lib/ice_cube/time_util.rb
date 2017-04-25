@@ -109,6 +109,14 @@ module IceCube
       end
     end
 
+    # Get a more precise equality for time objects
+    # Ruby provides a Time#hash method, but it fails to account for UTC
+    # offset (so the current date may be different) or DST rules (so the
+    # hour may be wrong for different schedule occurrences)
+    def self.hash(time)
+      [time, time.utc_offset, time.zone].hash
+    end
+
     # Check the deserialized time offset string against actual local time
     # offset to try and preserve the original offset for plain Ruby Time. If
     # the offset is the same as local we can assume the same original zone and
