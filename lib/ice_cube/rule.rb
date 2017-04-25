@@ -27,8 +27,7 @@ module IceCube
     end
 
     def hash
-      h = to_hash
-      h.nil? ? super : h.hash
+      to_hash.hash
     end
 
     def to_ical
