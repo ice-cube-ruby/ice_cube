@@ -25,7 +25,7 @@ module IceCube
     def normalize_keys(hash)
       data = IceCube::FlexibleHash.new(hash.dup)
 
-      if (start_date = data.delete(:start_date))
+      if (data[:start_time].blank? && start_date = data.delete(:start_date))
         warn "IceCube: :start_date is deprecated, please use :start_time at: #{ caller[0] }"
         data[:start_time] = start_date
       end
