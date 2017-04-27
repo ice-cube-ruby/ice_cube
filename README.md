@@ -153,8 +153,8 @@ IceCube::Schedule.from_ical(ical)
 
 ## Using your words
 
-ice_cube can provide ical or string representations of individual rules, or the
-whole schedule.
+ice_cube can provide ical or string representations of individual rules, and
+ical representations of a whole schedule.
 
 ```ruby
 rule = IceCube::Rule.daily(2).day_of_week(:tuesday => [1, -1], :wednesday => [2])
