@@ -4,7 +4,7 @@ module IceCube
     attr_reader :hash
 
     def initialize(original_hash)
-      @hash = original_hash
+      @hash = original_hash || {}
     end
 
     def to_schedule

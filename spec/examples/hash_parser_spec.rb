@@ -28,6 +28,14 @@ module IceCube
           it { is_expected.to eq(1800) }
         end
       end
+
+      describe 'when passed a nil value' do
+        it 'does not raise an error' do
+          expect {
+            IceCube::HashParser.new(nil).to_schedule.should
+          }.not_to raise_error
+        end
+      end
     end
 
 
