@@ -137,7 +137,7 @@ module IceCube
 
     def normalized_interval(interval)
       int = interval.to_i
-      raise ArgumentError, "'#{interval}' is not a valid input for interval. Please pass an integer." unless int > 0
+      raise ArgumentError, "'#{interval}' is not a valid input for interval. Please pass a postive integer." unless int > 0
       int
     end
 

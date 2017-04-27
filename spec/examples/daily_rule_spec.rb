@@ -15,13 +15,13 @@ module IceCube
     it 'raises an argument error when a bad value is passed using the interval method' do
       expect {
         rule = Rule.daily.interval("invalid")
-      }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass an integer.")
+      }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass a postive integer.")
     end
 
     it 'raises an argument error when a bad value is passed' do
       expect {
         rule = Rule.daily("invalid")
-      }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass an integer.")
+      }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass a postive integer.")
     end
   end
 
