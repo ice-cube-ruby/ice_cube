@@ -130,6 +130,58 @@ module IceCube
         Time.utc(2010, 11, 30, 0, 0, 0), Time.utc(2010, 12, 31, 0, 0, 0)
       ])
     end
+    
+    it 'should produce dates on a monthly interval when specify 30th' do
+      schedule = Schedule.new(t0 = Time.utc(2010, 3, 15, 0, 0, 0))
+      schedule.add_recurrence_rule Rule.monthly.day_of_month(30)
+      schedule.first(12).should == [
+        Time.utc(2010,  3, 30, 0, 0, 0), Time.utc(2010,  4, 30, 0, 0, 0),
+        Time.utc(2010,  5, 30, 0, 0, 0), Time.utc(2010,  6, 30, 0, 0, 0),
+        Time.utc(2010,  7, 30, 0, 0, 0), Time.utc(2010,  8, 30, 0, 0, 0),
+        Time.utc(2010,  9, 30, 0, 0, 0), Time.utc(2010, 10, 30, 0, 0, 0),
+        Time.utc(2010, 11, 30, 0, 0, 0), Time.utc(2010, 12, 30, 0, 0, 0),
+        Time.utc(2011,  1, 30, 0, 0, 0), Time.utc(2011,  2, 28, 0, 0, 0)
+      ]
+    end
+    
+    it 'should produce dates on a monthly interval when specify 30th on leap year' do
+      schedule = Schedule.new(t0 = Time.utc(2011, 3, 15, 0, 0, 0))
+      schedule.add_recurrence_rule Rule.monthly.day_of_month(30)
+      schedule.first(12).should == [
+        Time.utc(2011,  3, 30, 0, 0, 0), Time.utc(2011,  4, 30, 0, 0, 0),
+        Time.utc(2011,  5, 30, 0, 0, 0), Time.utc(2011,  6, 30, 0, 0, 0),
+        Time.utc(2011,  7, 30, 0, 0, 0), Time.utc(2011,  8, 30, 0, 0, 0),
+        Time.utc(2011,  9, 30, 0, 0, 0), Time.utc(2011, 10, 30, 0, 0, 0),
+        Time.utc(2011, 11, 30, 0, 0, 0), Time.utc(2011, 12, 30, 0, 0, 0),
+        Time.utc(2012,  1, 30, 0, 0, 0), Time.utc(2012,  2, 29, 0, 0, 0)
+      ]
+    end
+    
+    it 'should produce dates on a monthly interval when specify 31th' do
+      schedule = Schedule.new(t0 = Time.utc(2010, 3, 15, 0, 0, 0))
+      schedule.add_recurrence_rule Rule.monthly.day_of_month(31)
+      schedule.first(12).should == [
+        Time.utc(2010,  3, 31, 0, 0, 0), Time.utc(2010,  4, 30, 0, 0, 0),
+        Time.utc(2010,  5, 31, 0, 0, 0), Time.utc(2010,  6, 30, 0, 0, 0),
+        Time.utc(2010,  7, 31, 0, 0, 0), Time.utc(2010,  8, 31, 0, 0, 0),
+        Time.utc(2010,  9, 30, 0, 0, 0), Time.utc(2010, 10, 31, 0, 0, 0),
+        Time.utc(2010, 11, 30, 0, 0, 0), Time.utc(2010, 12, 31, 0, 0, 0),
+        Time.utc(2011,  1, 30, 0, 0, 0), Time.utc(2011,  2, 28, 0, 0, 0)
+      ]
+    end
+    
+    it 'should produce dates on a monthly interval when specify 31th on leap year' do
+      schedule = Schedule.new(t0 = Time.utc(2011, 3, 15, 0, 0, 0))
+      schedule.add_recurrence_rule Rule.monthly.day_of_month(31)
+      schedule.first(12).should == [
+        Time.utc(2011,  3, 31, 0, 0, 0), Time.utc(2011,  4, 30, 0, 0, 0),
+        Time.utc(2011,  5, 31, 0, 0, 0), Time.utc(2011,  6, 30, 0, 0, 0),
+        Time.utc(2011,  7, 31, 0, 0, 0), Time.utc(2011,  8, 31, 0, 0, 0),
+        Time.utc(2011,  9, 30, 0, 0, 0), Time.utc(2011, 10, 31, 0, 0, 0),
+        Time.utc(2011, 11, 30, 0, 0, 0), Time.utc(2011, 12, 31, 0, 0, 0),
+        Time.utc(2012,  1, 31, 0, 0, 0), Time.utc(2012,  2, 29, 0, 0, 0)
+      ]
+    end
 
     it 'should produce dates on a monthly interval for latter days in the month near February' do
       schedule = Schedule.new(t0 = Time.utc(2010, 1, 29, 0, 0, 0))
