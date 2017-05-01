@@ -73,7 +73,7 @@ schedule.first(2) # [now, now + 2.days]
 schedule.first    # now
 
 # or the last (n) occurrences (if the schedule terminates)
-schedule.last(2) # [now + 1.day, now + 2.days, now + 3.days]
+schedule.last(2) # [now + 2.days, now + 3.days]
 schedule.last    # now + 3.days
 
 # or the next occurrence
