@@ -2,6 +2,8 @@
 
 ## Current
 
+## 0.16.1 / 2017-05-03
+
 * [FEATURE]     Add pt-BR i18n locale (#388)
 * [BUGFIX]      Fix misaligned first weekly occurrence (#387)
 
