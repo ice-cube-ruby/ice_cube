@@ -4,8 +4,8 @@ module IceCube
 
     def day_of_year(*days)
       days.flatten.each do |day|
-        unless day.is_a?(Fixnum)
-          raise ArgumentError, "expecting Fixnum value for day, got #{day.inspect}"
+        unless day.is_a?(Integer)
+          raise ArgumentError, "expecting Integer value for day, got #{day.inspect}"
         end
         validations_for(:day_of_year) << Validation.new(day)
       end
@@ -29,9 +29,9 @@ module IceCube
         true
       end
 
-      def validate(step_time, schedule)
+      def validate(step_time, start_time)
         days_in_year = TimeUtil.days_in_year(step_time)
-        yday = day < 0 ? day + days_in_year : day
+        yday = day < 0 ? day + days_in_year + 1 : day
         offset = yday - step_time.yday
         offset >= 0 ? offset : offset + days_in_year
       end

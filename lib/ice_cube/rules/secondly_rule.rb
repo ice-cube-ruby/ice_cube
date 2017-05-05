@@ -4,7 +4,7 @@ module IceCube
 
     include Validations::SecondlyInterval
 
-    def initialize(interval = 1, week_start = :sunday)
+    def initialize(interval = 1)
       super
       interval(interval)
       reset

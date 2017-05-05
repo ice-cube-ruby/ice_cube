@@ -20,23 +20,23 @@ module IceCube
     it 'raises an argument error when a bad value is passed' do
       expect {
         rule = Rule.monthly("invalid")
-      }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass an integer.")
+      }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass a postive integer.")
     end
 
     it 'raises an argument error when a bad value is passed using the interval method' do
       expect {
         rule = Rule.monthly.interval("invalid")
-      }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass an integer.")
+      }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass a postive integer.")
     end
   end
 
   describe MonthlyRule do
 
     it 'should update previous interval' do
-      schedule = double(start_time: t0 = Time.utc(2013, 5, 17))
+      t0 = Time.utc(2013, 5, 17)
       rule = Rule.monthly(3)
       rule.interval(1)
-      expect(rule.next_time(t0 + 1, schedule, nil)).to eq(t0 + (IceCube::ONE_DAY * 31))
+      expect(rule.next_time(t0 + 1, t0, nil)).to eq(t0 + (IceCube::ONE_DAY * 31))
     end
 
     it 'should produce the correct number of days for @interval = 1' do

@@ -32,8 +32,15 @@ module IceCube
 
     attr_reader :validations
 
-    def initialize(interval = 1, *)
+    def initialize(interval = 1)
       @validations = Hash.new
+    end
+
+    # Reset the uses on the rule to 0
+    def reset
+      @time = nil
+      @start_time = nil
+      @uses = 0
     end
 
     def base_interval_validation
@@ -49,15 +56,22 @@ module IceCube
     end
 
     # Compute the next time after (or including) the specified time in respect
-    # to the given schedule
-    def next_time(time, schedule, closing_time)
+    # to the given start time
+    def next_time(time, start_time, closing_time)
       @time = time
-      @schedule = schedule
+      unless @start_time
+        @start_time = realign(time, start_time)
+        @time = @start_time if @time < @start_time
+      end
 
       return nil unless find_acceptable_time_before(closing_time)
 
       @uses += 1 if @time
       @time
+    end
+
+    def realign(opening_time, start_time)
+      start_time
     end
 
     def skipped_for_dst
@@ -123,7 +137,7 @@ module IceCube
 
     def normalized_interval(interval)
       int = interval.to_i
-      raise ArgumentError, "'#{interval}' is not a valid input for interval. Please pass an integer." unless int > 0
+      raise ArgumentError, "'#{interval}' is not a valid input for interval. Please pass a postive integer." unless int > 0
       int
     end
 
@@ -145,7 +159,7 @@ module IceCube
     #
     def validation_accepts_or_updates_time?(validations_for_type)
       res = validations_for_type.each_with_object([]) do |validation, offsets|
-        r = validation.validate(@time, @schedule)
+        r = validation.validate(@time, @start_time)
         return true if r.nil? || r == 0
         offsets << r
       end

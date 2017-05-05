@@ -11,6 +11,9 @@ module IceCube
 
     attr_reader :uses
 
+    def reset
+    end
+
     # Is this a terminating schedule?
     def terminating?
       until_time || occurrence_count
@@ -24,8 +27,7 @@ module IceCube
     end
 
     def hash
-      h = to_hash
-      h.nil? ? super : h.hash
+      to_hash.hash
     end
 
     def to_ical
@@ -49,11 +51,6 @@ module IceCube
 
     def to_hash
       raise MethodNotImplemented, "Expected to be overridden by subclasses"
-    end
-
-    # Reset the uses on the rule to 0
-    def reset
-      @uses = 0
     end
 
     def next_time(time, schedule, closing_time)

@@ -32,8 +32,8 @@ module IceCube
         false
       end
 
-      def validate(step_time, schedule)
-        end_time = TimeUtil.ensure_time(time, schedule.start_time, true)
+      def validate(step_time, start_time)
+        end_time = TimeUtil.ensure_time(time, start_time, true)
         raise UntilExceeded if step_time > end_time
       end
 

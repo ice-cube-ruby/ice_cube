@@ -1,11 +1,12 @@
+require "bundler/setup"
+require 'ice_cube'
+
 begin
   require 'simplecov'
   SimpleCov.start
 rescue LoadError
   # okay
 end
-
-require File.dirname(__FILE__) + '/../lib/ice_cube'
 
 IceCube.compatibility = 12
 
@@ -19,6 +20,13 @@ WORLD_TIME_ZONES = [
 ]
 
 RSpec.configure do |config|
+  # Enable flags like --only-failures and --next-failure
+  config.example_status_persistence_file_path = ".rspec_status"
+
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+  end
+
   Dir[File.dirname(__FILE__) + '/support/**/*'].each { |f| require f }
 
   config.include WarningHelpers

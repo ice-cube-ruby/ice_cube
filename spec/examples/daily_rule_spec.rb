@@ -15,13 +15,13 @@ module IceCube
     it 'raises an argument error when a bad value is passed using the interval method' do
       expect {
         rule = Rule.daily.interval("invalid")
-      }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass an integer.")
+      }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass a postive integer.")
     end
 
     it 'raises an argument error when a bad value is passed' do
       expect {
         rule = Rule.daily("invalid")
-      }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass an integer.")
+      }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass a postive integer.")
     end
   end
 
@@ -62,10 +62,10 @@ module IceCube
     end
 
     it 'should update previous interval' do
-      schedule = double(start_time: t0 = Time.now)
+      t0 = Time.now
       rule = Rule.daily(7)
       rule.interval(5)
-      expect(rule.next_time(t0 + 1, schedule, nil)).to eq(t0 + 5 * ONE_DAY)
+      expect(rule.next_time(t0 + 1, t0, nil)).to eq(t0 + 5 * ONE_DAY)
     end
 
     it 'should produce the correct days for @interval = 1' do

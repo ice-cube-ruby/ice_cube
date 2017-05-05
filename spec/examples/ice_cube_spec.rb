@@ -91,7 +91,7 @@ describe IceCube::Schedule do
     expect(schedule.all_occurrences).to eq([])
   end
 
-  it 'should be able to be schedules at 1:st:st and 2:st:st every day' do
+  it 'should be able to schedule at hour 1,2 with start min/sec every day' do
     start_time = Time.utc(2007, 9, 2, 9, 15, 25)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily.hour_of_day(1, 2).count(6)
@@ -101,7 +101,7 @@ describe IceCube::Schedule do
                      Time.utc(2007, 9, 5, 1, 15, 25), Time.utc(2007, 9, 5, 2, 15, 25)])
   end
 
-  it 'should be able to be schedules at 1:0:st and 2:0:st every day' do
+  it 'should be able to schedule at hour 1,2 at min 0 with start sec every day' do
     start_time = Time.utc(2007, 9, 2, 9, 15, 25)
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily.hour_of_day(1, 2).minute_of_hour(0).count(6)
@@ -329,26 +329,6 @@ describe IceCube::Schedule do
     schedule.add_recurrence_rule IceCube::Rule.daily
     dates = schedule.occurrences_between(start_time + IceCube::ONE_DAY * 2, start_time + IceCube::ONE_DAY * 4)
     expect(dates).to eq([start_time + IceCube::ONE_DAY * 2, start_time + IceCube::ONE_DAY * 3, start_time + IceCube::ONE_DAY * 4])
-  end
-
-  describe "using occurs_between with a biweekly schedule" do
-    [[0, 1, 2], [0, 6, 1], [5, 1, 6], [6, 5, 7]].each do |wday, offset, lead|
-      start_week    = Time.utc(2014, 1, 5)
-      expected_week =  start_week + (IceCube::ONE_DAY * 14)
-      offset_wday   = (wday + offset) % 7
-
-      context "starting on weekday #{wday} selecting weekday #{offset} with a #{lead} day advance window" do
-        let(:biweekly)      { IceCube::Rule.weekly(2).day(0, 1, 2, 3, 4, 5, 6) }
-        let(:schedule)      { IceCube::Schedule.new(start_week + (IceCube::ONE_DAY * wday)) { |s| s.rrule biweekly } }
-        let(:expected_date) { expected_week + (IceCube::ONE_DAY * offset_wday) }
-        let(:range)         { [expected_date - (IceCube::ONE_DAY * lead), expected_date] }
-
-        it "should include weekday #{offset_wday} of the expected week" do
-          expect(schedule.occurrences_between(range.first, range.last)).to include expected_date
-        end
-      end
-
-    end
   end
 
   it 'should be able to tell us when there is at least one occurrence between two dates' do

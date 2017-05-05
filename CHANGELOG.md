@@ -2,35 +2,63 @@
 
 ## Current
 
-TBD
+## 0.16.1 / 2017-05-03
+
+* [FEATURE]     Add pt-BR i18n locale (#388)
+* [BUGFIX]      Fix misaligned first weekly occurrence (#387)
+
+## 0.16.0 / 2017-04-12
+
+* [FEATURE]     Support ruby 2.4
+* [ENHANCEMENT] Raise ArgumentError on empty values for remaining rules (#373)
+* [BUGFIX]      Fix biweekly realign with spans option (#377)
+* [BUGFIX]      Fix `day_of_year` with negative offsets (#326)
+* [BUGFIX]      Fix weekly rule alignment with non-Sunday week start (#383)
 
 ## 0.15.0 / 2017-01-27
 
-* Validate rules (and raise ArgumentError) on invalid `from_hash`
-* Make the iCal parser use the `from_hash` implementation under the hood
-* Added i18n translations for Russian, Swedish, German, and French
-* Raise ArgumentError on invalid from_ical (empty)
+* [FEATURE]     Added i18n translations for Russian, Swedish, German, and French
+* [ENHANCEMENT] Support testing with different `RAILS_VERSION`
+* [ENHANCEMENT] Support "until" Date with local Time conversion (#327)
+* [ENHANCEMENT] Validate rules (and raise ArgumentError) on empty `from_hash`
+* [BUGFIX]      Fix validations on `Rule.from_hash` with empty array (#281)
 
 ## 0.14.0 / 2016-02-23
 
-* Added span option for occurrence methods
+* [FEATURE]     Option to include prior occurrences with overlapping duration (#302)
+
+## 0.13.3 / 2016-01-30
+
+* [ENHANCEMENT] Performance optimizations
+* [ENHANCEMENT] Default deprecation compatibility to track the current version
+
+## 0.13.2 / 2015-12-09
+
+No changes.
 
 ## 0.13.1 / 2015-12-07
 
-* Added i18n support!
+* [FEATURE]    Added i18n support!
+* [FEATURE]    Option to include prior occurrences with overlapping duration (#154)
 
 ## 0.13.0 / 2015-05-26
 
-* [FEATURE] from_ical!
+NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 
+* [FEATURE]     Add `from_ical`! (#258)
+* [BUGFIX]      Method arity for `ActiveSupport::TimeZone.to_s` (#255)
+* [BUGFIX]      Fix whole-day skip with date inputs
+* [BUGFIX]      Missed times selected from gap week with weekly interval > 1 (#241)
+* [BUGFIX]      Fix `occurs_on?` miss near midnight for DST (#245)
+ 
 ## 0.12.1 / 2014-07-04
 
-* [FEATURE]    Deprecation message improvements
-* [FEATURE]    Added support for deserialization of times via Time.parse
-* [FEATURE]    Added interval validations
-* [FEATURE]    Coerce validation intervals to Fixnum
-* [BUGFIX]     Fix YAML serialization on blank values in ActiveRecord (#231)
-* [BUGFIX]     Yearly interval should return self like others
+* [FEATURE]     Added support for deserialization of times via Time.parse
+* [ENHANCEMENT] Added interval validations
+* [ENHANCEMENT] Deprecation message improvements
+* [BUGFIX]      Coerce validation intervals to Fixnum
+* [BUGFIX]      Fix YAML serialization on blank values in ActiveRecord (#231)
+* [BUGFIX]      Yearly interval should return self like others
 
 ## 0.12.0 / 2014-04-06
 

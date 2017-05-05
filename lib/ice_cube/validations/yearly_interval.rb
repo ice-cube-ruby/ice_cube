@@ -25,8 +25,8 @@ module IceCube
         true
       end
 
-      def validate(step_time, schedule)
-        years = step_time.year - schedule.start_time.year
+      def validate(step_time, start_time)
+        years = step_time.year - start_time.year
         offset = (years % interval).nonzero?
         interval - offset if offset
       end

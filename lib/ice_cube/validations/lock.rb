@@ -12,11 +12,11 @@ module IceCube
 
     INTERVALS = {:min => 60, :sec => 60, :hour => 24, :month => 12, :wday => 7}
 
-    def validate(time, schedule)
+    def validate(time, start_time)
       case type
-      when :day  then validate_day_lock(time, schedule)
-      when :hour then validate_hour_lock(time, schedule)
-      else validate_interval_lock(time, schedule)
+      when :day  then validate_day_lock(time, start_time)
+      when :hour then validate_hour_lock(time, start_time)
+      else validate_interval_lock(time, start_time)
       end
     end
 
@@ -25,8 +25,8 @@ module IceCube
     # Validate if the current time unit matches the same unit from the schedule
     # start time, returning the difference to the interval
     #
-    def validate_interval_lock(time, schedule)
-      t0 = starting_unit(schedule.start_time)
+    def validate_interval_lock(time, start_time)
+      t0 = starting_unit(start_time)
       t1 = time.send(type)
       t0 >= t1 ? t0 - t1 : INTERVALS[type] - t1 + t0
     end
@@ -34,8 +34,8 @@ module IceCube
     # Lock the hour if explicitly set by hour_of_day, but allow for the nearest
     # hour during DST start to keep the correct interval.
     #
-    def validate_hour_lock(time, schedule)
-      h0 = starting_unit(schedule.start_time)
+    def validate_hour_lock(time, start_time)
+      h0 = starting_unit(start_time)
       h1 = time.hour
       if h0 >= h1
         h0 - h1
@@ -57,7 +57,7 @@ module IceCube
     # Positive day values are taken literally so months with fewer days will
     # be skipped.
     #
-    def validate_day_lock(time, schedule)
+    def validate_day_lock(time, start_time)
       days_in_month = TimeUtil.days_in_month(time)
       date = Date.new(time.year, time.month, time.day)
 
@@ -68,7 +68,7 @@ module IceCube
         start = value
         month_overflow = 0
       else
-        start = TimeUtil.day_of_month(schedule.start_time.day, date)
+        start = TimeUtil.day_of_month(start_time.day, date)
         month_overflow = 0
       end
 

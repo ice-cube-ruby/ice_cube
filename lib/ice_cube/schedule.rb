@@ -46,7 +46,7 @@ module IceCube
 
     # Add a recurrence time to the schedule
     def add_recurrence_time(time)
-      return nil if time.nil?
+      return if time.nil?
       rule = SingleOccurrenceRule.new(time)
       add_recurrence_rule rule
       time
@@ -57,7 +57,7 @@ module IceCube
 
     # Add an exception time to the schedule
     def add_exception_time(time)
-      return nil if time.nil?
+      return if time.nil?
       rule = SingleOccurrenceRule.new(time)
       add_exception_rule rule
       time
@@ -68,6 +68,7 @@ module IceCube
 
     # Add a recurrence rule to the schedule
     def add_recurrence_rule(rule)
+      return if rule.nil?
       @all_recurrence_rules << rule unless @all_recurrence_rules.include?(rule)
     end
     alias :rrule :add_recurrence_rule
@@ -80,6 +81,7 @@ module IceCube
 
     # Add an exception rule to the schedule
     def add_exception_rule(rule)
+      return if rule.nil?
       @all_exception_rules << rule unless @all_exception_rules.include?(rule)
     end
     alias :exrule :add_exception_rule
@@ -384,6 +386,19 @@ module IceCube
       recurrence_rules.empty? || recurrence_rules.all?(&:terminating?)
     end
 
+    def hash
+      [
+        TimeUtil.hash(start_time), duration,
+        *@all_recurrence_rules.map(&:hash).sort!,
+        *@all_exception_rules.map(&:hash).sort!
+      ].hash
+    end
+
+    def eql?(other)
+      self.hash == other.hash
+    end
+    alias == eql?
+
     def self.dump(schedule)
       return schedule if schedule.nil? || schedule == ""
       schedule.to_yaml
@@ -413,7 +428,7 @@ module IceCube
       spans = options[:spans] == true && duration != 0
       Enumerator.new do |yielder|
         reset
-        t1 = full_required? ? start_time : realign(opening_time) - (spans ? duration : 0)
+        t1 = full_required? ? start_time : opening_time - (spans ? duration : 0)
         loop do
           break unless (t0 = next_time(t1, closing_time))
           break if closing_time && t0 > closing_time
@@ -439,7 +454,7 @@ module IceCube
       loop do
         min_time = recurrence_rules_with_implicit_start_occurrence.reduce(nil) do |min_time, rule|
           begin
-            new_time = rule.next_time(time, self, min_time || closing_time)
+            new_time = rule.next_time(time, start_time, min_time || closing_time)
             [min_time, new_time].compact.min
           rescue StopIteration
             min_time
@@ -462,7 +477,7 @@ module IceCube
     # is excluded from the schedule
     def exception_time?(time)
       @all_exception_rules.any? do |rule|
-        rule.on?(time, self)
+        rule.on?(time, start_time)
       end
     end
 
@@ -500,28 +515,6 @@ module IceCube
       recurrence_rules.each do |rule|
         rule.skipped_for_dst
       end
-    end
-
-    # If any rule has validations for values within the period, (overriding the
-    # interval from start time, e.g.  `day[_of_week]`), and the opening time is
-    # offset from the interval multiplier such that it might miss the first
-    # correct occurrence (e.g. repeat is every N weeks, but selecting from end
-    # of week N-1, the first jump would go to end of week N and miss any
-    # earlier validations in the week). This realigns the opening time to
-    # the start of the interval's correct period (e.g. move to start of week N)
-    # TODO: check if this is needed for validations other than `:wday`
-    #
-    def realign(opening_time)
-      time = TimeUtil::TimeWrapper.new(opening_time)
-      recurrence_rules.each do |rule|
-        wday_validations = rule.other_interval_validations.select { |v| v.type == :wday } or next
-        interval = rule.base_interval_validation.validate(opening_time, self).to_i
-        offset = wday_validations
-          .map { |v| v.validate(opening_time, self).to_i }
-          .reduce(0) { |least, i| i > 0 && i <= interval && (i < least || least == 0) ? i : least }
-        time.add(rule.base_interval_type, 7 - time.to_time.wday) if offset > 0
-      end
-      time.to_time
     end
 
   end
