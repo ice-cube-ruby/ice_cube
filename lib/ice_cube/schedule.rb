@@ -426,16 +426,17 @@ module IceCube
       opening_time += start_time.subsec - opening_time.subsec rescue 0
       opening_time = start_time if opening_time < start_time
       spans = options[:spans] == true && duration != 0
+      spans_offset = spans ? duration : 0
       Enumerator.new do |yielder|
         reset
-        t1 = full_required? ? start_time : opening_time - (spans ? duration : 0)
+        t1 = full_required? ? start_time : opening_time
         loop do
-          break unless (t0 = next_time(t1, closing_time))
+          break unless (t0 = next_time(t1, closing_time, spans_offset))
           break if closing_time && t0 > closing_time
           if (spans ? (t0.end_time > opening_time) : (t0 >= opening_time))
             yielder << (block_given? ? block.call(t0) : t0)
           end
-          break unless (t1 = next_time(t0 + 1, closing_time))
+          break unless (t1 = next_time(t0 + 1, closing_time, spans_offset))
           break if closing_time && t1 > closing_time
           if TimeUtil.same_clock?(t0, t1) && recurrence_rules.any?(&:dst_adjust?)
             wind_back_dst
@@ -450,11 +451,11 @@ module IceCube
     end
 
     # Get the next time after (or including) a specific time
-    def next_time(time, closing_time)
+    def next_time(time, closing_time, spans_offset)
       loop do
         min_time = recurrence_rules_with_implicit_start_occurrence.reduce(nil) do |min_time, rule|
           begin
-            new_time = rule.next_time(time, start_time, min_time || closing_time)
+            new_time = rule.next_time(time, start_time, min_time || closing_time, spans_offset)
             [min_time, new_time].compact.min
           rescue StopIteration
             min_time
