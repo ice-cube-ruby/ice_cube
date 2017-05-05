@@ -53,7 +53,7 @@ module IceCube
       raise MethodNotImplemented, "Expected to be overridden by subclasses"
     end
 
-    def next_time(time, schedule, closing_time)
+    def next_time(time, schedule, closing_time, spans_offset = 0)
     end
 
     def on?(time, schedule)

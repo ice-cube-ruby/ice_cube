@@ -57,11 +57,12 @@ module IceCube
 
     # Compute the next time after (or including) the specified time in respect
     # to the given start time
-    def next_time(time, start_time, closing_time)
+    def next_time(time, start_time, closing_time, spans_offset = 0)
       @time = time
       unless @start_time
         @start_time = realign(time, start_time)
         @time = @start_time if @time < @start_time
+        @time = @time - spans_offset
       end
 
       return nil unless find_acceptable_time_before(closing_time)
