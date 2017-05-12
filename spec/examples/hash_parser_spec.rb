@@ -28,6 +28,18 @@ module IceCube
           it { is_expected.to eq(1800) }
         end
       end
+
+      describe "with an initial nil" do
+        let(:hash) { nil }
+
+        it 'has no recurrence rules' do
+          schedule.recurrence_rules.should be_empty
+        end
+
+        it 'has no exception rules' do
+          schedule.exception_rules.should be_empty
+        end
+      end
     end
 
 
