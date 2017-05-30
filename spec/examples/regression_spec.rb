@@ -226,6 +226,35 @@ module IceCube
           expect(time.usec).to eq(0)
         end
 
+        describe 'weekly schedule using occurs_between' do
+          let(:schedule) {Schedule.new('2014-01-08'.to_date)}
+          let(:expected_occurrence) {'2014-07-24'.to_date.to_time}
+          before :each do
+            schedule.add_recurrence_rule rule
+          end
+          context "with interval" do
+            let(:rule) {Rule.weekly(2).day([4,5,6])}
+            it "should include the expected date [#241]" do
+              expect(schedule.occurs_on?(expected_occurrence)).to be_true
+              expect(schedule.occurrences_between(expected_occurrence - 7.days, expected_occurrence + 7.days)).to include(expected_occurrence)
+              expect(schedule.occurrences_between(expected_occurrence - 1.day, expected_occurrence + 1.day)).to include(expected_occurrence)
+              expect(schedule.occurrences_between(expected_occurrence - 6.days, expected_occurrence + 6.days)).to include(expected_occurrence)
+              expect(schedule.occurrences_between(expected_occurrence - 5.days, expected_occurrence + 5.days)).to include(expected_occurrence)
+            end
+          end
+          context "without interval" do
+            let(:rule) {Rule.weekly(1).day([4,5,6])}
+            it "should include the expected date" do
+              expect(schedule.occurs_on?(expected_occurrence)).to be_true
+              expect(schedule.occurrences_between(expected_occurrence - 7.days, expected_occurrence + 7.days)).to include(expected_occurrence)
+              expect(schedule.occurrences_between(expected_occurrence - 1.day, expected_occurrence + 1.day)).to include(expected_occurrence)
+              expect(schedule.occurrences_between(expected_occurrence - 6.days, expected_occurrence + 6.days)).to include(expected_occurrence)
+              expect(schedule.occurrences_between(expected_occurrence - 5.days, expected_occurrence + 5.days)).to include(expected_occurrence)
+            end
+          end
+
+        end
+
       end
     end
 
