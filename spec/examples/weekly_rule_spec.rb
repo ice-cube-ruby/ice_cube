@@ -281,6 +281,33 @@ module IceCube
       end
     end
 
+    it 'should produce correct next occurrences with monday and thursday schedule if monday is the week start' do
+      schedule = IceCube::Schedule.new(t0 = Time.utc(2017, 4, 17, 19, 0)) # a monday
+      schedule.add_recurrence_rule IceCube::Rule.weekly(2, :monday).day(:monday, :thursday)
+      occurrences = 12.times.map do |n|
+        now = t0 + (n * ONE_DAY)
+        "#{now.to_date.iso8601} (#{now.wday}) => #{schedule.next_occurrences(1, (now - 1.second))[0].to_date.iso8601}"
+      end
+      expected = (<<-TXT
+        2017-04-17 (1) => 2017-04-17
+        2017-04-18 (2) => 2017-04-20
+        2017-04-19 (3) => 2017-04-20
+        2017-04-20 (4) => 2017-04-20
+        2017-04-21 (5) => 2017-04-24
+        2017-04-22 (6) => 2017-04-24
+        2017-04-23 (0) => 2017-04-24
+        2017-04-24 (1) => 2017-04-24
+        2017-04-25 (2) => 2017-04-27
+        2017-04-26 (3) => 2017-04-27
+        2017-04-27 (4) => 2017-04-27
+        2017-04-28 (5) => 2017-05-01
+        TXT
+      ).split("\n").map(&:strip)
+      expected.each_with_index do |time, i|
+        expect(occurrences[i]).to eq(time)
+      end
+    end
+
     describe "using occurs_between with a weekly schedule" do
       [[6, 5, 7]].each do |wday, offset, lead|
         start_week    = Time.utc(2014, 1, 5)
