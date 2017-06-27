@@ -259,6 +259,28 @@ module IceCube
       end
     end
 
+    it 'should produce correct next occurrences with all-week-except-tuesday schedule if monday is the week start' do
+      schedule = IceCube::Schedule.new(t0 = Time.utc(2017, 6, 19, 8, 30)) # this was a monday
+      schedule.add_recurrence_rule IceCube::Rule.weekly(1, :monday).day(:monday, :wednesday, :thursday, :friday, :saturday, :sunday)
+      occurrences = 7.times.map do |n|
+        now = t0 + (n * ONE_DAY)
+        "#{now.to_date.iso8601} (#{now.wday}) => #{schedule.next_occurrences(1, (now - 1.second))[0].to_date.iso8601}"
+      end
+      expected = (<<-TXT
+        2017-06-19 (1) => 2017-06-19
+        2017-06-20 (2) => 2017-06-21
+        2017-06-21 (3) => 2017-06-21
+        2017-06-22 (4) => 2017-06-22
+        2017-06-23 (5) => 2017-06-23
+        2017-06-24 (6) => 2017-06-24
+        2017-06-25 (0) => 2017-06-25
+        TXT
+      ).split("\n").map(&:strip)
+      expected.each_with_index do |time, i|
+        expect(occurrences[i]).to eq(time)
+      end
+    end
+
     describe "using occurs_between with a weekly schedule" do
       [[6, 5, 7]].each do |wday, offset, lead|
         start_week    = Time.utc(2014, 1, 5)
