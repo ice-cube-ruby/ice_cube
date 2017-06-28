@@ -293,7 +293,7 @@ module IceCube
     it 'should produce correct next occurrences with wednesday and sunday schedule if monday is the week start' do
       start_time = Time.utc(2017, 4, 19, 17, 30) # a wednesday
       schedule = IceCube::Schedule.new(start_time)
-      schedule.add_recurrence_rule IceCube::Rule.weekly(2, :monday).day(:wednesday, :sunday)
+      schedule.add_recurrence_rule IceCube::Rule.weekly(1, :monday).day(:wednesday, :sunday)
       # looking on a wednesday, before the next occurrence would start
       starting_to_look = Time.utc(2017, 6, 28, 16, 0)
       expect(schedule.next_occurrence(starting_to_look).to_date).to eq(Date.new(2017, 6, 28))
