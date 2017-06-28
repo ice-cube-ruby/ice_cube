@@ -259,6 +259,49 @@ module IceCube
       end
     end
 
+    it 'should produce correct next occurrences with all-week-except-tuesday schedule if monday is the week start' do
+      schedule = IceCube::Schedule.new(t0 = Time.utc(2017, 6, 19, 8, 30)) # this was a monday
+      schedule.add_recurrence_rule IceCube::Rule.weekly(1, :monday).day(:monday, :wednesday, :thursday, :friday, :saturday, :sunday)
+      occurrences = 7.times.map do |n|
+        now = t0 + (n * ONE_DAY)
+        "#{now.to_date.iso8601} (#{now.wday}) => #{schedule.next_occurrences(1, (now - 1.second))[0].to_date.iso8601}"
+      end
+      expected = (<<-TXT
+        2017-06-19 (1) => 2017-06-19
+        2017-06-20 (2) => 2017-06-21
+        2017-06-21 (3) => 2017-06-21
+        2017-06-22 (4) => 2017-06-22
+        2017-06-23 (5) => 2017-06-23
+        2017-06-24 (6) => 2017-06-24
+        2017-06-25 (0) => 2017-06-25
+        TXT
+      ).split("\n").map(&:strip)
+      expected.each_with_index do |time, i|
+        expect(occurrences[i]).to eq(time)
+      end
+    end
+
+    it 'should produce correct next occurrences with monday and thursday schedule if monday is the week start' do
+      start_time = Time.utc(2017, 4, 17, 19, 0) # a monday
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule IceCube::Rule.weekly(2, :monday).day(:monday, :thursday)
+      # looking on a tuesday between an occurrence on the 26th and 29th (thursday)
+      starting_to_look = Time.utc(2017, 6, 27, 12, 0)
+      expect(schedule.next_occurrence(starting_to_look).to_date).to eq(Date.new(2017, 6, 29))
+    end
+
+    it 'should produce correct next occurrences with wednesday and sunday schedule if monday is the week start' do
+      start_time = Time.utc(2017, 4, 19, 17, 30) # a wednesday
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule IceCube::Rule.weekly(1, :monday).day(:wednesday, :sunday)
+      # looking on a wednesday, before the next occurrence would start
+      starting_to_look = Time.utc(2017, 6, 28, 16, 0)
+      expect(schedule.next_occurrence(starting_to_look).to_date).to eq(Date.new(2017, 6, 28))
+      # and after that, it should jump to the next sunday
+      starting_to_look = Time.utc(2017, 6, 28, 18, 0)
+      expect(schedule.next_occurrence(starting_to_look).to_date).to eq(Date.new(2017, 7, 2))
+    end
+
     describe "using occurs_between with a weekly schedule" do
       [[6, 5, 7]].each do |wday, offset, lead|
         start_week    = Time.utc(2014, 1, 5)
