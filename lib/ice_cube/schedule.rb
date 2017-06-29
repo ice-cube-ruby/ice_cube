@@ -428,7 +428,9 @@ module IceCube
       spans = options[:spans] == true && duration != 0
       Enumerator.new do |yielder|
         reset
-        t1 = full_required? ? start_time : opening_time - (spans ? duration : 0)
+        t1 = full_required? ? start_time : opening_time
+        t1 -= duration if spans
+        t1 = start_time if t1 < start_time
         loop do
           break unless (t0 = next_time(t1, closing_time))
           break if closing_time && t0 > closing_time

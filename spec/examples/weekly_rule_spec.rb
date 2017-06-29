@@ -240,6 +240,15 @@ module IceCube
       expect(times.first).to eq Time.local(2015, 3, 1)
     end
 
+    it "should stay aligned to the start week when selecting occurrences with the spans option" do
+      t0 = Time.local(2017, 1, 15)
+      schedule = IceCube::Schedule.new(t0, duration: ONE_HOUR)
+      schedule.add_recurrence_rule IceCube::Rule.weekly(2).day(:sunday)
+      ts = schedule.occurrences_between(t0, t0 + ONE_WEEK * 4, spans: true)
+
+      expect(ts).to eq([t0, t0 + ONE_WEEK * 2, t0 + ONE_WEEK * 4])
+    end
+
     context "with Monday week start" do
 
       #      June 2017
@@ -302,18 +311,22 @@ module IceCube
 
     describe "using occurs_between with a biweekly schedule" do
       [[0, 1, 2], [0, 6, 1], [5, 1, 6], [6, 5, 7]].each do |wday, offset, lead|
-        start_week    = Time.utc(2014, 1, 5)
-        expected_week =  start_week + (IceCube::ONE_DAY * 14)
+        start_time    = Time.utc(2014, 1, 5, 9, 0, 0)
+        expected_time = start_time + (IceCube::ONE_DAY * 14)
         offset_wday   = (wday + offset) % 7
 
         context "starting on weekday #{wday} selecting weekday #{offset} with a #{lead} day advance window" do
           let(:biweekly)      { IceCube::Rule.weekly(2).day(0, 1, 2, 3, 4, 5, 6) }
-          let(:schedule)      { IceCube::Schedule.new(start_week + (IceCube::ONE_DAY * wday)) { |s| s.rrule biweekly } }
-          let(:expected_date) { expected_week + (IceCube::ONE_DAY * offset_wday) }
+          let(:schedule)      { IceCube::Schedule.new(start_time + (IceCube::ONE_DAY * wday), :duration => IceCube::ONE_HOUR) { |s| s.rrule biweekly } }
+          let(:expected_date) { expected_time + (IceCube::ONE_DAY * offset_wday) }
           let(:range)         { [expected_date - (IceCube::ONE_DAY * lead), expected_date] }
 
           it "should include weekday #{offset_wday} of the expected week" do
             expect(schedule.occurrences_between(range.first, range.last)).to include expected_date
+          end
+
+          it "should include weekday #{offset_wday} of the expected week with the spans option" do
+            expect(schedule.occurrences_between(range.first, range.last, spans: true)).to include expected_date
           end
         end
       end
