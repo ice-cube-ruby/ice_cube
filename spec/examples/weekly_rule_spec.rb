@@ -240,6 +240,66 @@ module IceCube
       expect(times.first).to eq Time.local(2015, 3, 1)
     end
 
+    context "with Monday week start" do
+
+      #      June 2017
+      # Mo Tu We Th Fr Sa Su
+      #           1  2  3  4
+      #  5  6  7  8  9 10 11
+      # 12 13 14 15 16 17 18
+      # 19 20 21 22 23 24 25
+      # 26 27 28 29 30
+
+      it "should align next_occurrences with first valid weekday when schedule starts on a Monday" do
+        schedule = IceCube::Schedule.new(t0 = Time.utc(2017, 6, 5))
+        except_tuesday = [:monday, :wednesday, :thursday, :friday, :saturday, :sunday]
+        schedule.add_recurrence_rule IceCube::Rule.weekly(2, :monday).day(except_tuesday)
+        sample = [
+          Time.utc(2017,  6,  5),
+          Time.utc(2017,  6,  7),
+          Time.utc(2017,  6,  8),
+          Time.utc(2017,  6,  9),
+          Time.utc(2017,  6, 10),
+          Time.utc(2017,  6, 11),
+          Time.utc(2017,  6, 19)
+        ]
+
+        expect(schedule.first(7)).to eq sample
+        expect(schedule.next_occurrences(3, sample[4] - 1)).to eq sample[4..6]
+      end
+
+      it "should align next_occurrence with first valid weekday when schedule starts on a Monday" do
+        t0 = Time.utc(2017,  6,  5)
+        schedule = IceCube::Schedule.new(t0)
+        schedule.add_recurrence_rule IceCube::Rule.weekly(2, :monday).day(:monday, :thursday)
+        sample = [
+          Time.utc(2017,  6,  5),
+          Time.utc(2017,  6,  8),
+          Time.utc(2017,  6, 19),
+          Time.utc(2017,  6, 22)
+        ]
+
+        expect(schedule.first(4)).to eq(sample)
+        expect(schedule.next_occurrence(sample[2] - 1)).to eq(sample[2])
+      end
+
+      it "should align next_occurrence with first valid weekday when schedule starts on a Wednesday" do
+        t0 = Time.utc(2017,  6,  7)
+        schedule = IceCube::Schedule.new(t0)
+        schedule.add_recurrence_rule IceCube::Rule.weekly(2, :monday).day(:wednesday, :sunday)
+        sample = [
+          Time.utc(2017,  6,  7),
+          Time.utc(2017,  6, 11),
+          Time.utc(2017,  6, 21),
+          Time.utc(2017,  6, 25)
+        ]
+
+        expect(schedule.first(4)).to eq sample
+        expect(schedule.next_occurrence(sample[0] + 7 * ONE_DAY)).to eq sample[2]
+        expect(schedule.next_occurrence(sample[2] + ONE_DAY)).to eq sample[3]
+      end
+    end
+
     describe "using occurs_between with a biweekly schedule" do
       [[0, 1, 2], [0, 6, 1], [5, 1, 6], [6, 5, 7]].each do |wday, offset, lead|
         start_week    = Time.utc(2014, 1, 5)
