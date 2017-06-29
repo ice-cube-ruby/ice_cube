@@ -2,6 +2,9 @@
 
 ## Current
 
+* [BUGFIX]      Realign first wday for monday-based weekly rules (#402)
+* [BUGFIX]      Fix weekly realignment for `spans: true` option (#402)
+
 ## 0.16.1 / 2017-05-03
 
 * [FEATURE]     Add pt-BR i18n locale (#388)
