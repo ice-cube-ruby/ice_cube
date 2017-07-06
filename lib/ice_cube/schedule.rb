@@ -420,7 +420,7 @@ module IceCube
     # Find all of the occurrences for the schedule between opening_time
     # and closing_time
     # Iteration is unrolled in pairs to skip duplicate times in end of DST
-    def enumerate_occurrences(opening_time, closing_time = nil, options = {}, &block)
+    def enumerate_occurrences(opening_time, closing_time = nil, options = {})
       opening_time = TimeUtil.match_zone(opening_time, start_time)
       closing_time = TimeUtil.match_zone(closing_time, start_time)
       opening_time += start_time.subsec - opening_time.subsec rescue 0
@@ -435,7 +435,7 @@ module IceCube
           break unless (t0 = next_time(t1, closing_time))
           break if closing_time && t0 > closing_time
           if (spans ? (t0.end_time > opening_time) : (t0 >= opening_time))
-            yielder << (block_given? ? block.call(t0) : t0)
+            yielder << (block_given? ? yield(t0) : t0)
           end
           break unless (t1 = next_time(t0 + 1, closing_time))
           break if closing_time && t1 > closing_time
