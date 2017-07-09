@@ -270,6 +270,12 @@ describe IceCube::Schedule do
     expect(schedule.all_occurrences).to eq([t0, t0 + 25*ONE_HOUR, t0 + 49*ONE_HOUR])
   end
 
+  it "skips double monthly occurrences from end of DST", :system_time_zone => "America/Nome" do
+    t0 = Time.local(2017, 10, 5, 1, 0, 0)
+    schedule = IceCube::Schedule.new(t0) { |s| s.rrule IceCube::Rule.monthly.day_of_month(5).count(3) }
+    expect(schedule.all_occurrences).to eq([t0, t0 + 31*IceCube::ONE_DAY + IceCube::ONE_HOUR, t0 + 61*IceCube::ONE_DAY + IceCube::ONE_HOUR])
+  end
+
   it "does not skip hourly rules over DST" do
     Time.zone = "America/Denver"
     t0 = Time.zone.parse("Sun, 03 Nov 2013 01:30:00 MDT -06:00")

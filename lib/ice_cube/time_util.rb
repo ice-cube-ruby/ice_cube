@@ -47,7 +47,7 @@ module IceCube
                time.in_time_zone(reference.time_zone)
              else
                if reference.utc?
-                 time.utc
+                 time.getgm
                elsif reference.zone
                  time.getlocal
                else
@@ -260,27 +260,32 @@ module IceCube
 
       def initialize(time, dst_adjust = true)
         @dst_adjust = dst_adjust
-        @time = time
+        @base = time
+        if dst_adjust
+          @time = Time.utc(time.year, time.month, time.day, time.hour, time.min, time.sec + time.subsec)
+        else
+          @time = time
+        end
       end
 
-      # Get the wrapper time back
+      # Get the wrapped time back in its original zone & format
       def to_time
-        @time
+        return @time unless @dst_adjust
+        parts = @time.year, @time.month, @time.day, @time.hour, @time.min, @time.sec + @time.subsec
+        TimeUtil.build_in_zone(parts, @base)
       end
 
       # DST-safely add an interval of time to the wrapped time
       def add(type, val)
         type = :day if type == :wday
-        adjust do
-          @time += case type
-          when :year then TimeUtil.days_in_n_years(@time, val) * ONE_DAY
-          when :month then TimeUtil.days_in_n_months(@time, val) * ONE_DAY
-          when :day  then val * ONE_DAY
-          when :hour then val * ONE_HOUR
-          when :min  then val * ONE_MINUTE
-          when :sec  then val
-          end
-        end
+        @time += case type
+                 when :year then TimeUtil.days_in_n_years(@time, val) * ONE_DAY
+                 when :month then TimeUtil.days_in_n_months(@time, val) * ONE_DAY
+                 when :day  then val * ONE_DAY
+                 when :hour then val * ONE_HOUR
+                 when :min  then val * ONE_MINUTE
+                 when :sec  then val
+                 end
       end
 
       # Clear everything below a certain type
@@ -289,24 +294,11 @@ module IceCube
         type = :day if type == :wday
         CLEAR_ORDER.each do |ptype|
           break if ptype == type
-          adjust do
-            send(:"clear_#{ptype}")
-          end
+          send :"clear_#{ptype}"
         end
       end
 
       private
-
-      def adjust(&block)
-        if @dst_adjust
-          off = @time.utc_offset
-          yield
-          diff = off - @time.utc_offset
-          @time += diff if diff != 0
-        else
-          yield
-        end
-      end
 
       def clear_sec
         @time.sec > 0 ? @time -= @time.sec : @time
