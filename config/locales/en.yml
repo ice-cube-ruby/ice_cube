@@ -6,28 +6,6 @@ en:
     date:
       formats:
         default: '%B %-d, %Y'
-      month_names:
-      -
-      - January
-      - February
-      - March
-      - April
-      - May
-      - June
-      - July
-      - August
-      - September
-      - October
-      - November
-      - December
-      day_names:
-      - Sunday
-      - Monday
-      - Tuesday
-      - Wednesday
-      - Thursday
-      - Friday
-      - Saturday
     times:
       other: '%{count} times'
       one: '%{count} time'
@@ -91,13 +69,13 @@ en:
     on_weekends: on Weekends
     on_weekdays: on Weekdays
     days_on:
-      - Sundays
-      - Mondays
-      - Tuesdays
-      - Wednesdays
-      - Thursdays
-      - Fridays
-      - Saturdays
+    - Sundays
+    - Mondays
+    - Tuesdays
+    - Wednesdays
+    - Thursdays
+    - Fridays
+    - Saturdays
     on_days: on %{days}
     array:
       last_word_connector: ', and '
@@ -114,7 +92,6 @@ en:
         until: '%{rest} %{current}'
         count: '%{rest} %{current}'
         default: '%{rest} %{current}'
-
   date:
     abbr_day_names:
     - Sun
@@ -146,10 +123,6 @@ en:
     - Thursday
     - Friday
     - Saturday
-    formats:
-      default: "%Y-%m-%d"
-      long: "%B %d, %Y"
-      short: "%b %d"
     month_names:
     -
     - January
@@ -164,15 +137,3 @@ en:
     - October
     - November
     - December
-    order:
-    - :year
-    - :month
-    - :day
-
-  time:
-    am: am
-    formats:
-      default: "%a, %d %b %Y %H:%M:%S %z"
-      long: "%B %d, %Y %H:%M"
-      short: "%d %b %H:%M"
-    pm: pm
