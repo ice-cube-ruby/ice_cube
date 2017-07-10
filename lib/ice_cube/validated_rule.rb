@@ -79,12 +79,12 @@ module IceCube
     end
 
     def dst_adjust?
-      @validations[:interval].any? &:dst_adjust?
+      @validations[:interval].any?(&:dst_adjust?)
     end
 
     def to_s
       builder = StringBuilder.new
-      @validations.each do |name, validations|
+      @validations.each_value do |validations|
         validations.each do |validation|
           validation.build_s(builder)
         end
@@ -94,7 +94,7 @@ module IceCube
 
     def to_hash
       builder = HashBuilder.new(self)
-      @validations.each do |name, validations|
+      @validations.each_value do |validations|
         validations.each do |validation|
           validation.build_hash(builder)
         end
@@ -104,7 +104,7 @@ module IceCube
 
     def to_ical
       builder = IcalBuilder.new
-      @validations.each do |name, validations|
+      @validations.each_value do |validations|
         validations.each do |validation|
           validation.build_ical(builder)
         end
