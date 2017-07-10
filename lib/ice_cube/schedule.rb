@@ -420,7 +420,7 @@ module IceCube
     # Find all of the occurrences for the schedule between opening_time
     # and closing_time
     # Iteration is unrolled in pairs to skip duplicate times in end of DST
-    def enumerate_occurrences(opening_time, closing_time = nil, options = {}, &block)
+    def enumerate_occurrences(opening_time, closing_time = nil, options = {})
       opening_time = TimeUtil.match_zone(opening_time, start_time)
       closing_time = TimeUtil.match_zone(closing_time, start_time)
       opening_time += start_time.subsec - opening_time.subsec rescue 0
@@ -435,18 +435,9 @@ module IceCube
           break unless (t0 = next_time(t1, closing_time))
           break if closing_time && t0 > closing_time
           if (spans ? (t0.end_time > opening_time) : (t0 >= opening_time))
-            yielder << (block_given? ? block.call(t0) : t0)
+            yielder << (block_given? ? yield(t0) : t0)
           end
-          break unless (t1 = next_time(t0 + 1, closing_time))
-          break if closing_time && t1 > closing_time
-          if TimeUtil.same_clock?(t0, t1) && recurrence_rules.any?(&:dst_adjust?)
-            wind_back_dst
-            next (t1 += 1)
-          end
-          if (spans ? (t1.end_time > opening_time) : (t1 >= opening_time))
-            yielder << (block_given? ? block.call(t1) : t1)
-          end
-          next (t1 += 1)
+          t1 = t0 + 1
         end
       end
     end
@@ -462,7 +453,7 @@ module IceCube
             min_time
           end
         end
-        break nil unless min_time
+        break unless min_time
         next (time = min_time + 1) if exception_time?(min_time)
         break Occurrence.new(min_time, min_time + duration)
       end
@@ -510,12 +501,6 @@ module IceCube
         [implicit_start_occurrence_rule].concat @all_recurrence_rules
       else
         @all_recurrence_rules
-      end
-    end
-
-    def wind_back_dst
-      recurrence_rules.each do |rule|
-        rule.skipped_for_dst
       end
     end
 
