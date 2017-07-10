@@ -1,6 +1,6 @@
 # Changelog
 
-## Current
+## 0.16.2 / 2017-07-10
 
 * [BUGFIX]      Fix serialization of Date values (for `until`) (#399)
 * [BUGFIX]      Fix double DST occurrences (#398)
