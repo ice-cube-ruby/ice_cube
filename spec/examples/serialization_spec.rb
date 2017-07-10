@@ -3,13 +3,24 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe IceCube::Schedule do
 
-  let(:schedule) { IceCube::Schedule.new Time.now }
+  let(:start_time) { Time.now }
+  let(:schedule) { IceCube::Schedule.new(start_time) }
   let(:yaml)     { described_class.dump(schedule) }
 
   describe "::dump(schedule)" do
 
     it "serializes a Schedule object as YAML string" do
       expect(yaml).to start_with "---\n"
+    end
+
+    context "with ActiveSupport::TimeWithZone" do
+      let(:start_time) { Time.now.in_time_zone("America/Vancouver") }
+
+      it "serializes time as a Hash" do
+        hash = YAML.load(yaml)
+        expect(hash[:start_time][:time]).to eq start_time.utc
+        expect(hash[:start_time][:zone]).to eq "America/Vancouver"
+      end
     end
 
     [nil, ""].each do |blank|
@@ -29,6 +40,16 @@ describe IceCube::Schedule do
 
     it "creates a new object from a YAML string" do
       expect(new_schedule.start_time.to_s).to eq schedule.start_time.to_s
+    end
+
+    context "with ActiveSupport::TimeWithZone" do
+      let(:start_time) { Time.now.in_time_zone("America/Vancouver") }
+
+      it "deserializes time from Hash" do
+        hash = YAML.load(yaml)
+        expect(new_schedule.start_time).to eq start_time
+        expect(new_schedule.start_time.time_zone).to eq start_time.time_zone
+      end
     end
 
     [nil, ""].each do |blank|

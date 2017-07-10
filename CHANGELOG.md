@@ -2,6 +2,7 @@
 
 ## Current
 
+* [BUGFIX]      Fix serialization of Date values (for `until`) (#399)
 * [BUGFIX]      Fix double DST occurrences (#398)
 * [BUGFIX]      Realign first wday for monday-based weekly rules (#402)
 * [BUGFIX]      Fix weekly realignment for `spans: true` option (#402)
