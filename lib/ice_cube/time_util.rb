@@ -89,18 +89,27 @@ module IceCube
 
     # Serialize a time appropriate for storing
     def self.serialize_time(time)
-      if time.respond_to?(:time_zone)
-        {:time => time.utc, :zone => time.time_zone.name}
-      elsif time.is_a?(Time)
-        time
+      case time
+      when Time, Date
+        if time.respond_to?(:time_zone)
+          {:time => time.utc, :zone => time.time_zone.name}
+        else
+          time
+        end
+      when DateTime
+        Time.local(time.year, time.month, time.day, time.hour, time.min, time.sec)
+      else
+        raise ArgumentError, "cannot serialize #{time.inspect}, expected a Time"
       end
     end
 
     # Deserialize a time serialized with serialize_time or in ISO8601 string format
     def self.deserialize_time(time_or_hash)
       case time_or_hash
-      when Time
+      when Time, Date
         time_or_hash
+      when DateTime
+        Time.local(time.year, time.month, time.day, time.hour, time.min, time.sec)
       when Hash
         hash = FlexibleHash.new(time_or_hash)
         hash[:time].in_time_zone(hash[:zone])

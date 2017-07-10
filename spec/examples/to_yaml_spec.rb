@@ -271,6 +271,27 @@ module IceCube
       expect(rule.occurrence_count).to eq(5)
     end
 
+    it 'should be able to bring a Rule to_yaml and back with an until Date' do
+      rule = Rule.daily.until(Date.today >> 1)
+      rule = Rule.from_yaml rule.to_yaml
+      expect(rule.until_time).to eq(Date.today >> 1)
+    end
+
+    it 'should be able to bring a Rule to_yaml and back with an until Time' do
+      t1 = Time.now + ONE_HOUR
+      rule = Rule.daily.until(t1)
+      rule = Rule.from_yaml rule.to_yaml
+      expect(rule.until_time).to eq(t1)
+    end
+
+    it 'should be able to bring a Rule to_yaml and back with an until TimeWithZone' do
+      Time.zone = "America/Vancouver"
+      t1 = Time.zone.now + ONE_HOUR
+      rule = Rule.daily.until(t1)
+      rule = Rule.from_yaml rule.to_yaml
+      expect(rule.until_time).to eq(t1)
+    end
+
     it 'should be able to bring a Rule to_yaml and back with an undefined week start' do
       rule = Rule.weekly(2)
       rule = Rule.from_yaml rule.to_yaml
