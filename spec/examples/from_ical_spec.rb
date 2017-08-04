@@ -94,7 +94,7 @@ module IceCube
 
   end
 
-  describe Schedule, 'from_ical' do
+  describe Schedule, 'from_ical', system_time_zone: "America/Chicago" do
 
     ical_string = <<-ICAL.gsub(/^\s*/, '')
   DTSTART:20130314T201500Z
@@ -102,17 +102,26 @@ module IceCube
   RRULE:FREQ=WEEKLY;BYDAY=TH;UNTIL=20130531T100000Z
   ICAL
 
-    ical_string_with_multiple_exdates = <<-ICAL.gsub(/^\s*/, '')
+  ical_string_with_time_zones = <<-ICAL.gsub(/^\s*/,'')
+  DTSTART;TZID=America/Denver:20130731T143000
+  DTEND:20130731T153000
+  RRULE:FREQ=WEEKLY
+  EXDATE;TZID=America/Chicago:20130823T143000
+  ICAL
+
+  ical_string_with_multiple_exdates_and_rdates = <<-ICAL.gsub(/^\s*/, '')
   DTSTART;TZID=America/Denver:20130731T143000
   DTEND;TZID=America/Denver:20130731T153000
   RRULE:FREQ=WEEKLY;UNTIL=20140730T203000Z;BYDAY=MO,WE,FR
   EXDATE;TZID=America/Denver:20130823T143000
   EXDATE;TZID=America/Denver:20130812T143000
   EXDATE;TZID=America/Denver:20130807T143000
+  RDATE;TZID=America/Denver:20150812T143000
+  RDATE;TZID=America/Denver:20150807T143000
   ICAL
 
-    ical_string_with_multiple_rules = <<-ICAL.gsub(/^\s*/, '' )
-  DTSTART;TZID=CDT:20151005T195541
+  ical_string_with_multiple_rules = <<-ICAL.gsub(/^\s*/, '' )
+  DTSTART;TZID=America/Denver:20151005T195541
   RRULE:FREQ=WEEKLY;BYDAY=MO,TU
   RRULE:FREQ=WEEKLY;INTERVAL=2;WKST=SU;BYDAY=FR
     ICAL
@@ -129,6 +138,43 @@ module IceCube
     describe "instantiation" do
       it "loads an ICAL string" do
         expect(IceCube::Schedule.from_ical(ical_string)).to be_a(IceCube::Schedule)
+      end
+
+      describe "parsing time zones" do
+        it "sets the time zone of the start time" do
+          schedule = IceCube::Schedule.from_ical(ical_string_with_time_zones)
+          expect(schedule.start_time.time_zone).to eq ActiveSupport::TimeZone.new("America/Denver")
+          expect(schedule.start_time.is_a?(Time)).to be true
+          expect(schedule.start_time.is_a?(ActiveSupport::TimeWithZone)).to be true
+        end
+
+        it "treats UTC as a Time rather than TimeWithZone" do
+          schedule = IceCube::Schedule.from_ical(ical_string)
+          expect(schedule.start_time.utc_offset).to eq 0
+          expect(schedule.start_time.is_a?(Time)).to be true
+          expect(schedule.start_time.is_a?(ActiveSupport::TimeWithZone)).to be false
+        end
+
+        it "uses the system time if a time zone is not explicity provided" do
+          schedule = IceCube::Schedule.from_ical(ical_string_with_time_zones)
+          expect(schedule.end_time).not_to respond_to :time_zone
+        end
+
+        it "sets the time zone of the exception times" do
+          schedule = IceCube::Schedule.from_ical(ical_string_with_time_zones)
+          expect(schedule.exception_times[0].time_zone).to eq ActiveSupport::TimeZone.new("America/Chicago")
+        end
+
+        it "adding the offset doesnt also change the time" do
+          schedule = IceCube::Schedule.from_ical(ical_string_with_time_zones)
+          expect(schedule.exception_times[0].hour).to eq 14
+        end
+
+        it "loads the ical DTSTART as output by IceCube to_ical method" do
+          now = Time.new(2016,5,9,12).in_time_zone("America/Los_Angeles")
+          schedule = IceCube::Schedule.from_ical(IceCube::Schedule.new(now).to_ical)
+          expect(schedule.start_time).to eq(now)
+        end
       end
     end
 
@@ -240,7 +286,6 @@ module IceCube
     describe 'monthly frequency' do
       it 'matches simple monthly' do
         start_time = Time.now
-
         schedule = IceCube::Schedule.new(start_time)
         schedule.add_recurrence_rule(IceCube::Rule.monthly)
 
@@ -352,20 +397,21 @@ module IceCube
     end
 
     describe "exceptions" do
-      it 'handles single EXDATE lines' do
+      it 'handles single EXDATE lines, single RDATE lines' do
         start_time = Time.now
 
         schedule = IceCube::Schedule.new(start_time)
         schedule.add_recurrence_rule(IceCube::Rule.daily)
         schedule.add_exception_time(Time.now + (IceCube::ONE_DAY * 2))
+        schedule.add_recurrence_time(Time.now + IceCube::ONE_DAY * 4)
 
-        ical = schedule.to_ical
         expect(sorted_ical(IceCube::Schedule.from_ical(ical).to_ical)).to eq(sorted_ical(ical))
       end
 
-      it 'handles multiple EXDATE lines' do
-        schedule = IceCube::Schedule.from_ical ical_string_with_multiple_exdates
+      it 'handles multiple EXDATE / RDATE lines' do
+        schedule = IceCube::Schedule.from_ical ical_string_with_multiple_exdates_and_rdates
         expect(schedule.exception_times.count).to eq(3)
+        expect(schedule.recurrence_times.count).to eq(2)
       end
 
       it 'should raise ArgumentError when parsing an invalid rule type' do
