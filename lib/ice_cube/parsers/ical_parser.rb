@@ -8,18 +8,18 @@ module IceCube
           (property, tzid) = property.split(';')
           case property
           when 'DTSTART'
-            data[:start_time] = parse_in_tzid(value, tzid)
+            data[:start_time] = time_parser_for_zone(tzid).parse(value)
           when 'DTEND'
-            data[:end_time] = parse_in_tzid(value, tzid)
+            data[:end_time] = time_parser_for_zone(tzid).parse(value)
           when 'RDATE'
             data[:rtimes] ||= []
             data[:rtimes] += value.split(',').map do |v|
-              parse_in_tzid(v, tzid)
+              time_parser_for_zone(tzid).parse(v)
             end
           when 'EXDATE'
             data[:extimes] ||= []
             data[:extimes] += value.split(',').map do |v|
-              parse_in_tzid(v, tzid)
+              time_parser_for_zone(tzid).parse(v)
             end
           when 'DURATION'
             data[:duration] # FIXME
@@ -90,12 +90,22 @@ module IceCube
 
       private
 
-      def parse_in_tzid(value, tzid)
-        time_parser = Time
+      def time_parser_for_zone(tzid)
         if tzid
-          time_parser = ActiveSupport::TimeZone.new(tzid.split('=')[1]) || Time
+          tzid = tzid.split('=')[1]
+          if active_support_loaded?
+            ActiveSupport::TimeZone.new(tzid) || Time
+          else
+            raise ArgumentError, "must load ActiveSupport to parse ical with time zones"
+          end
+        else
+          Time
         end
-        time_parser.parse(value)
+      end
+
+      def active_support_loaded?
+        return true if @as_loaded
+        @as_loaded = defined? ActiveSupport::TimeWithZone
       end
     end
   end
