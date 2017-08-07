@@ -1,5 +1,4 @@
 require File.dirname(__FILE__) + '/../spec_helper'
-require 'timecop'
 
 include IceCube
 
@@ -124,9 +123,7 @@ describe :next_occurrence do
     schedule = Schedule.new(start_time)
     schedule.add_recurrence_rule(Rule.hourly(interval=4))
 
-    Timecop.freeze(start_time) do
-      expect(schedule.next_occurrence(schedule.start_time)).to eq expected_next_time
-    end
+    expect(schedule.next_occurrence(schedule.start_time)).to eq expected_next_time
   end
 end
 

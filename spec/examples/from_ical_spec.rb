@@ -405,6 +405,7 @@ module IceCube
         schedule.add_exception_time(Time.now + (IceCube::ONE_DAY * 2))
         schedule.add_recurrence_time(Time.now + IceCube::ONE_DAY * 4)
 
+        ical = schedule.to_ical
         expect(sorted_ical(IceCube::Schedule.from_ical(ical).to_ical)).to eq(sorted_ical(ical))
       end
 

@@ -12,7 +12,7 @@ module IceCube
           when 'DTEND'
             data[:end_time] = parse_in_tzid(value, tzid)
           when 'RDATE'
-            date[:rtimes] ||= []
+            data[:rtimes] ||= []
             data[:rtimes] += value.split(',').map do |v|
               parse_in_tzid(v, tzid)
             end
