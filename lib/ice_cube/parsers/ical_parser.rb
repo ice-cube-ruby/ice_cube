@@ -10,9 +10,12 @@ module IceCube
           data[:start_time] = Time.parse(value)
         when 'DTEND'
           data[:end_time] = Time.parse(value)
+        when 'RDATE'
+          data[:rtimes] ||= []
+          data[:rtimes] += value.split(',').map { |v| Time.parse(v) }
         when 'EXDATE'
           data[:extimes] ||= []
-          data[:extimes] += value.split(',').map{|v| Time.parse(v)}
+          data[:extimes] += value.split(',').map { |v| Time.parse(v) }
         when 'DURATION'
           data[:duration] # FIXME
         when 'RRULE'
