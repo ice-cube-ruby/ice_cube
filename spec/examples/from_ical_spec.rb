@@ -102,13 +102,15 @@ module IceCube
   RRULE:FREQ=WEEKLY;BYDAY=TH;UNTIL=20130531T100000Z
   ICAL
 
-    ical_string_with_multiple_exdates = <<-ICAL.gsub(/^\s*/, '')
+    ical_string_with_multiple_exdates_and_rdates = <<-ICAL.gsub(/^\s*/, '')
   DTSTART;TZID=America/Denver:20130731T143000
   DTEND;TZID=America/Denver:20130731T153000
   RRULE:FREQ=WEEKLY;UNTIL=20140730T203000Z;BYDAY=MO,WE,FR
   EXDATE;TZID=America/Denver:20130823T143000
   EXDATE;TZID=America/Denver:20130812T143000
   EXDATE;TZID=America/Denver:20130807T143000
+  RDATE;TZID=America/Denver:20150812T143000
+  RDATE;TZID=America/Denver:20150807T143000
   ICAL
 
     ical_string_with_multiple_rules = <<-ICAL.gsub(/^\s*/, '' )
@@ -352,20 +354,22 @@ module IceCube
     end
 
     describe "exceptions" do
-      it 'handles single EXDATE lines' do
+      it 'handles single EXDATE lines, single RDATE lines' do
         start_time = Time.now
 
         schedule = IceCube::Schedule.new(start_time)
         schedule.add_recurrence_rule(IceCube::Rule.daily)
         schedule.add_exception_time(Time.now + (IceCube::ONE_DAY * 2))
+        schedule.add_recurrence_time(Time.now + IceCube::ONE_DAY * 4)
 
         ical = schedule.to_ical
         expect(sorted_ical(IceCube::Schedule.from_ical(ical).to_ical)).to eq(sorted_ical(ical))
       end
 
-      it 'handles multiple EXDATE lines' do
-        schedule = IceCube::Schedule.from_ical ical_string_with_multiple_exdates
+      it 'handles multiple EXDATE / RDATE lines' do
+        schedule = IceCube::Schedule.from_ical ical_string_with_multiple_exdates_and_rdates
         expect(schedule.exception_times.count).to eq(3)
+        expect(schedule.recurrence_times.count).to eq(2)
       end
 
       it 'should raise ArgumentError when parsing an invalid rule type' do

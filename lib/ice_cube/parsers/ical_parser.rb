@@ -7,12 +7,15 @@ module IceCube
         (property, tzid) = property.split(';')
         case property
         when 'DTSTART'
-          data[:start_time] = Time.parse(value)
+          data[:start_time] = TimeUtil.deserialize_time(value)
         when 'DTEND'
-          data[:end_time] = Time.parse(value)
+          data[:end_time] = TimeUtil.deserialize_time(value)
+        when 'RDATE'
+          data[:rtimes] ||= []
+          data[:rtimes] += value.split(',').map { |v| TimeUtil.deserialize_time(v) }
         when 'EXDATE'
           data[:extimes] ||= []
-          data[:extimes] += value.split(',').map{|v| Time.parse(v)}
+          data[:extimes] += value.split(',').map { |v| TimeUtil.deserialize_time(v) }
         when 'DURATION'
           data[:duration] # FIXME
         when 'RRULE'
@@ -41,7 +44,7 @@ module IceCube
         when 'COUNT'
           params[:count] = value.to_i
         when 'UNTIL'
-          params[:until] = Time.parse(value).utc
+          params[:until] = TimeUtil.deserialize_time(value).utc
         when 'WKST'
           params[:week_start] = TimeUtil.ical_day_to_symbol(value)
         when 'BYSECOND'
