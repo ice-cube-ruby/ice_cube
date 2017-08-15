@@ -114,8 +114,13 @@ module IceCube
         hash = FlexibleHash.new(time_or_hash)
         hash[:time].in_time_zone(hash[:zone])
       when String
-        Time.parse(time_or_hash)
+        parse_str(time_or_hash)
       end
+    end
+
+    # Deserialize a time string into a Time
+    def self.parse_str(str)
+      Time.parse(str)
     end
 
     # Get a more precise equality for time objects
