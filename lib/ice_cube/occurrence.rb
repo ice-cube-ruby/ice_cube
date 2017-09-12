@@ -1,4 +1,3 @@
-require 'forwardable'
 require 'delegate'
 
 module IceCube
@@ -26,17 +25,30 @@ module IceCube
       'Time'
     end
 
-    # Optimize for common methods to avoid method_missing
-    extend Forwardable
-    def_delegators :start_time, :to_i, :<=>, :==
-    def_delegators :to_range, :cover?, :include?, :each, :first, :last
-
     attr_reader :start_time, :end_time
+    alias first start_time
+    alias last end_time
 
     def initialize(start_time, end_time=nil)
       @start_time = start_time
       @end_time = end_time || start_time
       __setobj__ @start_time
+    end
+
+    def to_i
+      @start_time.to_i
+    end
+
+    def <=>(other)
+      @start_time <=> other
+    end
+
+    def ==(other)
+      @start_time == other
+    end
+
+    def each(&block)
+      to_range.each(&block)
     end
 
     def is_a?(klass)
@@ -62,6 +74,11 @@ module IceCube
         cover? other
       end
     end
+
+    def cover?(other)
+      to_range.cover?(other)
+    end
+    alias_method :include?, :cover?
 
     def comparable_time
       start_time

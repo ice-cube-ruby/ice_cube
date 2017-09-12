@@ -36,6 +36,40 @@ describe Occurrence do
     end
   end
 
+  describe :to_i do
+    it "represents the start time" do
+      start_time = Time.now
+      occurrence = Occurrence.new(start_time)
+
+      expect(occurrence.to_i).to eq start_time.to_i
+    end
+  end
+
+  describe :cover? do
+    let(:start_time) { Time.now }
+    let(:occurrence) { Occurrence.new(start_time, start_time + ONE_HOUR) }
+
+    it "is true for the start time" do
+      expect(occurrence.cover?(start_time)).to be true
+    end
+
+    it "is true for a time in the range" do
+      expect(occurrence.cover?(start_time + 1)).to be true
+    end
+
+    it "is true for the end time" do
+      expect(occurrence.cover?(start_time + ONE_HOUR)).to be true
+    end
+
+    it "is false after the end time" do
+      expect(occurrence.cover?(start_time + ONE_HOUR + 1)).to be false
+    end
+
+    it "is false before the start time" do
+      expect(occurrence.cover?(start_time - 1)).to be false
+    end
+  end
+
   describe :end_time do
 
     it 'defaults to start_time' do
