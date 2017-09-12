@@ -4,14 +4,13 @@ module IceCube
 
     # Value reader for limit
     def occurrence_count
-      @count
+      (arr = @validations[:count]) && (val = arr[0]) && val.count
     end
 
     def count(max)
       unless max.nil? || max.is_a?(Integer)
         raise ArgumentError, "Expecting Integer or nil value for count, got #{max.inspect}"
       end
-      @count = max
       replace_validations_for(:count, max && [Validation.new(max, self)])
       self
     end

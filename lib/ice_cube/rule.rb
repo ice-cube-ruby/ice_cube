@@ -58,11 +58,6 @@ module IceCube
       next_time(time, schedule, time).to_i == time.to_i
     end
 
-    # Whether this rule requires a full run
-    def full_required?
-      !@count.nil?
-    end
-
     class << self
 
       # Convert from a hash and create a rule

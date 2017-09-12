@@ -23,6 +23,10 @@ module IceCube
       { :time => time }
     end
 
+    def full_required?
+      false
+    end
+
   end
 
 end
