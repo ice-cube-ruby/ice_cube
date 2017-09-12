@@ -49,23 +49,15 @@ module IceCube
     end
     alias_method :kind_of?, :is_a?
 
-    def intersects? other
-      if other.is_a?(Occurrence) || other.is_a?(Range)
-        lower_bound_1 = first + 1
-        upper_bound_1 = last # exclude end
-        lower_bound_2 = other.first + 1
-        upper_bound_2 = other.last + 1
-        if (lower_bound_2 <=> upper_bound_2) > 0
-          false
-        elsif (lower_bound_1 <=> upper_bound_1) > 0
-          false
-        else
-          (upper_bound_1 <=> lower_bound_2) >= 0 and
-            (upper_bound_2 <=> lower_bound_1) >= 0
-        end
-      else
-        cover? other
-      end
+    def intersects?(other)
+      return cover?(other) unless other.is_a?(Occurrence) || other.is_a?(Range)
+
+      this_start  = first + 1
+      this_end    = last # exclude end boundary
+      other_start = other.first + 1
+      other_end   = other.last + 1
+
+      !(this_end < other_start || this_start > other_end)
     end
 
     def cover?(other)

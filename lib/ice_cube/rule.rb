@@ -19,11 +19,9 @@ module IceCube
       until_time || occurrence_count
     end
 
-    def ==(rule)
-      if rule.is_a? Rule
-        hash = to_hash
-        hash && hash == rule.to_hash
-      end
+    def ==(other)
+      return false unless other.is_a? Rule
+      hash == other.hash
     end
 
     def hash
