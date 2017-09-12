@@ -82,6 +82,10 @@ module IceCube
       @validations[:interval].any?(&:dst_adjust?)
     end
 
+    def full_required?
+      !occurrence_count.nil?
+    end
+
     def to_s
       builder = StringBuilder.new
       @validations.each_value do |validations|
