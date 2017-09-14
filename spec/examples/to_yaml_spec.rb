@@ -1,10 +1,12 @@
 require File.dirname(__FILE__) + '/../spec_helper'
-require 'active_support/time'
 
 module IceCube
   describe Schedule, 'to_yaml' do
 
-    before(:all) { Time.zone = 'Eastern Time (US & Canada)' }
+    before(:all) do
+      require 'active_support/time'
+      Time.zone = 'Eastern Time (US & Canada)'
+    end
 
     [:yearly, :monthly, :weekly, :daily, :hourly, :minutely, :secondly].each do |type|
       it "should make a #{type} round trip with to_yaml [#47]" do

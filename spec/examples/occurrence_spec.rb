@@ -28,7 +28,6 @@ describe Occurrence do
     end
 
     it "accepts a format option to comply with ActiveSupport" do
-      # require 'active_support/core_ext/time'
       time_now = Time.current
       occurrence = Occurrence.new(time_now)
 
