@@ -51,10 +51,6 @@ module IceCube
       Array(@validations[base_interval_validation.type])
     end
 
-    def base_interval_type
-      base_interval_validation.type
-    end
-
     # Compute the next time after (or including) the specified time in respect
     # to the given start time
     def next_time(time, start_time, closing_time)
@@ -72,14 +68,6 @@ module IceCube
 
     def realign(opening_time, start_time)
       start_time
-    end
-
-    def skipped_for_dst
-      @uses -= 1 if @uses > 0
-    end
-
-    def dst_adjust?
-      @validations[:interval].any?(&:dst_adjust?)
     end
 
     def full_required?
