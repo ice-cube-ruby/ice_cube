@@ -66,8 +66,7 @@ describe IceCube::Schedule do
   it 'should ~ weekly until december 24, 1997' do
     schedule = IceCube::Schedule.new(Time.utc(1997, 9, 2))
     schedule.add_recurrence_rule IceCube::Rule.weekly.until(Time.utc(1997, 12, 24))
-    dates = schedule.occurrences(Time.utc(1997, 12, 24))
-    #test expectations
+
     test_expectations(schedule, {1997 => {9 => [2, 9, 16, 23, 30], 10 => [7, 14, 21, 28], 11 => [4, 11, 18, 25], 12 => [2, 9, 16, 23]}})
   end
 
@@ -84,7 +83,6 @@ describe IceCube::Schedule do
     end
   end
 
-  #
   it 'should ~ weekly on tuesday and thursday for 5 weeks (a)' do
     start_time = Time.utc(1997, 9, 2)
     schedule = IceCube::Schedule.new(start_time)
@@ -107,7 +105,6 @@ describe IceCube::Schedule do
     expect(dates).to eq(expectation.flatten)
   end
 
-  #
   it 'should ~ every other week on monday, wednesday and friday until december 24, 1997 but starting on tuesday september 2, 1997' do
     start_time = Time.utc(1997, 9, 2)
     schedule = IceCube::Schedule.new(start_time)

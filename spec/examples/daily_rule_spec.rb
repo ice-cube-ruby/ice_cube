@@ -14,13 +14,13 @@ module IceCube
 
     it 'raises an argument error when a bad value is passed using the interval method' do
       expect {
-        rule = Rule.daily.interval("invalid")
+        Rule.daily.interval("invalid")
       }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass a postive integer.")
     end
 
     it 'raises an argument error when a bad value is passed' do
       expect {
-        rule = Rule.daily("invalid")
+        Rule.daily("invalid")
       }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass a postive integer.")
     end
   end
@@ -30,7 +30,7 @@ module IceCube
     describe 'in Vancouver time', :system_time_zone => 'America/Vancouver' do
 
       it 'should include nearest time in DST start hour' do
-        schedule = Schedule.new(t0 = Time.local(2013, 3, 9, 2, 30, 0))
+        schedule = Schedule.new(Time.local(2013, 3, 9, 2, 30, 0))
         schedule.add_recurrence_rule Rule.daily
         expect(schedule.first(3)).to eq([
           Time.local(2013, 3,  9, 2, 30, 0), # -0800
@@ -40,7 +40,7 @@ module IceCube
       end
 
       it 'should not skip times in DST end hour' do
-        schedule = Schedule.new(t0 = Time.local(2013, 11, 2, 2, 30, 0))
+        schedule = Schedule.new(Time.local(2013, 11, 2, 2, 30, 0))
         schedule.add_recurrence_rule Rule.daily
         expect(schedule.first(3)).to eq([
           Time.local(2013, 11, 2, 2, 30, 0), # -0700
@@ -50,7 +50,7 @@ module IceCube
       end
 
       it 'should include nearest time to DST start when locking hour_of_day' do
-        schedule = Schedule.new(t0 = Time.local(2013, 3, 9, 2, 0, 0))
+        schedule = Schedule.new(Time.local(2013, 3, 9, 2, 0, 0))
         schedule.add_recurrence_rule Rule.daily.hour_of_day(2)
         expect(schedule.first(3)).to eq([
           Time.local(2013, 3,  9, 2, 0, 0), # -0800

@@ -19,13 +19,13 @@ module IceCube
 
     it 'raises an argument error when a bad value is passed' do
       expect {
-        rule = Rule.monthly("invalid")
+        Rule.monthly("invalid")
       }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass a postive integer.")
     end
 
     it 'raises an argument error when a bad value is passed using the interval method' do
       expect {
-        rule = Rule.monthly.interval("invalid")
+        Rule.monthly.interval("invalid")
       }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass a postive integer.")
     end
   end
@@ -92,8 +92,9 @@ module IceCube
     [:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday].each_with_index do |weekday, wday|
       context "for every first #{weekday} of a month" do
         let(:schedule) {
-          schedule = Schedule.new(t0 = Time.local(2011, 8, 1))
-          schedule.add_recurrence_rule Rule.monthly.day_of_week(weekday => [1])
+          Schedule.new(Time.local(2011, 8, 1)) do |s|
+            s.add_recurrence_rule Rule.monthly.day_of_week(weekday => [1])
+          end
         }
 
         it "should not skip a month when DST ends" do
@@ -120,7 +121,7 @@ module IceCube
     end
 
     it 'should produce dates on a monthly interval for the last day of the month' do
-      schedule = Schedule.new(t0 = Time.utc(2010, 3, 31, 0, 0, 0))
+      schedule = Schedule.new(Time.utc(2010, 3, 31, 0, 0, 0))
       schedule.add_recurrence_rule Rule.monthly
       expect(schedule.first(10)).to eq([
         Time.utc(2010,  3, 31, 0, 0, 0), Time.utc(2010,  4, 30, 0, 0, 0),
@@ -132,7 +133,7 @@ module IceCube
     end
 
     it 'should produce dates on a monthly interval for latter days in the month near February' do
-      schedule = Schedule.new(t0 = Time.utc(2010, 1, 29, 0, 0, 0))
+      schedule = Schedule.new(Time.utc(2010, 1, 29, 0, 0, 0))
       schedule.add_recurrence_rule Rule.monthly
       expect(schedule.first(3)).to eq([
         Time.utc(2010, 1, 29, 0, 0, 0),
@@ -142,7 +143,7 @@ module IceCube
     end
 
     it 'should restrict to available days of month when specified' do
-      schedule = Schedule.new(t0 = Time.utc(2013,1,31))
+      schedule = Schedule.new(Time.utc(2013,1,31))
       schedule.add_recurrence_rule Rule.monthly.day_of_month(31)
       expect(schedule.first(3)).to eq([
         Time.utc(2013, 1, 31),
