@@ -98,23 +98,20 @@ module IceCube
         }
 
         it "should not skip a month when DST ends" do
-          schedule.first(48).inject(nil) do |last_date, current_date|
-            next current_date unless last_date
-            expect(month_interval(current_date, last_date)).to eq(1)
+          schedule.first(48).each_cons(2) do |t0, t1|
+            expect(month_interval(t1, t0)).to eq(1)
           end
         end
 
         it "should not change day when DST ends" do
-          schedule.first(48).inject(nil) do |last_date, current_date|
-            next current_date unless last_date
-            expect(current_date.wday).to eq(wday)
+          schedule.first(48).each do |date|
+            expect(date.wday).to eq(wday)
           end
         end
 
         it "should not change hour when DST ends" do
-          schedule.first(48).inject(nil) do |last_date, current_date|
-            next current_date unless last_date
-            expect(current_date.hour).to eq(0)
+          schedule.first(48).each do |time|
+            expect(time.hour).to eq(0)
           end
         end
       end
