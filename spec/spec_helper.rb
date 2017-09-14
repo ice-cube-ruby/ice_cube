@@ -59,6 +59,13 @@ RSpec.configure do |config|
     end
   end
 
+  config.around :each, locale: true do |example|
+    orig_locale = I18n.locale
+    I18n.locale = example.metadata[:locale]
+    example.run
+    I18n.locale = orig_locale
+  end
+
   config.around :each, expect_warnings: true do |example|
     capture_warnings do
       example.run
