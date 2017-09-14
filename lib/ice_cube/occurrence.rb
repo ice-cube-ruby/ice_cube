@@ -44,10 +44,6 @@ module IceCube
       @start_time <=> other
     end
 
-    def each(&block)
-      to_range.each(&block)
-    end
-
     def is_a?(klass)
       klass == ::Time || super
     end
