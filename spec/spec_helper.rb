@@ -19,6 +19,17 @@ WORLD_TIME_ZONES = [
   'Pacific/Auckland',   # +1200 / +1300
 ]
 
+# TODO: enable warnings here and update specs to call IceCube objects correctly
+def Object.const_missing(sym)
+  case sym
+  when :Schedule, :Rule, :Occurrence, :TimeUtil, :ONE_DAY, :ONE_HOUR, :ONE_MINUTE
+    # warn "Use IceCube::#{sym}", caller[0]
+    IceCube.const_get(sym)
+  else
+    super
+  end
+end
+
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"

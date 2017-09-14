@@ -1,7 +1,5 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-include IceCube
-
 describe Occurrence do
 
   it "reports as a Time" do
