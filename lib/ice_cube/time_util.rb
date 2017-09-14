@@ -170,7 +170,7 @@ module IceCube
 
     # Convert wday number to day symbol
     def self.wday_to_sym(wday)
-      return sym = wday if DAYS.keys.include? wday
+      return wday if DAYS.keys.include? wday
       DAYS.invert.fetch(wday) do |i|
         raise ArgumentError, "Expecting Integer value for weekday. " \
                              "No such wday number: #{i.inspect}"

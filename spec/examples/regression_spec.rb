@@ -12,7 +12,7 @@ module IceCube
         end
 
         it 'should consider recurrence times properly in find_occurreces [#43]' do
-          schedule = Schedule.new(t0 = Time.local(2011, 10, 1, 18, 25))
+          schedule = Schedule.new(Time.local(2011, 10, 1, 18, 25))
           schedule.add_recurrence_time Time.local(2011, 12, 3, 15, 0, 0)
           schedule.add_recurrence_time Time.local(2011, 12, 3, 10, 0, 0)
           schedule.add_recurrence_time Time.local(2011, 12, 4, 10, 0, 0)
@@ -20,7 +20,7 @@ module IceCube
         end
 
         it 'should work well with occurrences_between [#33]' do
-          schedule = Schedule.new(t0 = Time.local(2011, 10, 11, 12))
+          schedule = Schedule.new(Time.local(2011, 10, 11, 12))
           schedule.add_recurrence_rule Rule.weekly.day(1).hour_of_day(12).minute_of_hour(0)
           schedule.add_recurrence_rule Rule.weekly.day(2).hour_of_day(15).minute_of_hour(0)
           schedule.add_exception_time Time.local(2011, 10, 13, 21)
@@ -37,13 +37,13 @@ module IceCube
         end
 
         it 'should not regress [#40]' do
-          schedule = Schedule.new(t0 = Time.local(2011, 11, 16, 11, 31, 58), :duration => 3600)
+          schedule = Schedule.new(Time.local(2011, 11, 16, 11, 31, 58), :duration => 3600)
           schedule.add_recurrence_rule Rule.minutely(60).day(4).hour_of_day(14, 15, 16).minute_of_hour(0)
           expect(schedule.occurring_at?(Time.local(2011, 11, 17, 15, 30))).to be_falsey
         end
 
         it 'should not choke on parsing [#26]' do
-          schedule = Schedule.new(t0 = Time.local(2011, 8, 9, 14, 52, 14))
+          schedule = Schedule.new(Time.local(2011, 8, 9, 14, 52, 14))
           schedule.rrule Rule.weekly(1).day(1, 2, 3, 4, 5)
           expect { Schedule.from_yaml(schedule.to_yaml) }.to_not raise_error
         end
@@ -77,7 +77,7 @@ module IceCube
         end
 
         it 'should produce all occurrences between dates, not breaking on exceptions [#82]' do
-          schedule = Schedule.new(t0 = Time.new(2012, 5, 1))
+          schedule = Schedule.new(Time.new(2012, 5, 1))
           schedule.add_recurrence_rule Rule.daily.day(:sunday, :tuesday, :wednesday, :thursday, :friday, :saturday)
           times = schedule.occurrences_between(Time.new(2012, 5, 19), Time.new(2012, 5, 24))
           expect(times).to eq([
@@ -98,7 +98,7 @@ module IceCube
         end
 
         it 'should produce occurrences regardless of time being specified [#81]' do
-          schedule = Schedule.new(t0 = Time.new(2012, 5, 1))
+          schedule = Schedule.new(Time.new(2012, 5, 1))
           schedule.add_recurrence_rule Rule.daily.hour_of_day(8)
           times = schedule.occurrences_between(Time.new(2012, 05, 20), Time.new(2012, 05, 22))
           expect(times).to eq([
@@ -138,7 +138,7 @@ module IceCube
           :rtimes: []
           :extimes: []
           EOS
-          times = schedule.occurrences(Date.new(2013, 07, 13).to_time)
+          expect(schedule.occurrences(Date.new(2013, 07, 13).to_time)).to be_a Array
         end
 
         it 'should still include date over DST boundary [#98]', expect_warnings: true do # set local to Sweden
@@ -187,7 +187,7 @@ module IceCube
         end
 
         it 'should not infinite loop [#109]' do
-          schedule = Schedule.new(t0 = Time.new(2012, 4, 27, 0, 0, 0))
+          schedule = Schedule.new(Time.new(2012, 4, 27, 0, 0, 0))
           schedule.rrule Rule.weekly.day(:monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :sunday).hour_of_day(0).minute_of_hour(0).second_of_minute(0)
           schedule.duration = 3600
           t1 = Time.new(2012, 10, 20, 0, 0, 0)
@@ -196,7 +196,7 @@ module IceCube
         end
 
         it 'should return next_occurrence in utc if start_time is utc [#115]' do
-          schedule = Schedule.new(t0 = Time.utc(2012, 10, 10, 20, 15, 0))
+          schedule = Schedule.new(Time.utc(2012, 10, 10, 20, 15, 0))
           schedule.rrule Rule.daily
           expect(schedule.next_occurrence).to be_utc
         end

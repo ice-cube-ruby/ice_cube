@@ -15,13 +15,13 @@ module IceCube
 
       it 'raises an argument error when a bad value is passed' do
         expect {
-          rule = Rule.hourly("invalid")
+          Rule.hourly("invalid")
         }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass a postive integer.")
       end
 
       it 'raises an argument error when a bad value is passed using the interval method' do
         expect {
-          rule = Rule.hourly.interval("invalid")
+          Rule.hourly.interval("invalid")
         }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass a postive integer.")
       end
     end
@@ -29,7 +29,7 @@ module IceCube
     context 'in Vancouver time', :system_time_zone => 'America/Vancouver' do
 
       it 'should work across DST start hour' do
-        schedule = Schedule.new(t0 = Time.local(2013, 3, 10, 1, 0, 0))
+        schedule = Schedule.new(Time.local(2013, 3, 10, 1, 0, 0))
         schedule.add_recurrence_rule Rule.hourly
         expect(schedule.first(3)).to eq([
           Time.local(2013, 3, 10, 1, 0, 0), # -0800
@@ -39,7 +39,7 @@ module IceCube
       end
 
       it 'should not skip times in DST end hour' do
-        schedule = Schedule.new(t0 = Time.local(2013, 11, 3, 0, 0, 0))
+        schedule = Schedule.new(Time.local(2013, 11, 3, 0, 0, 0))
         schedule.add_recurrence_rule Rule.hourly
         expect(schedule.first(4)).to eq([
           Time.local(2013, 11, 3, 0, 0, 0),             # -0700

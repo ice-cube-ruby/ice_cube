@@ -46,7 +46,6 @@ describe IceCube::Schedule do
       let(:start_time) { Time.now.in_time_zone("America/Vancouver") }
 
       it "deserializes time from Hash" do
-        hash = YAML.load(yaml)
         expect(new_schedule.start_time).to eq start_time
         expect(new_schedule.start_time.time_zone).to eq start_time.time_zone
       end

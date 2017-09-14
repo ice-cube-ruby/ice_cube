@@ -37,10 +37,8 @@ module IceCube
       schedule.add_recurrence_rule Rule.daily
       # each occurrence MUST occur at 5pm, then we win
       dates = schedule.occurrences(start_time + 20 * ONE_DAY)
-      last = start_time
       dates.each do |date|
         expect(date.hour).to eq(5)
-        last = date
       end
     end
 

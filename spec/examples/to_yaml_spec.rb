@@ -10,7 +10,7 @@ module IceCube
 
     [:yearly, :monthly, :weekly, :daily, :hourly, :minutely, :secondly].each do |type|
       it "should make a #{type} round trip with to_yaml [#47]" do
-        schedule = Schedule.new(t0 = Time.now)
+        schedule = Schedule.new(Time.now)
         schedule.add_recurrence_rule Rule.send(type, 3)
         expect(Schedule.from_yaml(schedule.to_yaml).first(3).inspect).to eq(schedule.first(3).inspect)
       end
@@ -216,7 +216,6 @@ module IceCube
     end
 
     it 'should be backward compatible with old yaml Time format', expect_warnings: true do
-      pacific_time = 'Pacific Time (US & Canada)'
       yaml = "---\n:end_time:\n:rdates: []\n:rrules: []\n:duration:\n:exdates: []\n:start_time: 2010-10-18T14:35:47-07:00"
       schedule = Schedule.from_yaml(yaml)
       expect(schedule.start_time).to be_a(Time)
