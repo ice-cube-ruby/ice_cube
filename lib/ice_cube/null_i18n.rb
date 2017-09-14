@@ -7,13 +7,19 @@ module IceCube
 
       base = base[options[:count] == 1 ? "one" : "other"] if options[:count]
 
-      if base.is_a?(Hash)
-        return base.each_with_object({}) do |(key, value), hash|
-          hash[key.is_a?(String) ? key.to_sym : key] = value
+      case base
+      when Hash
+        base.each_with_object({}) do |(k, v), hash|
+          hash[k.is_a?(String) ? k.to_sym : k] = v
         end
+      when Array
+        base.each_with_index.each_with_object({}) do |(v, k), hash|
+          hash[k] = v
+        end
+      else
+        return base unless base.include?('%{')
+        base % options
       end
-
-      options.reduce(base) { |result, (find, replace)| result.gsub("%{#{find}}", "#{replace}") }
     end
 
     def self.l(date_or_time, options = {})
