@@ -1,6 +1,4 @@
 require File.dirname(__FILE__) + '/../spec_helper'
-require 'i18n'
-require 'ice_cube/null_i18n'
 
 describe IceCube::Schedule, 'to_s' do
 

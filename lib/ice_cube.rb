@@ -1,8 +1,5 @@
 require 'date'
 require 'ice_cube/deprecated'
-require 'ice_cube/i18n'
-
-IceCube::I18n.detect_backend!
 
 module IceCube
 
@@ -10,6 +7,7 @@ module IceCube
 
   autoload :TimeUtil, 'ice_cube/time_util'
   autoload :FlexibleHash, 'ice_cube/flexible_hash'
+  autoload :I18n, 'ice_cube/i18n'
 
   autoload :Rule, 'ice_cube/rule'
   autoload :Schedule, 'ice_cube/schedule'

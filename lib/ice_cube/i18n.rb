@@ -1,5 +1,10 @@
+require 'ice_cube/null_i18n'
+
 module IceCube
   module I18n
+
+    LOCALES_PATH = File.expand_path(File.join('..', '..', '..', 'config', 'locales'), __FILE__)
+
     def self.t(*args)
       backend.t(*args)
     end
@@ -9,16 +14,14 @@ module IceCube
     end
 
     def self.backend
-      @backend
+      @backend ||= detect_backend!
     end
 
     def self.detect_backend!
-      require 'i18n'
-      ::I18n.load_path += Dir[File.expand_path('../../../config/locales/*{rb,yml}', __FILE__)]
-      @backend = ::I18n
-    rescue LoadError
-      require 'ice_cube/null_i18n'
-      @backend = NullI18n
+      ::I18n.load_path += Dir[File.join(LOCALES_PATH, '*.yml')]
+      ::I18n
+    rescue NameError
+      NullI18n
     end
   end
 end
