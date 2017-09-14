@@ -129,8 +129,8 @@ module IceCube
 
       it "uses schedule zone for occurrences_between with a rule terminated by #count" do
         utc = Time.utc(2013, 1, 1).in_time_zone('UTC')
-        s = Schedule.new(utc) { |s| s.add_recurrence_rule Rule.daily.count(3) }
-        occurrences_between = s.occurrences_between(reference_time, reference_time + IceCube::ONE_DAY)
+        schedule = Schedule.new(utc) { |s| s.add_recurrence_rule Rule.daily.count(3) }
+        occurrences_between = schedule.occurrences_between(reference_time, reference_time + IceCube::ONE_DAY)
         expect(occurrences_between).to eq([Time.utc(2013, 1, 1), Time.utc(2013, 1, 2)])
         occurrences_between.each do |t|
           expect(t.time_zone).to eq(schedule.start_time.time_zone)
@@ -139,8 +139,8 @@ module IceCube
 
       it "uses schedule zone for occurrences_between with a rule terminated by #until" do
         utc = Time.utc(2013, 1, 1).in_time_zone('UTC')
-        s = Schedule.new(utc) { |s| s.add_recurrence_rule Rule.daily.until(utc.advance(:days => 3)) }
-        occurrences_between = s.occurrences_between(reference_time, reference_time + IceCube::ONE_DAY)
+        schedule = Schedule.new(utc) { |s| s.add_recurrence_rule Rule.daily.until(utc.advance(:days => 3)) }
+        occurrences_between = schedule.occurrences_between(reference_time, reference_time + IceCube::ONE_DAY)
         expect(occurrences_between).to eq([Time.utc(2013, 1, 1), Time.utc(2013, 1, 2)])
         occurrences_between.each do |t|
           expect(t.time_zone).to eq(schedule.start_time.time_zone)
@@ -149,8 +149,8 @@ module IceCube
 
       it "uses schedule zone for occurrences_between with an unterminated rule" do
         utc = Time.utc(2013, 1, 1).in_time_zone('UTC')
-        s = Schedule.new(utc) { |s| s.add_recurrence_rule Rule.daily }
-        occurrences_between = s.occurrences_between(reference_time, reference_time + IceCube::ONE_DAY)
+        schedule = Schedule.new(utc) { |s| s.add_recurrence_rule Rule.daily }
+        occurrences_between = schedule.occurrences_between(reference_time, reference_time + IceCube::ONE_DAY)
         expect(occurrences_between).to eq([Time.utc(2013, 1, 1), Time.utc(2013, 1, 2)])
         occurrences_between.each do |t|
           expect(t.time_zone).to eq(schedule.start_time.time_zone)

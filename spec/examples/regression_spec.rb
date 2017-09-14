@@ -168,9 +168,9 @@ module IceCube
         it 'should exclude a date from a weekly schedule [#55]' do
           Time.zone = 'Eastern Time (US & Canada)'
           t0 = Time.zone.local(2011, 12, 27, 14)
-          schedule = Schedule.new(t0) do |schedule|
-            schedule.add_recurrence_rule Rule.weekly.day(:tuesday, :thursday)
-            schedule.add_exception_time t0
+          schedule = Schedule.new(t0) do |s|
+            s.add_recurrence_rule Rule.weekly.day(:tuesday, :thursday)
+            s.add_exception_time t0
           end
           expect(schedule.first).to eq(Time.zone.local(2011, 12, 29, 14))
         end

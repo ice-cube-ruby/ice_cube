@@ -446,12 +446,12 @@ module IceCube
     # Get the next time after (or including) a specific time
     def next_time(time, closing_time)
       loop do
-        min_time = recurrence_rules_with_implicit_start_occurrence.reduce(nil) do |min_time, rule|
+        min_time = recurrence_rules_with_implicit_start_occurrence.reduce(nil) do |best_time, rule|
           begin
-            new_time = rule.next_time(time, start_time, min_time || closing_time)
-            [min_time, new_time].compact.min
+            new_time = rule.next_time(time, start_time, best_time || closing_time)
+            [best_time, new_time].compact.min
           rescue StopIteration
-            min_time
+            best_time
           end
         end
         break unless min_time
