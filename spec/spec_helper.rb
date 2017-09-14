@@ -48,15 +48,11 @@ RSpec.configure do |config|
     end
   end
 
-  config.around :each do |example|
-    if zone = example.metadata[:system_time_zone]
-      orig_zone = ENV['TZ']
-      ENV['TZ'] = zone
-      example.run
-      ENV['TZ'] = orig_zone
-    else
-      example.run
-    end
+  config.around :each, system_time_zone: true do |example|
+    orig_zone = ENV['TZ']
+    ENV['TZ'] = example.metadata[:system_time_zone]
+    example.run
+    ENV['TZ'] = orig_zone
   end
 
   config.around :each, locale: true do |example|
