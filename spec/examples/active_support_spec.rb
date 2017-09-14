@@ -3,7 +3,6 @@ require 'active_support/time'
 require 'active_support/version'
 require 'tzinfo' if ActiveSupport::VERSION::MAJOR == 3
 
-
 module IceCube
   describe Schedule, 'using ActiveSupport' do
 
