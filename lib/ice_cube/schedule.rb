@@ -371,6 +371,7 @@ module IceCube
       end
       data
     end
+    alias_method :to_h, :to_hash
 
     # Load the schedule from a hash
     def self.from_hash(original_hash, options = {})
