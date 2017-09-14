@@ -19,6 +19,7 @@ module IceCube
   #     Time.now - Occurrence.new(start_time) # => 3600
   #
   class Occurrence < SimpleDelegator
+    include Comparable
 
     # Report class name as 'Time' to thwart type checking.
     def self.name
@@ -41,10 +42,6 @@ module IceCube
 
     def <=>(other)
       @start_time <=> other
-    end
-
-    def ==(other)
-      @start_time == other
     end
 
     def each(&block)
