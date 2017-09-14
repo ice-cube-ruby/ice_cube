@@ -45,6 +45,20 @@ describe Occurrence do
     end
   end
 
+  describe :<=> do
+    it "is comparable to another occurrence's start time" do
+      o1 = Occurrence.new(Time.now)
+      o2 = Occurrence.new(o1.start_time + 1)
+
+      expect(o1).to be < o2
+    end
+
+    it "is comparable to another time" do
+      occurrence = Occurrence.new(Time.now)
+      expect(occurrence).to be < occurrence.start_time + 1
+    end
+  end
+
   describe :cover? do
     let(:start_time) { Time.now }
     let(:occurrence) { Occurrence.new(start_time, start_time + ONE_HOUR) }
