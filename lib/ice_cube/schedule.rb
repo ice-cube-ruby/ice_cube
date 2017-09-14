@@ -340,9 +340,9 @@ module IceCube
       IcalParser.schedule_from_ical(ical, options)
     end
 
-    # Convert the schedule to yaml
-    def to_yaml(*args)
-      YAML::dump(to_hash, *args)
+    # Hook for YAML.dump, enables to_yaml
+    def encode_with(coder)
+      coder.represent_object nil, to_hash
     end
 
     # Load the schedule from yaml
