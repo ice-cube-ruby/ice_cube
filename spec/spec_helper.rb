@@ -40,6 +40,8 @@ RSpec.configure do |config|
 
   Dir[File.dirname(__FILE__) + '/support/**/*'].each { |f| require f }
 
+  config.warnings = true
+
   config.include WarningHelpers
 
   config.before :each do |example|
