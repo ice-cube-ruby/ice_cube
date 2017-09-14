@@ -21,9 +21,10 @@ module IceCube
 
         it 'should be able to calculate beginning of dates without active_support' do
           date = Date.new(2011, 1, 1)
-          res = [ TimeUtil.beginning_of_date(date), Time.local(2011, 1, 1, 0, 0, 0) ]
-          res.all? { |r| r.class.name == 'Time' }
-          expect(res.map(&:to_s).uniq.size).to eq(1)
+          midnight = TimeUtil.beginning_of_date(date)
+
+          expect(midnight).to eq(Time.local(2011, 1, 1, 0, 0, 0))
+          expect(midnight).to be_a Time
         end
 
         it 'should serialize to hash without error' do
