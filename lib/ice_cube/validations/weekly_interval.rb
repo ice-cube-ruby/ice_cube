@@ -1,5 +1,3 @@
-require 'date'
-
 module IceCube
 
   module Validations::WeeklyInterval
