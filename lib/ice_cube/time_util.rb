@@ -177,13 +177,6 @@ module IceCube
       end
     end
 
-    # Convert a symbol to an ical day (SU, MO)
-    def self.week_start(sym)
-      raise ArgumentError, "Invalid day: #{str}" unless DAYS.keys.include?(sym)
-      day = sym.to_s.upcase[0..1]
-      day
-    end
-
     # Convert weekday from base sunday to the schedule's week start.
     def self.normalize_wday(wday, week_start)
       (wday - sym_to_wday(week_start)) % 7
@@ -258,10 +251,6 @@ module IceCube
       if time.dst? ^ one_hour_ago.dst?
         (time.utc_offset - one_hour_ago.utc_offset) / ONE_HOUR
       end
-    end
-
-    def self.same_clock?(t1, t2)
-      CLOCK_VALUES.all? { |i| t1.send(i) == t2.send(i) }
     end
 
     # Handle discrepancies between various time types
@@ -348,10 +337,6 @@ module IceCube
           @time -= TimeUtil.days_in_month(@time) * ONE_DAY
         end
         @time += ONE_DAY
-      end
-
-      def clear_year
-        @time
       end
 
     end
