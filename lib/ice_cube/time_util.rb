@@ -264,6 +264,21 @@ module IceCube
       CLOCK_VALUES.all? { |i| t1.send(i) == t2.send(i) }
     end
 
+    # Handle discrepancies between various time types
+    # - Time has subsec
+    # - DateTime does not
+    # - ActiveSupport::TimeWithZone can wrap either type, depending on version
+    #   or if `parse` or `now`/`local` was used to build it.
+    def self.subsec(time)
+      if time.respond_to?(:subsec)
+        time.subsec
+      elsif time.respond_to?(:sec_fraction)
+        time.sec_fraction
+      else
+        0.0
+      end
+    end
+
     # A utility class for safely moving time around
     class TimeWrapper
 
@@ -271,7 +286,7 @@ module IceCube
         @dst_adjust = dst_adjust
         @base = time
         if dst_adjust
-          @time = Time.utc(time.year, time.month, time.day, time.hour, time.min, time.sec + time.subsec)
+          @time = Time.utc(time.year, time.month, time.day, time.hour, time.min, time.sec + TimeUtil.subsec(time))
         else
           @time = time
         end
