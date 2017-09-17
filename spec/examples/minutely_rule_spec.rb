@@ -1,7 +1,9 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-module IceCube
-  describe MinutelyRule, 'interval validation' do
+describe IceCube::MinutelyRule do
+
+  describe 'interval validation' do
+
     it 'converts a string integer to an actual int when using the interval method' do
       rule = Rule.minutely.interval("2")
       expect(rule.validations_for(:interval).first.interval).to eq(2)
@@ -23,10 +25,7 @@ module IceCube
         Rule.minutely.interval("invalid")
       }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass a postive integer.")
     end
-
   end
-
-  describe MinutelyRule do
 
     it 'should update previous interval' do
       t0 = Time.now
@@ -74,5 +73,4 @@ module IceCube
       expect(schedule.next_occurrence(Time.new(2013, 11, 1, 1, 4, 0))).to eq(Time.new(2013, 11, 1, 1, 8, 0))
     end
 
-  end
 end
