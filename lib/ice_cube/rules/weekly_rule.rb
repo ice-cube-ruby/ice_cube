@@ -2,6 +2,15 @@ module IceCube
 
   class WeeklyRule < ValidatedRule
 
+    include Validations::HourOfDay
+    include Validations::MinuteOfHour
+    include Validations::SecondOfMinute
+    # include Validations::DayOfMonth   # n/a
+    include Validations::DayOfWeek
+    include Validations::Day
+    include Validations::MonthOfYear
+    # include Validations::DayOfYear    # n/a
+
     include Validations::WeeklyInterval
 
     attr_reader :week_start

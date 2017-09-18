@@ -46,8 +46,8 @@ module IceCube
     end
 
     it 'should be able to parse a .day_of_year rule' do
-      rule = IceCube::Rule.from_ical("FREQ=DAILY;BYYEARDAY=100,200")
-      expect(rule).to eq(IceCube::Rule.daily.day_of_year(100,200))
+      rule = IceCube::Rule.from_ical("FREQ=YEARLY;BYYEARDAY=100,200")
+      expect(rule).to eq(IceCube::Rule.yearly.day_of_year(100,200))
     end
 
     it 'should be able to serialize a .month_of_year rule' do
