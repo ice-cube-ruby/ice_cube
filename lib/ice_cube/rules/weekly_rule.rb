@@ -28,7 +28,7 @@ module IceCube
       time = TimeUtil::TimeWrapper.new(start_time)
       offset = wday_offset(step_time, start_time)
       time.add(:day, offset)
-      time.to_time
+      super step_time, time.to_time
     end
 
     # Calculate how many days to the first wday validation in the correct

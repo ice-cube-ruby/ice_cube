@@ -17,6 +17,22 @@ module IceCube
       self
     end
 
+    def realign(opening_time, start_time)
+      return super unless validations[:hour_of_day]
+      freq = base_interval_validation.interval
+
+      first_hour = Array(validations[:hour_of_day]).min_by(&:value)
+      time = TimeUtil::TimeWrapper.new(start_time, false)
+      if freq > 1
+        offset = first_hour.validate(opening_time, start_time)
+        time.add(:hour, offset - freq)
+      else
+        time.hour = first_hour.value
+      end
+
+      super opening_time, time.to_time
+    end
+
     class Validation < Validations::FixedValue
 
       attr_reader :hour

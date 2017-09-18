@@ -36,12 +36,6 @@ module IceCube
           expect(schedule.occurrences(Date.today >> 12)).to be_an Array
         end
 
-        it 'should not regress [#40]' do
-          schedule = Schedule.new(Time.local(2011, 11, 16, 11, 31, 58), :duration => 3600)
-          schedule.add_recurrence_rule Rule.minutely(60).day(4).hour_of_day(14, 15, 16).minute_of_hour(0)
-          expect(schedule.occurring_at?(Time.local(2011, 11, 17, 15, 30))).to be_falsey
-        end
-
         it 'should not choke on parsing [#26]' do
           schedule = Schedule.new(Time.local(2011, 8, 9, 14, 52, 14))
           schedule.rrule Rule.weekly(1).day(1, 2, 3, 4, 5)

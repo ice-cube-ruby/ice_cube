@@ -16,6 +16,15 @@ module IceCube
       self
     end
 
+    def realign(opening_time, start_time)
+      return super unless validations[:minute_of_hour]
+
+      first_minute = validations[:minute_of_hour].min_by(&:value)
+      time = TimeUtil::TimeWrapper.new(start_time, false)
+      time.min = first_minute.value
+      super opening_time, time.to_time
+    end
+
     class Validation < Validations::FixedValue
 
       attr_reader :minute

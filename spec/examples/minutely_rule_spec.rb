@@ -72,6 +72,14 @@ describe IceCube::MinutelyRule do
       expect(schedule.next_occurrence(Time.new(2013, 11, 1, 1, 4, 0))).to eq(Time.new(2013, 11, 1, 1, 8, 0))
     end
 
+    it "should realign to the first minute_of_hour" do
+      t0 = Time.utc(2017, 1, 1, 20, 30, 40)
+      schedule = IceCube::Schedule.new(t0)
+      schedule.rrule IceCube::Rule.minutely(10).minute_of_hour(5, 15)
+
+      expect(schedule.first(2)).to eq [t0 + 35*ONE_MINUTE, t0 + 45*ONE_MINUTE]
+    end
+
     it "raises errors for misaligned interval and minute_of_hour values" do
       expect {
         IceCube::Rule.minutely(10).minute_of_hour(3, 6)

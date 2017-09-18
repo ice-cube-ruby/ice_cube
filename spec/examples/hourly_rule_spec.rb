@@ -69,6 +69,22 @@ module IceCube
       expect(dates).to eq([DAY, DAY + 3 * ONE_HOUR, DAY + 6 * ONE_HOUR])
     end
 
+    it "should realign to the first hour_of_day with interval" do
+      t0 = Time.utc(2017, 1, 1, 20, 30, 40)
+      schedule = IceCube::Schedule.new(t0)
+      schedule.rrule IceCube::Rule.hourly(5).hour_of_day(5, 10)
+
+      expect(schedule.first(2)).to eq [t0 + 9*ONE_HOUR, t0 + 14*ONE_HOUR]
+    end
+
+    it "should realign to the first hour_of_day without interval" do
+      t0 = Time.utc(2017, 1, 1, 20, 30, 40)
+      schedule = IceCube::Schedule.new(t0)
+      schedule.rrule IceCube::Rule.hourly.hour_of_day(5, 10)
+
+      expect(schedule.first(2)).to eq [t0 + 9*ONE_HOUR, t0 + 14*ONE_HOUR]
+    end
+
     it "raises errors for misaligned interval and hour_of_day values" do
       expect {
         IceCube::Rule.hourly(10).hour_of_day(3, 6)
