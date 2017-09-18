@@ -8,6 +8,9 @@ module IceCube
         unless hour.is_a?(Integer)
           raise ArgumentError, "expecting Integer value for hour, got #{hour.inspect}"
         end
+
+        verify_alignment(hour, :hour, :hour_of_day) { |error| raise error }
+
         validations_for(:hour_of_day) << Validation.new(hour)
       end
       clobber_base_validations(:hour)
@@ -21,6 +24,10 @@ module IceCube
 
       def initialize(hour)
         @hour = hour
+      end
+
+      def key
+        :hour_of_day
       end
 
       def type

@@ -3,7 +3,6 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe IceCube::MinutelyRule do
 
   describe 'interval validation' do
-
     it 'converts a string integer to an actual int when using the interval method' do
       rule = Rule.minutely.interval("2")
       expect(rule.validations_for(:interval).first.interval).to eq(2)
@@ -71,6 +70,18 @@ describe IceCube::MinutelyRule do
       schedule = Schedule.new Time.new(2013, 11, 1, 1, 3, 0)
       schedule.rrule Rule.minutely(5)
       expect(schedule.next_occurrence(Time.new(2013, 11, 1, 1, 4, 0))).to eq(Time.new(2013, 11, 1, 1, 8, 0))
+    end
+
+    it "raises errors for misaligned interval and minute_of_hour values" do
+      expect {
+        IceCube::Rule.minutely(10).minute_of_hour(3, 6)
+      }.to raise_error(ArgumentError, "intervals in minute_of_hour(3, 6) must be multiples of interval(10)")
+    end
+
+    it "raises errors for misaligned minute_of_hour values when changing interval" do
+      expect {
+        IceCube::Rule.minutely(3).minute_of_hour(3, 6).interval(5)
+      }.to raise_error(ArgumentError, "interval(5) must be a multiple of intervals in minute_of_hour(3, 6)")
     end
 
 end

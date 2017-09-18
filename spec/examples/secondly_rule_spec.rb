@@ -23,5 +23,18 @@ module IceCube
         Rule.secondly.interval("invalid")
       }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass a postive integer.")
     end
+
+    it "raises errors for misaligned interval and minute_of_hour values" do
+      expect {
+        IceCube::Rule.secondly(10).second_of_minute(3, 6)
+      }.to raise_error(ArgumentError, "intervals in second_of_minute(3, 6) must be multiples of interval(10)")
+    end
+
+    it "raises errors for misaligned second_of_minute values when changing interval" do
+      expect {
+        IceCube::Rule.secondly(3).second_of_minute(3, 6).interval(5)
+      }.to raise_error(ArgumentError, "interval(5) must be a multiple of intervals in second_of_minute(3, 6)")
+    end
+
   end
 end

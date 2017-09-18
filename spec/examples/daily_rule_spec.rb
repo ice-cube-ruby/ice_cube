@@ -106,5 +106,38 @@ module IceCube
       ])
     end
 
+    describe "day validation" do
+      it "allows multiples of 7" do
+        expect { IceCube::Rule.daily(21).day(2, 4) }.to_not raise_error
+      end
+
+      it "raises errors for misaligned interval and day (wday) values" do
+        expect {
+          IceCube::Rule.daily(2).day(2, 4)
+        }.to raise_error(ArgumentError, "day can only be used with multiples of interval(7)")
+      end
+
+      it "raises errors for misaligned hour_of_day values when changing interval" do
+        expect {
+          IceCube::Rule.daily.day(3, 6).interval(5)
+        }.to raise_error(ArgumentError, "day can only be used with multiples of interval(7)")
+      end
+    end
+
+    describe "day_of_month validation" do
+      it "raises errors for misaligned interval and day_of_month values" do
+        expect {
+          IceCube::Rule.daily(2).day_of_month(2, 4)
+        }.to raise_error(ArgumentError, "day_of_month can only be used with interval(1)")
+      end
+
+      it "raises errors for misaligned day_of_month values when changing interval" do
+        expect {
+          IceCube::Rule.daily.day_of_month(3, 6).interval(5)
+        }.to raise_error(ArgumentError, "day_of_month can only be used with interval(1)")
+      end
+    end
+
+
   end
 end

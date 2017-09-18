@@ -10,6 +10,8 @@ module IceCube
           raise ArgumentError, "expecting Integer or Symbol value for day, got #{day.inspect}"
         end
         day = TimeUtil.sym_to_wday(day)
+        verify_alignment(day, :wday, :day) { |error| raise error }
+
         validations_for(:day) << Validation.new(day)
       end
       clobber_base_validations(:wday, :day)
@@ -23,6 +25,10 @@ module IceCube
 
       def initialize(day)
         @day = day
+      end
+
+      def key
+        :day
       end
 
       def type

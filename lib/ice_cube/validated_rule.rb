@@ -51,6 +51,14 @@ module IceCube
       Array(@validations[base_interval_validation.type])
     end
 
+    def other_fixed_value_validations
+      @validations.values.flatten.select { |v|
+        interval_type = (v.type == :wday ? :day : v.type)
+        v.class < Validations::FixedValue &&
+          interval_type == base_interval_validation.type
+      }
+    end
+
     # Compute the next time after (or including) the specified time in respect
     # to the given start time
     def next_time(time, start_time, closing_time)
@@ -183,6 +191,29 @@ module IceCube
 
     def validation_names
       VALIDATION_ORDER & @validations.keys
+    end
+
+    def verify_alignment(value, freq, rule_part, options={})
+      @validations[:interval] or return
+      interval_validation = @validations[:interval].first
+      interval_validation.type == freq or return
+      fixed_validations = other_fixed_value_validations
+      (last_validation = fixed_validations.min_by(&:value)) or return
+
+      alignment = (value - last_validation.value) % interval_validation.interval
+      return if alignment.zero?
+
+      validation_values = fixed_validations.map(&:value).join(', ')
+      if rule_part == :interval
+        message = "interval(#{value}) " \
+                  "must be a multiple of " \
+                  "intervals in #{last_validation.key}(#{validation_values})"
+      else
+        message = "intervals in #{last_validation.key}(#{validation_values}, #{value}) " \
+                  "must be multiples of " \
+                  "interval(#{interval_validation.interval})"
+      end
+      yield ArgumentError.new(message)
     end
 
   end
