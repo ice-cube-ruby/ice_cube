@@ -4,7 +4,11 @@ module IceCube
 
     # Add a new interval validation
     def interval(interval)
-      @interval = normalized_interval(interval)
+      interval = normalized_interval(interval)
+      verify_alignment(interval, :wday, :interval) { |error| raise error }
+      verify_alignment(interval, :day, :interval)  { |error| raise error }
+
+      @interval = interval
       replace_validations_for(:interval, [Validation.new(@interval)])
       clobber_base_validations(:wday, :day)
       self

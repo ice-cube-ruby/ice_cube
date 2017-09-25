@@ -311,7 +311,17 @@ module IceCube
         end
       end
 
-      private
+      def hour=(value)
+        @time += (value * ONE_HOUR) - (@time.hour * ONE_HOUR)
+      end
+
+      def min=(value)
+        @time += (value * ONE_MINUTE) - (@time.min * ONE_MINUTE)
+      end
+
+      def sec=(value)
+        @time += (value) - (@time.sec)
+      end
 
       def clear_sec
         @time.sec > 0 ? @time -= @time.sec : @time

@@ -1,5 +1,6 @@
 require "bundler/setup"
 require 'ice_cube'
+require 'timeout'
 
 begin
   require 'simplecov'
@@ -66,6 +67,12 @@ RSpec.configure do |config|
 
   config.around :each, expect_warnings: true do |example|
     capture_warnings do
+      example.run
+    end
+  end
+
+  config.around :each do |example|
+    Timeout.timeout(example.metadata.fetch(:timeout, 1)) do
       example.run
     end
   end

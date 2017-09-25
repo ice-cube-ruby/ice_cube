@@ -54,8 +54,8 @@ describe IceCube, 'to_ical' do
   end
 
   it 'should be able to serialize a .day_of_year rule to_ical' do
-    rule = IceCube::Rule.daily.day_of_year(100,200)
-    expect(rule.to_ical).to eq("FREQ=DAILY;BYYEARDAY=100,200")
+    rule = IceCube::Rule.yearly.day_of_year(100,200)
+    expect(rule.to_ical).to eq("FREQ=YEARLY;BYYEARDAY=100,200")
   end
 
   it 'should be able to serialize a .month_of_year rule to_ical' do

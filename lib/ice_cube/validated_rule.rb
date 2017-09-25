@@ -1,17 +1,10 @@
+require 'ice_cube/input_alignment'
+
 module IceCube
 
   class ValidatedRule < Rule
 
     include Validations::ScheduleLock
-
-    include Validations::HourOfDay
-    include Validations::MinuteOfHour
-    include Validations::SecondOfMinute
-    include Validations::DayOfMonth
-    include Validations::DayOfWeek
-    include Validations::Day
-    include Validations::MonthOfYear
-    include Validations::DayOfYear
 
     include Validations::Count
     include Validations::Until
@@ -183,6 +176,12 @@ module IceCube
 
     def validation_names
       VALIDATION_ORDER & @validations.keys
+    end
+
+    def verify_alignment(value, freq, rule_part)
+      InputAlignment.new(self, value, rule_part).verify(freq) do |error|
+        yield error
+      end
     end
 
   end

@@ -309,6 +309,14 @@ module IceCube
       end
     end
 
+    it "should align next_occurrence with the earliest hour validation" do
+      t0 = Time.utc(2017, 7, 28, 20, 30, 40)
+      schedule = IceCube::Schedule.new(t0)
+      schedule.add_recurrence_rule IceCube::Rule.weekly.day(:saturday).hour_of_day(19).minute_of_hour(29).second_of_minute(39)
+
+      expect(schedule.next_occurrence(t0)).to eq Time.utc(2017, 7, 29, 19, 29, 39)
+    end
+
     describe "using occurs_between with a biweekly schedule" do
       [[0, 1, 2], [0, 6, 1], [5, 1, 6], [6, 5, 7]].each do |wday, offset, lead|
         start_time    = Time.utc(2014, 1, 5, 9, 0, 0)

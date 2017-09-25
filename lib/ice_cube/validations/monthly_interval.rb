@@ -3,7 +3,10 @@ module IceCube
   module Validations::MonthlyInterval
 
     def interval(interval)
-      @interval = normalized_interval(interval)
+      interval = normalized_interval(interval)
+      verify_alignment(interval, :month, :interval) { |error| raise error }
+
+      @interval = interval
       replace_validations_for(:interval, [Validation.new(@interval)])
       clobber_base_validations(:month)
       self

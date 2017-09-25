@@ -1,7 +1,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-module IceCube
-  describe MinutelyRule, 'interval validation' do
+describe IceCube::MinutelyRule do
+
+  describe 'interval validation' do
     it 'converts a string integer to an actual int when using the interval method' do
       rule = Rule.minutely.interval("2")
       expect(rule.validations_for(:interval).first.interval).to eq(2)
@@ -23,10 +24,7 @@ module IceCube
         Rule.minutely.interval("invalid")
       }.to raise_error(ArgumentError, "'invalid' is not a valid input for interval. Please pass a postive integer.")
     end
-
   end
-
-  describe MinutelyRule do
 
     it 'should update previous interval' do
       t0 = Time.now
@@ -74,5 +72,24 @@ module IceCube
       expect(schedule.next_occurrence(Time.new(2013, 11, 1, 1, 4, 0))).to eq(Time.new(2013, 11, 1, 1, 8, 0))
     end
 
-  end
+    it "should realign to the first minute_of_hour" do
+      t0 = Time.utc(2017, 1, 1, 20, 30, 40)
+      schedule = IceCube::Schedule.new(t0)
+      schedule.rrule IceCube::Rule.minutely(10).minute_of_hour(5, 15)
+
+      expect(schedule.first(2)).to eq [t0 + 35*ONE_MINUTE, t0 + 45*ONE_MINUTE]
+    end
+
+    it "raises errors for misaligned interval and minute_of_hour values" do
+      expect {
+        IceCube::Rule.minutely(10).minute_of_hour(3, 6)
+      }.to raise_error(ArgumentError, "intervals in minute_of_hour(3, 6) must be multiples of interval(10)")
+    end
+
+    it "raises errors for misaligned minute_of_hour values when changing interval" do
+      expect {
+        IceCube::Rule.minutely(3).minute_of_hour(3, 6).interval(5)
+      }.to raise_error(ArgumentError, "interval(5) must be a multiple of intervals in minute_of_hour(3, 6)")
+    end
+
 end

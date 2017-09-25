@@ -20,6 +20,10 @@ module IceCube
         @type = type
       end
 
+      def key
+        :base
+      end
+
       def dst_adjust?
         case @type
         when :sec, :min then false
