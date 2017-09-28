@@ -22,85 +22,65 @@ module IceCube
           data[:rrules] ||= []
           data[:rrules] += [rule_from_ical(value)]
         end
-        Schedule.from_hash data
       end
+      Schedule.from_hash data
+    end
 
-      def rule_from_ical(ical)
-        raise ArgumentError, 'empty ical rule' if ical.nil?
+    def self.rule_from_ical(ical)
+      raise ArgumentError, 'empty ical rule' if ical.nil?
 
-        validations = {}
-        params = {validations: validations, interval: 1}
+      validations = {}
+      params = {validations: validations, interval: 1}
 
-        ical.split(';').each do |rule|
-          (name, value) = rule.split('=')
-          raise ArgumentError, "Invalid iCal rule component" if value.nil?
-          value.strip!
-          case name
-          when 'FREQ'
-            params[:rule_type] = "IceCube::#{value[0]}#{value.downcase[1..-1]}Rule"
-          when 'INTERVAL'
-            params[:interval] = value.to_i
-          when 'COUNT'
-            params[:count] = value.to_i
-          when 'UNTIL'
-            params[:until] = Time.parse(value).utc
-          when 'WKST'
-            params[:week_start] = TimeUtil.ical_day_to_symbol(value)
-          when 'BYSECOND'
-            validations[:second_of_minute] = value.split(',').map(&:to_i)
-          when 'BYMINUTE'
-            validations[:minute_of_hour] = value.split(',').map(&:to_i)
-          when 'BYHOUR'
-            validations[:hour_of_day] = value.split(',').map(&:to_i)
-          when 'BYDAY'
-            dows = {}
-            days = []
-            value.split(',').each do |expr|
-              day = TimeUtil.ical_day_to_symbol(expr.strip[-2..-1])
-              if expr.strip.length > 2  # day with occurence
-                occ = expr[0..-3].to_i
-                dows[day].nil? ? dows[day] = [occ] : dows[day].push(occ)
-                days.delete(TimeUtil.sym_to_wday(day))
-              else
-                days.push TimeUtil.sym_to_wday(day) if dows[day].nil?
-              end
+      ical.split(';').each do |rule|
+        (name, value) = rule.split('=')
+        raise ArgumentError, "Invalid iCal rule component" if value.nil?
+        value.strip!
+        case name
+        when 'FREQ'
+          params[:rule_type] = "IceCube::#{value[0]}#{value.downcase[1..-1]}Rule"
+        when 'INTERVAL'
+          params[:interval] = value.to_i
+        when 'COUNT'
+          params[:count] = value.to_i
+        when 'UNTIL'
+          params[:until] = Time.parse(value).utc
+        when 'WKST'
+          params[:week_start] = TimeUtil.ical_day_to_symbol(value)
+        when 'BYSECOND'
+          validations[:second_of_minute] = value.split(',').map(&:to_i)
+        when 'BYMINUTE'
+          validations[:minute_of_hour] = value.split(',').map(&:to_i)
+        when 'BYHOUR'
+          validations[:hour_of_day] = value.split(',').map(&:to_i)
+        when 'BYDAY'
+          dows = {}
+          days = []
+          value.split(',').each do |expr|
+            day = TimeUtil.ical_day_to_symbol(expr.strip[-2..-1])
+            if expr.strip.length > 2  # day with occurence
+              occ = expr[0..-3].to_i
+              dows[day].nil? ? dows[day] = [occ] : dows[day].push(occ)
+              days.delete(TimeUtil.sym_to_wday(day))
+            else
+              days.push TimeUtil.sym_to_wday(day) if dows[day].nil?
             end
-            validations[:day_of_week] = dows unless dows.empty?
-            validations[:day] = days unless days.empty?
-          when 'BYMONTHDAY'
-            validations[:day_of_month] = value.split(',').map(&:to_i)
-          when 'BYMONTH'
-            validations[:month_of_year] = value.split(',').map(&:to_i)
-          when 'BYYEARDAY'
-            validations[:day_of_year] = value.split(',').map(&:to_i)
-          when 'BYSETPOS'
-          else
-            validations[name] = nil # invalid type
           end
-        end
-
-        Rule.from_hash(params)
-      end
-
-      private
-
-      def time_parser_for_zone(tzid)
-        if tzid
-          tzid = tzid.split('=')[1]
-          if active_support_loaded?
-            ActiveSupport::TimeZone.new(tzid) || Time
-          else
-            raise ArgumentError, "must load ActiveSupport to parse ical with time zones"
-          end
+          validations[:day_of_week] = dows unless dows.empty?
+          validations[:day] = days unless days.empty?
+        when 'BYMONTHDAY'
+          validations[:day_of_month] = value.split(',').map(&:to_i)
+        when 'BYMONTH'
+          validations[:month_of_year] = value.split(',').map(&:to_i)
+        when 'BYYEARDAY'
+          validations[:day_of_year] = value.split(',').map(&:to_i)
+        when 'BYSETPOS'
         else
-          Time
+          validations[name] = nil # invalid type
         end
       end
 
-      def active_support_loaded?
-        return true if @as_loaded
-        @as_loaded = defined? ActiveSupport::TimeWithZone
-      end
+      Rule.from_hash(params)
     end
   end
 end

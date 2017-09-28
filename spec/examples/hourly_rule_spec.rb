@@ -39,7 +39,9 @@ module IceCube
       end
 
       it 'should not skip times in DST end hour' do
-        schedule = Schedule.new(Time.local(2013, 11, 3, 0, 0, 0))
+        tz = ActiveSupport::TimeZone["America/Vancouver"]
+
+        schedule = Schedule.new(tz.local(2013, 11, 3, 0, 0, 0))
         schedule.add_recurrence_rule Rule.hourly
         expect(schedule.first(4)).to eq [
           tz.local(2013, 11, 3, 0, 0, 0),             # -0700
