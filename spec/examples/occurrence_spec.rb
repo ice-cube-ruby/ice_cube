@@ -1,7 +1,5 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-include IceCube
-
 describe Occurrence do
 
   it "reports as a Time" do
@@ -28,11 +26,58 @@ describe Occurrence do
     end
 
     it "accepts a format option to comply with ActiveSupport" do
-      # require 'active_support/core_ext/time'
       time_now = Time.current
       occurrence = Occurrence.new(time_now)
 
       expect(occurrence.to_s(:short)).to eq time_now.to_s(:short)
+    end
+  end
+
+  describe :to_i do
+    it "represents the start time" do
+      start_time = Time.now
+      occurrence = Occurrence.new(start_time)
+
+      expect(occurrence.to_i).to eq start_time.to_i
+    end
+  end
+
+  describe :<=> do
+    it "is comparable to another occurrence's start time" do
+      o1 = Occurrence.new(Time.now)
+      o2 = Occurrence.new(o1.start_time + 1)
+
+      expect(o1).to be < o2
+    end
+
+    it "is comparable to another time" do
+      occurrence = Occurrence.new(Time.now)
+      expect(occurrence).to be < occurrence.start_time + 1
+    end
+  end
+
+  describe :cover? do
+    let(:start_time) { Time.now }
+    let(:occurrence) { Occurrence.new(start_time, start_time + ONE_HOUR) }
+
+    it "is true for the start time" do
+      expect(occurrence.cover?(start_time)).to be true
+    end
+
+    it "is true for a time in the range" do
+      expect(occurrence.cover?(start_time + 1)).to be true
+    end
+
+    it "is true for the end time" do
+      expect(occurrence.cover?(start_time + ONE_HOUR)).to be true
+    end
+
+    it "is false after the end time" do
+      expect(occurrence.cover?(start_time + ONE_HOUR + 1)).to be false
+    end
+
+    it "is false before the start time" do
+      expect(occurrence.cover?(start_time - 1)).to be false
     end
   end
 

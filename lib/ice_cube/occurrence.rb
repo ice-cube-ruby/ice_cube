@@ -1,4 +1,3 @@
-require 'forwardable'
 require 'delegate'
 
 module IceCube
@@ -20,18 +19,16 @@ module IceCube
   #     Time.now - Occurrence.new(start_time) # => 3600
   #
   class Occurrence < SimpleDelegator
+    include Comparable
 
     # Report class name as 'Time' to thwart type checking.
     def self.name
       'Time'
     end
 
-    # Optimize for common methods to avoid method_missing
-    extend Forwardable
-    def_delegators :start_time, :to_i, :<=>, :==
-    def_delegators :to_range, :cover?, :include?, :each, :first, :last
-
     attr_reader :start_time, :end_time
+    alias first start_time
+    alias last end_time
 
     def initialize(start_time, end_time=nil)
       @start_time = start_time
@@ -39,29 +36,34 @@ module IceCube
       __setobj__ @start_time
     end
 
+    def to_i
+      @start_time.to_i
+    end
+
+    def <=>(other)
+      @start_time <=> other
+    end
+
     def is_a?(klass)
       klass == ::Time || super
     end
     alias_method :kind_of?, :is_a?
 
-    def intersects? other
-      if other.is_a?(Occurrence) || other.is_a?(Range)
-        lower_bound_1 = first + 1
-        upper_bound_1 = last # exclude end
-        lower_bound_2 = other.first + 1
-        upper_bound_2 = other.last + 1
-        if (lower_bound_2 <=> upper_bound_2) > 0
-          false
-        elsif (lower_bound_1 <=> upper_bound_1) > 0
-          false
-        else
-          (upper_bound_1 <=> lower_bound_2) >= 0 and
-            (upper_bound_2 <=> lower_bound_1) >= 0
-        end
-      else
-        cover? other
-      end
+    def intersects?(other)
+      return cover?(other) unless other.is_a?(Occurrence) || other.is_a?(Range)
+
+      this_start  = first + 1
+      this_end    = last # exclude end boundary
+      other_start = other.first + 1
+      other_end   = other.last + 1
+
+      !(this_end < other_start || this_start > other_end)
     end
+
+    def cover?(other)
+      to_range.cover?(other)
+    end
+    alias_method :include?, :cover?
 
     def comparable_time
       start_time

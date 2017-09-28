@@ -6,12 +6,11 @@ module IceCube
 
     # Value reader for limit
     def until_time
-      @until
+      (arr = @validations[:until]) && (val = arr[0]) && val.time
     end
     deprecated_alias :until_date, :until_time
 
     def until(time)
-      @until = time
       replace_validations_for(:until, time.nil? ? nil : [Validation.new(time)])
       self
     end

@@ -54,8 +54,8 @@ describe IceCube, 'to_ical' do
   end
 
   it 'should be able to serialize a .day_of_year rule to_ical' do
-    rule = IceCube::Rule.daily.day_of_year(100,200)
-    expect(rule.to_ical).to eq("FREQ=DAILY;BYYEARDAY=100,200")
+    rule = IceCube::Rule.yearly.day_of_year(100,200)
+    expect(rule.to_ical).to eq("FREQ=YEARLY;BYYEARDAY=100,200")
   end
 
   it 'should be able to serialize a .month_of_year rule to_ical' do
@@ -239,13 +239,13 @@ describe IceCube, 'to_ical' do
   end
 
   it 'should be able to serialize to ical with an until date' do
-    rule = IceCube::Rule.weekly.until Time.now
-    expect(rule.to_ical).to match /^FREQ=WEEKLY;UNTIL=\d{8}T\d{6}Z$/
+    rule = IceCube::Rule.weekly.until Time.utc(2123, 12, 31, 12, 34, 56.25)
+    expect(rule.to_ical).to match "FREQ=WEEKLY;UNTIL=21231231T123456Z"
   end
 
   it 'should be able to serialize to ical with a count date' do
     rule = IceCube::Rule.weekly.count(5)
-    expect(rule.to_ical).to match /^FREQ=WEEKLY;COUNT=5$/
+    expect(rule.to_ical).to eq "FREQ=WEEKLY;COUNT=5"
   end
 
   %w{secondly minutely hourly daily monthly yearly}.each do |mthd|

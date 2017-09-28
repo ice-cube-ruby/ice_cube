@@ -1,32 +1,26 @@
 module IceCube
   class IcalParser
-    class << self
-      def schedule_from_ical(ical_string, options = {})
-        data = {}
-        ical_string.each_line do |line|
-          (property, value) = line.split(':')
-          (property, tzid) = property.split(';')
-          case property
-          when 'DTSTART'
-            data[:start_time] = time_parser_for_zone(tzid).parse(value)
-          when 'DTEND'
-            data[:end_time] = time_parser_for_zone(tzid).parse(value)
-          when 'RDATE'
-            data[:rtimes] ||= []
-            data[:rtimes] += value.split(',').map do |v|
-              time_parser_for_zone(tzid).parse(v)
-            end
-          when 'EXDATE'
-            data[:extimes] ||= []
-            data[:extimes] += value.split(',').map do |v|
-              time_parser_for_zone(tzid).parse(v)
-            end
-          when 'DURATION'
-            data[:duration] # FIXME
-          when 'RRULE'
-            data[:rrules] ||= []
-            data[:rrules] += [rule_from_ical(value)]
-          end
+    def self.schedule_from_ical(ical_string, options = {})
+      data = {}
+      ical_string.each_line do |line|
+        (property, value) = line.split(':')
+        (property, tzid) = property.split(';')
+        case property
+        when 'DTSTART'
+          data[:start_time] = TimeUtil.deserialize_time(value)
+        when 'DTEND'
+          data[:end_time] = TimeUtil.deserialize_time(value)
+        when 'RDATE'
+          data[:rtimes] ||= []
+          data[:rtimes] += value.split(',').map { |v| TimeUtil.deserialize_time(v) }
+        when 'EXDATE'
+          data[:extimes] ||= []
+          data[:extimes] += value.split(',').map { |v| TimeUtil.deserialize_time(v) }
+        when 'DURATION'
+          data[:duration] # FIXME
+        when 'RRULE'
+          data[:rrules] ||= []
+          data[:rrules] += [rule_from_ical(value)]
         end
         Schedule.from_hash data
       end

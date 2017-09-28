@@ -1,15 +1,7 @@
 # encoding: utf-8
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe IceCube::Schedule, 'to_s' do
-
-  before :each do
-    I18n.locale = :ja
-  end
-
-  after :all do
-    I18n.locale = :en
-  end
+describe IceCube::Schedule, 'to_s', locale: 'ja' do
 
   it 'should represent its start time by default' do
     t0 = Time.local(2013, 2, 14)
@@ -107,21 +99,24 @@ describe IceCube::Schedule, 'to_s' do
   end
 
   it 'should order dates that are out of order' do
-    schedule = IceCube::Schedule.new(t0 = Time.local(2010, 3, 20))
-    schedule.add_recurrence_time t1 = Time.local(2010, 3, 19)
+    schedule = IceCube::Schedule.new(Time.local(2010, 3, 20)) do |s|
+      s.add_recurrence_time s.start_time - ONE_DAY
+    end
     expect(schedule.to_s).to eq('2010年03月19日 / 2010年03月20日')
   end
 
   it 'should remove duplicated start time' do
-    schedule = IceCube::Schedule.new t0 = Time.local(2010, 3, 20)
-    schedule.add_recurrence_time t0
+    schedule = IceCube::Schedule.new(Time.local(2010, 3, 20)) do |s|
+      s.add_recurrence_time s.start_time
+    end
     expect(schedule.to_s).to eq('2010年03月20日')
   end
 
   it 'should remove duplicate rtimes' do
-    schedule = IceCube::Schedule.new t0 = Time.local(2010, 3, 19)
-    schedule.add_recurrence_time Time.local(2010, 3, 20)
-    schedule.add_recurrence_time Time.local(2010, 3, 20)
+    schedule = IceCube::Schedule.new(Time.local(2010, 3, 19)) do |s|
+      s.add_recurrence_time s.start_time + ONE_DAY
+      s.add_recurrence_time s.start_time + ONE_DAY
+    end
     expect(schedule.to_s).to eq('2010年03月19日 / 2010年03月20日')
   end
 

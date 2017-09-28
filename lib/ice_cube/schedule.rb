@@ -340,9 +340,9 @@ module IceCube
       IcalParser.schedule_from_ical(ical, options)
     end
 
-    # Convert the schedule to yaml
-    def to_yaml(*args)
-      YAML::dump(to_hash, *args)
+    # Hook for YAML.dump, enables to_yaml
+    def encode_with(coder)
+      coder.represent_object nil, to_hash
     end
 
     # Load the schedule from yaml
@@ -371,6 +371,7 @@ module IceCube
       end
       data
     end
+    alias_method :to_h, :to_hash
 
     # Load the schedule from a hash
     def self.from_hash(original_hash, options = {})
@@ -383,7 +384,7 @@ module IceCube
     # Determine if the schedule will end
     # @return [Boolean] true if ending, false if repeating forever
     def terminating?
-      recurrence_rules.empty? || recurrence_rules.all?(&:terminating?)
+      @all_recurrence_rules.all?(&:terminating?)
     end
 
     def hash
@@ -423,7 +424,7 @@ module IceCube
     def enumerate_occurrences(opening_time, closing_time = nil, options = {})
       opening_time = TimeUtil.match_zone(opening_time, start_time)
       closing_time = TimeUtil.match_zone(closing_time, start_time)
-      opening_time += start_time.subsec - opening_time.subsec rescue 0
+      opening_time += TimeUtil.subsec(start_time) - TimeUtil.subsec(opening_time)
       opening_time = start_time if opening_time < start_time
       spans = options[:spans] == true && duration != 0
       Enumerator.new do |yielder|
@@ -445,12 +446,12 @@ module IceCube
     # Get the next time after (or including) a specific time
     def next_time(time, closing_time)
       loop do
-        min_time = recurrence_rules_with_implicit_start_occurrence.reduce(nil) do |min_time, rule|
+        min_time = recurrence_rules_with_implicit_start_occurrence.reduce(nil) do |best_time, rule|
           begin
-            new_time = rule.next_time(time, start_time, min_time || closing_time)
-            [min_time, new_time].compact.min
+            new_time = rule.next_time(time, start_time, best_time || closing_time)
+            [best_time, new_time].compact.min
           rescue StopIteration
-            min_time
+            best_time
           end
         end
         break unless min_time

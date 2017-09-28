@@ -1,17 +1,10 @@
+require 'ice_cube/input_alignment'
+
 module IceCube
 
   class ValidatedRule < Rule
 
     include Validations::ScheduleLock
-
-    include Validations::HourOfDay
-    include Validations::MinuteOfHour
-    include Validations::SecondOfMinute
-    include Validations::DayOfMonth
-    include Validations::DayOfWeek
-    include Validations::Day
-    include Validations::MonthOfYear
-    include Validations::DayOfYear
 
     include Validations::Count
     include Validations::Until
@@ -51,10 +44,6 @@ module IceCube
       Array(@validations[base_interval_validation.type])
     end
 
-    def base_interval_type
-      base_interval_validation.type
-    end
-
     # Compute the next time after (or including) the specified time in respect
     # to the given start time
     def next_time(time, start_time, closing_time)
@@ -74,12 +63,8 @@ module IceCube
       start_time
     end
 
-    def skipped_for_dst
-      @uses -= 1 if @uses > 0
-    end
-
-    def dst_adjust?
-      @validations[:interval].any?(&:dst_adjust?)
+    def full_required?
+      !occurrence_count.nil?
     end
 
     def to_s
@@ -191,6 +176,12 @@ module IceCube
 
     def validation_names
       VALIDATION_ORDER & @validations.keys
+    end
+
+    def verify_alignment(value, freq, rule_part)
+      InputAlignment.new(self, value, rule_part).verify(freq) do |error|
+        yield error
+      end
     end
 
   end

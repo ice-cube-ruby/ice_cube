@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
   s.test_files    = Dir.glob('spec/*.rb')
   s.require_paths = ['lib']
   s.has_rdoc      = true
-  s.rubyforge_project = "ice-cube"
 
   s.add_development_dependency('rake')
   s.add_development_dependency('rspec', '> 3')

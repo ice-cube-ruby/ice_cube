@@ -170,18 +170,11 @@ module IceCube
 
     # Convert wday number to day symbol
     def self.wday_to_sym(wday)
-      return sym = wday if DAYS.keys.include? wday
+      return wday if DAYS.keys.include? wday
       DAYS.invert.fetch(wday) do |i|
         raise ArgumentError, "Expecting Integer value for weekday. " \
                              "No such wday number: #{i.inspect}"
       end
-    end
-
-    # Convert a symbol to an ical day (SU, MO)
-    def self.week_start(sym)
-      raise ArgumentError, "Invalid day: #{str}" unless DAYS.keys.include?(sym)
-      day = sym.to_s.upcase[0..1]
-      day
     end
 
     # Convert weekday from base sunday to the schedule's week start.
@@ -260,8 +253,19 @@ module IceCube
       end
     end
 
-    def self.same_clock?(t1, t2)
-      CLOCK_VALUES.all? { |i| t1.send(i) == t2.send(i) }
+    # Handle discrepancies between various time types
+    # - Time has subsec
+    # - DateTime does not
+    # - ActiveSupport::TimeWithZone can wrap either type, depending on version
+    #   or if `parse` or `now`/`local` was used to build it.
+    def self.subsec(time)
+      if time.respond_to?(:subsec)
+        time.subsec
+      elsif time.respond_to?(:sec_fraction)
+        time.sec_fraction
+      else
+        0.0
+      end
     end
 
     # A utility class for safely moving time around
@@ -271,7 +275,7 @@ module IceCube
         @dst_adjust = dst_adjust
         @base = time
         if dst_adjust
-          @time = Time.utc(time.year, time.month, time.day, time.hour, time.min, time.sec + time.subsec)
+          @time = Time.utc(time.year, time.month, time.day, time.hour, time.min, time.sec + TimeUtil.subsec(time))
         else
           @time = time
         end
@@ -307,7 +311,17 @@ module IceCube
         end
       end
 
-      private
+      def hour=(value)
+        @time += (value * ONE_HOUR) - (@time.hour * ONE_HOUR)
+      end
+
+      def min=(value)
+        @time += (value * ONE_MINUTE) - (@time.min * ONE_MINUTE)
+      end
+
+      def sec=(value)
+        @time += (value) - (@time.sec)
+      end
 
       def clear_sec
         @time.sec > 0 ? @time -= @time.sec : @time
@@ -333,10 +347,6 @@ module IceCube
           @time -= TimeUtil.days_in_month(@time) * ONE_DAY
         end
         @time += ONE_DAY
-      end
-
-      def clear_year
-        @time
       end
 
     end

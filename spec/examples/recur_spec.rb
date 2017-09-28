@@ -1,7 +1,5 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-include IceCube
-
 describe :remaining_occurrences do
 
   it 'should get the proper remaining occurrences from now' do

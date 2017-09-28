@@ -37,10 +37,8 @@ module IceCube
       schedule.add_recurrence_rule Rule.daily
       # each occurrence MUST occur at 5pm, then we win
       dates = schedule.occurrences(start_time + 20 * ONE_DAY)
-      last = start_time
       dates.each do |date|
         expect(date.hour).to eq(5)
-        last = date
       end
     end
 
@@ -250,10 +248,10 @@ module IceCube
       expect(schedule.first(3)).to eq([Time.local(2010, 3, 7, 12, 0, 0), Time.local(2010, 3, 14, 12, 0, 0), Time.local(2010, 3, 21, 12, 0, 0)])
     end
 
-    it "local - should make dates on monthly (day of year) inverval over dst - github issue 5" do
+    it "local - should make dates on yearly (day of year) inverval over dst - github issue 5" do
       start_time = Time.local(2010, 3, 7, 12, 0, 0)
       schedule = Schedule.new(start_time)
-      schedule.add_recurrence_rule Rule.monthly.day_of_year(1)
+      schedule.add_recurrence_rule Rule.yearly.day_of_year(1)
       expect(schedule.first(3)).to eq([Time.local(2011, 1, 1, 12, 0, 0), Time.local(2012, 1, 1, 12, 0, 0), Time.local(2013, 1, 1, 12, 0, 0)])
     end
 

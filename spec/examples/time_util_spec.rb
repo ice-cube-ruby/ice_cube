@@ -26,7 +26,7 @@ module IceCube
       it "returns 00:00:00 from UTC for local time" do
         time = TimeUtil.beginning_of_date(utc_time.to_date, dst_time)
         expect([time.hour, time.min, time.sec]).to eq [0, 0, 0]
-        expect(time.utc_offset).to eq (dst_time.utc_offset)
+        expect(time.utc_offset).to eq dst_time.utc_offset
       end
 
       it "returns 00:00:00 from local time for UTC" do
@@ -37,7 +37,7 @@ module IceCube
 
       it "returns 00:00:00 from local time for nonlocal time" do
         time = TimeUtil.beginning_of_date(dst_time.to_date, std_time.getlocal(7200))
-        zone_diff = dst_time.utc_offset - 7200
+
         expect([time.hour, time.min, time.sec]).to eq [0, 0, 0]
         expect(time.utc_offset).to eq 7200
       end

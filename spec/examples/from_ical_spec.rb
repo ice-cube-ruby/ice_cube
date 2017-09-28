@@ -46,8 +46,8 @@ module IceCube
     end
 
     it 'should be able to parse a .day_of_year rule' do
-      rule = IceCube::Rule.from_ical("FREQ=DAILY;BYYEARDAY=100,200")
-      expect(rule).to eq(IceCube::Rule.daily.day_of_year(100,200))
+      rule = IceCube::Rule.from_ical("FREQ=YEARLY;BYYEARDAY=100,200")
+      expect(rule).to eq(IceCube::Rule.yearly.day_of_year(100,200))
     end
 
     it 'should be able to serialize a .month_of_year rule' do
@@ -102,14 +102,14 @@ module IceCube
   RRULE:FREQ=WEEKLY;BYDAY=TH;UNTIL=20130531T100000Z
   ICAL
 
-  ical_string_with_time_zones = <<-ICAL.gsub(/^\s*/,'')
+    ical_string_with_time_zones = <<-ICAL.gsub(/^\s*/,'')
   DTSTART;TZID=America/Denver:20130731T143000
   DTEND:20130731T153000
   RRULE:FREQ=WEEKLY
   EXDATE;TZID=America/Chicago:20130823T143000
   ICAL
 
-  ical_string_with_multiple_exdates_and_rdates = <<-ICAL.gsub(/^\s*/, '')
+    ical_string_with_multiple_exdates_and_rdates = <<-ICAL.gsub(/^\s*/, '')
   DTSTART;TZID=America/Denver:20130731T143000
   DTEND;TZID=America/Denver:20130731T153000
   RRULE:FREQ=WEEKLY;UNTIL=20140730T203000Z;BYDAY=MO,WE,FR

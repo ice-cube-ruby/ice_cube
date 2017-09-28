@@ -1,5 +1,7 @@
 # Changelog
 
+* [FEATURE]     Added support for parsing RDATE from iCal format
+
 ## 0.16.2 / 2017-07-10
 
 * [BUGFIX]      Fix serialization of Date values (for `until`) (#399)

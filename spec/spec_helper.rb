@@ -1,5 +1,6 @@
 require "bundler/setup"
 require 'ice_cube'
+require 'timeout'
 
 begin
   require 'simplecov'
@@ -19,6 +20,17 @@ WORLD_TIME_ZONES = [
   'Pacific/Auckland',   # +1200 / +1300
 ]
 
+# TODO: enable warnings here and update specs to call IceCube objects correctly
+def Object.const_missing(sym)
+  case sym
+  when :Schedule, :Rule, :Occurrence, :TimeUtil, :ONE_DAY, :ONE_HOUR, :ONE_MINUTE
+    # warn "Use IceCube::#{sym}", caller[0]
+    IceCube.const_get(sym)
+  else
+    super
+  end
+end
+
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"
@@ -29,6 +41,8 @@ RSpec.configure do |config|
 
   Dir[File.dirname(__FILE__) + '/support/**/*'].each { |f| require f }
 
+  config.warnings = true
+
   config.include WarningHelpers
 
   config.before :each do |example|
@@ -37,19 +51,28 @@ RSpec.configure do |config|
     end
   end
 
-  config.around :each do |example|
-    if zone = example.metadata[:system_time_zone]
-      orig_zone = ENV['TZ']
-      ENV['TZ'] = zone
-      example.run
-      ENV['TZ'] = orig_zone
-    else
-      example.run
-    end
+  config.around :each, system_time_zone: true do |example|
+    orig_zone = ENV['TZ']
+    ENV['TZ'] = example.metadata[:system_time_zone]
+    example.run
+    ENV['TZ'] = orig_zone
+  end
+
+  config.around :each, locale: true do |example|
+    orig_locale = I18n.locale
+    I18n.locale = example.metadata[:locale]
+    example.run
+    I18n.locale = orig_locale
   end
 
   config.around :each, expect_warnings: true do |example|
     capture_warnings do
+      example.run
+    end
+  end
+
+  config.around :each do |example|
+    Timeout.timeout(example.metadata.fetch(:timeout, 1)) do
       example.run
     end
   end
