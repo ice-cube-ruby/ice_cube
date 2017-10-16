@@ -100,7 +100,7 @@ module IceCube
 
     # Get the exception rules
     def exception_rules
-      @all_exception_rules.reject { |r| r.is_a?(SingleOccurrenceRule) }
+      @all_exception_rules.select { |r| r.is_a?(SingleOccurrenceRule) }
     end
     alias :exrules :exception_rules
 
