@@ -641,6 +641,28 @@ describe IceCube::Schedule do
 
   end
 
+  describe :exception_rules do
+
+    it 'should return all rules added as exception_time' do
+      schedule = IceCube::Schedule.new
+
+      exception_time = Time.utc(2013, 5, 18, 12, 34)
+      schedule.add_exception_time exception_time
+
+      expect(schedule.exception_rules.length).to eq 1
+      expect(schedule.exception_rules.first.time).to eq exception_time
+    end
+
+    it 'should not include rules other than single occurrences' do
+      schedule = IceCube::Schedule.new
+
+      schedule.add_exception_rule Object.new
+
+      expect(schedule.exception_rules).to be_empty
+    end
+
+  end
+
   describe :remove_recurrence_rule do
 
     it 'should be able to one rule based on the comparator' do
