@@ -1,7 +1,5 @@
 require 'date'
 require 'time'
-require 'active_support'
-require 'active_support/core_ext'
 
 module IceCube
   module TimeUtil
@@ -200,34 +198,36 @@ module IceCube
       [nth_occurrence_of_weekday, this_weekday_in_month_count]
     end
 
-    # Use Activesupport CoreExt functions to manipulate time
+    # Returns the start of the month
     def self.start_of_month time
-      time.beginning_of_month
+      Time.local(time.year, time.month, 1, time.hour, time.min, time.sec)
     end
 
-    # Use Activesupport CoreExt functions to manipulate time
+    # Returns the end of the month
     def self.end_of_month time
-      time.end_of_month
+      Time.local(time.year, time.month, self.days_in_month(time), time.hour, time.min, time.sec)
     end
 
-    # Use Activesupport CoreExt functions to manipulate time
+    # Returns the start of the year
     def self.start_of_year time
-      time.beginning_of_year
+      Time.local(time.year, 1, 1, time.hour, time.min, time.sec)
     end
 
-    # Use Activesupport CoreExt functions to manipulate time
+    # Returns the end of the year
     def self.end_of_year time
-      time.end_of_year
+      Time.local(time.year, 12, 31, time.hour, time.min, time.sec)
     end
 
-    # Use Activesupport CoreExt functions to manipulate time
+    # Returns the time offset to the previous month
     def self.previous_month time
-      time - 1.month
+      date = Date.new(time.year, time.month, time.day) << 1
+      Time.local(date.year, date.month, date.day, time.hour, time.min, time.sec)
     end
 
-    # Use Activesupport CoreExt functions to manipulate time
+    # Returns the time offset to the previous year
     def self.previous_year time
-      time - 1.year
+      date = Date.new(time.year, time.month, time.day) << 12
+      Time.local(date.year, date.month, date.day, time.hour, time.min, time.sec)
     end
 
     # Get the days in the month for +time
