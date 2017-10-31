@@ -200,34 +200,34 @@ module IceCube
 
     # Returns the start of the month
     def self.start_of_month time
-      Time.local(time.year, time.month, 1, time.hour, time.min, time.sec)
+      Time.new(time.year, time.month, 1, time.hour, time.min, time.sec, time.utc_offset)
     end
 
     # Returns the end of the month
     def self.end_of_month time
-      Time.local(time.year, time.month, self.days_in_month(time), time.hour, time.min, time.sec)
+      Time.new(time.year, time.month, self.days_in_month(time), time.hour, time.min, time.sec, time.utc_offset)
     end
 
     # Returns the start of the year
     def self.start_of_year time
-      Time.local(time.year, 1, 1, time.hour, time.min, time.sec)
+      Time.new(time.year, 1, 1, time.hour, time.min, time.sec, time.utc_offset)
     end
 
     # Returns the end of the year
     def self.end_of_year time
-      Time.local(time.year, 12, 31, time.hour, time.min, time.sec)
+      Time.new(time.year, 12, 31, time.hour, time.min, time.sec, time.utc_offset)
     end
 
     # Returns the time offset to the previous month
     def self.previous_month time
       date = Date.new(time.year, time.month, time.day) << 1
-      Time.local(date.year, date.month, date.day, time.hour, time.min, time.sec)
+      Time.new(date.year, date.month, date.day, time.hour, time.min, time.sec, time.utc_offset)
     end
 
     # Returns the time offset to the previous year
     def self.previous_year time
       date = Date.new(time.year, time.month, time.day) << 12
-      Time.local(date.year, date.month, date.day, time.hour, time.min, time.sec)
+      Time.new(date.year, date.month, date.day, time.hour, time.min, time.sec, time.utc_offset)
     end
 
     # Get the days in the month for +time
