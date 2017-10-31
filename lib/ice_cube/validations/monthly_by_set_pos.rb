@@ -48,9 +48,7 @@ module IceCube
           s.add_recurrence_rule IceCube::Rule.from_hash(rule.to_hash.reject{|k, v| [:by_set_pos, :count, :until].include? k})
         end
 
-        puts step_time
         occurrences = new_schedule.occurrences_between(start_of_month, end_of_month)
-        p occurrences
         index = occurrences.index(step_time)
         if index == nil
           1
