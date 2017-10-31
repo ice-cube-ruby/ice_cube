@@ -12,6 +12,7 @@ module IceCube
     include Validations::DayOfYear
 
     include Validations::YearlyInterval
+    include Validations::YearlyBySetPos
 
     def initialize(interval = 1)
       super
