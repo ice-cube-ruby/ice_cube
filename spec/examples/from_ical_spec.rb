@@ -76,6 +76,11 @@ module IceCube
       expect(rule).to eq(IceCube::Rule.weekly.count(5))
     end
 
+    it 'should be able to parse a rule with a by month day' do
+      rule = IceCube::Rule.from_ical("FREQ=WEEKLY;INTERVAL=2;BYMONTHDAY=28,29,30")
+      expect(rule).to eq(IceCube::Rule.weekly.interval(2))
+    end
+
     it 'should be able to parse a rule with an interval' do
       rule = IceCube::Rule.from_ical("FREQ=DAILY;INTERVAL=2")
       expect(rule).to eq(IceCube::Rule.daily.interval(2))

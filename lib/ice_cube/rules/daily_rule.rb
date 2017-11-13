@@ -13,6 +13,11 @@ module IceCube
 
     include Validations::DailyInterval
 
+    def day_of_year(*_)
+      # NO-OP
+      self
+    end
+
     def initialize(interval = 1)
       super
       interval(interval)

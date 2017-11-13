@@ -22,6 +22,16 @@ module IceCube
       reset
     end
 
+    def day_of_month(*_)
+      # NO-OP
+      self
+    end
+
+    def day_of_year(*_)
+      # NO-OP
+      self
+    end
+
     # Move the effective start time to correct for when the schedule has
     # validations earlier in the week than the selected start time, e.g.
     #

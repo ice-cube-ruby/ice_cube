@@ -14,6 +14,11 @@ module IceCube
     include Validations::MonthlyInterval
     include Validations::MonthlyBySetPos
 
+    def day_of_year(*_)
+      # NO-OP
+      self
+    end
+
     def initialize(interval = 1)
       super
       interval(interval)
