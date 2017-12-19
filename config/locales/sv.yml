@@ -137,10 +137,6 @@ sv:
     - Torsdag
     - Fredag
     - Lördag
-    formats:
-      default: "%Y-%m-%d"
-      long: "%e %B %Y"
-      short: "%e %b"
     month_names:
     -
     - Januari
@@ -159,11 +155,3 @@ sv:
     - :day
     - :month
     - :year
-
-  time:
-    am: ''
-    formats:
-      default: "%a, %e %b %Y %H:%M:%S %z"
-      long: "%e %B %Y %H:%M"
-      short: "%e %b %H:%M"
-    pm: ''

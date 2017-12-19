@@ -163,10 +163,6 @@ ru:
     - Четверг
     - Пятница
     - Суббота
-    formats:
-      default: "%d.%m.%Y"
-      short: "%d %b"
-      long: "%d %B %Y"
     month_names:
     -
     - Января
@@ -185,11 +181,3 @@ ru:
     - :day
     - :month
     - :year
-
-  time:
-    am: утра
-    formats:
-      default: "%a, %d %b %Y, %H:%M:%S %z"
-      short: "%d %b, %H:%M"
-      long: "%d %B %Y, %H:%M"
-    pm: вечера
