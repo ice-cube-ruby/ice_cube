@@ -38,7 +38,7 @@ module IceCube
         expect(TimeUtil.build_in_zone(test_date, local_time)).to eq local_time.time_zone.local(*test_date)
       end
 
-      it "retunrs the current date with correct utc offset for non-utc reference" do
+      it "returns the current date with correct utc offset for non-utc reference" do
         expect(TimeUtil.build_in_zone(test_date, offset_time)).to eq Time.new(*test_date, 0, 0, 0, offset_time.utc_offset)
       end
     end
