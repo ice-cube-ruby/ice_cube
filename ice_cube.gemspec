@@ -19,6 +19,9 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
   s.has_rdoc      = true
 
+  s.add_runtime_dependency 'activesupport', '>= 3.0.0'
+
+  s.add_development_dependency 'activesupport', '>= 3.0.0'
   s.add_development_dependency('rake')
   s.add_development_dependency('rspec', '> 3')
 end

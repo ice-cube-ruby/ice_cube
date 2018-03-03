@@ -1,7 +1,41 @@
 require File.dirname(__FILE__) + '/../spec_helper'
+require 'active_support/time'
 
 module IceCube
   describe TimeUtil do
+
+    describe :build_in_zone do
+
+      let(:utc_time)    { Time.utc(2018, 3, 3, 2, 25, 47) }
+      let(:local_time)  { Time.utc(2018, 3, 3, 2, 25, 47).in_time_zone(ActiveSupport::TimeZone.us_zones.sample) }
+      let(:offset_time) { Time.new(2018, 3, 3, 2, 25, 47, '+02:00') }
+      let(:test_time)   { [2018, 3, 3, 7, 36, 25] }
+      let(:test_date)   { [2018, 3, 21] }
+
+      it "returns the test time in UTC when reference is utc" do
+        expect(TimeUtil.build_in_zone(test_time, utc_time)).to eq Time.utc(*test_time)
+      end
+
+      it "returns the time in reference time zone if not utc" do
+        expect(TimeUtil.build_in_zone(test_time, local_time)).to eq local_time.time_zone.local(*test_time)
+      end
+
+      it "returns the time with correct offset for offset reference" do
+        expect(TimeUtil.build_in_zone(test_time, offset_time).utc_offset).to eq offset_time.utc_offset
+      end
+
+      it "returns the current date start in utc for utc reference" do
+        expect(TimeUtil.build_in_zone(test_date, utc_time)).to eq Time.utc(*test_date)
+      end
+
+      it "returns the current date start in reference time zone for non-utc reference" do
+        expect(TimeUtil.build_in_zone(test_date, local_time)).to eq local_time.time_zone.local(*test_date)
+      end
+
+      it "retunrs the current date with correct utc offset for non-utc reference" do
+        expect(TimeUtil.build_in_zone(test_date, offset_time)).to eq Time.new(*test_date, 0, 0, 0, offset_time.utc_offset)
+      end
+    end
 
     describe :beginning_of_date do
 

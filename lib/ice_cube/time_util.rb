@@ -1,5 +1,6 @@
 require 'date'
 require 'time'
+require 'active_support/time'
 
 module IceCube
   module TimeUtil
@@ -35,9 +36,9 @@ module IceCube
       elsif reference.utc?
         Time.utc(*args)
       elsif reference.zone
-        Time.local(*args)
+        Time.local(*args).in_time_zone(reference.zone)
       else
-        Time.new(*args << reference.utc_offset)
+        Time.new(*args.dup.fill(0, args.length...6) << reference.utc_offset)
       end
     end
 
