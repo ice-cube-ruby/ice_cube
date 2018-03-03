@@ -36,7 +36,7 @@ module IceCube
       elsif reference.utc?
         Time.utc(*args)
       elsif reference.zone
-        Time.local(*args).in_time_zone(reference.zone)
+        Time.local(*args)
       else
         Time.new(*args.dup.fill(0, args.length...6) << reference.utc_offset)
       end
