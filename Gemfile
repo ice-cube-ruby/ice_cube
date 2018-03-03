@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 gemspec
 
 compatible_rails_versions = [
-  '>= 4.2.0',
+  '>= 3.0.0',
   ('<5' if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.2.2'))
 ].compact
 
