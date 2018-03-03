@@ -6,8 +6,14 @@ module IceCube
 
     describe :build_in_zone do
 
+      around :each do |example|
+        Time.zone = 'Pacific Time (US & Canada)'
+        example.run
+        Time.zone = nil
+      end
+
       let(:utc_time)    { Time.utc(2018, 3, 3, 2, 25, 47) }
-      let(:local_time)  { Time.utc(2018, 3, 3, 2, 25, 47).in_time_zone(ActiveSupport::TimeZone.us_zones.sample) }
+      let(:local_time)  { Time.zone.local(2018, 3, 3, 2, 25, 47) }
       let(:offset_time) { Time.new(2018, 3, 3, 2, 25, 47, '+02:00') }
       let(:test_time)   { [2018, 3, 3, 7, 36, 25] }
       let(:test_date)   { [2018, 3, 21] }
