@@ -208,9 +208,14 @@ module IceCube
         end
 
         it 'should include occurrences on until _date_ [#118]' do
-          schedule = Schedule.new Time.new(2012, 4, 27)
+          start_time = Time.new(2012, 4, 27)
+          schedule = Schedule.new(start_time)
           schedule.rrule Rule.daily.hour_of_day(12).until(Date.new(2012, 4, 28))
-          expect(schedule.all_occurrences).to eq([Time.new(2012, 4, 27, 12), Time.new(2012, 4, 28, 12)])
+          expect(schedule.all_occurrences).to eq [
+            start_time,
+            Time.new(2012, 4, 27, 12),
+            Time.new(2012, 4, 28, 12),
+          ]
         end
 
         it 'should strip usecs from arguments when finding occurrences' do

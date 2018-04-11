@@ -77,7 +77,11 @@ describe IceCube::MinutelyRule do
       schedule = IceCube::Schedule.new(t0)
       schedule.rrule IceCube::Rule.minutely(10).minute_of_hour(5, 15)
 
-      expect(schedule.first(2)).to eq [t0 + 35*ONE_MINUTE, t0 + 45*ONE_MINUTE]
+      expect(schedule.first(3)).to eq [
+        t0,
+        t0 + 35*ONE_MINUTE,
+        t0 + 45*ONE_MINUTE,
+      ]
     end
 
     it "raises errors for misaligned interval and minute_of_hour values" do

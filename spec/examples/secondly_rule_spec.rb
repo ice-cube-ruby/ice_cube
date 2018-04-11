@@ -29,7 +29,11 @@ module IceCube
       schedule = IceCube::Schedule.new(t0)
       schedule.rrule IceCube::Rule.secondly(10).second_of_minute(5, 15)
 
-      expect(schedule.first(2)).to eq [t0 + 25*ONE_SECOND, t0 + 35*ONE_SECOND]
+      expect(schedule.first(3)).to eq [
+        t0,
+        t0 + 25*ONE_SECOND,
+        t0 + 35*ONE_SECOND,
+      ]
     end
 
     it "raises errors for misaligned interval and minute_of_hour values" do

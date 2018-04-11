@@ -151,12 +151,11 @@ describe IceCube::Schedule do
     end
 
     it 'should return false if conflict is not present' do
-      start_time = Time.now
-      schedule1 = IceCube::Schedule.new(start_time)
+      schedule1 = IceCube::Schedule.new(TUESDAY)
       schedule1.rrule IceCube::Rule.weekly.day(:tuesday)
-      schedule2 = IceCube::Schedule.new(start_time)
+      schedule2 = IceCube::Schedule.new(MONDAY)
       schedule2.rrule IceCube::Rule.weekly.day(:monday)
-      conflict = schedule1.conflicts_with?(schedule2, start_time + IceCube::ONE_DAY)
+      conflict = schedule1.conflicts_with?(schedule2, WEDNESDAY)
       expect(conflict).to be_falsey
     end
 
@@ -181,24 +180,22 @@ describe IceCube::Schedule do
     end
 
     it 'should return false if conflict is past closing_time' do
-      start_time = Time.local(2011, 1, 1, 12) # Sunday
-      schedule1 = IceCube::Schedule.new(start_time)
+      schedule1 = IceCube::Schedule.new(FRIDAY)
       schedule1.rrule IceCube::Rule.weekly.day(:friday)
-      schedule2 = IceCube::Schedule.new(start_time)
+      schedule2 = IceCube::Schedule.new(FRIDAY)
       schedule2.rrule IceCube::Rule.weekly.day(:friday)
-      expect(schedule2.conflicts_with?(schedule1, start_time + IceCube::ONE_WEEK)).
+      expect(schedule2.conflicts_with?(schedule1, MONDAY + IceCube::ONE_WEEK)).
         to be_truthy
-      expect(schedule2.conflicts_with?(schedule1, start_time + IceCube::ONE_DAY)).
+      expect(schedule2.conflicts_with?(schedule1, MONDAY + IceCube::ONE_DAY)).
         to be_falsey
     end
 
     it 'should return false if conflict is not present based on duration' do
-      start_time = Time.now
-      schedule1 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
+      schedule1 = IceCube::Schedule.new(MONDAY, :duration => IceCube::ONE_HOUR)
       schedule1.rrule IceCube::Rule.weekly.day(:monday)
-      schedule2 = IceCube::Schedule.new(start_time, :duration => IceCube::ONE_HOUR)
+      schedule2 = IceCube::Schedule.new(TUESDAY, :duration => IceCube::ONE_HOUR)
       schedule2.rrule IceCube::Rule.weekly.day(:tuesday)
-      conflict = schedule1.conflicts_with?(schedule2, start_time + IceCube::ONE_WEEK)
+      conflict = schedule1.conflicts_with?(schedule2, MONDAY + IceCube::ONE_WEEK)
       expect(conflict).to be_falsey
     end
 

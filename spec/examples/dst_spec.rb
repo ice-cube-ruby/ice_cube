@@ -252,14 +252,24 @@ module IceCube
       start_time = Time.local(2010, 3, 7, 12, 0, 0)
       schedule = Schedule.new(start_time)
       schedule.add_recurrence_rule Rule.yearly.day_of_year(1)
-      expect(schedule.first(3)).to eq([Time.local(2011, 1, 1, 12, 0, 0), Time.local(2012, 1, 1, 12, 0, 0), Time.local(2013, 1, 1, 12, 0, 0)])
+      expect(schedule.first(4)).to eq([
+        start_time,
+        Time.local(2011, 1, 1, 12, 0, 0),
+        Time.local(2012, 1, 1, 12, 0, 0),
+        Time.local(2013, 1, 1, 12, 0, 0),
+      ])
     end
 
     it "local - should make dates on monthly (month_of_year) inverval over dst - github issue 5" do
       start_time = Time.local(2010, 3, 7, 12, 0, 0)
       schedule = Schedule.new(start_time)
       schedule.add_recurrence_rule Rule.yearly.month_of_year(:april).day_of_month(10)
-      expect(schedule.first(3)).to eq([Time.local(2010, 4, 10, 12, 0, 0), Time.local(2011, 4, 10, 12, 0, 0), Time.local(2012, 4, 10, 12, 0, 0)])
+      expect(schedule.first(4)).to eq([
+        start_time,
+        Time.local(2010, 4, 10, 12, 0, 0),
+        Time.local(2011, 4, 10, 12, 0, 0),
+        Time.local(2012, 4, 10, 12, 0, 0),
+      ])
     end
 
     it "skips double daily occurrences from end of DST", :system_time_zone => "America/Denver" do

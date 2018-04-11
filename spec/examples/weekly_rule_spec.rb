@@ -70,7 +70,17 @@ module IceCube
       schedule = Schedule.new(t0 = WEDNESDAY)
       schedule.add_recurrence_rule Rule.weekly.day(:saturday, :sunday)
       #check assumption
-      expect(schedule.occurrences(t0 + 4 * ONE_WEEK).size).to eq(8)
+      expect(schedule.occurrences(t0 + 4 * ONE_WEEK)).to eq [
+        WEDNESDAY,
+        Time.utc(2010, 6, 26, 5, 0),
+        Time.utc(2010, 6, 27, 5, 0),
+        Time.utc(2010, 7,  3, 5, 0),
+        Time.utc(2010, 7,  4, 5, 0),
+        Time.utc(2010, 7, 10, 5, 0),
+        Time.utc(2010, 7, 11, 5, 0),
+        Time.utc(2010, 7, 17, 5, 0),
+        Time.utc(2010, 7, 18, 5, 0),
+      ]
     end
 
     it 'should set days from symbol args' do
@@ -127,9 +137,14 @@ module IceCube
     end
 
     it 'should occur every 2nd tuesday of a month' do
-      schedule = Schedule.new(Time.now)
+      schedule = Schedule.new(MONDAY)
       schedule.add_recurrence_rule Rule.monthly.hour_of_day(11).day_of_week(:tuesday => [2])
-      schedule.first(48).each do |d|
+
+      implicit, *rest = *schedule.first(48)
+
+      expect(implicit).to eq(MONDAY)
+
+      rest.each do |d|
         expect(d.hour).to eq(11)
         expect(d.wday).to eq(2)
       end
@@ -138,7 +153,8 @@ module IceCube
     it 'should be able to start on sunday but repeat on mondays' do
       schedule = Schedule.new(Time.local(2010, 8, 1))
       schedule.add_recurrence_rule Rule.weekly.day(:monday)
-      expect(schedule.first(3)).to eq([
+      expect(schedule.first(4)).to eq([
+        Time.local(2010, 8,  1),
         Time.local(2010, 8,  2),
         Time.local(2010, 8,  9),
         Time.local(2010, 8, 16)

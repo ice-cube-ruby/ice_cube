@@ -12,7 +12,13 @@ end
 IceCube.compatibility = 12
 
 DAY = Time.utc(2010, 3, 1)
-WEDNESDAY = Time.utc(2010, 6, 23, 5, 0, 0)
+MONDAY    = Time.utc(2010, 6, 21, 5, 0, 0)
+TUESDAY   = MONDAY    + IceCube::ONE_DAY
+WEDNESDAY = TUESDAY   + IceCube::ONE_DAY
+THURSDAY  = WEDNESDAY + IceCube::ONE_DAY
+FRIDAY    = THURSDAY  + IceCube::ONE_DAY
+SATURDAY  = FRIDAY    + IceCube::ONE_DAY
+SUNDAY    = SATURDAY  + IceCube::ONE_DAY
 
 WORLD_TIME_ZONES = [
   'America/Anchorage',  # -1000 / -0900

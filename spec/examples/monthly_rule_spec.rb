@@ -70,18 +70,25 @@ module IceCube
       schedule = Schedule.new(t0 = Time.utc(2010, 1, 1))
       schedule.add_recurrence_rule Rule.monthly.day_of_week(:monday => [1])
       #check assumption (month 1 monday) (month 2 monday)
-      expect(schedule.occurrences(t0 + 50 * ONE_DAY).size).to eq(2)
+      expect(schedule.occurrences(t0 + 50 * ONE_DAY)).to eq [
+        t0,
+        Time.utc(2010, 1, 4),
+        Time.utc(2010, 2, 1),
+      ]
     end
 
     it 'should produce the correct number of days for @interval = 1 with only the last mondays' do
       schedule = Schedule.new(t0 = Time.utc(2010, 1, 1))
       schedule.add_recurrence_rule Rule.monthly.day_of_week(:monday => [-1])
       #check assumption (month 1 monday)
-      expect(schedule.occurrences(t0 + 40 * ONE_DAY).size).to eq(1)
+      expect(schedule.occurrences(t0 + 40 * ONE_DAY)).to eq [
+        t0,
+        Time.utc(2010, 1, 25),
+      ]
     end
 
     it 'should produce the correct number of days for @interval = 1 with only the first and last mondays' do
-      t0 = Time.utc(2010,  1,  1)
+      t0 = Time.utc(2010,  1,  4)
       t1 = Time.utc(2010, 12, 31)
       schedule = Schedule.new(t0)
       schedule.add_recurrence_rule Rule.monthly.day_of_week(:monday => [1, -2])
@@ -91,26 +98,31 @@ module IceCube
 
     [:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday].each_with_index do |weekday, wday|
       context "for every first #{weekday} of a month" do
-        let(:schedule) {
-          Schedule.new(Time.local(2011, 8, 1)) do |s|
+        let(:schedule) do
+          Schedule.new(Time.local(2011, 7, 31)) do |s|
             s.add_recurrence_rule Rule.monthly.day_of_week(weekday => [1])
           end
-        }
+        end
+
+        let(:non_implicit_occurrences) do
+          _implicit, *rest = schedule.first(49)
+          rest
+        end
 
         it "should not skip a month when DST ends" do
-          schedule.first(48).each_cons(2) do |t0, t1|
+          non_implicit_occurrences.each_cons(2) do |t0, t1|
             expect(month_interval(t1, t0)).to eq(1)
           end
         end
 
         it "should not change day when DST ends" do
-          schedule.first(48).each do |date|
+          non_implicit_occurrences.each do |date|
             expect(date.wday).to eq(wday)
           end
         end
 
         it "should not change hour when DST ends" do
-          schedule.first(48).each do |time|
+          non_implicit_occurrences.each do |time|
             expect(time.hour).to eq(0)
           end
         end
