@@ -135,7 +135,7 @@ module IceCube
       end
     end
 
-    it 'should be able to start on sunday but repeat on wednesdays' do
+    it 'should be able to start on sunday but repeat on mondays' do
       schedule = Schedule.new(Time.local(2010, 8, 1))
       schedule.add_recurrence_rule Rule.weekly.day(:monday)
       expect(schedule.first(3)).to eq([
