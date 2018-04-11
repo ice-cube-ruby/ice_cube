@@ -33,7 +33,7 @@ module IceCube
       end
 
       def validate(time, start_time)
-        raise CountExceeded if rule.uses && rule.uses >= count
+        raise CountExceeded if rule.uses.to_i >= @count
       end
 
       def build_s(builder)

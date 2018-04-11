@@ -161,6 +161,22 @@ module IceCube
       ])
     end
 
+    it 'should include the implicit recurrence when limited by a count' do
+      schedule = Schedule.new(Time.local(2010, 8, 1))
+      schedule.add_recurrence_rule Rule.weekly.day(:monday).count(2)
+      expect(schedule.all_occurrences).to eq([
+        Time.local(2010, 8,  1),
+        Time.local(2010, 8,  2),
+      ])
+    end
+
+    it 'should only include the implicit recurrence when the count is one' do
+      start_time = Time.local(2018, 3, 28, 16, 0)
+      schedule = Schedule.new(start_time)
+      schedule.add_recurrence_rule Rule.weekly(2).day(:tuesday).count(1)
+      expect(schedule.all_occurrences).to eq [start_time]
+    end
+
     #    February 2012
     # Su Mo Tu We Th Fr Sa
     #           1  2  3  4

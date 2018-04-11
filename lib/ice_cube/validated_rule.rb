@@ -54,7 +54,10 @@ module IceCube
         @time = @start_time if @time < @start_time
       end
 
-      return nil unless find_acceptable_time_before(closing_time)
+      unless find_acceptable_time_before(closing_time)
+        @uses = 1 if @uses.to_i == 0
+        return nil
+      end
 
       @uses += 1 if @time
       @time
