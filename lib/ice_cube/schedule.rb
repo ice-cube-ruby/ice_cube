@@ -498,10 +498,10 @@ module IceCube
     end
 
     def recurrence_rules_with_implicit_start_occurrence
-      if recurrence_rules.empty?
-        [implicit_start_occurrence_rule].concat @all_recurrence_rules
-      else
+      if @all_recurrence_rules.include?(implicit_start_occurrence_rule)
         @all_recurrence_rules
+      else
+        [implicit_start_occurrence_rule].concat(@all_recurrence_rules)
       end
     end
 

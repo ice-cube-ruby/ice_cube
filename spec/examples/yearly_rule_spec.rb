@@ -40,7 +40,11 @@ describe IceCube::YearlyRule do
     schedule.add_recurrence_rule IceCube::Rule.yearly.month_of_year(:april).day_of_week(:monday => [1, -1])
 
     one_year = 365 * IceCube::ONE_DAY
-    expect(schedule.occurrences(start_time + one_year).size).to eq(2)
+    expect(schedule.occurrences(start_time + one_year)).to eq [
+      start_time,
+      Time.local(2011, 4,  4, 5, 0),
+      Time.local(2011, 4, 25, 5, 0),
+    ]
   end
 
   it 'should produce the correct number of days for @interval = 1' do
@@ -73,28 +77,38 @@ describe IceCube::YearlyRule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.yearly.day_of_year(155, 200)
 
-    days_of_year = [Time.utc(2010, 6, 4), Time.utc(2010, 7, 19)]
-    expect(schedule.occurrences(Time.utc(2010, 12, 31))).to eq days_of_year
+    expect(schedule.occurrences(Time.utc(2010, 12, 31))).to eq [
+      start_time,
+      Time.utc(2010, 6, 4),
+      Time.utc(2010, 7, 19),
+    ]
   end
 
   it 'should produce the correct days for @interval = 1 when you specify negative days' do
-    schedule = IceCube::Schedule.new(Time.utc(2010, 1, 1))
+    start_time = Time.utc(2010, 1, 1)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.yearly.day_of_year(100, -1)
 
-    days_of_year = [Time.utc(2010, 4, 10), Time.utc(2010, 12, 31)]
-    expect(schedule.occurrences(Time.utc(2010, 12, 31))).to eq days_of_year
+    expect(schedule.occurrences(Time.utc(2010, 12, 31))).to eq [
+      start_time,
+      Time.utc(2010, 4, 10),
+      Time.utc(2010, 12, 31),
+    ]
   end
 
   it 'should handle negative offset day of year for leap years' do
-    schedule = IceCube::Schedule.new(Time.utc(2010, 1, 1))
+    start_time = Time.utc(2010, 1, 1)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.yearly.day_of_year(-1)
 
-    days_of_year = [Time.utc(2010, 12, 31),
-                    Time.utc(2011, 12, 31),
-                    Time.utc(2012, 12, 31),
-                    Time.utc(2013, 12, 31),
-                    Time.utc(2014, 12, 31)]
-    expect(schedule.occurrences(Time.utc(2014, 12, 31))).to eq days_of_year
+    expect(schedule.occurrences(Time.utc(2014, 12, 31))).to eq [
+      start_time,
+      Time.utc(2010, 12, 31),
+      Time.utc(2011, 12, 31),
+      Time.utc(2012, 12, 31),
+      Time.utc(2013, 12, 31),
+      Time.utc(2014, 12, 31),
+    ]
   end
 
 end

@@ -101,6 +101,7 @@ module IceCube
       #check assumption 2 -- 1 (2) (3) (4) 5 (6)
       times = schedule.occurrences(t0 + 5 * ONE_DAY)
       expect(times).to eq([
+        t0,
         t0 + 5 * ONE_HOUR + 45 * ONE_MINUTE,
         t0 + 4 * ONE_DAY + 5 * ONE_HOUR + 45 * ONE_MINUTE
       ])

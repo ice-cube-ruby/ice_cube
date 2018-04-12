@@ -110,7 +110,7 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.weekly(2).until(Time.utc(1997, 12, 24)).day(:monday, :wednesday, :friday)
     dates = schedule.occurrences(Time.utc(1997, 12, 24))
-    expectation = []
+    expectation = [start_time]
     expectation << [3, 5, 15, 17, 19, 29].map { |d| Time.utc(1997, 9, d) }
     expectation << [1, 3, 13, 15, 17, 27, 29, 31].map { |d| Time.utc(1997, 10, d) }
     expectation << [10, 12, 14, 24, 26, 28].map { |d| Time.utc(1997, 11, d) }
@@ -268,10 +268,18 @@ describe IceCube::Schedule do
   end
 
   it 'should ~ every friday the 13th' do
-    schedule = IceCube::Schedule.new(Time.utc(1997, 9, 2))
+    start_time = Time.utc(1997, 9, 2)
+    schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.monthly.day(:friday).day_of_month(13)
     dates = schedule.occurrences(Time.utc(2000, 10, 13))
-    expectation = [Time.utc(1998, 2, 13), Time.utc(1998, 3, 13), Time.utc(1998, 11, 13), Time.utc(1999, 8, 13), Time.utc(2000, 10, 13)]
+    expectation = [
+      start_time,
+      Time.utc(1998, 2, 13),
+      Time.utc(1998, 3, 13),
+      Time.utc(1998, 11, 13),
+      Time.utc(1999, 8, 13),
+      Time.utc(2000, 10, 13),
+    ]
     expect(dates).to eq(expectation)
   end
 
@@ -321,7 +329,14 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily.hour_of_day(9, 10, 11, 12, 13, 14, 15, 16).minute_of_hour(0, 20, 40).until(end_date)
     dates = schedule.all_occurrences
-    expecation = [Time.utc(1997, 9, 2, 9), Time.utc(1997, 9, 2, 9, 20), Time.utc(1997, 9, 2, 9, 40), Time.utc(1997, 9, 2, 10, 0), Time.utc(1997, 9, 2, 10, 20)]
+    expecation = [
+      start_time,
+      Time.utc(1997, 9, 2, 9),
+      Time.utc(1997, 9, 2, 9, 20),
+      Time.utc(1997, 9, 2, 9, 40),
+      Time.utc(1997, 9, 2, 10, 0),
+      Time.utc(1997, 9, 2, 10, 20),
+    ]
     expect(dates).to eq(expecation)
   end
 

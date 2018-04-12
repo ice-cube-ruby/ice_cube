@@ -16,8 +16,13 @@ describe IceCube::Schedule do
     schedule.add_recurrence_rule IceCube::Rule.yearly(2).day(:wednesday).month_of_year(:april)
     #check assumptions
     dates = schedule.occurrences(Time.utc(2011, 12, 31)) #two years
-    expect(dates.size).to eq(4)
-    dates.each do |date|
+    expect(dates.size).to eq(5)
+
+    implicit, *rest = *dates
+
+    expect(implicit).to eq(start_time)
+
+    rest.each do |date|
       expect(date.wday).to eq(3)
       expect(date.month).to eq(4)
       expect(date.year).to eq(start_time.year) #since we're doing every other
@@ -61,9 +66,14 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.weekly.day(:thursday).count(5)
     dates = schedule.all_occurrences
+
+    expect(dates.uniq).to eq(dates)
     expect(dates.uniq.size).to eq(5)
-    dates.each { |d| expect(d.wday).to eq(4) }
-    expect(dates).not_to include(WEDNESDAY)
+
+    implicit, *rest = *dates
+
+    expect(implicit).to eq(start_time)
+    rest.each { |d| expect(d.wday).to eq(4) }
   end
 
   it 'make a schedule with a start_time included in a rule, and make sure that count behaves properly' do
@@ -81,14 +91,19 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.weekly.second_of_minute(30)
     dates = schedule.occurrences(start_time + 30 * 60)
-    dates.each { |date| expect(date.sec).to eq(30) }
+
+    implicit, *rest = *dates
+
+    expect(implicit).to eq(start_time)
+    rest.each { |date| expect(date.sec).to eq(30) }
   end
 
-  it 'ensure that when count on a rule is set to 0, 0 occurrences come back' do
+  it 'ensure that when count on a rule is set to 0, only the implicit occurrence comes back' do
     start_time = DAY
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily.count(0)
-    expect(schedule.all_occurrences).to eq([])
+
+    expect(schedule.all_occurrences).to eq([start_time])
   end
 
   it 'should be able to schedule at hour 1,2 with start min/sec every day' do
@@ -96,9 +111,14 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily.hour_of_day(1, 2).count(6)
     dates = schedule.all_occurrences
-    expect(dates).to eq([Time.utc(2007, 9, 3, 1, 15, 25), Time.utc(2007, 9, 3, 2, 15, 25),
-                     Time.utc(2007, 9, 4, 1, 15, 25), Time.utc(2007, 9, 4, 2, 15, 25),
-                     Time.utc(2007, 9, 5, 1, 15, 25), Time.utc(2007, 9, 5, 2, 15, 25)])
+    expect(dates).to eq([
+      start_time,
+      Time.utc(2007, 9, 3, 1, 15, 25),
+      Time.utc(2007, 9, 3, 2, 15, 25),
+      Time.utc(2007, 9, 4, 1, 15, 25),
+      Time.utc(2007, 9, 4, 2, 15, 25),
+      Time.utc(2007, 9, 5, 1, 15, 25),
+    ])
   end
 
   it 'should be able to schedule at hour 1,2 at min 0 with start sec every day' do
@@ -106,9 +126,14 @@ describe IceCube::Schedule do
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.daily.hour_of_day(1, 2).minute_of_hour(0).count(6)
     dates = schedule.all_occurrences
-    expect(dates).to eq([Time.utc(2007, 9, 3, 1, 0, 25), Time.utc(2007, 9, 3, 2, 0, 25),
-                     Time.utc(2007, 9, 4, 1, 0, 25), Time.utc(2007, 9, 4, 2, 0, 25),
-                     Time.utc(2007, 9, 5, 1, 0, 25), Time.utc(2007, 9, 5, 2, 0, 25)])
+    expect(dates).to eq([
+      start_time,
+      Time.utc(2007, 9, 3, 1, 0, 25),
+      Time.utc(2007, 9, 3, 2, 0, 25),
+      Time.utc(2007, 9, 4, 1, 0, 25),
+      Time.utc(2007, 9, 4, 2, 0, 25),
+      Time.utc(2007, 9, 5, 1, 0, 25),
+    ])
   end
 
   it 'will only return count# if you specify a count and use .first' do
@@ -339,10 +364,10 @@ describe IceCube::Schedule do
   end
 
   it 'should be able to tell us when there is no occurrence between two dates' do
-    start_time = WEDNESDAY
+    start_time = TUESDAY
     schedule = IceCube::Schedule.new(start_time)
     schedule.add_recurrence_rule IceCube::Rule.weekly.day(:friday)
-    expect(false).to eq(schedule.occurs_between?(start_time, start_time + IceCube::ONE_DAY))
+    expect(false).to eq(schedule.occurs_between?(WEDNESDAY, THURSDAY))
   end
 
   it 'should be able to get back rtimes from a schedule' do
