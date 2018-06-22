@@ -20,6 +20,7 @@ Imagine you want:
 
 You would write:
 
+
 ```ruby
 schedule = IceCube::Schedule.new
 schedule.add_recurrence_rule(
