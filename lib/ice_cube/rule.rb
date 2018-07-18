@@ -29,7 +29,7 @@ module IceCube
     end
 
     def to_ical
-      raise MethodNotImplemented, "Expected to be overrridden by subclasses"
+      raise MethodNotImplemented, "Expected to be overridden by subclasses"
     end
 
     # Convert from ical string and create a rule
