@@ -1,5 +1,7 @@
 # Changelog
 
+## 0.16.3 / 2018-07-23
+
 * [FEATURE]     Added support for parsing RDATE from iCal format
 
 ## 0.16.2 / 2017-07-10
