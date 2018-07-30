@@ -3,7 +3,7 @@ module IceCube
   module Validations::MonthlyBySetPos
 
     def by_set_pos(*by_set_pos)
-      return by_set_pos([by_set_pos]) if by_set_pos.is_a?(Fixnum)
+      return by_set_pos([by_set_pos]) if by_set_pos.is_a?(Integer)
 
       unless by_set_pos.nil? || by_set_pos.is_a?(Array)
         raise ArgumentError, "Expecting Array or nil value for count, got #{by_set_pos.inspect}"
@@ -48,9 +48,7 @@ module IceCube
           s.add_recurrence_rule IceCube::Rule.from_hash(rule.to_hash.reject{|k, v| [:by_set_pos, :count, :until].include? k})
         end
 
-        puts step_time
         occurrences = new_schedule.occurrences_between(start_of_month, end_of_month)
-        p occurrences
         index = occurrences.index(step_time)
         if index == nil
           1

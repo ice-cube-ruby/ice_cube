@@ -3,7 +3,7 @@ module IceCube
   module Validations::YearlyBySetPos
 
     def by_set_pos(*by_set_pos)
-      return by_set_pos([by_set_pos]) if by_set_pos.is_a?(Fixnum)
+      return by_set_pos([by_set_pos]) if by_set_pos.is_a?(Integer)
 
       unless by_set_pos.nil? || by_set_pos.is_a?(Array)
         raise ArgumentError, "Expecting Array or nil value for count, got #{by_set_pos.inspect}"
