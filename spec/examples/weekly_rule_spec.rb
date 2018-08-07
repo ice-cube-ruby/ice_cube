@@ -338,6 +338,19 @@ module IceCube
           end
         end
       end
+
+      context 'when base interval validation type is not hourly' do
+        let(:start_time) { Time.utc(2018, 8, 7, 7, 0, 0) }
+        let(:end_time) { Time.utc(2018, 8, 7, 15, 0, 0) }
+        let(:biweekly) { IceCube::Rule.weekly(2).day(:saturday).hour_of_day(10) }
+        let(:schedule) { IceCube::Schedule.new(start_time, end_time: end_time) { |s| s.rrule biweekly } }
+        let(:range) { [Time.utc(2018, 8, 11, 7, 0, 0), Time.utc(2018, 8, 12, 6, 59, 59)] }
+        let(:expected_date) { Time.utc(2018, 8, 11, 10, 0, 0) }
+
+        it 'does not offset hour when base interval validation type is not hourly' do
+          expect(schedule.occurrences_between(range.first, range.last, spans: true)).to include expected_date
+        end
+      end
     end
 
     describe "using occurs_between with a weekly schedule" do
