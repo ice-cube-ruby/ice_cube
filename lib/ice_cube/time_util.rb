@@ -109,10 +109,10 @@ module IceCube
       when Time, Date
         time_or_hash
       when DateTime
-        Time.local(time.year, time.month, time.day, time.hour, time.min, time.sec)
+        Time.local(time_or_hash.year, time_or_hash.month, time_or_hash.day, time_or_hash.hour, time_or_hash.min, time_or_hash.sec)
       when Hash
         hash = FlexibleHash.new(time_or_hash)
-        hash[:time].in_time_zone(hash[:zone])
+        hash[:zone] ? hash[:time].in_time_zone(hash[:zone]) : hash[:time]
       when String
         Time.parse(time_or_hash)
       end
