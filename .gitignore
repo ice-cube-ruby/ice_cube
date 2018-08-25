@@ -10,3 +10,8 @@
 
 # rspec failure tracking
 .rspec_status
+
+# Vagrant files
+Vagrantfile
+.vagrant
+ubuntu*
