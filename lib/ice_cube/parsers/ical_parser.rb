@@ -5,17 +5,19 @@ module IceCube
       ical_string.each_line do |line|
         (property, value) = line.split(':')
         (property, tzid) = property.split(';')
+        (_, time_zone) = tzid.split('=') if tzid
+
         case property
         when 'DTSTART'
-          data[:start_time] = TimeUtil.deserialize_time(value)
+          data[:start_time] = TimeUtil.deserialize_time({time: value, zone: time_zone})
         when 'DTEND'
-          data[:end_time] = TimeUtil.deserialize_time(value)
+          data[:end_time] = TimeUtil.deserialize_time({time: value, zone: time_zone})
         when 'RDATE'
           data[:rtimes] ||= []
-          data[:rtimes] += value.split(',').map { |v| TimeUtil.deserialize_time(v) }
+          data[:rtimes] += value.split(',').map { |v| TimeUtil.deserialize_time({time: v, zone: time_zone}) }
         when 'EXDATE'
           data[:extimes] ||= []
-          data[:extimes] += value.split(',').map { |v| TimeUtil.deserialize_time(v) }
+          data[:extimes] += value.split(',').map { |v| TimeUtil.deserialize_time({time: v, zone: time_zone}) }
         when 'DURATION'
           data[:duration] # FIXME
         when 'RRULE'
