@@ -19,7 +19,7 @@ nl:
       one: '%{segments} dag van het jaar'
     at_hours_of_the_day:
       other: op de %{segments} uren van de dag
-      one: om %{segments}u
+      one: op het %{segments} uur
     on_minutes_of_hour:
       other: op de %{segments} minuten van het uur
       one: om de %{segments} minuut van het uur
@@ -63,13 +63,13 @@ nl:
     on_weekends: in het weekend
     on_weekdays: op weekdagen
     days_on:
-    - Zondagen
-    - Maandagen
-    - Dinsdagen
-    - Woensdagen
-    - Donderdagen
-    - Vrijdagen
-    - Zaterdagen
+    - zondagen
+    - maandagen
+    - dinsdagen
+    - woensdagen
+    - donderdagen
+    - vrijdagen
+    - zaterdagen
     on_days: op %{days}
     array:
       last_word_connector: ' en '
