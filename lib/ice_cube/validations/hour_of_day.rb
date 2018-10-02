@@ -1,7 +1,5 @@
 module IceCube
-
   module Validations::HourOfDay
-
     # Add hour of day validations
     def hour_of_day(*hours)
       hours.flatten.each do |hour|
@@ -19,6 +17,7 @@ module IceCube
 
     def realign(opening_time, start_time)
       return super unless validations[:hour_of_day]
+
       freq = base_interval_validation.interval
 
       first_hour = Array(validations[:hour_of_day]).min_by(&:value)
@@ -34,9 +33,8 @@ module IceCube
     end
 
     class Validation < Validations::FixedValue
-
       attr_reader :hour
-      alias :value :hour
+      alias value hour
 
       def initialize(hour)
         @hour = hour
@@ -70,9 +68,6 @@ module IceCube
         str = StringBuilder.sentence(segments)
         IceCube::I18n.t('ice_cube.at_hours_of_the_day', count: segments.size, segments: str)
       end
-
     end
-
   end
-
 end

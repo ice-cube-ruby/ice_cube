@@ -1,7 +1,5 @@
 module IceCube
-
   module Validations::MinuteOfHour
-
     def minute_of_hour(*minutes)
       minutes.flatten.each do |minute|
         unless minute.is_a?(Integer)
@@ -26,9 +24,8 @@ module IceCube
     end
 
     class Validation < Validations::FixedValue
-
       attr_reader :minute
-      alias :value :minute
+      alias value minute
 
       def initialize(minute)
         @minute = minute
@@ -62,9 +59,6 @@ module IceCube
         str = StringBuilder.sentence(segments)
         IceCube::I18n.t('ice_cube.on_minutes_of_hour', count: segments.size, segments: str)
       end
-
     end
-
   end
-
 end

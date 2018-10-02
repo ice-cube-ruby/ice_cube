@@ -1,12 +1,11 @@
 module IceCube
-
   module Validations::MonthOfYear
-
     def month_of_year(*months)
       months.flatten.each do |month|
         unless month.is_a?(Integer) || month.is_a?(Symbol)
           raise ArgumentError, "expecting Integer or Symbol value for month, got #{month.inspect}"
         end
+
         month = TimeUtil.sym_to_month(month)
         verify_alignment(month, :month, :month_of_year) { |error| raise error }
         validations_for(:month_of_year) << Validation.new(month)
@@ -16,9 +15,8 @@ module IceCube
     end
 
     class Validation < Validations::FixedValue
-
       attr_reader :month
-      alias :value :month
+      alias value month
 
       def initialize(month)
         @month = month
@@ -51,9 +49,6 @@ module IceCube
       StringBuilder.register_formatter(:month_of_year) do |segments|
         IceCube::I18n.t("ice_cube.in", target: StringBuilder.sentence(segments))
       end
-
     end
-
   end
-
 end

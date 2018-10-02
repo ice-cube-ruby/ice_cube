@@ -1,7 +1,5 @@
 module IceCube
-
   module Validations::MonthlyInterval
-
     def interval(interval)
       interval = normalized_interval(interval)
       verify_alignment(interval, :month, :interval) { |error| raise error }
@@ -13,7 +11,6 @@ module IceCube
     end
 
     class Validation
-
       attr_reader :interval
 
       def initialize(interval)
@@ -48,9 +45,6 @@ module IceCube
         builder['FREQ'] << 'MONTHLY'
         builder['INTERVAL'] << interval unless interval == 1
       end
-
     end
-
   end
-
 end

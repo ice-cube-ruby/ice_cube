@@ -1,6 +1,6 @@
 module IceCube
   class IcalParser
-    def self.schedule_from_ical(ical_string, options = {})
+    def self.schedule_from_ical(ical_string, _options = {})
       data = {}
       ical_string.each_line do |line|
         (property, value) = line.split(':')
@@ -30,11 +30,12 @@ module IceCube
       raise ArgumentError, 'empty ical rule' if ical.nil?
 
       validations = {}
-      params = {validations: validations, interval: 1}
+      params = { validations: validations, interval: 1 }
 
       ical.split(';').each do |rule|
         (name, value) = rule.split('=')
         raise ArgumentError, "Invalid iCal rule component" if value.nil?
+
         value.strip!
         case name
         when 'FREQ'
@@ -58,7 +59,7 @@ module IceCube
           days = []
           value.split(',').each do |expr|
             day = TimeUtil.ical_day_to_symbol(expr.strip[-2..-1])
-            if expr.strip.length > 2  # day with occurence
+            if expr.strip.length > 2 # day with occurence
               occ = expr[0..-3].to_i
               dows[day].nil? ? dows[day] = [occ] : dows[day].push(occ)
               days.delete(TimeUtil.sym_to_wday(day))

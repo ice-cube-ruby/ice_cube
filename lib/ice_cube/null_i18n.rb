@@ -18,12 +18,14 @@ module IceCube
         end
       else
         return base unless base.include?('%{')
+
         base % options
       end
     end
 
     def self.l(date_or_time, options = {})
       return date_or_time.strftime(options[:format]) if options[:format]
+
       date_or_time.strftime(t('ice_cube.date.formats.default'))
     end
 

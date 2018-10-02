@@ -1,7 +1,5 @@
 module IceCube
-
   class StringBuilder
-
     attr_writer :base
 
     def initialize
@@ -37,14 +35,17 @@ module IceCube
     end
 
     module Helpers
-
       # influenced by ActiveSupport's to_sentence
       def sentence(array)
         case array.length
-        when 0 ; ''
-        when 1 ; array[0].to_s
-        when 2 ; "#{array[0]}#{IceCube::I18n.t('ice_cube.array.two_words_connector')}#{array[1]}"
-        else ; "#{array[0...-1].join(IceCube::I18n.t('ice_cube.array.words_connector'))}#{IceCube::I18n.t('ice_cube.array.last_word_connector')}#{array[-1]}"
+        when 0
+          ''
+        when 1
+          array[0].to_s
+        when 2
+          "#{array[0]}#{IceCube::I18n.t('ice_cube.array.two_words_connector')}#{array[1]}"
+        else
+          "#{array[0...-1].join(IceCube::I18n.t('ice_cube.array.words_connector'))}#{IceCube::I18n.t('ice_cube.array.last_word_connector')}#{array[-1]}"
         end
       end
 
@@ -66,11 +67,7 @@ module IceCube
           IceCube::I18n.t('ice_cube.integer.ordinals')[:default]
         number >= 0 ? ord : IceCube::I18n.t("ice_cube.integer.negative", ordinal: ord)
       end
-
     end
-
     extend Helpers
-
   end
-
 end

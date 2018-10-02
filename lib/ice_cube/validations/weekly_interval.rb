@@ -1,7 +1,5 @@
 module IceCube
-
   module Validations::WeeklyInterval
-
     def interval(interval, week_start = :sunday)
       @interval = normalized_interval(interval)
       @week_start = TimeUtil.wday_to_sym(week_start)
@@ -11,7 +9,6 @@ module IceCube
     end
 
     class Validation
-
       attr_reader :interval, :week_start
 
       def initialize(interval, week_start)
@@ -29,6 +26,7 @@ module IceCube
 
       def validate(step_time, start_time)
         return if step_time < start_time
+
         t0, t1 = start_time, step_time
         d0 = Date.new(t0.year, t0.month, t0.day)
         d1 = Date.new(t1.year, t1.month, t1.day)
@@ -49,14 +47,11 @@ module IceCube
 
       def build_ical(builder)
         builder['FREQ'] << 'WEEKLY'
-        unless interval == 1
-          builder['INTERVAL'] << interval
-          builder['WKST'] << week_start.to_s.upcase[0..1]
-        end
+        return if interval == 1
+
+        builder['INTERVAL'] << interval
+        builder['WKST'] << week_start.to_s.upcase[0..1]
       end
-
     end
-
   end
-
 end

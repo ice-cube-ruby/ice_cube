@@ -1,5 +1,4 @@
 module IceCube
-
   # This abstract validation class is used by the various "fixed-time" (e.g.
   # day, day_of_month, hour_of_day) Validation and ScheduleLock::Validation
   # modules. It is not a standalone rule validation module like the others.
@@ -9,8 +8,7 @@ module IceCube
   # start_time
   #
   class Validations::FixedValue
-
-    INTERVALS = {:min => 60, :sec => 60, :hour => 24, :month => 12, :wday => 7}
+    INTERVALS = { min: 60, sec: 60, hour: 24, month: 12, wday: 7 }.freeze
 
     def validate(time, start_time)
       case type
@@ -89,7 +87,5 @@ module IceCube
       start = start % INTERVALS[type] if start < 0
       start
     end
-
   end
-
 end

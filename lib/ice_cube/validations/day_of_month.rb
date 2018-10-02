@@ -1,12 +1,11 @@
 module IceCube
-
   module Validations::DayOfMonth
-
     def day_of_month(*days)
       days.flatten.each do |day|
         unless day.is_a?(Integer)
           raise ArgumentError, "expecting Integer value for day, got #{day.inspect}"
         end
+
         verify_alignment(day, :day, :day_of_month) { |error| raise error }
         validations_for(:day_of_month) << Validation.new(day)
       end
@@ -15,9 +14,8 @@ module IceCube
     end
 
     class Validation < Validations::FixedValue
-
       attr_reader :day
-      alias :value :day
+      alias value day
 
       def initialize(day)
         @day = day
@@ -52,9 +50,6 @@ module IceCube
         str = IceCube::I18n.t('ice_cube.days_of_month', count: entries.size, segments: sentence)
         IceCube::I18n.t('ice_cube.on', sentence: str)
       end
-
     end
-
   end
-
 end

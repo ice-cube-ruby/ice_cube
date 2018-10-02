@@ -1,8 +1,6 @@
 module IceCube
-
   class IcalBuilder
-
-    ICAL_DAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
+    ICAL_DAYS = %w[SU MO TU WE TH FR SA].freeze
 
     def initialize
       @hash = {}
@@ -23,9 +21,7 @@ module IceCube
         arr << "FREQ=#{freq.join(',')}"
       end
       arr.concat(@hash.map do |key, value|
-        if value.is_a?(Array)
-          "#{key}=#{value.join(',')}"
-        end
+        "#{key}=#{value.join(',')}" if value.is_a?(Array)
       end.compact)
       arr.join(';')
     end
@@ -53,7 +49,5 @@ module IceCube
       repr << "#{duration}S" if duration > 0
       "PT#{repr}"
     end
-
   end
-
 end

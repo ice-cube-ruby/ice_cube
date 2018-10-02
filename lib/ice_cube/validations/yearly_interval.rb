@@ -1,7 +1,5 @@
 module IceCube
-
   module Validations::YearlyInterval
-
     def interval(interval)
       @interval = normalized_interval(interval)
       replace_validations_for(:interval, [Validation.new(@interval)])
@@ -10,7 +8,6 @@ module IceCube
     end
 
     class Validation
-
       attr_reader :interval
 
       def initialize(interval)
@@ -41,13 +38,10 @@ module IceCube
 
       def build_ical(builder)
         builder['FREQ'] << 'YEARLY'
-        unless interval == 1
-          builder['INTERVAL'] << interval
-        end
+        return if interval == 1
+
+        builder['INTERVAL'] << interval
       end
-
     end
-
   end
-
 end

@@ -1,14 +1,14 @@
 module IceCube
-
   module Validations::Day
-
     def day(*days)
       days = days.flatten
       return self if days.empty?
+
       days.flatten.each do |day|
         unless day.is_a?(Integer) || day.is_a?(Symbol)
           raise ArgumentError, "expecting Integer or Symbol value for day, got #{day.inspect}"
         end
+
         day = TimeUtil.sym_to_wday(day)
         verify_alignment(day, :wday, :day) { |error| raise error }
 
@@ -19,9 +19,8 @@ module IceCube
     end
 
     class Validation < Validations::FixedValue
-
       attr_reader :day
-      alias :value :day
+      alias value day
 
       def initialize(day)
         @day = day
@@ -64,14 +63,11 @@ module IceCube
         elsif validation_days == (1..5).to_a
           IceCube::I18n.t('ice_cube.on_weekdays')
         else
-          day_names = ->(d){ "#{IceCube::I18n.t("ice_cube.days_on")[d]}" }
+          day_names = ->(d) { (IceCube::I18n.t('ice_cube.days_on')[d]).to_s }
           segments = validation_days.map(&day_names)
           IceCube::I18n.t('ice_cube.on_days', days: StringBuilder.sentence(segments))
         end
       end
-
     end
-
   end
-
 end

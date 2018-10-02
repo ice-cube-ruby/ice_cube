@@ -2,7 +2,6 @@ require 'ice_cube/null_i18n'
 
 module IceCube
   module I18n
-
     LOCALES_PATH = File.expand_path(File.join('..', '..', '..', 'config', 'locales'), __FILE__)
 
     def self.t(*args)

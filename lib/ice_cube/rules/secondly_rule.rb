@@ -1,7 +1,5 @@
 module IceCube
-
   class SecondlyRule < ValidatedRule
-
     include Validations::HourOfDay
     include Validations::MinuteOfHour
     include Validations::SecondOfMinute
@@ -10,7 +8,6 @@ module IceCube
     include Validations::Day
     include Validations::MonthOfYear
     include Validations::DayOfYear
-
     include Validations::SecondlyInterval
 
     def initialize(interval = 1)
@@ -18,7 +15,5 @@ module IceCube
       interval(interval)
       reset
     end
-
   end
-
 end

@@ -1,6 +1,5 @@
 module IceCube
   module Deprecated
-
     # Define a deprecated alias for a method
     # @param [Symbol] name - name of method to define
     # @param [Symbol] replacement - name of method to replace (alias)

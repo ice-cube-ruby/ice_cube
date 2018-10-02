@@ -1,7 +1,5 @@
 module IceCube
-
   module Validations::DailyInterval
-
     # Add a new interval validation
     def interval(interval)
       interval = normalized_interval(interval)
@@ -15,7 +13,6 @@ module IceCube
     end
 
     class Validation
-
       attr_reader :interval
 
       def initialize(interval)
@@ -50,9 +47,6 @@ module IceCube
         builder['FREQ'] << 'DAILY'
         builder['INTERVAL'] << interval unless interval == 1
       end
-
     end
-
   end
-
 end

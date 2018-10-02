@@ -1,6 +1,5 @@
 module IceCube
   class InputAlignment
-
     def initialize(rule, value, rule_part)
       @rule = rule
       @value = value
@@ -9,8 +8,8 @@ module IceCube
 
     attr_reader :rule, :value, :rule_part
 
-    def verify(freq, options={}, &block)
-      @rule.validations[:interval] or return
+    def verify(freq, options = {}, &block)
+      @rule.validations[:interval] || return
 
       case @rule
       when DailyRule
@@ -29,20 +28,20 @@ module IceCube
     end
 
     def interval_value
-      @interval_value ||= (rule_part == :interval) ? value : interval_validation.interval
+      @interval_value ||= rule_part == :interval ? value : interval_validation.interval
     end
 
     def fixed_validations
-      @fixed_validations ||= @rule.validations.values.flatten.select { |v|
+      @fixed_validations ||= @rule.validations.values.flatten.select do |v|
         interval_type = (v.type == :wday ? :day : v.type)
         v.class < Validations::FixedValue &&
           interval_type == rule.base_interval_validation.type
-      }
+      end
     end
 
     def verify_freq_alignment(freq)
-      interval_validation.type == freq or return
-      (last_validation = fixed_validations.min_by(&:value)) or return
+      (interval_validation.type == freq) || return
+      (last_validation = fixed_validations.min_by(&:value)) || return
 
       alignment = (value - last_validation.value) % interval_validation.interval
       return if alignment.zero?
@@ -74,16 +73,15 @@ module IceCube
       return if interval_value == 1
 
       if freq == :wday
-        return if (interval_value % 7).zero?
-        return if Array(@rule.validations[:day]).empty?
+        return if (interval_value % 7).zero? || Array(@rule.validations[:day]).empty?
+
         message = "day can only be used with multiples of interval(7)"
       else
-        (fixed_validation = fixed_validations.first) or return
+        (fixed_validation = fixed_validations.first) || return
         message = "#{fixed_validation.key} can only be used with interval(1)"
       end
 
       yield ArgumentError.new(message)
     end
-
   end
 end

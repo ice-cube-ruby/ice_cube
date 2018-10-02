@@ -1,7 +1,5 @@
 module IceCube
-
   class MinutelyRule < ValidatedRule
-
     include Validations::HourOfDay
     include Validations::MinuteOfHour
     include Validations::SecondOfMinute
@@ -10,7 +8,6 @@ module IceCube
     include Validations::Day
     include Validations::MonthOfYear
     include Validations::DayOfYear
-
     include Validations::MinutelyInterval
 
     def initialize(interval = 1)
@@ -19,7 +16,5 @@ module IceCube
       schedule_lock(:sec)
       reset
     end
-
   end
-
 end

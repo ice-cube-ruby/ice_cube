@@ -1,7 +1,5 @@
 module IceCube
-
   module Validations::MinutelyInterval
-
     def interval(interval)
       verify_alignment(interval, :min, :interval) { |error| raise error }
 
@@ -12,7 +10,6 @@ module IceCube
     end
 
     class Validation
-
       attr_reader :interval
 
       def initialize(interval)
@@ -48,9 +45,6 @@ module IceCube
         builder['FREQ'] << 'MINUTELY'
         builder['INTERVAL'] << interval unless interval == 1
       end
-
     end
-
   end
-
 end

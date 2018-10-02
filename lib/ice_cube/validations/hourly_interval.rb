@@ -1,7 +1,5 @@
 module IceCube
-
   module Validations::HourlyInterval
-
     def interval(interval)
       verify_alignment(interval, :hour, :interval) { |error| raise error }
 
@@ -12,7 +10,6 @@ module IceCube
     end
 
     class Validation
-
       attr_reader :interval
 
       def initialize(interval)
@@ -37,7 +34,7 @@ module IceCube
       end
 
       def build_s(builder)
-        builder.base = IceCube::I18n.t("ice_cube.each_hour", count: interval)
+        builder.base = IceCube::I18n.t('ice_cube.each_hour', count: interval)
       end
 
       def build_hash(builder)
@@ -48,9 +45,6 @@ module IceCube
         builder['FREQ'] << 'HOURLY'
         builder['INTERVAL'] << interval unless interval == 1
       end
-
     end
-
   end
-
 end

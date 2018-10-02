@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+* [ENHANCEMENT] Drop old versions of Ruby and Ruby on Rails
+
 ## 0.16.3 / 2018-07-23
 
 * [FEATURE]     Added support for parsing RDATE from iCal format

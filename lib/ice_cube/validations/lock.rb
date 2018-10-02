@@ -1,5 +1,4 @@
 module IceCube
-
   # This validation mixin is used by the various "fixed-time" (e.g. day,
   # day_of_month, hour_of_day) Validation and ScheduleLock::Validation modules.
   # It is not a standalone rule validation like the others.
@@ -9,8 +8,7 @@ module IceCube
   # schedule's start_time
   #
   module Validations::Lock
-
-    INTERVALS = {:min => 60, :sec => 60, :hour => 24, :month => 12, :wday => 7}
+    INTERVALS = { min: 60, sec: 60, hour: 24, month: 12, wday: 7 }.freeze
 
     def validate(time, start_time)
       case type
@@ -89,7 +87,5 @@ module IceCube
       start += INTERVALS[type] while start < 0
       start
     end
-
   end
-
 end
