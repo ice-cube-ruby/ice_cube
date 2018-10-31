@@ -23,7 +23,7 @@ module IceCube
 
       first_hour = Array(validations[:hour_of_day]).min_by(&:value)
       time = TimeUtil::TimeWrapper.new(start_time, false)
-      if freq > 1
+      if freq > 1 && base_interval_validation.type == :hour
         offset = first_hour.validate(opening_time, start_time)
         time.add(:hour, offset - freq)
       else

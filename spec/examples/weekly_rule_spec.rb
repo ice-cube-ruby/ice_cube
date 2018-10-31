@@ -338,6 +338,26 @@ module IceCube
           end
         end
       end
+
+      #     August 2018
+      # Su Mo Tu We Th Fr Sa
+      #           1  2  3  4
+      #  5  6  7  8  9 10 11
+      # 12 13 14 15 16 17 18
+      # 19 20 21 22 23 24 25
+      # 26 27 28 29 30 31
+      context 'when day of start_time does not align with specified day rule' do
+        let(:start_time) { Time.utc(2018, 8, 7, 10, 0, 0) }
+        let(:end_time) { Time.utc(2018, 8, 7, 15, 0, 0) }
+        let(:biweekly) { IceCube::Rule.weekly(2).day(:saturday).hour_of_day(10) }
+        let(:schedule) { IceCube::Schedule.new(start_time, end_time: end_time) { |s| s.rrule biweekly } }
+        let(:range) { [Time.utc(2018, 8, 11, 7, 0, 0), Time.utc(2018, 8, 12, 6, 59, 59)] }
+        let(:expected_date) { Time.utc(2018, 8, 11, 10, 0, 0) }
+
+        it 'should align to the correct day with the spans option' do
+          expect(schedule.occurrences_between(range.first, range.last, spans: true)).to include expected_date
+        end
+      end
     end
 
     describe "using occurs_between with a weekly schedule" do
