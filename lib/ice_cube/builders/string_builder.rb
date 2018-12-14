@@ -21,8 +21,8 @@ module IceCube
           next if segments.empty?
           current = self.class.sentence(segments)
         end
-        f = IceCube::I18n.t('ice_cube.string.format')[type] ? type : 'default'
-        string = IceCube::I18n.t("ice_cube.string.format.#{f}", rest: string, current: current)
+        ext_format = IceCube::I18n.t("ice_cube.string.format.#{type}") ? type : 'default'
+        string = IceCube::I18n.t("ice_cube.string.format.#{ext_format}", rest: string, current: current)
       end
       string
     end
@@ -57,13 +57,13 @@ module IceCube
       end
 
       def literal_ordinal(number)
-        IceCube::I18n.t("ice_cube.integer.literal_ordinals")[number]
+        IceCube::I18n.t("ice_cube.integer.literal_ordinals.#{number}", default: nil)
       end
 
       def ordinal(number)
-        ord = IceCube::I18n.t("ice_cube.integer.ordinals")[number] ||
-          IceCube::I18n.t("ice_cube.integer.ordinals")[number % 10] ||
-          IceCube::I18n.t('ice_cube.integer.ordinals')[:default]
+        ord = IceCube::I18n.t("ice_cube.integer.ordinals.#{number}", default: nil) ||
+          IceCube::I18n.t("ice_cube.integer.ordinals.#{number % 10}", default: nil) ||
+          IceCube::I18n.t('ice_cube.integer.ordinals.default')
         number >= 0 ? ord : IceCube::I18n.t("ice_cube.integer.negative", ordinal: ord)
       end
 

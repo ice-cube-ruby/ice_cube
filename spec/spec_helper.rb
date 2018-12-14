@@ -1,6 +1,7 @@
 require "bundler/setup"
 require 'ice_cube'
 require 'timeout'
+require 'i18n'
 
 begin
   require 'simplecov'
@@ -8,6 +9,8 @@ begin
 rescue LoadError
   # okay
 end
+
+I18n.config.available_locales = [:en, :es, :de, :fr, :ja, :nl, :"pt-BR", :ru, :sv] 
 
 IceCube.compatibility = 12
 
