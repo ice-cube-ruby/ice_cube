@@ -22,5 +22,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency('rake')
   s.add_development_dependency('rspec', '> 3')
 
-  s.add_runtime_dependency('i18n', '~> 1.2.0')
+  s.add_runtime_dependency('i18n', '~> 1.3.0')
 end
