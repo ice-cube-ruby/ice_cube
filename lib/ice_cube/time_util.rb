@@ -1,5 +1,7 @@
 require 'date'
 require 'time'
+require 'active_support'
+require 'active_support/core_ext'
 
 module IceCube
   module TimeUtil
