@@ -35,7 +35,7 @@ module IceCube
         start_of_month = step_time.beginning_of_month
         end_of_month = step_time.end_of_month
 
-        new_schedule = IceCube::Schedule.new(step_time.last_month) do |s|
+        new_schedule = IceCube::Schedule.new(step_time.prev_month) do |s|
           s.add_recurrence_rule IceCube::Rule.from_hash(rule.to_hash.except(:by_set_pos, :count, :util))
         end
 
