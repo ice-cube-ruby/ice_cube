@@ -32,7 +32,7 @@ module IceCube
       end
 
       def validate(step_time, schedule)
-        start_of_month = step_time.start_of_month
+        start_of_month = step_time.beginning_of_month
         end_of_month = step_time.end_of_month
 
         new_schedule = IceCube::Schedule.new(step_time.last_month) do |s|
