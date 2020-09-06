@@ -4,7 +4,7 @@ module IceCube
       data = {}
       ical_string.each_line do |line|
         (property, value) = line.split(':')
-        (property, tzid) = property.split(';')
+        (property, _) = property.split(';')
         case property
         when 'DTSTART'
           data[:start_time] = TimeUtil.deserialize_time(value)
