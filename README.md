@@ -43,9 +43,13 @@ With ice_cube, you can specify (in increasing order of precedence):
 * Recurrence Times - To specifically include in a schedule
 * Exception Times - To specifically exclude from a schedule
 
-Example: Specifying a recurrence with an exception time
+Example: Specifying a recurrence with an exception time. Requires "rails/activesupport" (`gem install 'activesupport'`).
+
 
 ```ruby
+require 'ice_cube'
+require 'active_support/time'
+
 schedule = IceCube::Schedule.new(now = Time.now) do |s|
   s.add_recurrence_rule(IceCube::Rule.daily.count(4))
   s.add_exception_time(now + 1.day)

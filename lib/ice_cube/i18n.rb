@@ -5,12 +5,8 @@ module IceCube
 
     LOCALES_PATH = File.expand_path(File.join('..', '..', '..', 'config', 'locales'), __FILE__)
 
-    def self.t(*args)
-      backend.t(*args)
-    end
-
-    def self.l(*args)
-      backend.l(*args)
+    class << self
+      delegate :t, :l, to: :backend
     end
 
     def self.backend

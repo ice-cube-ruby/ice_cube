@@ -3,14 +3,14 @@ require File.dirname(__FILE__) + '/../spec_helper'
 module IceCube
   describe Schedule, 'to_yaml' do
 
-    before(:all) do
+    before do
       require 'active_support/time'
       Time.zone = 'Eastern Time (US & Canada)'
     end
 
     [:yearly, :monthly, :weekly, :daily, :hourly, :minutely, :secondly].each do |type|
       it "should make a #{type} round trip with to_yaml [#47]" do
-        schedule = Schedule.new(Time.now)
+        schedule = Schedule.new(Time.zone.now)
         schedule.add_recurrence_rule Rule.send(type, 3)
         expect(Schedule.from_yaml(schedule.to_yaml).first(3).inspect).to eq(schedule.first(3).inspect)
       end
@@ -57,7 +57,7 @@ module IceCube
     end
 
     it 'should be able to make a round-trip to YAML with .day_of_month' do
-      schedule = Schedule.new(Time.now)
+      schedule = Schedule.new(Time.zone.now)
       schedule.add_recurrence_rule Rule.monthly.day_of_month(10, 20)
 
       yaml_string = schedule.to_yaml
@@ -68,7 +68,7 @@ module IceCube
     end
 
     it 'should be able to make a round-trip to YAML with .day_of_week' do
-      schedule = Schedule.new(Time.now)
+      schedule = Schedule.new(Time.zone.now)
       schedule.add_recurrence_rule Rule.weekly.day_of_week(:monday => [1, -2])
 
       yaml_string = schedule.to_yaml
@@ -324,6 +324,5 @@ module IceCube
       data = {:validations => {:fake => []}, :rule_type => 'IceCube::DailyRule', :interval => 1}
       expect { Rule.from_hash(data) }.to raise_error(ArgumentError, 'Invalid rule validation type: fake')
     end
-
   end
 end
