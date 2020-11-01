@@ -1,0 +1,159 @@
+ro:
+  ice_cube:
+    pieces_connector: ' / '
+    not: 'nu %{target}'
+    not_on: 'nu %{target}'
+    date:
+      formats:
+        default: "%d %B %Y"
+    times:
+      other: '%{count} ori'
+      one: '%{count} dată'
+    until: 'până pe %{date}'
+    days_of_week: '%{segments} %{day}'
+    days_of_month:
+      other: '%{segments} zile ale lunii'
+      one: '%{segments} zi a lunii'
+    days_of_year:
+      other: '%{segments} zile ale anului'
+      one: '%{segments} zi a anului'
+    at_hours_of_the_day:
+      other: la orele %{segments} ale zilei
+      one: la ora %{segments} a zilei
+    on_minutes_of_hour:
+      other: la minutele %{segments} ale orei
+      one: la minutul %{segments} al orei
+    at_seconds_of_minute:
+      other: la secundele %{segments}
+      one: la secunda %{segments}
+    on_seconds_of_minute:
+      other: la secundele %{segments} ale minutului
+      one: la secunda %{segments} a minutului
+    each_second:
+      one: Din secundă în secundă
+      other: La fiecare %{count} secunde
+    each_minute:
+      one: Din minut în minut
+      other: La fiecare %{count} minute
+    each_hour:
+      one: Din oră în oră
+      other: La fiecare %{count} ore
+    each_day:
+      one: Zilnic
+      other: La fiecare %{count} zile
+    each_week:
+      one: Săptămânal
+      other: La fiecare %{count} săptămâni
+    each_month:
+      one: Lunar
+      other: La fiecare %{count} luni
+    each_year:
+      one: Anual
+      other: La fiecare %{count} ani
+    'on': pe %{sentence}
+    in: 'în %{target}'
+    integer:
+      negative: '%{ordinal} de la sfârșit'
+      literal_ordinals:
+        -1: ultima
+        -2: penultima
+        1: prima
+        2: a doua
+        3: a treia
+        4: a patra
+        5: a cincea
+        6: a șasea
+        7: a șaptea
+        8: a opta
+        9: a noua
+        10: a zecea
+      ordinal: 'a %{number}%{ordinal}'
+      ordinals:
+        default: -a
+        1: -a
+    on_weekends: în week-end
+    on_weekdays: în cursul săptămânii
+    days_on:
+    - duminica
+    - lunea
+    - marțea
+    - miercurea
+    - joia
+    - vinerea
+    - sâmbăta
+    on_days: '%{days}'
+    array:
+      last_word_connector: ' și '
+      two_words_connector: ' și '
+      words_connector: ', '
+    string:
+      format:
+        day: '%{rest} %{current}'
+        day_of_week: '%{rest} %{current}'
+        day_of_month: '%{rest} %{current}'
+        day_of_year: '%{rest} %{current}'
+        hour_of_day: '%{rest} %{current}'
+        minute_of_hour: '%{rest} %{current}'
+        until: '%{rest} %{current}'
+        count: '%{rest} %{current}'
+        default: '%{rest} %{current}'
+  date:
+    abbr_day_names:
+    - Dum
+    - Lun
+    - Mar
+    - Mie
+    - Joi
+    - Vin
+    - Sâm
+    abbr_month_names:
+    -
+    - Ian
+    - Feb
+    - Mar
+    - Apr
+    - Mai
+    - Iun
+    - Iul
+    - Aug
+    - Sep
+    - Oct
+    - Noi
+    - Dec
+    day_names:
+    - duminică
+    - luni
+    - marți
+    - miercuri
+    - joi
+    - vineri
+    - sâmbătă
+    formats:
+      default: "%d-%m-%Y"
+      long: "%d %B %Y"
+      short: "%d %b"
+    month_names:
+    -
+    - ianuarie
+    - februarie
+    - martie
+    - aprilie
+    - mai
+    - iunie
+    - iulie
+    - august
+    - septembrie
+    - octombrie
+    - noiembrie
+    - decembrie
+    order:
+    - :year
+    - :month
+    - :day
+  time:
+    am: am
+    formats:
+      default: "%a, %d %b %Y %H:%M:%S %z"
+      long: "%d %B %Y %H:%M"
+      short: "%d %b %H:%M"
+    pm: pm
