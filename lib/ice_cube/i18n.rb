@@ -14,7 +14,8 @@ module IceCube
     end
 
     def self.detect_backend!
-      ::I18n.load_path += Dir[File.join(LOCALES_PATH, '*.yml')]
+      rails_i18n_index = ::I18n.load_path.index { |item| item =~ /rails_i18n/ } || -1
+      ::I18n.load_path.insert(rails_i18n_index, *Dir[File.join(LOCALES_PATH, '*.yml')])
       ::I18n
     rescue NameError
       NullI18n
