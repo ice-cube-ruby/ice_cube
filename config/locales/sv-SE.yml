@@ -1,4 +1,4 @@
-sv:
+sv-SE:
   ice_cube:
     pieces_connector: ' / '
     not: 'inte %{target}'

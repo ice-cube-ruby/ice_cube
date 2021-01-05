@@ -1,4 +1,4 @@
-fr:
+fr-FR:
   ice_cube:
     pieces_connector: ' / '
     not: 'pas %{target}'

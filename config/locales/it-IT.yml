@@ -1,4 +1,4 @@
-it:
+it-IT:
   ice_cube:
     pieces_connector: ' / '
     not: 'tranne %{target}'

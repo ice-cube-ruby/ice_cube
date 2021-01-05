@@ -1,4 +1,4 @@
-ja:
+ja-JP:
   ice_cube:
     pieces_connector: ' / '
     not: '%{target}以外'

@@ -1,4 +1,4 @@
-de:
+de-DE:
   ice_cube:
     pieces_connector: ' / '
     not: 'außer %{target}'

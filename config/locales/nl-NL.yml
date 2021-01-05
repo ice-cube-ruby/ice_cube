@@ -1,4 +1,4 @@
-nl:
+nl-NL:
   ice_cube:
     pieces_connector: ' / '
     not: 'niet %{target}'
