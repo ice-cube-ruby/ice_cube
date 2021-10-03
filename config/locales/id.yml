@@ -1,0 +1,139 @@
+en:
+  ice_cube:
+    pieces_connector: ' / '
+    not: 'bukan %{target}'
+    not_on: 'bukan %{target}'
+    date:
+      formats:
+        default: '%e %B %Y'
+    times:
+      other: '%{count} kali'
+      one: '%{count} kali'
+    until: 'sampai %{date}'
+    days_of_week: '%{segments} %{day}'
+    days_of_month:
+      other: '%{segments} hari dalam sebulan'
+      one: '%{segments} hari dalam sebulan'
+    days_of_year:
+      other: '%{segments} hari dalam setahun'
+      one: '%{segments} hari dalam setahun'
+    at_hours_of_the_day:
+      other: pada %{segments} jam dalam sehari
+      one: pada %{segments} jam dalam sehari
+    on_minutes_of_hour:
+      other: pada %{segments} menit dalam sejam
+      one: pada %{segments} menit dalam sejam
+    at_seconds_of_minute:
+      other: pada %{segments} detik
+      one: pada %{segments} detik
+    on_seconds_of_minute:
+      other: pada %{segments} detik dalam semenit
+      one: pada %{segments} detik dalam semenit
+    each_second:
+      one: Per detik
+      other: Setiap %{count} detik
+    each_minute:
+      one: Per menit
+      other: Setiap %{count} menit
+    each_hour:
+      one: Per jam
+      other: Setiap %{count} jam
+    each_day:
+      one: Harian
+      other: Setiap %{count} hari
+    each_week:
+      one: Mingguan
+      other: Setipa %{count} minggu
+    each_month:
+      one: Bulanan
+      other: Setiap %{count} bulan
+    each_year:
+      one: Tahunan
+      other: Setiap %{count} tahun
+    'on': dalam sebuah %{sentence}
+    in: 'dalam %{target}'
+    integer:
+      negative: '%{ordinal} sampai akhir'
+      literal_ordinals:
+        -1: terakhir
+        -2: kedua dari akhir
+      ordinal: '%{number}%{ordinal}'
+      ordinals:
+        default:
+        1:
+        2:
+        3:
+        11:
+        12:
+        13:
+    on_weekends: pada akhir peka
+    on_weekdays: pada hari kerja
+    days_on:
+    - Hari minggu
+    - Hari senin
+    - Hari selasa
+    - Hari rabu
+    - Hari kamis
+    - Hari jumat
+    - Hari sabtu
+    on_days: pada %{days}
+    array:
+      last_word_connector: ', dan '
+      two_words_connector: ' dan '
+      words_connector: ', '
+    string:
+      format:
+        day: '%{rest} %{current}'
+        day_of_week: '%{rest} %{current}'
+        day_of_month: '%{rest} %{current}'
+        day_of_year: '%{rest} %{current}'
+        hour_of_day: '%{rest} %{current}'
+        minute_of_hour: '%{rest} %{current}'
+        until: '%{rest} %{current}'
+        count: '%{rest} %{current}'
+        default: '%{rest} %{current}'
+  date:
+    abbr_day_names:
+    - Min
+    - Sen
+    - Sel
+    - Rab
+    - Kam
+    - Jum
+    - Sab
+    abbr_month_names:
+    -
+    - Jan
+    - Feb
+    - Mar
+    - Apr
+    - Mei
+    - Jun
+    - Jul
+    - Agu
+    - Sep
+    - Okt
+    - Nov
+    - Des
+    day_names:
+    - Minggu
+    - Senin
+    - Selasa
+    - Rabu
+    - Kamis
+    - Jumat
+    - Sabtu
+    month_names:
+    -
+    - Januari
+    - Februari
+    - Maret
+    - April
+    - Mei
+    - Juni
+    - Juli
+    - Agustus
+    - September
+    - Oktober
+    - November
+    - Desember
