@@ -21,7 +21,6 @@ rvm:
   - 3.0.2
   - ruby-head
 env:
-  - RAILS_VERSION='~> 3.2'
   - RAILS_VERSION='~> 4.2'
   - RAILS_VERSION='~> 5.0'
   - RAILS_VERSION='~> 6.0'
@@ -51,9 +50,3 @@ matrix:
       env: RAILS_VERSION='~> 5.0'
     - rvm: 2.2.6
       env: RAILS_VERSION='~> 5.0'
-
-    # Rails 3 no longer runs on ruby 2.4 and up
-    - rvm: 2.4.0
-      env: RAILS_VERSION='~> 3.2'
-    - rvm: ruby-head
-      env: RAILS_VERSION='~> 3.2'
