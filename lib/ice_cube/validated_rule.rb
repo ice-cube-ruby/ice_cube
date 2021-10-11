@@ -156,8 +156,6 @@ module IceCube
       return unless (interval = res.min)
       wrapper = TimeUtil::TimeWrapper.new(@time, validation.dst_adjust?)
       wrapper.add(validation.type, interval)
-      # add the zone delta, so we don't get duplicates when we roll across DST
-      wrapper.add(:sec, TimeUtil.zone_offset_delta(@time, wrapper.to_time))
       wrapper.clear_below(validation.type)
 
       # Move over DST if blocked, no adjustments
