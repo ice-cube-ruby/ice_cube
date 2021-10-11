@@ -1,7 +1,12 @@
-# ice_cube - Easy schedule expansion
+# fire_cube - Easy schedule expansion
 
 [![Build Status][travis-ice_cube-badge_image]][travis-ice_cube]
 [![Gem Version](https://badge.fury.io/rb/ice_cube.svg)](http://badge.fury.io/rb/ice_cube)
+
+## Forked from seejohnrun/ice_cube
+
+Due to lack of support/maintenance on the original repo, this fork was created to allow the community to continue supporting this widely-used gem.
+
 
 ```bash
 gem install ice_cube
