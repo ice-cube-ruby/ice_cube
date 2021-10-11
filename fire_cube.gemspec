@@ -4,12 +4,12 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'ice_cube/version'
 
 Gem::Specification.new do |s|
-  s.name          = 'ice_cube'
+  s.name          = 'fire_cube'
   s.summary       = 'Ruby Date Recurrence Library'
-  s.description   = 'ice_cube is a recurring date library for Ruby.  It allows for quick, programatic expansion of recurring date rules.'
-  s.author        = 'John Crepezzi'
-  s.email         = 'john@crepezzi.com'
-  s.homepage      = 'http://seejohnrun.github.com/ice_cube/'
+  s.description   = 'fire_cube is a fork of the excellent recurring date library for Ruby, ice_cube, by seejohnrun.  It allows for quick, programatic expansion of recurring date rules.'
+  s.author        = 'Jon Pascoe'
+  s.email         = 'jon.pascoe@me.com'
+  s.homepage      = 'https://github.com/configua/fire_cube'
   s.license       = 'MIT'
 
   s.version       = IceCube::VERSION
