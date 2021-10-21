@@ -1,7 +1,8 @@
 # ice_cube - Easy schedule expansion
 
-[![Build Status][travis-ice_cube-badge_image]][travis-ice_cube]
+[![Tests](https://github.com/seejohnrun/ice_cube/actions/workflows/tests.yaml/badge.svg)](https://github.com/seejohnrun/ice_cube/actions/workflows/tests.yaml)
 [![Gem Version](https://badge.fury.io/rb/ice_cube.svg)](http://badge.fury.io/rb/ice_cube)
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
 
 ```bash
 gem install ice_cube
@@ -324,5 +325,5 @@ Use the GitHub [issue tracker][ice_cube-issues]
 [travis-ice_cube-badge_image]: https://secure.travis-ci.org/seejohnrun/ice_cube.svg
 [ice_cube-lone_star_pdf]: http://seejohnrun.github.com/ice_cube/static/lsrc_ice_cube.pdf
 [ice_cube-ruby_nyc_pdf]: http://seejohnrun.github.com/ice_cube/static/ice_cube_ruby_nyc.pdf
-[ice_cube-docs]: http://seejohnrun.github.com/ice_cube/
+[ice_cube-docs]: http://seejohnrun.github.io/ice_cube/
 [ice_cube-issues]: https://github.com/seejohnrun/ice_cube/issues

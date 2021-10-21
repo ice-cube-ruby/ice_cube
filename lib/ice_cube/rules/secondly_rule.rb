@@ -1,7 +1,5 @@
 module IceCube
-
   class SecondlyRule < ValidatedRule
-
     include Validations::HourOfDay
     include Validations::MinuteOfHour
     include Validations::SecondOfMinute
@@ -18,7 +16,5 @@ module IceCube
       interval(interval)
       reset
     end
-
   end
-
 end
