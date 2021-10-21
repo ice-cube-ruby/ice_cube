@@ -1,6 +1,6 @@
 # ice_cube - Easy schedule expansion
 
-[![Build Status][travis-ice_cube-badge_image]][travis-ice_cube]
+[![Tests](https://github.com/seejohnrun/ice_cube/workflows/Tests/badge.svg)](https://github.com/seejohnrun/ice_cube/actions?query=workflow%3ATests)
 [![Gem Version](https://badge.fury.io/rb/ice_cube.svg)](http://badge.fury.io/rb/ice_cube)
 
 ```bash
