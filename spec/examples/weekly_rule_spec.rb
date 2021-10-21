@@ -288,7 +288,7 @@ module IceCube
         expect(schedule.next_occurrence(sample[2] - 1)).to eq(sample[2])
       end
 
-      it 'should respect weekly intervals within narrow occurrence ranges' do
+      it "should respect weekly intervals within narrow occurrence ranges" do
         start_time = Time.utc(2020, 10, 27, 7, 0, 0)
         schedule = Schedule.new(start_time, end_time: start_time + ONE_HOUR)
         occurrence_start = Time.utc(2020, 11, 5, 0, 0, 0)
