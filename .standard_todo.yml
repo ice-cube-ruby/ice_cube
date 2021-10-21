@@ -1,0 +1,12 @@
+# Auto generated files with errors to ignore.
+# Remove from this list as you refactor files.
+---
+ignore:
+- lib/ice_cube/parsers/yaml_parser.rb:
+  - Security/YAMLLoad
+- lib/ice_cube/rule.rb:
+  - Security/YAMLLoad
+- spec/examples/serialization_spec.rb:
+  - Security/YAMLLoad
+- spec/examples/to_yaml_spec.rb:
+  - Security/YAMLLoad
