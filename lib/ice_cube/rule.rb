@@ -1,9 +1,7 @@
-require 'yaml'
+require "yaml"
 
 module IceCube
-
   class Rule
-
     INTERVAL_TYPES = [
       :secondly, :minutely, :hourly,
       :daily, :weekly, :monthly, :yearly
@@ -29,7 +27,7 @@ module IceCube
     end
 
     def to_ical
-      raise MethodNotImplemented, "Expected to be overrridden by subclasses"
+      raise MethodNotImplemented, "Expected to be overridden by subclasses"
     end
 
     # Convert from ical string and create a rule
@@ -39,12 +37,12 @@ module IceCube
 
     # Yaml implementation
     def to_yaml(*args)
-      YAML::dump(to_hash, *args)
+      YAML.dump(to_hash, *args)
     end
 
     # From yaml
     def self.from_yaml(yaml)
-      from_hash YAML::load(yaml)
+      from_hash YAML.load(yaml)
     end
 
     def to_hash
@@ -59,13 +57,12 @@ module IceCube
     end
 
     class << self
-
       # Convert from a hash and create a rule
       def from_hash(original_hash)
         hash = IceCube::FlexibleHash.new original_hash
 
-        unless hash[:rule_type] && match = hash[:rule_type].match(/\:\:(.+?)Rule/)
-          raise ArgumentError, 'Invalid rule type'
+        unless hash[:rule_type] && (match = hash[:rule_type].match(/::(.+?)Rule/))
+          raise ArgumentError, "Invalid rule type"
         end
 
         interval_type = match[1].downcase.to_sym
@@ -83,7 +80,7 @@ module IceCube
         rule.until(TimeUtil.deserialize_time(hash[:until])) if hash[:until]
         rule.count(hash[:count]) if hash[:count]
 
-        hash[:validations] && hash[:validations].each do |name, args|
+        hash[:validations]&.each do |name, args|
           apply_validation(rule, name, args)
         end
 
@@ -101,12 +98,10 @@ module IceCube
 
         args.is_a?(Array) ? rule.send(name, *args) : rule.send(name, args)
       end
-
     end
 
     # Convenience methods for creating Rules
     class << self
-
       # Secondly Rule
       def secondly(interval = 1)
         SecondlyRule.new(interval)
@@ -141,9 +136,6 @@ module IceCube
       def yearly(interval = 1)
         YearlyRule.new(interval)
       end
-
     end
-
   end
-
 end

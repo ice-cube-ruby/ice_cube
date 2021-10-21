@@ -1,0 +1,133 @@
+nl:
+  ice_cube:
+    pieces_connector: ' / '
+    not: 'niet %{target}'
+    not_on: 'niet op %{target}'
+    date:
+      formats:
+        default: '%-d %B %Y'
+    times:
+      other: '%{count} keer'
+      one: '%{count} keer'
+    until: 'tot %{date}'
+    days_of_week: '%{segments} %{day}'
+    days_of_month:
+      other: '%{segments} dagen van de maand'
+      one: '%{segments} dag van de maand'
+    days_of_year:
+      other: '%{segments} dagen van het jaar'
+      one: '%{segments} dag van het jaar'
+    at_hours_of_the_day:
+      other: op de %{segments} uren van de dag
+      one: op het %{segments} uur
+    on_minutes_of_hour:
+      other: op de %{segments} minuten van het uur
+      one: om de %{segments} minuut van het uur
+    at_seconds_of_minute:
+      other: op de %{segments} seconden
+      one: op de %{segments} seconde
+    on_seconds_of_minute:
+      other: op de %{segments} seconden van de minuut
+      one: op de %{segments} seconde van de minuut
+    each_second:
+      one: Elke seconde
+      other: Elke %{count} seconden
+    each_minute:
+      one: Elke minuut
+      other: Elke %{count} minuten
+    each_hour:
+      one: Elk uur
+      other: Elke %{count} uren
+    each_day:
+      one: Dagelijks
+      other: Elke %{count} dagen
+    each_week:
+      one: Wekelijks
+      other: Elke %{count} weken
+    each_month:
+      one: Maandelijks
+      other: Elke %{count} maanden
+    each_year:
+      one: Jaarlijks
+      other: Elke %{count} jaren
+    'on': op de  %{sentence}
+    in: 'in %{target}'
+    integer:
+      negative: '%{ordinal} laatste'
+      literal_ordinals:
+        -1: laatste
+        -2: voorlaatste
+      ordinal: '%{number}%{ordinal}'
+      ordinals:
+        default: e
+    on_weekends: in het weekend
+    on_weekdays: op weekdagen
+    days_on:
+    - zondagen
+    - maandagen
+    - dinsdagen
+    - woensdagen
+    - donderdagen
+    - vrijdagen
+    - zaterdagen
+    on_days: op %{days}
+    array:
+      last_word_connector: ' en '
+      two_words_connector: ' en '
+      words_connector: ', '
+    string:
+      format:
+        day: '%{rest} %{current}'
+        day_of_week: '%{rest} %{current}'
+        day_of_month: '%{rest} %{current}'
+        day_of_year: '%{rest} %{current}'
+        hour_of_day: '%{rest} %{current}'
+        minute_of_hour: '%{rest} %{current}'
+        until: '%{rest} %{current}'
+        count: '%{rest} %{current}'
+        default: '%{rest} %{current}'
+  date:
+    abbr_day_names:
+    - zo
+    - ma
+    - di
+    - wo
+    - do
+    - vr
+    - za
+    abbr_month_names:
+    -
+    - jan
+    - feb
+    - mrt
+    - apr
+    - mei
+    - jun
+    - jul
+    - aug
+    - sep
+    - okt
+    - nov
+    - dec
+    day_names:
+    - zondag
+    - maandag
+    - dinsdag
+    - woensdag
+    - donderdag
+    - vrijdag
+    - zaterdag
+    month_names:
+    -
+    - januari
+    - februari
+    - maart
+    - april
+    - mei
+    - juni
+    - juli
+    - augustus
+    - september
+    - oktober
+    - november
+    - december

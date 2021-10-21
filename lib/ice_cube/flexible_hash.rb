@@ -1,13 +1,11 @@
-require 'delegate'
+require "delegate"
 
 module IceCube
-
   # Find keys by symbol or string without symbolizing user input
   # Due to the serialization format of ice_cube, this limited implementation
   # is entirely sufficient
 
   class FlexibleHash < SimpleDelegator
-
     def [](key)
       key = _match_key(key)
       super
@@ -34,7 +32,5 @@ module IceCube
       end
       key
     end
-
   end
-
 end
