@@ -1,7 +1,15 @@
-on: [push, pull_request]
-name: Lint & Test
+name: Tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
 jobs:
-  rspec:
+  test:
     strategy:
       matrix:
         rails: ['5.2', '6.0.4', '6.1']

@@ -1,6 +1,6 @@
 # ice_cube - Easy schedule expansion
 
-![Build Status](https://github.com/seejohnrun/ice_cube/actions/workflows/lint_and_test/badge.svg)
+[![Tests](https://github.com/seejohnrun/ice_cube/workflows/Tests/badge.svg)](https://github.com/seejohnrun/ice_cube/actions?query=workflow%3ATests)
 [![Gem Version](https://badge.fury.io/rb/ice_cube.svg)](http://badge.fury.io/rb/ice_cube)
 
 ```bash
