@@ -1,9 +1,7 @@
-require 'ice_cube/input_alignment'
+require "ice_cube/input_alignment"
 
 module IceCube
-
   class ValidatedRule < Rule
-
     include Validations::ScheduleLock
 
     include Validations::Count
@@ -26,7 +24,7 @@ module IceCube
     attr_reader :validations
 
     def initialize(interval = 1)
-      @validations = Hash.new
+      @validations = {}
     end
 
     # Reset the uses on the rule to 0
@@ -183,7 +181,5 @@ module IceCube
         yield error
       end
     end
-
   end
-
 end

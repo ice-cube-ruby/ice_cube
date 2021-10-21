@@ -1,7 +1,5 @@
 module IceCube
-
   class WeeklyRule < ValidatedRule
-
     include Validations::HourOfDay
     include Validations::MinuteOfHour
     include Validations::SecondOfMinute
@@ -57,7 +55,5 @@ module IceCube
 
       days + interval - step_wday + min_wday
     end
-
   end
-
 end
