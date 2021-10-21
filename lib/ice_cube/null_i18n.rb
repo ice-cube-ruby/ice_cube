@@ -1,9 +1,9 @@
-require 'yaml'
+require "yaml"
 
 module IceCube
   module NullI18n
     def self.t(key, options = {})
-      base = key.to_s.split('.').reduce(config) { |hash, current_key| hash[current_key] }
+      base = key.to_s.split(".").reduce(config) { |hash, current_key| hash[current_key] }
 
       base = base[options[:count] == 1 ? "one" : "other"] if options[:count]
 
@@ -17,18 +17,18 @@ module IceCube
           hash[k] = v
         end
       else
-        return base unless base.include?('%{')
+        return base unless base.include?("%{")
         base % options
       end
     end
 
     def self.l(date_or_time, options = {})
       return date_or_time.strftime(options[:format]) if options[:format]
-      date_or_time.strftime(t('ice_cube.date.formats.default'))
+      date_or_time.strftime(t("ice_cube.date.formats.default"))
     end
 
     def self.config
-      @config ||= YAML.load_file(File.join(IceCube::I18n::LOCALES_PATH, 'en.yml'))['en']
+      @config ||= YAML.load_file(File.join(IceCube::I18n::LOCALES_PATH, "en.yml"))["en"]
     end
   end
 end

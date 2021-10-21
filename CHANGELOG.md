@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.16.4 / 2021-10-21
+
+* [FEATURE]     Italian translations
+
 ## 0.16.3 / 2018-07-23
 
 * [FEATURE]     Added support for parsing RDATE from iCal format

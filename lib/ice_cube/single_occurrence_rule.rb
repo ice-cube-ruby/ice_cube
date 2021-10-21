@@ -1,7 +1,5 @@
 module IceCube
-
   class SingleOccurrenceRule < Rule
-
     attr_reader :time
 
     def initialize(time)
@@ -20,13 +18,11 @@ module IceCube
     end
 
     def to_hash
-      { :time => time }
+      {time: time}
     end
 
     def full_required?
       false
     end
-
   end
-
 end

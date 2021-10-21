@@ -1,31 +1,30 @@
-require 'date'
-require 'time'
+require "date"
+require "time"
 
 module IceCube
   module TimeUtil
-
     extend Deprecated
 
     DAYS = {
-      :sunday => 0, :monday => 1, :tuesday => 2, :wednesday => 3,
-      :thursday => 4, :friday => 5, :saturday => 6
+      sunday: 0, monday: 1, tuesday: 2, wednesday: 3,
+      thursday: 4, friday: 5, saturday: 6
     }
 
     ICAL_DAYS = {
-      'SU' => :sunday, 'MO' => :monday, 'TU' => :tuesday, 'WE' => :wednesday,
-      'TH' => :thursday, 'FR' => :friday, 'SA' => :saturday
+      "SU" => :sunday, "MO" => :monday, "TU" => :tuesday, "WE" => :wednesday,
+      "TH" => :thursday, "FR" => :friday, "SA" => :saturday
     }
 
     MONTHS = {
-      :january => 1, :february => 2, :march => 3, :april => 4, :may => 5,
-      :june => 6, :july => 7, :august => 8, :september => 9, :october => 10,
-      :november => 11, :december => 12
+      january: 1, february: 2, march: 3, april: 4, may: 5,
+      june: 6, july: 7, august: 8, september: 9, october: 10,
+      november: 11, december: 12
     }
 
     CLOCK_VALUES = [:year, :month, :day, :hour, :min, :sec]
 
     # Provides a Time.now without the usec, in the reference zone or utc offset
-    def self.now(reference=Time.now)
+    def self.now(reference = Time.now)
       match_zone(Time.at(Time.now.to_i), reference)
     end
 
@@ -42,36 +41,32 @@ module IceCube
     end
 
     def self.match_zone(input_time, reference)
-      return unless time = ensure_time(input_time, reference)
+      return unless (time = ensure_time(input_time, reference))
       time = if reference.respond_to? :time_zone
-               time.in_time_zone(reference.time_zone)
-             else
-               if reference.utc?
-                 time.getgm
-               elsif reference.zone
-                 time.getlocal
-               else
-                 time.getlocal(reference.utc_offset)
-               end
-             end
-      (Date === input_time) ? beginning_of_date(time, reference) : time
+        time.in_time_zone(reference.time_zone)
+      elsif reference.utc?
+        time.getgm
+      elsif reference.zone
+        time.getlocal
+      else
+        time.getlocal(reference.utc_offset)
+      end
+      Date === input_time ? beginning_of_date(time, reference) : time
     end
 
     # Ensure that this is either nil, or a time
     def self.ensure_time(time, reference = nil, date_eod = false)
       case time
       when DateTime
-        warn "IceCube: DateTime support is deprecated (please use Time) at: #{ caller[2] }"
+        warn "IceCube: DateTime support is deprecated (please use Time) at: #{caller(3..3).first}"
         Time.local(time.year, time.month, time.day, time.hour, time.min, time.sec)
       when Date
         if date_eod
           end_of_date(time, reference)
+        elsif reference
+          build_in_zone([time.year, time.month, time.day], reference)
         else
-          if reference
-            build_in_zone([time.year, time.month, time.day], reference)
-          else
-            time.to_time
-          end
+          time.to_time
         end
       else
         time
@@ -83,7 +78,7 @@ module IceCube
       case date
       when Date then date
       else
-        return Date.new(date.year, date.month, date.day)
+        Date.new(date.year, date.month, date.day)
       end
     end
 
@@ -92,7 +87,7 @@ module IceCube
       case time
       when Time, Date
         if time.respond_to?(:time_zone)
-          {:time => time.utc, :zone => time.time_zone.name}
+          {time: time.utc, zone: time.time_zone.name}
         else
           time
         end
@@ -133,18 +128,18 @@ module IceCube
     # will lose the zone and not support DST.
     def self.restore_deserialized_offset(time, orig_offset_str)
       return time if time.respond_to?(:time_zone) ||
-                     time.getlocal(orig_offset_str).utc_offset == time.utc_offset
-      warn "IceCube: parsed Time from nonlocal TZ. Use ActiveSupport to fix DST at: #{ caller[0] }"
+        time.getlocal(orig_offset_str).utc_offset == time.utc_offset
+      warn "IceCube: parsed Time from nonlocal TZ. Use ActiveSupport to fix DST at: #{caller(1..1).first}"
       time.localtime(orig_offset_str)
     end
 
     # Get the beginning of a date
-    def self.beginning_of_date(date, reference=Time.now)
+    def self.beginning_of_date(date, reference = Time.now)
       build_in_zone([date.year, date.month, date.day, 0, 0, 0], reference)
     end
 
     # Get the end of a date
-    def self.end_of_date(date, reference=Time.now)
+    def self.end_of_date(date, reference = Time.now)
       build_in_zone([date.year, date.month, date.day, 23, 59, 59], reference)
     end
 
@@ -152,8 +147,8 @@ module IceCube
     def self.sym_to_month(sym)
       MONTHS.fetch(sym) do |k|
         MONTHS.values.detect { |i| i.to_s == k.to_s } or
-        raise ArgumentError, "Expecting Integer or Symbol value for month. " \
-                             "No such month: #{k.inspect}"
+          raise ArgumentError, "Expecting Integer or Symbol value for month. " \
+                               "No such month: #{k.inspect}"
       end
     end
     deprecated_alias :symbol_to_month, :sym_to_month
@@ -162,15 +157,15 @@ module IceCube
     def self.sym_to_wday(sym)
       DAYS.fetch(sym) do |k|
         DAYS.values.detect { |i| i.to_s == k.to_s } or
-        raise ArgumentError, "Expecting Integer or Symbol value for weekday. " \
-                             "No such weekday: #{k.inspect}"
+          raise ArgumentError, "Expecting Integer or Symbol value for weekday. " \
+                               "No such weekday: #{k.inspect}"
       end
     end
     deprecated_alias :symbol_to_day, :sym_to_wday
 
     # Convert wday number to day symbol
     def self.wday_to_sym(wday)
-      return wday if DAYS.keys.include? wday
+      return wday if DAYS.key? wday
       DAYS.invert.fetch(wday) do |i|
         raise ArgumentError, "Expecting Integer value for weekday. " \
                              "No such wday number: #{i.inspect}"
@@ -270,14 +265,13 @@ module IceCube
 
     # A utility class for safely moving time around
     class TimeWrapper
-
       def initialize(time, dst_adjust = true)
         @dst_adjust = dst_adjust
         @base = time
-        if dst_adjust
-          @time = Time.utc(time.year, time.month, time.day, time.hour, time.min, time.sec + TimeUtil.subsec(time))
+        @time = if dst_adjust
+          Time.utc(time.year, time.month, time.day, time.hour, time.min, time.sec + TimeUtil.subsec(time))
         else
-          @time = time
+          time
         end
       end
 
@@ -294,11 +288,11 @@ module IceCube
         @time += case type
                  when :year then TimeUtil.days_in_n_years(@time, val) * ONE_DAY
                  when :month then TimeUtil.days_in_n_months(@time, val) * ONE_DAY
-                 when :day  then val * ONE_DAY
+                 when :day then val * ONE_DAY
                  when :hour then val * ONE_HOUR
-                 when :min  then val * ONE_MINUTE
-                 when :sec  then val
-                 end
+                 when :min then val * ONE_MINUTE
+                 when :sec then val
+        end
       end
 
       # Clear everything below a certain type
@@ -320,7 +314,7 @@ module IceCube
       end
 
       def sec=(value)
-        @time += (value) - (@time.sec)
+        @time += value - @time.sec
       end
 
       def clear_sec
@@ -348,8 +342,6 @@ module IceCube
         end
         @time += ONE_DAY
       end
-
     end
-
   end
 end
