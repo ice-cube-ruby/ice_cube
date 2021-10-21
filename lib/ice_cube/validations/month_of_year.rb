@@ -1,7 +1,5 @@
 module IceCube
-
   module Validations::MonthOfYear
-
     def month_of_year(*months)
       months.flatten.each do |month|
         unless month.is_a?(Integer) || month.is_a?(Symbol)
@@ -16,9 +14,8 @@ module IceCube
     end
 
     class Validation < Validations::FixedValue
-
       attr_reader :month
-      alias :value :month
+      alias_method :value, :month
 
       def initialize(month)
         @month = month
@@ -45,15 +42,12 @@ module IceCube
       end
 
       def build_ical(builder)
-        builder['BYMONTH'] << month
+        builder["BYMONTH"] << month
       end
 
       StringBuilder.register_formatter(:month_of_year) do |segments|
         IceCube::I18n.t("ice_cube.in", target: StringBuilder.sentence(segments))
       end
-
     end
-
   end
-
 end

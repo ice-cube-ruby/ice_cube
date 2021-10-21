@@ -1,7 +1,5 @@
 module IceCube
-
   module Validations::Until
-
     extend Deprecated
 
     # Value reader for limit
@@ -16,7 +14,6 @@ module IceCube
     end
 
     class Validation
-
       attr_reader :time
 
       def initialize(time)
@@ -38,7 +35,7 @@ module IceCube
 
       def build_s(builder)
         date = IceCube::I18n.l(time, format: IceCube.to_s_time_format)
-        builder.piece(:until) << IceCube::I18n.t('ice_cube.until', date: date)
+        builder.piece(:until) << IceCube::I18n.t("ice_cube.until", date: date)
       end
 
       def build_hash(builder)
@@ -46,11 +43,8 @@ module IceCube
       end
 
       def build_ical(builder)
-        builder['UNTIL'] << IcalBuilder.ical_utc_format(time)
+        builder["UNTIL"] << IcalBuilder.ical_utc_format(time)
       end
-
     end
-
   end
-
 end
