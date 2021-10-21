@@ -1,6 +1,6 @@
 # ice_cube - Easy schedule expansion
 
-[![Tests](https://github.com/seejohnrun/ice_cube/workflows/Tests/badge.svg)](https://github.com/seejohnrun/ice_cube/actions?query=workflow%3ATests)
+[![Tests](https://github.com/seejohnrun/ice_cube/actions/workflows/tests.yaml/badge.svg)](https://github.com/seejohnrun/ice_cube/actions/workflows/tests.yaml)
 [![Gem Version](https://badge.fury.io/rb/ice_cube.svg)](http://badge.fury.io/rb/ice_cube)
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
 
