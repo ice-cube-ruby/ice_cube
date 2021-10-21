@@ -1,9 +1,7 @@
-require 'yaml'
+require "yaml"
 
 module IceCube
-
   class Schedule
-
     extend Deprecated
 
     # Get the start time
@@ -51,7 +49,7 @@ module IceCube
       add_recurrence_rule rule
       time
     end
-    alias :rtime :add_recurrence_time
+    alias_method :rtime, :add_recurrence_time
     deprecated_alias :rdate, :rtime
     deprecated_alias :add_recurrence_date, :add_recurrence_time
 
@@ -62,7 +60,7 @@ module IceCube
       add_exception_rule rule
       time
     end
-    alias :extime :add_exception_time
+    alias_method :extime, :add_exception_time
     deprecated_alias :exdate, :extime
     deprecated_alias :add_exception_date, :add_exception_time
 
@@ -71,7 +69,7 @@ module IceCube
       return if rule.nil?
       @all_recurrence_rules << rule unless @all_recurrence_rules.include?(rule)
     end
-    alias :rrule :add_recurrence_rule
+    alias_method :rrule, :add_recurrence_rule
 
     # Remove a recurrence rule
     def remove_recurrence_rule(rule)
@@ -84,7 +82,7 @@ module IceCube
       return if rule.nil?
       @all_exception_rules << rule unless @all_exception_rules.include?(rule)
     end
-    alias :exrule :add_exception_rule
+    alias_method :exrule, :add_exception_rule
 
     # Remove an exception rule
     def remove_exception_rule(rule)
@@ -96,19 +94,19 @@ module IceCube
     def recurrence_rules
       @all_recurrence_rules.reject { |r| r.is_a?(SingleOccurrenceRule) }
     end
-    alias :rrules :recurrence_rules
+    alias_method :rrules, :recurrence_rules
 
     # Get the exception rules
     def exception_rules
       @all_exception_rules.reject { |r| r.is_a?(SingleOccurrenceRule) }
     end
-    alias :exrules :exception_rules
+    alias_method :exrules, :exception_rules
 
     # Get the recurrence times that are on the schedule
     def recurrence_times
       @all_recurrence_rules.select { |r| r.is_a?(SingleOccurrenceRule) }.map(&:time)
     end
-    alias :rtimes :recurrence_times
+    alias_method :rtimes, :recurrence_times
     deprecated_alias :rdates, :rtimes
     deprecated_alias :recurrence_dates, :recurrence_times
 
@@ -120,7 +118,7 @@ module IceCube
       end
       time if found
     end
-    alias :remove_rtime :remove_recurrence_time
+    alias_method :remove_rtime, :remove_recurrence_time
     deprecated_alias :remove_recurrence_date, :remove_recurrence_time
     deprecated_alias :remove_rdate, :remove_rtime
 
@@ -128,7 +126,7 @@ module IceCube
     def exception_times
       @all_exception_rules.select { |r| r.is_a?(SingleOccurrenceRule) }.map(&:time)
     end
-    alias :extimes :exception_times
+    alias_method :extimes, :exception_times
     deprecated_alias :exdates, :extimes
     deprecated_alias :exception_dates, :exception_times
 
@@ -140,7 +138,7 @@ module IceCube
       end
       time if found
     end
-    alias :remove_extime :remove_exception_time
+    alias_method :remove_extime, :remove_exception_time
     deprecated_alias :remove_exception_date, :remove_exception_time
     deprecated_alias :remove_exdate, :remove_extime
 
@@ -193,7 +191,7 @@ module IceCube
       from = TimeUtil.match_zone(from, start_time) or raise ArgumentError, "Time required, got #{from.inspect}"
       return [] if from <= start_time
       a = enumerate_occurrences(start_time, from - 1).to_a
-      a.size > num ? a[-1*num,a.size] : a
+      a.size > num ? a[-1 * num, a.size] : a
     end
 
     # The remaining occurrences (same requirements as all_occurrences)
@@ -228,7 +226,7 @@ module IceCube
     # occurrences at the end of the range since none of their duration
     # intersects the range.
     def occurring_between?(opening_time, closing_time)
-      occurs_between?(opening_time, closing_time, :spans => true)
+      occurs_between?(opening_time, closing_time, spans: true)
     end
 
     # Return a boolean indicating if an occurrence falls on a certain date
@@ -306,7 +304,7 @@ module IceCube
     def last(n = nil)
       require_terminating_rules
       occurrences = enumerate_occurrences(start_time).to_a
-      n.nil? ? occurrences.last : occurrences[-n..-1]
+      n.nil? ? occurrences.last : occurrences[-n..]
     end
 
     # String serialization
@@ -314,13 +312,13 @@ module IceCube
       pieces = []
       rd = recurrence_times_with_start_time - extimes
       pieces.concat rd.sort.map { |t| IceCube::I18n.l(t, format: IceCube.to_s_time_format) }
-      pieces.concat rrules.map  { |t| t.to_s }
-      pieces.concat exrules.map { |t| IceCube::I18n.t('ice_cube.not', target: t.to_s) }
+      pieces.concat rrules.map { |t| t.to_s }
+      pieces.concat exrules.map { |t| IceCube::I18n.t("ice_cube.not", target: t.to_s) }
       pieces.concat extimes.sort.map { |t|
         target = IceCube::I18n.l(t, format: IceCube.to_s_time_format)
-        IceCube::I18n.t('ice_cube.not_on', target: target)
+        IceCube::I18n.t("ice_cube.not_on", target: target)
       }
-      pieces.join(IceCube::I18n.t('ice_cube.pieces_connector'))
+      pieces.join(IceCube::I18n.t("ice_cube.pieces_connector"))
     end
 
     # Serialize this schedule to_ical
@@ -328,9 +326,9 @@ module IceCube
       pieces = []
       pieces << "DTSTART#{IcalBuilder.ical_format(start_time, force_utc)}"
       pieces.concat recurrence_rules.map { |r| "RRULE:#{r.to_ical}" }
-      pieces.concat exception_rules.map  { |r| "EXRULE:#{r.to_ical}" }
+      pieces.concat exception_rules.map { |r| "EXRULE:#{r.to_ical}" }
       pieces.concat recurrence_times_without_start_time.map { |t| "RDATE#{IcalBuilder.ical_format(t, force_utc)}" }
-      pieces.concat exception_times.map  { |t| "EXDATE#{IcalBuilder.ical_format(t, force_utc)}" }
+      pieces.concat exception_times.map { |t| "EXDATE#{IcalBuilder.ical_format(t, force_utc)}" }
       pieces << "DTEND#{IcalBuilder.ical_format(end_time, force_utc)}" if end_time
       pieces.join("\n")
     end
@@ -396,9 +394,9 @@ module IceCube
     end
 
     def eql?(other)
-      self.hash == other.hash
+      hash == other.hash
     end
-    alias == eql?
+    alias_method :==, :eql?
 
     def self.dump(schedule)
       return schedule if schedule.nil? || schedule == ""
@@ -435,7 +433,7 @@ module IceCube
         loop do
           break unless (t0 = next_time(t1, closing_time))
           break if closing_time && t0 > closing_time
-          if (spans ? (t0.end_time > opening_time) : (t0 >= opening_time))
+          if spans ? (t0.end_time > opening_time) : (t0 >= opening_time)
             yielder << (block_given? ? yield(t0) : t0)
           end
           t1 = t0 + 1
@@ -447,12 +445,10 @@ module IceCube
     def next_time(time, closing_time)
       loop do
         min_time = recurrence_rules_with_implicit_start_occurrence.reduce(nil) do |best_time, rule|
-          begin
-            new_time = rule.next_time(time, start_time, best_time || closing_time)
-            [best_time, new_time].compact.min
-          rescue StopIteration
-            best_time
-          end
+          new_time = rule.next_time(time, start_time, best_time || closing_time)
+          [best_time, new_time].compact.min
+        rescue StopIteration
+          best_time
         end
         break unless min_time
         next (time = min_time + 1) if exception_time?(min_time)
@@ -464,7 +460,7 @@ module IceCube
     # If we have rules with counts, we need to walk from the beginning of time
     def full_required?
       @all_recurrence_rules.any?(&:full_required?) ||
-      @all_exception_rules.any?(&:full_required?)
+        @all_exception_rules.any?(&:full_required?)
     end
 
     # Return a boolean indicating whether or not a specific time
@@ -477,7 +473,7 @@ module IceCube
 
     def require_terminating_rules
       return true if terminating?
-      method_name = caller[0].split(' ').last
+      method_name = caller(1..1).first.split(" ").last
       raise ArgumentError, "All recurrence rules must specify .until or .count to use #{method_name}"
     end
 
@@ -504,7 +500,5 @@ module IceCube
         @all_recurrence_rules
       end
     end
-
   end
-
 end

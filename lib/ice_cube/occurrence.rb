@@ -1,7 +1,6 @@
-require 'delegate'
+require "delegate"
 
 module IceCube
-
   # Wraps start_time and end_time in a single concept concerning the duration.
   # This delegates to the enclosed start_time so it behaves like a normal Time
   # in almost all situations, however:
@@ -23,14 +22,14 @@ module IceCube
 
     # Report class name as 'Time' to thwart type checking.
     def self.name
-      'Time'
+      "Time"
     end
 
     attr_reader :start_time, :end_time
-    alias first start_time
-    alias last end_time
+    alias_method :first, :start_time
+    alias_method :last, :end_time
 
-    def initialize(start_time, end_time=nil)
+    def initialize(start_time, end_time = nil)
       @start_time = start_time
       @end_time = end_time || start_time
       __setobj__ @start_time
@@ -52,10 +51,10 @@ module IceCube
     def intersects?(other)
       return cover?(other) unless other.is_a?(Occurrence) || other.is_a?(Range)
 
-      this_start  = first + 1
-      this_end    = last # exclude end boundary
+      this_start = first + 1
+      this_end = last # exclude end boundary
       other_start = other.first + 1
-      other_end   = other.last + 1
+      other_end = other.last + 1
 
       !(this_end < other_start || this_start > other_end)
     end
@@ -85,7 +84,7 @@ module IceCube
     # Optional format argument (e.g. :long, :short) supports Rails
     # time formats and is only used when ActiveSupport is available.
     #
-    def to_s(format=nil)
+    def to_s(format = nil)
       if format && to_time.public_method(:to_s).arity != 0
         t0, t1 = start_time.to_s(format), end_time.to_s(format)
       else

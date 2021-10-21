@@ -1,7 +1,5 @@
 module IceCube
-
   module Validations::ScheduleLock
-
     # Lock the given time units to the units from schedule's +start_time+
     # These locks are all clobberable by other rules of the same #type
     # using +clobber_base_validation+
@@ -13,7 +11,6 @@ module IceCube
     end
 
     class Validation < Validations::FixedValue
-
       attr_reader :type, :value
 
       def initialize(type)
@@ -42,9 +39,6 @@ module IceCube
       # no -op
       def build_ical(builder)
       end
-
     end
-
   end
-
 end
