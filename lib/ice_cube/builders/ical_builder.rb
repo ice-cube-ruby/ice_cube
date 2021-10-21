@@ -1,8 +1,6 @@
 module IceCube
-
   class IcalBuilder
-
-    ICAL_DAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
+    ICAL_DAYS = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"]
 
     def initialize
       @hash = {}
@@ -19,41 +17,41 @@ module IceCube
     # Build for a single rule entry
     def to_s
       arr = []
-      if freq = @hash.delete('FREQ')
-        arr << "FREQ=#{freq.join(',')}"
+      if (freq = @hash.delete("FREQ"))
+        arr << "FREQ=#{freq.join(",")}"
       end
       arr.concat(@hash.map do |key, value|
         if value.is_a?(Array)
-          "#{key}=#{value.join(',')}"
+          "#{key}=#{value.join(",")}"
         end
       end.compact)
-      arr.join(';')
+      arr.join(";")
     end
 
     def self.ical_utc_format(time)
       time = time.dup.utc
-      IceCube::I18n.l(time, format: '%Y%m%dT%H%M%SZ') # utc time
+      IceCube::I18n.l(time, format: "%Y%m%dT%H%M%SZ") # utc time
     end
 
     def self.ical_format(time, force_utc)
       time = time.dup.utc if force_utc
       if time.utc?
-        ":#{IceCube::I18n.l(time, format: '%Y%m%dT%H%M%SZ')}" # utc time
+        ":#{IceCube::I18n.l(time, format: "%Y%m%dT%H%M%SZ")}" # utc time
       else
-        ";TZID=#{IceCube::I18n.l(time, format: '%Z:%Y%m%dT%H%M%S')}" # local time specified
+        ";TZID=#{IceCube::I18n.l(time, format: "%Z:%Y%m%dT%H%M%S")}" # local time specified
       end
     end
 
     def self.ical_duration(duration)
-      hours = duration / 3600; duration %= 3600
-      minutes = duration / 60; duration %= 60
-      repr = ''
+      hours = duration / 3600
+      duration %= 3600
+      minutes = duration / 60
+      duration %= 60
+      repr = ""
       repr << "#{hours}H" if hours > 0
       repr << "#{minutes}M" if minutes > 0
       repr << "#{duration}S" if duration > 0
       "PT#{repr}"
     end
-
   end
-
 end

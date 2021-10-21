@@ -1,7 +1,5 @@
 module IceCube
-
   class StringBuilder
-
     attr_writer :base
 
     def initialize
@@ -13,15 +11,15 @@ module IceCube
     end
 
     def to_s
-      string = @base || ''
+      string = @base || ""
       @types.each do |type, segments|
-        if f = self.class.formatter(type)
+        if (f = self.class.formatter(type))
           current = f.call(segments)
         else
           next if segments.empty?
           current = self.class.sentence(segments)
         end
-        f = IceCube::I18n.t('ice_cube.string.format')[type] ? type : 'default'
+        f = IceCube::I18n.t("ice_cube.string.format")[type] ? type : "default"
         string = IceCube::I18n.t("ice_cube.string.format.#{f}", rest: string, current: current)
       end
       string
@@ -37,14 +35,13 @@ module IceCube
     end
 
     module Helpers
-
       # influenced by ActiveSupport's to_sentence
       def sentence(array)
         case array.length
-        when 0 ; ''
-        when 1 ; array[0].to_s
-        when 2 ; "#{array[0]}#{IceCube::I18n.t('ice_cube.array.two_words_connector')}#{array[1]}"
-        else ; "#{array[0...-1].join(IceCube::I18n.t('ice_cube.array.words_connector'))}#{IceCube::I18n.t('ice_cube.array.last_word_connector')}#{array[-1]}"
+        when 0 then ""
+        when 1 then array[0].to_s
+        when 2 then "#{array[0]}#{IceCube::I18n.t("ice_cube.array.two_words_connector")}#{array[1]}"
+        else; "#{array[0...-1].join(IceCube::I18n.t("ice_cube.array.words_connector"))}#{IceCube::I18n.t("ice_cube.array.last_word_connector")}#{array[-1]}"
         end
       end
 
@@ -53,7 +50,7 @@ module IceCube
       end
 
       def ordinalize(number)
-        IceCube::I18n.t('ice_cube.integer.ordinal', number: number, ordinal: ordinal(number))
+        IceCube::I18n.t("ice_cube.integer.ordinal", number: number, ordinal: ordinal(number))
       end
 
       def literal_ordinal(number)
@@ -63,14 +60,11 @@ module IceCube
       def ordinal(number)
         ord = IceCube::I18n.t("ice_cube.integer.ordinals")[number] ||
           IceCube::I18n.t("ice_cube.integer.ordinals")[number % 10] ||
-          IceCube::I18n.t('ice_cube.integer.ordinals')[:default]
+          IceCube::I18n.t("ice_cube.integer.ordinals")[:default]
         number >= 0 ? ord : IceCube::I18n.t("ice_cube.integer.negative", ordinal: ord)
       end
-
     end
 
     extend Helpers
-
   end
-
 end

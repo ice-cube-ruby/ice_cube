@@ -2,6 +2,7 @@
 
 [![Tests](https://github.com/seejohnrun/ice_cube/workflows/Tests/badge.svg)](https://github.com/seejohnrun/ice_cube/actions?query=workflow%3ATests)
 [![Gem Version](https://badge.fury.io/rb/ice_cube.svg)](http://badge.fury.io/rb/ice_cube)
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
 
 ```bash
 gem install ice_cube
