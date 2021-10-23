@@ -32,7 +32,7 @@ schedule.add_recurrence_rule(
 
 ## Quick Introductions
 
-* [Presentation from Lone Star Ruby Conf][ice_cube-lone_star_pdf]
+* Presentation from Lone Star Ruby Conf ([slides][ice_cube-lone_star_pdf], [YouTube](https://youtu.be/dOMW0WcvvRc))
 * [Quick Introduction][ice_cube-ruby_nyc_pdf]
 * [Documentation Website][ice_cube-docs]
 
