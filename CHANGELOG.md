@@ -205,46 +205,48 @@ NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 ### Added
 - Support for WEEKST by [@devwout](https://github.com/devwout)
 
-## 0.7.9
+## [0.7.9]
+### Added
+- Added INTERVAL to `to_ical` for all interval validations
 
-* Added INTERVAL to `to_ical` for all interval validations
+## [0.7.8]
+### Fixed
+- Various bug fixes
 
-## 0.7.8
+## [0.7.7]
+### Added
+- Added "Weekends" and "Weekdays" to day's `to_s`
 
-* Bug fixes
+## [0.7.6]
+### Added
+- Support for `terminating?` and `conflicts_with?`
 
-## 0.7.7
+## [0.7.5]
+### Fixed
+- Fix an issue with `occurrences_between` when using count (#54)
 
-* Added "Weekends" and "Weekdays" to day's `to_s`
+## [0.7.4]
+### Fixed
+- NameError when serializing schedule with `end_time` by [@digx](https://github.com/digx)
 
-## 0.7.6
+## [0.7.3]
+### Fixed
+- Fix for time interval buckets (affects hour, minute, sec)
 
-* Support for `terminating?` and `conflicts_with?`
+## [0.7.2]
+### Fixed
+- Fix for interval to/from YAML issue
 
-## 0.7.5
+## [0.7.1]
+### Fixed
+- Fix for comparing rules with nil
 
-* Fix an issue with `occurrences_between` when using count (#54)
+## [0.7.0]
+### Added
+- Support for `each_occurrence` which iterates as it builds forever
 
-## 0.7.4
-
-* NameError when serializing schedule with `end_time` (thanks @digx)
-
-## 0.7.3
-
-* Fix for time interval buckets (affects hour, minute, sec)
-
-## 0.7.2
-
-* Fix for interval to/from YAML issue
-
-## 0.7.1
-
-* Fix for comparing rules with nil
-
-## 0.7.0
-
-* Large rewrite, fixing a few small bugs and including some large optimizations to the spidering algo
-* Support for `each_occurrence` which iterates as it builds forever
+### Changed
+- Large rewrite, fixing a few small bugs and including some large optimizations to the spidering algo
 
 ## 0.6.15
 
@@ -330,3 +332,13 @@ NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 [0.9.1]: https://github.com/seejohnrun/ice_cube/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/seejohnrun/ice_cube/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/seejohnrun/ice_cube/compare/v0.7.9...v0.8.0
+[0.7.9]: https://github.com/seejohnrun/ice_cube/compare/v0.7.8...v0.7.9
+[0.7.8]: https://github.com/seejohnrun/ice_cube/compare/v0.7.7...v0.7.8
+[0.7.7]: https://github.com/seejohnrun/ice_cube/compare/v0.7.6...v0.7.7
+[0.7.6]: https://github.com/seejohnrun/ice_cube/compare/v0.7.5...v0.7.6
+[0.7.5]: https://github.com/seejohnrun/ice_cube/compare/v0.7.4...v0.7.5
+[0.7.4]: https://github.com/seejohnrun/ice_cube/compare/v0.7.3...v0.7.4
+[0.7.3]: https://github.com/seejohnrun/ice_cube/compare/v0.7.2...v0.7.3
+[0.7.2]: https://github.com/seejohnrun/ice_cube/compare/v0.7.1...v0.7.2
+[0.7.1]: https://github.com/seejohnrun/ice_cube/compare/v0.7.0...v0.7.1
+[0.7.0]: https://github.com/seejohnrun/ice_cube/compare/v0.6.15...v0.7.0
