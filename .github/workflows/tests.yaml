@@ -19,17 +19,11 @@ jobs:
   changelog:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: dangoslen/changelog-enforcer@v2.2.0
-        with:
-          skipLabels: 'skip-changelog'
-
       - id: read-version
         run: |
           echo "::set-output name=VERSION::$(cat ./lib/ice_cube/version.rb | grep VERSION | awk '{ print $3 }' | sed -e 's/\"//g')"
-
-      - id: changelog-enforcer
-        uses: ./
+      - uses: actions/checkout@v2
+      - uses: dangoslen/changelog-enforcer@v2.2.0
         with:
           skipLabels: 'skip-changelog'
           expectedLatestVersion: ${{ steps.read-version.outputs.VERSION }}
