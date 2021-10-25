@@ -26,7 +26,7 @@ jobs:
           echo "::set-output name=version::$(cat ./lib/ice_cube/version.rb | grep VERSION | awk '{ print $3 }' | sed -e 's/\"//g')"
 
       - id: changelog-enforcer
-        uses: ../
+        uses: ./
         with:
           skipLabels: "skip-changelog"
           expectedLatestVersion: ${{ steps.read-version.outputs.tag }}
