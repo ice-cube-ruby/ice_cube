@@ -308,10 +308,12 @@ NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 - Lessen the amount of info we store in yaml on the time zone
 
 ## [0.6.0]
+### Changed
+- Changed how time serialization is done to preserve TimeWithZone when appropriate. (#8)
+- Backward compatibility is intact, but bumping the minor version for the YAML format change.
 
-* Changed how time serialization is done to preserve TimeWithZone when appropriate. (#8)
-* Backward compatibility is intact, but bumping the minor version for the YAML format change.
-* Fixed next occurrence to work on never-ending schedules (#11)
+### Fixed
+- Fixed next occurrence to work on never-ending schedules (#11)
 
 [Unreleased]: https://github.com/seejohnrun/ice_cube/compare/v0.16.4...HEAD
 [0.16.4]: https://github.com/seejohnrun/ice_cube/compare/v0.16.3...v0.16.4
