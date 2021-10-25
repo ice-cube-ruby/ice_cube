@@ -24,13 +24,12 @@ jobs:
 
       - id: read-version
         run: |
-          echo "::set-output name=version::$(cat ./lib/ice_cube/version.rb | grep VERSION | awk '{ print $3 }' | sed -e 's/\"//g')"
+          echo "::set-output name=VERSION::$(cat ./lib/ice_cube/version.rb | grep VERSION | awk '{ print $3 }' | sed -e 's/\"//g')"
 
       - id: changelog-enforcer
-        uses: ./
         with:
           skipLabels: "skip-changelog"
-          expectedLatestVersion: ${{ steps.read-version.outputs.tag }}
+          expectedLatestVersion: ${{ steps.read-version.outputs.VERSION }}
   lint:
     runs-on: ubuntu-latest
     steps:
