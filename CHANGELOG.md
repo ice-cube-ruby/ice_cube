@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Indonesian translations. ([#505](https://github.com/seejohnrun/ice_cube/pull/505)) by [@achmiral](https://github.com/achmiral)
 
+### Fixed
+- Fix for weekly interval results when requesting `occurrences_between` on a narrow range ([#487](https://github.com/seejohnrun/ice_cube/pull/487)) by [@jakebrady5](https://github.com/jakebrady5)
+
 ## [0.16.4] - 2021-10-21
 ### Added
 - Italian translations
@@ -84,7 +87,7 @@ NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 - Fix whole-day skip with date inputs
 - Missed times selected from gap week with weekly interval > 1 ([#241](https://github.com/seejohnrun/ice_cube/pull/241))
 - Fix `occurs_on?` miss near midnight for DST ([#245](https://github.com/seejohnrun/ice_cube/pull/245))
- 
+
 ## [0.12.1] - 2014-07-04
 ### Added
 - Support for deserialization of times via Time.parse
