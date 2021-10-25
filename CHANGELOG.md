@@ -1,6 +1,6 @@
 # Changelog
 
-## Current
+## [Unreleased]
 
 * [FEATURE]     Add Indonesian translations (#505)
 
