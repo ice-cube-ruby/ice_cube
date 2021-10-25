@@ -42,74 +42,92 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix `day_of_year` with negative offsets (#326)
 - Fix weekly rule alignment with non-Sunday week start (#383)
 
-## 0.15.0 / 2017-01-27
+## [0.15.0] - 2017-01-27
+### Added
+- I18n translations for Russian, Swedish, German, and French
 
-* [FEATURE]     Added i18n translations for Russian, Swedish, German, and French
-* [ENHANCEMENT] Support testing with different `RAILS_VERSION`
-* [ENHANCEMENT] Support "until" Date with local Time conversion (#327)
-* [ENHANCEMENT] Validate rules (and raise ArgumentError) on empty `from_hash`
-* [BUGFIX]      Fix validations on `Rule.from_hash` with empty array (#281)
+### Changed
+- Support testing with different `RAILS_VERSION`
+- Support "until" Date with local Time conversion (#327)
+- Validate rules (and raise ArgumentError) on empty `from_hash`
 
-## 0.14.0 / 2016-02-23
+### Fixed
+- Fix validations on `Rule.from_hash` with empty array (#281)
 
-* [FEATURE]     Option to include prior occurrences with overlapping duration (#302)
+## [0.14.0] - 2016-02-23
+### Added
+- Option to include prior occurrences with overlapping duration (#302)
 
-## 0.13.3 / 2016-01-30
+## [0.13.3] - 2016-01-30
+### Changed
+- Performance optimizations
+- Default deprecation compatibility to track the current version
 
-* [ENHANCEMENT] Performance optimizations
-* [ENHANCEMENT] Default deprecation compatibility to track the current version
-
-## 0.13.2 / 2015-12-09
+## [0.13.2] - 2015-12-09
 
 No changes.
 
-## 0.13.1 / 2015-12-07
+## [0.13.1] - 2015-12-07
+### Added
+- I18n support!
+- Option to include prior occurrences with overlapping duration (#154)
 
-* [FEATURE]    Added i18n support!
-* [FEATURE]    Option to include prior occurrences with overlapping duration (#154)
-
-## 0.13.0 / 2015-05-26
+## [0.13.0] - 2015-05-26
 
 NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 
-* [FEATURE]     Add `from_ical`! (#258)
-* [BUGFIX]      Method arity for `ActiveSupport::TimeZone.to_s` (#255)
-* [BUGFIX]      Fix whole-day skip with date inputs
-* [BUGFIX]      Missed times selected from gap week with weekly interval > 1 (#241)
-* [BUGFIX]      Fix `occurs_on?` miss near midnight for DST (#245)
+### Added
+- Add `from_ical`! (#258)
+
+### Fixed
+- Method arity for `ActiveSupport::TimeZone.to_s` (#255)
+- Fix whole-day skip with date inputs
+- Missed times selected from gap week with weekly interval > 1 (#241)
+- Fix `occurs_on?` miss near midnight for DST (#245)
  
-## 0.12.1 / 2014-07-04
+## [0.12.1] - 2014-07-04
+### Added
+- Support for deserialization of times via Time.parse
 
-* [FEATURE]     Added support for deserialization of times via Time.parse
-* [ENHANCEMENT] Added interval validations
-* [ENHANCEMENT] Deprecation message improvements
-* [BUGFIX]      Coerce validation intervals to Fixnum
-* [BUGFIX]      Fix YAML serialization on blank values in ActiveRecord (#231)
-* [BUGFIX]      Yearly interval should return self like others
+### Changed
+- Added interval validations
+- Deprecation message improvements
 
-## 0.12.0 / 2014-04-06
+### Fixed
+- Coerce validation intervals to Fixnum
+- Fix YAML serialization on blank values in ActiveRecord (#231)
+- Yearly interval should return self like others
 
-* [FEATURE]     Rename to `start_time` as a hash key (see UPGRADING) (#102)
-* [FEATURE]     Notify of deprecated usage (#219)
-* [BUGFIX]      Skip double occurrences over DST (#189)
-* [BUGFIX]      Avoid symbolizing hash keys from input
-* [BUGFIX]      Ensure time comparisons are done in schedule time zone (#209)
-* [BUGFIX]      Occurrence#overnight? now works on the last day of the month (#218)
+## [0.12.0] - 2014-04-06
 
-## 0.11.3 / 2014-02-07
+### Added
+- Rename to `start_time` as a hash key (see UPGRADING) (#102)
+- Notify of deprecated usage (#219)
 
-* [BUGFIX]      Fix a StopIteration leak
+### Fixed
+- Skip double occurrences over DST (#189)
+- Avoid symbolizing hash keys from input
+- Ensure time comparisons are done in schedule time zone (#209)
+- Occurrence#overnight? now works on the last day of the month (#218)
 
-## 0.11.2 / 2014-01-25
+## [0.11.3] - 2014-02-07
+### Fixed
+- Fix a StopIteration leak
 
-* [ENHANCEMENT] Use Enumerator for schedule occurrences
-* [BUGFIX]      Fix high CPU usage on minutely schedules
+## [0.11.2] - 2014-01-25
+### Changed
+- Use Enumerator for schedule occurrences
 
-## 0.11.1 / 2013-10-28
+### Fixed
+- Fix high CPU usage on minutely schedules
 
-* [ENHANCEMENT] Move deprecated into IceCube namespace
-* [ENHANCEMENT] Standardize the exceptions that we raise
-* [BUGFIX]      Fix ActiveSupport edge case restoring serialized TZ
+## [0.11.1] - 2013-10-28
+### Changed
+- Move deprecated into IceCube namespace
+- Standardize the exceptions that we raise
+
+### Fixed
+- Fix ActiveSupport edge case restoring serialized TZ
 
 ## 0.11.0 / 2013-06-13
 
@@ -277,3 +295,14 @@ NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 [0.16.2]: https://github.com/seejohnrun/ice_cube/compare/v0.16.1...v0.16.2
 [0.16.1]: https://github.com/seejohnrun/ice_cube/compare/v0.16.0...v0.16.1
 [0.16.0]: https://github.com/seejohnrun/ice_cube/compare/v0.15.0...v0.16.0
+[0.15.0]: https://github.com/seejohnrun/ice_cube/compare/v0.14.0...v0.15.0
+[0.14.0]: https://github.com/seejohnrun/ice_cube/compare/v0.13.3...v0.14.0
+[0.13.3]: https://github.com/seejohnrun/ice_cube/compare/v0.13.2...v0.13.3
+[0.13.2]: https://github.com/seejohnrun/ice_cube/compare/v0.13.1...v0.13.2
+[0.13.1]: https://github.com/seejohnrun/ice_cube/compare/v0.13.0...v0.13.1
+[0.13.0]: https://github.com/seejohnrun/ice_cube/compare/v0.12.1...v0.13.0
+[0.12.1]: https://github.com/seejohnrun/ice_cube/compare/v0.12.0...v0.12.1
+[0.12.0]: https://github.com/seejohnrun/ice_cube/compare/v0.11.3...v0.12.0
+[0.11.3]: https://github.com/seejohnrun/ice_cube/compare/v0.11.2...v0.11.3
+[0.11.2]: https://github.com/seejohnrun/ice_cube/compare/v0.11.1...v0.11.2
+[0.11.1]: https://github.com/seejohnrun/ice_cube/compare/v0.11.0...v0.11.1
