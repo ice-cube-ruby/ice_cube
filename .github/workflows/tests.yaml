@@ -2,13 +2,28 @@ name: Tests
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
   pull_request:
-    branches:
-      - master
+    branches: [master]
+    types: [opened, synchronize, reopened, ready_for_review, labeled, unlabeled]
+  - name: Changelog Enforcer
+    uses: dangoslen/changelog-enforcer@v2.2.0
 
 jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dangoslen/changelog-enforcer@v2.2.0
+
+      - id: read-version
+        run: |
+          echo "::set-output name=version::$(jq -r ".VERSION" lib/ice_cube/version.rb)"
+
+      - id: changelog-enforcer
+        uses: ./
+        with:
+          skipLabels: "skip-changelog"
+          expectedLatestVersion: ${{ steps.read-version.outputs.tag }}
   lint:
     runs-on: ubuntu-latest
     steps:
