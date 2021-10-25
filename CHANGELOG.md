@@ -129,65 +129,81 @@ NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 ### Fixed
 - Fix ActiveSupport edge case restoring serialized TZ
 
-## 0.11.0 / 2013-06-13
+## [0.11.0] - 2013-06-13
+### Added
+- `schedule.last(n)` method (#117)
+- `previous_occurrence` & `previous_occurrences` methods (#170)
 
-* [FEATURE]     `schedule.last(n)` method (#117)
-* [FEATURE]     `previous_occurrence` & `previous_occurrences` methods (#170)
-* [BUGFIX]      Occurrence `to_s` accepts format to comply with Rails
+### Fixed
+- Occurrence `to_s` accepts format to comply with Rails
 
-## 0.10.1 / 2013-05-17
+## [0.10.1] - 2013-05-17
+### Changed
+- Accept arrays in multiparameter DSL methods (#139)
 
-* [BUGFIX]      Match time zone from schedule when finding times (#152)
-* [BUGFIX]      Reliably calculate distance to same day in next month (#171)
-* [ENHANCEMENT] Accept arrays in multiparameter DSL methods (#139)
-* [BUGFIX]      Updating interval on a rule shouldn't leave duplicate validations (#158) (#157)
-* [BUGFIX]      Allow Occurrence to work transparently with Arel (#168)
-* [BUGFIX]      Raise errors for invalid input (#139)
+### Fixed
+- Match time zone from schedule when finding times (#152)
+- Reliably calculate distance to same day in next month (#171)
+- Updating interval on a rule shouldn't leave duplicate validations (#158) (#157)
+- Allow Occurrence to work transparently with Arel (#168)
+- Raise errors for invalid input (#139)
 
-## 0.10.0 / 2013-02-25
+## [0.10.0] - 2013-02-25
+### Added
+- Add support for `week_start` (@masquita) (#75)
+- Schedule occurrences have end times (#119)
 
-* [BUGFIX]      Fix monthly intervals to not skip short months (#105)
-* [FEATURE]     Add support for `week_start` (@masquita) (#75)
-* [BUGFIX]      Fix `occurring_between?` for zero-length occurrences at start boundary (#147)
-* [ENHANCEMENT] Add block initialization, new schedule yields itself (#146)
-* [ENHANCEMENT] Warn on use of DateTime and convert to local Time (#144)
-* [BUGFIX]      Bug fix for count limit across multiple rules (#149)
-* [BUGFIX]      Fix occurrences in DST transition (#150)
-* [ENHANCEMENT] Start time counts as an implicit occurrence (no more empty schedule) (#135)
-* [FEATURE]     Schedule occurrences have end times (#119)
+### Changed
+- Add block initialization, new schedule yields itself (#146)
+- Warn on use of DateTime and convert to local Time (#144)
+- Start time counts as an implicit occurrence (no more empty schedule) (#135)
 
-## 0.9.3 / 2013-01-03
+### Fixed
+- Fix monthly intervals to not skip short months (#105)
+- Fix `occurring_between?` for zero-length occurrences at start boundary (#147)
+- Bug fix for count limit across multiple rules (#149)
+- Fix occurrences in DST transition (#150)
 
-* [BUGFIX]      Match the subseconds of `start_time` when finding occurrences (#89)
-* [FEATURE]     Duration is dependent upon `end_time` (#120)
-* [ENHANCEMENT] Duration defaults to 0
-* [BUGFIX]      Avoid microseconds when comparing times (#83)
-* [BUGFIX]      Handle DateTime's lack of subseconds
+## [0.9.3] - 2013-01-03
+### Added
+- Duration is dependent upon `end_time` (#120)
 
-## 0.9.2 / 2012-12-08
+### Changed
+- Duration defaults to 0
 
-* [FEATURE]     Allow passing Time, Date, or DateTime to all calls
+### Fixed
+- Match the subseconds of `start_time` when finding occurrences (#89)
+- Avoid microseconds when comparing times (#83)
+- Handle DateTime's lack of subseconds
 
-## 0.9.1 / 2012-10-19
+## [0.9.2] - 2012-12-08
+### Added
+- Allow passing Time, Date, or DateTime to all calls
 
-* [BUGFIX]      A fix for removing `until` validations (#106)
-* [BUGFIX]      A DST edge fix
+## [0.9.1] - 2012-10-19
+### Fixed
+- A fix for removing `until` validations (#106)
+- A DST edge fix
 
-## 0.9.0 / 2012-10-12
+## [0.9.0] - 2012-10-12
+### Added
+- Fix the effect on `end_time` on IceCube::Schedule (#99)
+- Allow deserialization of string structures easily (#93)
+- Added `occurring_between?` (#88)
 
-* [FEATURE]     Fix the effect on `end_time` on IceCube::Schedule (#99)
-* [ENHANCEMENT] Remove `end_time` from `to_s` (#99)
-* [BUGFIX]      Single recurrences now work properly with `conflict_with?` (#71)
-* [BUGFIX]      Fix a bug with interval > 1 when using `occurrences_between` (#92)
-* [BUGFIX]      Allow count, until removal by setting to nil (#94)
-* [FEATURE]     Allow deserialization of string structures easily (#93)
-* [BUGFIX]      Ignore usecs when creating Time.now for `*_occurrences` (#84)
-* [BUGFIX]      DST bug fix (#98)
-* [FEATURE]     Added `occurring_between?` (#88)
+### Changed
+- Remove `end_time` from `to_s` (#99)
 
-## 0.8.0
+### Fixed
+- Single recurrences now work properly with `conflict_with?` (#71)
+- Fix a bug with interval > 1 when using `occurrences_between` (#92)
+- Allow count, until removal by setting to nil (#94)
+- Ignore usecs when creating Time.now for `*_occurrences` (#84)
+- DST bug fix (#98)
 
-* Added support for WEEKST (thanks @devwout)
+## [0.8.0]
+### Added
+- Support for WEEKST by [@devwout](https://github.com/devwout)
 
 ## 0.7.9
 
@@ -306,3 +322,11 @@ NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 [0.11.3]: https://github.com/seejohnrun/ice_cube/compare/v0.11.2...v0.11.3
 [0.11.2]: https://github.com/seejohnrun/ice_cube/compare/v0.11.1...v0.11.2
 [0.11.1]: https://github.com/seejohnrun/ice_cube/compare/v0.11.0...v0.11.1
+[0.11.0]: https://github.com/seejohnrun/ice_cube/compare/v0.10.1...v0.11.0
+[0.10.1]: https://github.com/seejohnrun/ice_cube/compare/v0.10.0...v0.10.1
+[0.10.0]: https://github.com/seejohnrun/ice_cube/compare/v0.9.3...v0.10.0
+[0.9.3]: https://github.com/seejohnrun/ice_cube/compare/v0.9.2...v0.9.3
+[0.9.2]: https://github.com/seejohnrun/ice_cube/compare/v0.9.1...v0.9.2
+[0.9.1]: https://github.com/seejohnrun/ice_cube/compare/v0.9.0...v0.9.1
+[0.9.0]: https://github.com/seejohnrun/ice_cube/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/seejohnrun/ice_cube/compare/v0.7.9...v0.8.0
