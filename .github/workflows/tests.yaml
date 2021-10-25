@@ -7,8 +7,26 @@ on:
   pull_request:
     branches:
       - master
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+      - labeled
+      - unlabeled
 
 jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - id: read-version
+        run: |
+          echo "::set-output name=VERSION::`cat lib/ice_cube/version.rb | grep -i version | awk '{ print $3 }' | sed -e 's/\"//g'`"
+      - uses: dangoslen/changelog-enforcer@v2.3.1
+        with:
+          skipLabels: 'skip-changelog'
+          expectedLatestVersion: ${{ steps.read-version.outputs.VERSION }}
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -19,7 +37,9 @@ jobs:
         bundler-cache: true
     - run: bundle exec standardrb
   test:
-    needs: lint
+    needs:
+      - changelog
+      - lint
     strategy:
       matrix:
         rails: ['5.2', '6.0.4', '6.1']
