@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+* [FEATURE]     Add Indonesian translations (#505)
+
 ## 0.16.4 / 2021-10-21
 
 * [FEATURE]     Italian translations
