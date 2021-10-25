@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Indonesian translations. ([#505](https://github.com/seejohnrun/ice_cube/pull/505)) by [@achmiral](https://github.com/achmiral)
+
+### Fixed
 - Fix for weekly interval results when requesting `occurrences_between` on a narrow range ([#487](https://github.com/seejohnrun/ice_cube/pull/487)) by [@jakebrady5](https://github.com/jakebrady5)
 
 ## [0.16.4] - 2021-10-21
