@@ -2,10 +2,18 @@ name: Tests
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
   pull_request:
-    branches: [master]
-    types: [opened, synchronize, reopened, ready_for_review, labeled, unlabeled]
+    branches:
+      - master
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+      - labeled
+      - unlabeled
   - name: Changelog Enforcer
     uses: dangoslen/changelog-enforcer@v2.2.0
 
