@@ -248,60 +248,66 @@ NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 ### Changed
 - Large rewrite, fixing a few small bugs and including some large optimizations to the spidering algo
 
-## 0.6.15
+## [0.6.15]
+### Added
+- Deserialize `until_date` properly in `to_hash` and `to_yaml` by [@promisedlandt](https://github.com/promisedlandt)
 
-* Deserialize `until_date` properly in `to_hash` and `to_yaml` (thanks @promisedlandt)
+## [0.6.14]
+### Fixed
+- Fixed a skipping issue around DST ending
 
-## 0.6.14
+## [0.6.13]
+### Added
+- Additional accessor methods on validations and rules for easy use in microformats (thanks @jamesarosen)
 
-* Fixed a skipping issue around DST ending
+### Fixed
+- Fix by Ben Fyvie for daily rule crossing over a year boundary
+- Fix for changing start date affecting schedules without reloading
+- Fix for typo in `active_support_occurs_between`? causing load issues with ActiveSupport (thanks @carlthuringer)
 
-## 0.6.13
+## [0.6.12]
+### Added
+- Be able to set the `start_date` and duration after creating a schedule
 
-* Fix by Ben Fyvie for daily rule crossing over a year boundary
-* Additional accessor methods on validations and rules for easy use in microformats (thanks @jamesarosen)
-* Fix for changing start date affecting schedules without reloading
-* Fix for typo in `active_support_occurs_between`? causing load issues with ActiveSupport (thanks @carlthuringer)
+## [0.6.11]
+### Added
+- Added the ability to add and remove rdates, rrules, exdates, and exrules from a schedule
 
-## 0.6.12
+## [0.6.10]
+### Added
+- UNTIL date now serialized with time information
 
-* Be able to set the `start_date` and duration after creating a schedule
+## [0.6.9]
+### Added
+- Added support for `Schedule#occurs_between?`
 
-## 0.6.11
+## [0.6.5]
+### Added
+- Added a `:start_date_override` option to `from_hash` / `from_yaml` (@sakrafd)
 
-* Added the ability to add and remove rdates, rrules, exdates, and exrules from a schedule
+## [0.6.4]
+### Added
+- Added `next_occurrences` function to schedule, allowing you to get the next _N_ occurrences after a given date
 
-## 0.6.10
+### Fixed
+- Fixed bug where `next_occurrence` wouldn't actually grab the correct next occurrence with schedules that had more than one recurrence rule and/or a recurrence rule and a recurrence date
 
-* UNTIL date now serialized with time information
+## [0.6.3]
+### Changed
+- Change how `active_support_occurs_on` works
 
-## 0.6.9
+### Fixed
+- Fixed bug where `next_occurrence` wouldn't work if no `end_date` was set
 
-* Added support for `Schedule#occurs_between?`
+## [0.6.2]
+### Changed
+- Patch release for `to_yaml` performance issue
 
-## 0.6.5
+## [0.6.1]
+### Changed
+- Lessen the amount of info we store in yaml on the time zone
 
-* Added a `:start_date_override` option to `from_hash` / `from_yaml` (@sakrafd)
-
-## 0.6.4
-
-* Fixed bug where `next_occurrence` wouldn't actually grab the correct next occurrence with schedules that had more than one recurrence rule and/or a recurrence rule and a recurrence date
-* Added `next_occurrences` function to schedule, allowing you to get the next _N_ occurrences after a given date
-
-## 0.6.3
-
-* Change how `active_support_occurs_on` works
-* Fixed bug where `next_occurrence` wouldn't work if no `end_date` was set
-
-## 0.6.2
-
-* Patch release for `to_yaml` performance issue
-
-## 0.6.1
-
-* Lessen the amount of info we store in yaml on the time zone
-
-## 0.6.0
+## [0.6.0]
 
 * Changed how time serialization is done to preserve TimeWithZone when appropriate. (#8)
 * Backward compatibility is intact, but bumping the minor version for the YAML format change.
@@ -342,3 +348,16 @@ NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 [0.7.2]: https://github.com/seejohnrun/ice_cube/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/seejohnrun/ice_cube/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/seejohnrun/ice_cube/compare/v0.6.15...v0.7.0
+[0.6.15]: https://github.com/seejohnrun/ice_cube/compare/v0.6.14...v0.6.15
+[0.6.14]: https://github.com/seejohnrun/ice_cube/compare/v0.6.13...v0.6.14
+[0.6.13]: https://github.com/seejohnrun/ice_cube/compare/v0.6.12...v0.6.13
+[0.6.12]: https://github.com/seejohnrun/ice_cube/compare/v0.6.11...v0.6.12
+[0.6.11]: https://github.com/seejohnrun/ice_cube/compare/v0.6.10...v0.6.11
+[0.6.10]: https://github.com/seejohnrun/ice_cube/compare/v0.6.9...v0.6.10
+[0.6.9]: https://github.com/seejohnrun/ice_cube/compare/v0.6.8...v0.6.9
+[0.6.5]: https://github.com/seejohnrun/ice_cube/compare/v0.6.4...v0.6.5
+[0.6.4]: https://github.com/seejohnrun/ice_cube/compare/v0.6.3...v0.6.4
+[0.6.3]: https://github.com/seejohnrun/ice_cube/compare/v0.6.2...v0.6.3
+[0.6.2]: https://github.com/seejohnrun/ice_cube/compare/v0.6.1...v0.6.2
+[0.6.1]: https://github.com/seejohnrun/ice_cube/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/seejohnrun/ice_cube/compare/v0.5.9...v0.6.0
