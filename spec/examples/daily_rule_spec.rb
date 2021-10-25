@@ -56,6 +56,15 @@ module IceCube
           Time.local(2013, 3, 11, 2, 0, 0) # -0700
         ])
       end
+
+      it "should not skip days where DST changes" do
+        start_time = Time.local(2013, 3, 10, 0, 0, 0)
+        schedule = Schedule.new(start_time)
+        schedule.add_recurrence_rule Rule.daily.hour_of_day(19)
+        expect(schedule.occurrences_between(start_time, start_time + ONE_DAY)).to eq([
+          Time.local(2013, 3, 10, 19, 0, 0)
+        ])
+      end
     end
 
     it "should update previous interval" do
