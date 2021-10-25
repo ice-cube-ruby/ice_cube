@@ -14,8 +14,6 @@ on:
       - ready_for_review
       - labeled
       - unlabeled
-  - name: Changelog Enforcer
-    uses: dangoslen/changelog-enforcer@v2.2.0
 
 jobs:
   changelog:
