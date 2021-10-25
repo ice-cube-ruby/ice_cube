@@ -1,36 +1,46 @@
 # Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Indonesian translations. (#505) by [@achmiral](https://github.com/achmiral)
 
-* [FEATURE]     Add Indonesian translations (#505)
+## [0.16.4] - 2021-10-21
+### Added
+- Italian translations
 
-## 0.16.4 / 2021-10-21
+## [0.16.3] - 2018-07-23
+### Added
+- Support for parsing RDATE from iCal format
 
-* [FEATURE]     Italian translations
+## [0.16.2] - 2017-07-10
+### Fixed
+- Fix serialization of Date values (for `until`) (#399)
+- Fix double DST occurrences (#398)
+- Realign first wday for monday-based weekly rules (#402)
+- Fix weekly realignment for `spans: true` option (#402)
 
-## 0.16.3 / 2018-07-23
+## [0.16.1] - 2017-05-03
+### Added
+- Add pt-BR i18n locale (#388)
 
-* [FEATURE]     Added support for parsing RDATE from iCal format
+### Fixed
+- Misaligned first weekly occurrence (#387)
 
-## 0.16.2 / 2017-07-10
+## [0.16.0] - 2017-04-12
+### Added
+- Support for Ruby 2.4
 
-* [BUGFIX]      Fix serialization of Date values (for `until`) (#399)
-* [BUGFIX]      Fix double DST occurrences (#398)
-* [BUGFIX]      Realign first wday for monday-based weekly rules (#402)
-* [BUGFIX]      Fix weekly realignment for `spans: true` option (#402)
+### Changed
+- Raise ArgumentError on empty values for remaining rules (#373)
 
-## 0.16.1 / 2017-05-03
-
-* [FEATURE]     Add pt-BR i18n locale (#388)
-* [BUGFIX]      Fix misaligned first weekly occurrence (#387)
-
-## 0.16.0 / 2017-04-12
-
-* [FEATURE]     Support ruby 2.4
-* [ENHANCEMENT] Raise ArgumentError on empty values for remaining rules (#373)
-* [BUGFIX]      Fix biweekly realign with spans option (#377)
-* [BUGFIX]      Fix `day_of_year` with negative offsets (#326)
-* [BUGFIX]      Fix weekly rule alignment with non-Sunday week start (#383)
+### Fixed
+- Fix biweekly realign with spans option (#377)
+- Fix `day_of_year` with negative offsets (#326)
+- Fix weekly rule alignment with non-Sunday week start (#383)
 
 ## 0.15.0 / 2017-01-27
 
@@ -260,3 +270,10 @@ NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 * Changed how time serialization is done to preserve TimeWithZone when appropriate. (#8)
 * Backward compatibility is intact, but bumping the minor version for the YAML format change.
 * Fixed next occurrence to work on never-ending schedules (#11)
+
+[Unreleased]: https://github.com/seejohnrun/ice_cube/compare/v0.16.4...HEAD
+[0.16.4]: https://github.com/seejohnrun/ice_cube/compare/v0.16.3...v0.16.4
+[0.16.3]: https://github.com/seejohnrun/ice_cube/compare/v0.16.2...v0.16.3
+[0.16.2]: https://github.com/seejohnrun/ice_cube/compare/v0.16.1...v0.16.2
+[0.16.1]: https://github.com/seejohnrun/ice_cube/compare/v0.16.0...v0.16.1
+[0.16.0]: https://github.com/seejohnrun/ice_cube/compare/v0.15.0...v0.16.0
