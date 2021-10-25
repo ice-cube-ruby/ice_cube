@@ -28,7 +28,7 @@ jobs:
 
       - id: changelog-enforcer
         with:
-          skipLabels: "skip-changelog"
+          skipLabels: 'skip-changelog'
           expectedLatestVersion: ${{ steps.read-version.outputs.VERSION }}
   lint:
     runs-on: ubuntu-latest
