@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Indonesian translations. (#505) by [@achmiral](https://github.com/achmiral)
+- Indonesian translations. ([#505](https://github.com/seejohnrun/ice_cube/pull/505)) by [@achmiral](https://github.com/achmiral)
 
 ## [0.16.4] - 2021-10-21
 ### Added
@@ -18,29 +18,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.16.2] - 2017-07-10
 ### Fixed
-- Fix serialization of Date values (for `until`) (#399)
-- Fix double DST occurrences (#398)
-- Realign first wday for monday-based weekly rules (#402)
-- Fix weekly realignment for `spans: true` option (#402)
+- Fix serialization of Date values (for `until`) ([#399](https://github.com/seejohnrun/ice_cube/pull/399))
+- Fix double DST occurrences ([#398](https://github.com/seejohnrun/ice_cube/pull/398))
+- Realign first wday for monday-based weekly rules ([#402](https://github.com/seejohnrun/ice_cube/pull/402))
+- Fix weekly realignment for `spans: true` option ([#402](https://github.com/seejohnrun/ice_cube/pull/402))
 
 ## [0.16.1] - 2017-05-03
 ### Added
-- Add pt-BR i18n locale (#388)
+- Add pt-BR i18n locale ([#388](https://github.com/seejohnrun/ice_cube/pull/388))
 
 ### Fixed
-- Misaligned first weekly occurrence (#387)
+- Misaligned first weekly occurrence ([#387](https://github.com/seejohnrun/ice_cube/pull/387))
 
 ## [0.16.0] - 2017-04-12
 ### Added
 - Support for Ruby 2.4
 
 ### Changed
-- Raise ArgumentError on empty values for remaining rules (#373)
+- Raise ArgumentError on empty values for remaining rules ([#373](https://github.com/seejohnrun/ice_cube/pull/373))
 
 ### Fixed
-- Fix biweekly realign with spans option (#377)
-- Fix `day_of_year` with negative offsets (#326)
-- Fix weekly rule alignment with non-Sunday week start (#383)
+- Fix biweekly realign with spans option ([#377](https://github.com/seejohnrun/ice_cube/pull/377))
+- Fix `day_of_year` with negative offsets ([#326](https://github.com/seejohnrun/ice_cube/pull/326))
+- Fix weekly rule alignment with non-Sunday week start ([#383](https://github.com/seejohnrun/ice_cube/pull/383))
 
 ## [0.15.0] - 2017-01-27
 ### Added
@@ -48,15 +48,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Support testing with different `RAILS_VERSION`
-- Support "until" Date with local Time conversion (#327)
+- Support "until" Date with local Time conversion ([#327](https://github.com/seejohnrun/ice_cube/pull/327))
 - Validate rules (and raise ArgumentError) on empty `from_hash`
 
 ### Fixed
-- Fix validations on `Rule.from_hash` with empty array (#281)
+- Fix validations on `Rule.from_hash` with empty array ([#281](https://github.com/seejohnrun/ice_cube/pull/281))
 
 ## [0.14.0] - 2016-02-23
 ### Added
-- Option to include prior occurrences with overlapping duration (#302)
+- Option to include prior occurrences with overlapping duration ([#302](https://github.com/seejohnrun/ice_cube/pull/302))
 
 ## [0.13.3] - 2016-01-30
 ### Changed
@@ -70,20 +70,20 @@ No changes.
 ## [0.13.1] - 2015-12-07
 ### Added
 - I18n support!
-- Option to include prior occurrences with overlapping duration (#154)
+- Option to include prior occurrences with overlapping duration ([#154](https://github.com/seejohnrun/ice_cube/pull/154))
 
 ## [0.13.0] - 2015-05-26
 
 NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 
 ### Added
-- Add `from_ical`! (#258)
+- Add `from_ical`! ([#258](https://github.com/seejohnrun/ice_cube/pull/258))
 
 ### Fixed
-- Method arity for `ActiveSupport::TimeZone.to_s` (#255)
+- Method arity for `ActiveSupport::TimeZone.to_s` ([#255](https://github.com/seejohnrun/ice_cube/pull/255))
 - Fix whole-day skip with date inputs
-- Missed times selected from gap week with weekly interval > 1 (#241)
-- Fix `occurs_on?` miss near midnight for DST (#245)
+- Missed times selected from gap week with weekly interval > 1 ([#241](https://github.com/seejohnrun/ice_cube/pull/241))
+- Fix `occurs_on?` miss near midnight for DST ([#245](https://github.com/seejohnrun/ice_cube/pull/245))
  
 ## [0.12.1] - 2014-07-04
 ### Added
@@ -95,20 +95,20 @@ NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 
 ### Fixed
 - Coerce validation intervals to Fixnum
-- Fix YAML serialization on blank values in ActiveRecord (#231)
+- Fix YAML serialization on blank values in ActiveRecord ([#231](https://github.com/seejohnrun/ice_cube/pull/231))
 - Yearly interval should return self like others
 
 ## [0.12.0] - 2014-04-06
 
 ### Added
-- Rename to `start_time` as a hash key (see UPGRADING) (#102)
-- Notify of deprecated usage (#219)
+- Rename to `start_time` as a hash key (see UPGRADING) ([#102](https://github.com/seejohnrun/ice_cube/pull/102))
+- Notify of deprecated usage ([#219](https://github.com/seejohnrun/ice_cube/pull/219))
 
 ### Fixed
-- Skip double occurrences over DST (#189)
+- Skip double occurrences over DST ([#189](https://github.com/seejohnrun/ice_cube/pull/189))
 - Avoid symbolizing hash keys from input
-- Ensure time comparisons are done in schedule time zone (#209)
-- Occurrence#overnight? now works on the last day of the month (#218)
+- Ensure time comparisons are done in schedule time zone ([#209](https://github.com/seejohnrun/ice_cube/pull/209))
+- Occurrence#overnight? now works on the last day of the month ([#218](https://github.com/seejohnrun/ice_cube/pull/218))
 
 ## [0.11.3] - 2014-02-07
 ### Fixed
@@ -131,49 +131,49 @@ NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 
 ## [0.11.0] - 2013-06-13
 ### Added
-- `schedule.last(n)` method (#117)
-- `previous_occurrence` & `previous_occurrences` methods (#170)
+- `schedule.last(n)` method ([#117](https://github.com/seejohnrun/ice_cube/pull/117))
+- `previous_occurrence` & `previous_occurrences` methods ([#170](https://github.com/seejohnrun/ice_cube/pull/170))
 
 ### Fixed
 - Occurrence `to_s` accepts format to comply with Rails
 
 ## [0.10.1] - 2013-05-17
 ### Changed
-- Accept arrays in multiparameter DSL methods (#139)
+- Accept arrays in multiparameter DSL methods ([#139](https://github.com/seejohnrun/ice_cube/pull/139))
 
 ### Fixed
-- Match time zone from schedule when finding times (#152)
-- Reliably calculate distance to same day in next month (#171)
-- Updating interval on a rule shouldn't leave duplicate validations (#158) (#157)
-- Allow Occurrence to work transparently with Arel (#168)
-- Raise errors for invalid input (#139)
+- Match time zone from schedule when finding times ([#152](https://github.com/seejohnrun/ice_cube/pull/152))
+- Reliably calculate distance to same day in next month ([#171](https://github.com/seejohnrun/ice_cube/pull/171))
+- Updating interval on a rule shouldn't leave duplicate validations ([#158](https://github.com/seejohnrun/ice_cube/pull/158)) ([#157](https://github.com/seejohnrun/ice_cube/pull/157))
+- Allow Occurrence to work transparently with Arel ([#168](https://github.com/seejohnrun/ice_cube/pull/168))
+- Raise errors for invalid input ([#139](https://github.com/seejohnrun/ice_cube/pull/139))
 
 ## [0.10.0] - 2013-02-25
 ### Added
-- Add support for `week_start` (@masquita) (#75)
-- Schedule occurrences have end times (#119)
+- Add support for `week_start` (@masquita) ([#75](https://github.com/seejohnrun/ice_cube/pull/75))
+- Schedule occurrences have end times ([#119](https://github.com/seejohnrun/ice_cube/pull/119))
 
 ### Changed
-- Add block initialization, new schedule yields itself (#146)
-- Warn on use of DateTime and convert to local Time (#144)
-- Start time counts as an implicit occurrence (no more empty schedule) (#135)
+- Add block initialization, new schedule yields itself ([#146](https://github.com/seejohnrun/ice_cube/pull/146))
+- Warn on use of DateTime and convert to local Time ([#144](https://github.com/seejohnrun/ice_cube/pull/144))
+- Start time counts as an implicit occurrence (no more empty schedule) ([#135](https://github.com/seejohnrun/ice_cube/pull/135))
 
 ### Fixed
-- Fix monthly intervals to not skip short months (#105)
-- Fix `occurring_between?` for zero-length occurrences at start boundary (#147)
-- Bug fix for count limit across multiple rules (#149)
-- Fix occurrences in DST transition (#150)
+- Fix monthly intervals to not skip short months ([#105](https://github.com/seejohnrun/ice_cube/pull/105))
+- Fix `occurring_between?` for zero-length occurrences at start boundary ([#147](https://github.com/seejohnrun/ice_cube/pull/147))
+- Bug fix for count limit across multiple rules ([#149](https://github.com/seejohnrun/ice_cube/pull/149))
+- Fix occurrences in DST transition ([#150](https://github.com/seejohnrun/ice_cube/pull/150))
 
 ## [0.9.3] - 2013-01-03
 ### Added
-- Duration is dependent upon `end_time` (#120)
+- Duration is dependent upon `end_time` ([#120](https://github.com/seejohnrun/ice_cube/pull/120))
 
 ### Changed
 - Duration defaults to 0
 
 ### Fixed
-- Match the subseconds of `start_time` when finding occurrences (#89)
-- Avoid microseconds when comparing times (#83)
+- Match the subseconds of `start_time` when finding occurrences ([#89](https://github.com/seejohnrun/ice_cube/pull/89))
+- Avoid microseconds when comparing times ([#83](https://github.com/seejohnrun/ice_cube/pull/83))
 - Handle DateTime's lack of subseconds
 
 ## [0.9.2] - 2012-12-08
@@ -182,24 +182,24 @@ NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 
 ## [0.9.1] - 2012-10-19
 ### Fixed
-- A fix for removing `until` validations (#106)
+- A fix for removing `until` validations ([#106](https://github.com/seejohnrun/ice_cube/pull/106))
 - A DST edge fix
 
 ## [0.9.0] - 2012-10-12
 ### Added
-- Fix the effect on `end_time` on IceCube::Schedule (#99)
-- Allow deserialization of string structures easily (#93)
-- Added `occurring_between?` (#88)
+- Fix the effect on `end_time` on IceCube::Schedule ([#99](https://github.com/seejohnrun/ice_cube/pull/99))
+- Allow deserialization of string structures easily ([#93](https://github.com/seejohnrun/ice_cube/pull/93))
+- Added `occurring_between?` ([#88](https://github.com/seejohnrun/ice_cube/pull/88))
 
 ### Changed
-- Remove `end_time` from `to_s` (#99)
+- Remove `end_time` from `to_s` ([#99](https://github.com/seejohnrun/ice_cube/pull/99))
 
 ### Fixed
-- Single recurrences now work properly with `conflict_with?` (#71)
-- Fix a bug with interval > 1 when using `occurrences_between` (#92)
-- Allow count, until removal by setting to nil (#94)
-- Ignore usecs when creating Time.now for `*_occurrences` (#84)
-- DST bug fix (#98)
+- Single recurrences now work properly with `conflict_with?` ([#71](https://github.com/seejohnrun/ice_cube/pull/71))
+- Fix a bug with interval > 1 when using `occurrences_between` ([#92](https://github.com/seejohnrun/ice_cube/pull/92))
+- Allow count, until removal by setting to nil ([#94](https://github.com/seejohnrun/ice_cube/pull/94))
+- Ignore usecs when creating Time.now for `*_occurrences` ([#84](https://github.com/seejohnrun/ice_cube/pull/84))
+- DST bug fix ([#98](https://github.com/seejohnrun/ice_cube/pull/98))
 
 ## [0.8.0]
 ### Added
@@ -223,7 +223,7 @@ NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 
 ## [0.7.5]
 ### Fixed
-- Fix an issue with `occurrences_between` when using count (#54)
+- Fix an issue with `occurrences_between` when using count ([#54](https://github.com/seejohnrun/ice_cube/pull/54))
 
 ## [0.7.4]
 ### Fixed
@@ -309,11 +309,11 @@ NOTE: the commit for the _v0.13.0_ release tag incorrectly says _Release 0.13.1_
 
 ## [0.6.0]
 ### Changed
-- Changed how time serialization is done to preserve TimeWithZone when appropriate. (#8)
+- Changed how time serialization is done to preserve TimeWithZone when appropriate. ([#8](https://github.com/seejohnrun/ice_cube/pull/8))
 - Backward compatibility is intact, but bumping the minor version for the YAML format change.
 
 ### Fixed
-- Fixed next occurrence to work on never-ending schedules (#11)
+- Fixed next occurrence to work on never-ending schedules ([#11](https://github.com/seejohnrun/ice_cube/pull/11))
 
 [Unreleased]: https://github.com/seejohnrun/ice_cube/compare/v0.16.4...HEAD
 [0.16.4]: https://github.com/seejohnrun/ice_cube/compare/v0.16.3...v0.16.4
