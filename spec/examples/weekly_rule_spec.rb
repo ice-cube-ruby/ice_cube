@@ -288,6 +288,19 @@ module IceCube
         expect(schedule.next_occurrence(sample[2] - 1)).to eq(sample[2])
       end
 
+      it "should respect weekly intervals within narrow occurrence ranges" do
+        start_time = Time.utc(2020, 10, 27, 7, 0, 0)
+        schedule = Schedule.new(start_time, end_time: start_time + ONE_HOUR)
+        occurrence_start = Time.utc(2020, 11, 5, 0, 0, 0)
+        occurrence_end = Time.utc(2020, 11, 5, 23, 59, 59)
+
+        schedule.add_recurrence_rule IceCube::Rule.weekly(2).day(:thursday).hour_of_day(13)
+        schedule.add_recurrence_rule IceCube::Rule.weekly(1).day(:thursday).hour_of_day(12)
+        expect(schedule.occurrences_between(occurrence_start, occurrence_end)).to eq([
+          Time.utc(2020, 11, 5, 12, 0, 0)
+        ])
+      end
+
       it "should align next_occurrence with first valid weekday when schedule starts on a Wednesday" do
         t0 = Time.utc(2017, 6, 7)
         schedule = IceCube::Schedule.new(t0)
