@@ -1,7 +1,8 @@
 # ice_cube - Easy schedule expansion
 
-[![Build Status][travis-ice_cube-badge_image]][travis-ice_cube]
+[![Tests](https://github.com/seejohnrun/ice_cube/actions/workflows/tests.yaml/badge.svg)](https://github.com/seejohnrun/ice_cube/actions/workflows/tests.yaml)
 [![Gem Version](https://badge.fury.io/rb/ice_cube.svg)](http://badge.fury.io/rb/ice_cube)
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
 
 ```bash
 gem install ice_cube
@@ -31,7 +32,7 @@ schedule.add_recurrence_rule(
 
 ## Quick Introductions
 
-* [Presentation from Lone Star Ruby Conf][ice_cube-lone_star_pdf]
+* Presentation from Lone Star Ruby Conf ([slides][ice_cube-lone_star_pdf], [YouTube](https://youtu.be/dOMW0WcvvRc))
 * [Quick Introduction][ice_cube-ruby_nyc_pdf]
 * [Documentation Website][ice_cube-docs]
 
@@ -43,9 +44,13 @@ With ice_cube, you can specify (in increasing order of precedence):
 * Recurrence Times - To specifically include in a schedule
 * Exception Times - To specifically exclude from a schedule
 
-Example: Specifying a recurrence with an exception time
+Example: Specifying a recurrence with an exception time. Requires "rails/activesupport" (`gem install 'activesupport'`).
+
 
 ```ruby
+require 'ice_cube'
+require 'active_support/time'
+
 schedule = IceCube::Schedule.new(now = Time.now) do |s|
   s.add_recurrence_rule(IceCube::Rule.daily.count(4))
   s.add_exception_time(now + 1.day)
@@ -319,5 +324,5 @@ Use the GitHub [issue tracker][ice_cube-issues]
 [travis-ice_cube-badge_image]: https://secure.travis-ci.org/seejohnrun/ice_cube.svg
 [ice_cube-lone_star_pdf]: http://seejohnrun.github.com/ice_cube/static/lsrc_ice_cube.pdf
 [ice_cube-ruby_nyc_pdf]: http://seejohnrun.github.com/ice_cube/static/ice_cube_ruby_nyc.pdf
-[ice_cube-docs]: http://seejohnrun.github.com/ice_cube/
+[ice_cube-docs]: http://seejohnrun.github.io/ice_cube/
 [ice_cube-issues]: https://github.com/seejohnrun/ice_cube/issues

@@ -1,6 +1,5 @@
 module IceCube
   class InputAlignment
-
     def initialize(rule, value, rule_part)
       @rule = rule
       @value = value
@@ -9,7 +8,7 @@ module IceCube
 
     attr_reader :rule, :value, :rule_part
 
-    def verify(freq, options={}, &block)
+    def verify(freq, options = {}, &block)
       @rule.validations[:interval] or return
 
       case @rule
@@ -29,7 +28,7 @@ module IceCube
     end
 
     def interval_value
-      @interval_value ||= (rule_part == :interval) ? value : interval_validation.interval
+      @interval_value ||= rule_part == :interval ? value : interval_validation.interval
     end
 
     def fixed_validations
@@ -47,13 +46,13 @@ module IceCube
       alignment = (value - last_validation.value) % interval_validation.interval
       return if alignment.zero?
 
-      validation_values = fixed_validations.map(&:value).join(', ')
-      if rule_part == :interval
-        message = "interval(#{value}) " \
+      validation_values = fixed_validations.map(&:value).join(", ")
+      message = if rule_part == :interval
+        "interval(#{value}) " \
                   "must be a multiple of " \
                   "intervals in #{last_validation.key}(#{validation_values})"
       else
-        message = "intervals in #{last_validation.key}(#{validation_values}, #{value}) " \
+        "intervals in #{last_validation.key}(#{validation_values}, #{value}) " \
                   "must be multiples of " \
                   "interval(#{interval_validation.interval})"
       end
@@ -84,6 +83,5 @@ module IceCube
 
       yield ArgumentError.new(message)
     end
-
   end
 end
