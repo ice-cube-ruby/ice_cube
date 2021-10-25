@@ -1,7 +1,5 @@
 module IceCube
-
   module Validations::DayOfYear
-
     def day_of_year(*days)
       days.flatten.each do |day|
         unless day.is_a?(Integer)
@@ -14,7 +12,6 @@ module IceCube
     end
 
     class Validation
-
       attr_reader :day
 
       def initialize(day)
@@ -45,17 +42,14 @@ module IceCube
       end
 
       def build_ical(builder)
-        builder['BYYEARDAY'] << day
+        builder["BYYEARDAY"] << day
       end
 
       StringBuilder.register_formatter(:day_of_year) do |entries|
-        str =  StringBuilder.sentence(entries)
-        sentence = IceCube::I18n.t('ice_cube.days_of_year', count: entries.size, segments: str)
-        IceCube::I18n.t('ice_cube.on', sentence: sentence)
+        str = StringBuilder.sentence(entries)
+        sentence = IceCube::I18n.t("ice_cube.days_of_year", count: entries.size, segments: str)
+        IceCube::I18n.t("ice_cube.on", sentence: sentence)
       end
-
     end
-
   end
-
 end
