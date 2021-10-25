@@ -6,7 +6,7 @@ describe IceCube::Schedule, "to_s" do
   end
 
   after :all do
-    I18n.locale = :id
+    I18n.locale = :en
   end
 
   it "should represent its start time by default" do
