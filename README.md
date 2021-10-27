@@ -91,17 +91,17 @@ schedule.previous_occurrence(from_time)
 schedule.previous_occurrences(4, from_time)
 
 # or include prior occurrences with a duration overlapping from_time
-schedule.next_occurrences(4, from_time, :spans => true)
-schedule.occurrences_between(from_time, to_time, :spans => true)
+schedule.next_occurrences(4, from_time, spans: true)
+schedule.occurrences_between(from_time, to_time, spans: true)
 
 # or give the schedule a duration and ask if occurring_at?
-schedule = IceCube::Schedule.new(now, :duration => 3600)
+schedule = IceCube::Schedule.new(now, duration: 3600)
 schedule.add_recurrence_rule IceCube::Rule.daily
 schedule.occurring_at?(now + 1800) # true
 schedule.occurring_between?(t1, t2)
 
 # using end_time also sets the duration
-schedule = IceCube::Schedule.new(start = Time.now, :end_time => start + 3600)
+schedule = IceCube::Schedule.new(start = Time.now, end_time: start + 3600)
 schedule.add_recurrence_rule IceCube::Rule.daily
 schedule.occurring_at?(start + 3599) # true
 schedule.occurring_at?(start + 3600) # false
@@ -162,7 +162,7 @@ ice_cube can provide ical or string representations of individual rules, or the
 whole schedule.
 
 ```ruby
-rule = IceCube::Rule.daily(2).day_of_week(:tuesday => [1, -1], :wednesday => [2])
+rule = IceCube::Rule.daily(2).day_of_week(tuesday: [1, -1], wednesday: [2])
 
 rule.to_ical # 'FREQ=DAILY;INTERVAL=2;BYDAY=1TU,-1TU,2WE'
 
@@ -218,12 +218,12 @@ month (e.g. no occurrences in February for `day_of_month(31)`).
 
 ```ruby
 # every month on the first and last tuesdays of the month
-schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_week(:tuesday => [1, -1])
+schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_week(tuesday: [1, -1])
 
 # every other month on the first monday and last tuesday
 schedule.add_recurrence_rule IceCube::Rule.monthly(2).day_of_week(
-  :monday => [1],
-  :tuesday => [-1]
+  monday: [1],
+  tuesday: [-1]
 )
 
 # for programmatic convenience (same as above)
@@ -270,7 +270,7 @@ schedule.add_recurrence_rule IceCube::Rule.hourly(2).day(:monday)
 schedule.add_recurrence_rule IceCube::Rule.minutely(10)
 
 # every hour and a half, on the last tuesday of the month
-schedule.add_recurrence_rule IceCube::Rule.minutely(90).day_of_week(:tuesday => [-1])
+schedule.add_recurrence_rule IceCube::Rule.minutely(90).day_of_week(tuesday: [-1])
 ```
 
 ### Secondly (every N seconds)
