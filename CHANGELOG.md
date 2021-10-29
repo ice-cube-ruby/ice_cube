@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix for weekly interval results when requesting `occurrences_between` on a narrow range ([#487](https://github.com/seejohnrun/ice_cube/pull/487)) by [@jakebrady5](https://github.com/jakebrady5)
 - When using a rule with hour_of_day validations, and asking for occurrences on the day that DST skips forward, valid occurrences would be missed. ([#464](https://github.com/seejohnrun/ice_cube/pull/464)) by [@jakebrady5](https://github.com/jakebrady5)
+- Fix for daily rules with intervals > 1 selecting the wrong start date for the first occurrence ([#515](https://github.com/seejohnrun/ice_cube/pull/515)) by [@pacso](https://github.com/pacso) 
 
 ## [0.16.4] - 2021-10-21
 ### Added

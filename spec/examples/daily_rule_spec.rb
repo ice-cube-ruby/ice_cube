@@ -112,6 +112,18 @@ module IceCube
       ])
     end
 
+    it "should set the first occurrance to the first valid time after schedule start" do
+      schedule = Schedule.new(Time.local(2013, 3, 8, 10, 0, 0))
+      schedule.add_recurrence_rule Rule.daily(1).hour_of_day(9)
+      expect(schedule.first).to eq(Time.local(2013, 3, 9, 9, 0, 0))
+    end
+
+    it "should set the first occurrance to the first valid time after schedule start with interval > 1" do
+      schedule = Schedule.new(Time.local(2013, 3, 8, 10, 0, 0))
+      schedule.add_recurrence_rule Rule.daily(4).hour_of_day(9)
+      expect(schedule.first).to eq(Time.local(2013, 3, 9, 9, 0, 0))
+    end
+
     describe "day validation" do
       it "allows multiples of 7" do
         expect { IceCube::Rule.daily(21).day(2, 4) }.to_not raise_error
