@@ -8,8 +8,11 @@ Gem::Specification.new do |s|
   s.description = "ice_cube is a recurring date library for Ruby.  It allows for quick, programatic expansion of recurring date rules."
   s.author = "John Crepezzi"
   s.email = "john@crepezzi.com"
-  s.homepage = "http://seejohnrun.github.com/ice_cube/"
+  s.homepage = "https://seejohnrun.github.io/ice_cube/"
   s.license = "MIT"
+
+  s.metadata["changelog_uri"] = "https://github.com/seejohnrun/ice_cube/blob/master/CHANGELOG.md"
+  s.metadata["wiki_uri"] = "https://github.com/seejohnrun/ice_cube/wiki"
 
   s.version = IceCube::VERSION
   s.platform = Gem::Platform::RUBY
