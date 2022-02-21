@@ -60,7 +60,6 @@ module IceCube
 
     def apply_exrules(schedule, data)
       return unless data[:exrules]
-      warn "IceCube: :exrules is deprecated, and will be removed in a future release. at: #{caller(1..1).first}"
       data[:exrules].each do |h|
         rrule = h.is_a?(IceCube::Rule) ? h : IceCube::Rule.from_hash(h)
 

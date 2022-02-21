@@ -132,6 +132,18 @@ module IceCube
       expect(schedule.first(10).map { |r| r.to_s }).to eq(schedule2.first(10).map { |r| r.to_s })
     end
 
+    it "should be able to make a round-trip to YAML whilst preserving exception rules" do
+      original_schedule = Schedule.new(Time.now)
+      original_schedule.add_recurrence_rule Rule.daily.day(:monday, :wednesday)
+      original_schedule.add_exception_rule Rule.daily.day(:wednesday)
+
+      yaml_string = original_schedule.to_yaml
+      returned_schedule = Schedule.from_yaml(yaml_string)
+
+      # compare without usecs
+      expect(returned_schedule.first(10).map { |r| r.to_s }).to eq(original_schedule.first(10).map { |r| r.to_s })
+    end
+
     it "should have a to_yaml representation of a rule that does not contain ruby objects" do
       rule = Rule.daily.day_of_week(monday: [1, -1]).month_of_year(:april)
       expect(rule.to_yaml.include?("object")).to be_falsey

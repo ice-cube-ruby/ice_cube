@@ -358,9 +358,7 @@ module IceCube
       data[:start_date] = data[:start_time] if IceCube.compatibility <= 11
       data[:end_time] = TimeUtil.serialize_time(end_time) if end_time
       data[:rrules] = recurrence_rules.map(&:to_hash)
-      if IceCube.compatibility <= 11 && exception_rules.any?
-        data[:exrules] = exception_rules.map(&:to_hash)
-      end
+      data[:exrules] = exception_rules.map(&:to_hash) if exception_rules.any?
       data[:rtimes] = recurrence_times.map do |rt|
         TimeUtil.serialize_time(rt)
       end
