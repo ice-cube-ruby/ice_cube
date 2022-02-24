@@ -46,9 +46,13 @@ jobs:
         ruby: ['2.6', '2.7', '3.0', '3.1']
         exclude:
           - rails: '5.2'
-            ruby: ['3.0', '3.1']
+            ruby: '3.0'
+          - rails: '5.2'
+            ruby: '3.1'
           - rails: '7.0'
-            ruby: ['2.6', '2.7']
+            ruby: '2.6'
+          - rails: '7.0'
+            ruby: '2.7'
     runs-on: ubuntu-latest
     env:
       RAILS_VERSION: ${{ matrix.rails }}
