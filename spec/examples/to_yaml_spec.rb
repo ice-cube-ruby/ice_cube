@@ -78,14 +78,15 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML with .day_of_year" do
-      schedule = Schedule.new(Time.now)
-      schedule.add_recurrence_rule Rule.yearly.day_of_year(100, 200)
+      schedule1 = Schedule.new(Time.now)
+      schedule1.add_recurrence_rule Rule.yearly.day_of_year(100, 200)
 
-      yaml_string = schedule.to_yaml
+      yaml_string = schedule1.to_yaml
       schedule2 = Schedule.from_yaml(yaml_string)
 
       # compare without usecs
-      expect(schedule.first(10).map { |r| r.to_s }).to eq(schedule2.first(10).map { |r| r.to_s })
+      expect(schedule2.first(10).map { |r| r.to_s })
+        .to eq(schedule1.first(10).map { |r| r.to_s })
     end
 
     it "should be able to make a round-trip to YAML with .hour_of_day" do
@@ -184,7 +185,7 @@ module IceCube
       schedule2 = Schedule.from_yaml(schedule1.to_yaml) # round trip
 
       end_time = Time.now + ONE_DAY
-      expect(schedule1.occurrences(end_time)).to eq(schedule2.occurrences(end_time))
+      expect(schedule2.occurrences(end_time)).to eq(schedule1.occurrences(end_time))
     end
 
     it "should be able to make a round trip with an exception time" do
@@ -323,7 +324,8 @@ module IceCube
 
       symbol_yaml = Schedule.from_hash(symbol_data).to_yaml
       string_yaml = Schedule.from_hash(string_data).to_yaml
-      expect(YAML.load(symbol_yaml)).to eq(YAML.load(string_yaml))
+      expect(YAML.safe_load(symbol_yaml, permitted_classes: [Symbol, Time]))
+        .to eq(YAML.safe_load(string_yaml, permitted_classes: [Symbol, Time]))
     end
 
     it "should raise an ArgumentError when trying to deserialize an invalid rule type" do
