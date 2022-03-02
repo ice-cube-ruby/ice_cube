@@ -42,7 +42,7 @@ module IceCube
 
     # From yaml
     def self.from_yaml(yaml)
-      from_hash YAML.load(yaml)
+      from_hash YAML.safe_load(yaml, permitted_classes: [Date, Symbol, Time])
     end
 
     def to_hash

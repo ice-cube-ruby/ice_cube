@@ -15,7 +15,7 @@ describe IceCube::Schedule do
       let(:start_time) { Time.now.in_time_zone("America/Vancouver") }
 
       it "serializes time as a Hash" do
-        hash = YAML.load(yaml)
+        hash = YAML.safe_load(yaml, permitted_classes: [Symbol, Time])
         expect(hash[:start_time][:time]).to eq start_time.utc
         expect(hash[:start_time][:zone]).to eq "America/Vancouver"
       end
