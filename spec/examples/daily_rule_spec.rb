@@ -106,10 +106,25 @@ module IceCube
       schedule.add_recurrence_rule Rule.daily(4).hour_of_day(5).minute_of_hour(45)
       # check assumption 2 -- 1 (2) (3) (4) 5 (6)
       times = schedule.occurrences(t0 + 5 * ONE_DAY)
-      expect(times).to eq([
-        t0 + 5 * ONE_HOUR + 45 * ONE_MINUTE,
-        t0 + 4 * ONE_DAY + 5 * ONE_HOUR + 45 * ONE_MINUTE
-      ])
+      expect(times)
+        .to eq([
+          t0 + 5 * ONE_HOUR + 45 * ONE_MINUTE,
+          t0 + 4 * ONE_DAY + 5 * ONE_HOUR + 45 * ONE_MINUTE
+        ])
+    end
+
+    it "selects the first possible starting occurrence before starting interval" do
+      schedule_start = Time.new(2021, 3, 28, 10, 0, 0, "+00:00")
+      end_time = Time.new(2021, 4, 7, 23, 59, 59, "+00:00")
+      rule = IceCube::Rule.daily(4).hour_of_day(9).minute_of_hour(0).second_of_minute(0)
+      schedule = IceCube::Schedule.new(schedule_start) { |s| s.add_recurrence_rule(rule) }
+
+      expect(schedule.occurrences(end_time))
+        .to eq([
+          Time.new(2021, 3, 29, 9, 0, 0, "+00:00"),
+          Time.new(2021, 4, 2, 9, 0, 0, "+00:00"),
+          Time.new(2021, 4, 6, 9, 0, 0, "+00:00")
+        ])
     end
 
     describe "day validation" do
