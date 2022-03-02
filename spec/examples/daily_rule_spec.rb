@@ -31,44 +31,44 @@ module IceCube
         schedule = Schedule.new(Time.local(2013, 3, 9, 2, 30, 0))
         schedule.add_recurrence_rule Rule.daily
         expect(schedule.first(3)).to eq([
-                                          Time.local(2013, 3, 9, 2, 30, 0), # -0800
-                                          Time.local(2013, 3, 10, 3, 30, 0), # -0700
-                                          Time.local(2013, 3, 11, 2, 30, 0) # -0700
-                                        ])
+          Time.local(2013, 3, 9, 2, 30, 0), # -0800
+          Time.local(2013, 3, 10, 3, 30, 0), # -0700
+          Time.local(2013, 3, 11, 2, 30, 0) # -0700
+        ])
       end
 
       it "should not skip times in DST end hour" do
         schedule = Schedule.new(Time.local(2013, 11, 2, 2, 30, 0))
         schedule.add_recurrence_rule Rule.daily
         expect(schedule.first(3)).to eq([
-                                          Time.local(2013, 11, 2, 2, 30, 0), # -0700
-                                          Time.local(2013, 11, 3, 2, 30, 0), # -0800
-                                          Time.local(2013, 11, 4, 2, 30, 0) # -0800
-                                        ])
+          Time.local(2013, 11, 2, 2, 30, 0), # -0700
+          Time.local(2013, 11, 3, 2, 30, 0), # -0800
+          Time.local(2013, 11, 4, 2, 30, 0) # -0800
+        ])
       end
 
       it "should include nearest time to DST start when locking hour_of_day" do
         schedule = Schedule.new(Time.local(2013, 3, 9, 2, 0, 0))
         schedule.add_recurrence_rule Rule.daily.hour_of_day(2)
         expect(schedule.first(3)).to eq([
-                                          Time.local(2013, 3, 9, 2, 0, 0), # -0800
-                                          Time.local(2013, 3, 10, 3, 0, 0), # -0700
-                                          Time.local(2013, 3, 11, 2, 0, 0) # -0700
-                                        ])
+          Time.local(2013, 3, 9, 2, 0, 0), # -0800
+          Time.local(2013, 3, 10, 3, 0, 0), # -0700
+          Time.local(2013, 3, 11, 2, 0, 0) # -0700
+        ])
       end
 
       it "should not skip days where DST changes" do
         start_time = Time.local(2013, 3, 10, 0, 0, 0)
-        schedule   = Schedule.new(start_time)
+        schedule = Schedule.new(start_time)
         schedule.add_recurrence_rule Rule.daily.hour_of_day(19)
         expect(schedule.occurrences_between(start_time, start_time + ONE_DAY)).to eq([
-                                                                                       Time.local(2013, 3, 10, 19, 0, 0)
-                                                                                     ])
+          Time.local(2013, 3, 10, 19, 0, 0)
+        ])
       end
     end
 
     it "should update previous interval" do
-      t0   = Time.now
+      t0 = Time.now
       rule = Rule.daily(7)
       rule.interval(5)
       expect(rule.next_time(t0 + 1, t0, nil)).to eq(t0 + 5 * ONE_DAY)
@@ -106,24 +106,25 @@ module IceCube
       schedule.add_recurrence_rule Rule.daily(4).hour_of_day(5).minute_of_hour(45)
       # check assumption 2 -- 1 (2) (3) (4) 5 (6)
       times = schedule.occurrences(t0 + 5 * ONE_DAY)
-      expect(times).to eq([
-                            t0 + 5 * ONE_HOUR + 45 * ONE_MINUTE,
-                            t0 + 4 * ONE_DAY + 5 * ONE_HOUR + 45 * ONE_MINUTE
-                          ])
+      expect(times)
+        .to eq([
+          t0 + 5 * ONE_HOUR + 45 * ONE_MINUTE,
+          t0 + 4 * ONE_DAY + 5 * ONE_HOUR + 45 * ONE_MINUTE
+        ])
     end
 
     it "selects the first possible starting occurrence before starting interval" do
-      schedule_start = Time.new(2021, 3, 28, 10, 0, 0, 'UTC')
-      end_time       = Time.new(2021, 4, 7, 23, 59, 59, 'UTC')
-      rule           = IceCube::Rule.daily(4).hour_of_day(9).minute_of_hour(0).second_of_minute(0)
-      schedule       = IceCube::Schedule.new(schedule_start) { |s| s.add_recurrence_rule(rule) }
+      schedule_start = Time.new(2021, 3, 28, 10, 0, 0, "UTC")
+      end_time = Time.new(2021, 4, 7, 23, 59, 59, "UTC")
+      rule = IceCube::Rule.daily(4).hour_of_day(9).minute_of_hour(0).second_of_minute(0)
+      schedule = IceCube::Schedule.new(schedule_start) { |s| s.add_recurrence_rule(rule) }
 
       expect(schedule.occurrences(end_time))
         .to eq([
-                 Time.new(2021, 3, 29, 9, 0, 0, "UTC"),
-                 Time.new(2021, 4, 2, 9, 0, 0, "UTC"),
-                 Time.new(2021, 4, 6, 9, 0, 0, "UTC")
-               ])
+          Time.new(2021, 3, 29, 9, 0, 0, "UTC"),
+          Time.new(2021, 4, 2, 9, 0, 0, "UTC"),
+          Time.new(2021, 4, 6, 9, 0, 0, "UTC")
+        ])
     end
 
     describe "day validation" do
