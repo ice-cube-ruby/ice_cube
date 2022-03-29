@@ -263,6 +263,17 @@ module IceCube
       end
     end
 
+    # Returns the timezone delta (seconds) between 2 times.
+    # - For times in the same timezone this will return 0.
+    # - For times than span offsets (think Daylight Savings time to Standard Time)
+    #   this number will be positive or negative, depening if you "spring foward" or "fall back".
+    # - The order of arguments is important, in 99% of use cases t0 is a date *before* t1 (aka time only moves foward).
+    # - For "fall back" this will be positive, aka we gained time (usually an hour, 3600)
+    # - For "spring foward" this will be negative, aka we lost time (usually an hour, -3600)
+    def self.zone_offset_delta(t0, t1)
+      t0.utc_offset - t1.utc_offset
+    end
+
     # A utility class for safely moving time around
     class TimeWrapper
       def initialize(time, dst_adjust = true)
