@@ -805,14 +805,14 @@ describe IceCube::Schedule do
     # Now it reverts back to 1:15 am local time, as expected
     expect(next_occurrences[2]).to eq(Time.zone.parse('2022-04-03T01:15:00+0100'))
 
-    from_time = start_time + 7.days - 75.minutes - 2.seconds # 2022-03-26 23:59:58 +0000
+    from_time = Time.zone.parse('2022-03-26T23:59:58+0000')
     # Below we expect 2:15 am local time, because 1:15 am local time does not exist
     next_occurrences = schedule.next_occurrences(3, from_time)
     expect(next_occurrences[0]).to eq(Time.zone.parse('2022-03-27T02:15:00+0100'))
     # Now it reverts back to 1:15 am local time, as expected
     expect(next_occurrences[1]).to eq(Time.zone.parse('2022-04-03T01:15:00+0100'))
 
-    from_time = start_time + 7.days - 75.minutes - 1.seconds # 2022-03-26 23:59:59 +0000
+    from_time = Time.zone.parse('2022-03-26T23:59:59+0000')
     # Below we expect 2:15 am local time, because 1:15 am local time does not exist
     next_occurrences = schedule.next_occurrences(3, from_time)
     expect(next_occurrences[0]).to eq(Time.zone.parse('2022-03-27T02:15:00+0100'))
