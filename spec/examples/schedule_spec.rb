@@ -787,6 +787,39 @@ describe IceCube::Schedule do
     end
   end
 
+  it "next_occurrences properly handles DST boundary when using byday", requires_active_support: true do
+    Time.zone = "London"
+
+    # Our schedule start on Sunday, March 20 at 1:15am local time.
+    # Note: The DST boundary is a week later on March 27; on that day 1:15 am local time does not exist.
+    start_time = Time.zone.parse('2022-03-20T01:15:00Z') # Sunday @ 1:15 am local time
+
+    schedule = IceCube::Schedule.new start_time
+    schedule.add_recurrence_rule(IceCube::Rule.from_ical('FREQ=WEEKLY;BYDAY=SU'))
+
+    from_time = start_time - 1.second
+    next_occurrences = schedule.next_occurrences(3, from_time)
+    expect(next_occurrences[0]).to eq(Time.zone.parse('2022-03-20T01:15:00+0000'))
+    # Below we expect 2:15 am local time, because 1:15 am local time does not exist
+    expect(next_occurrences[1]).to eq(Time.zone.parse('2022-03-27T02:15:00+0100'))
+    # Now it reverts back to 1:15 am local time, as expected
+    expect(next_occurrences[2]).to eq(Time.zone.parse('2022-04-03T01:15:00+0100'))
+
+    from_time = start_time + 7.days - 75.minutes - 2.seconds # 2022-03-26 23:59:58 +0000
+    # Below we expect 2:15 am local time, because 1:15 am local time does not exist
+    next_occurrences = schedule.next_occurrences(3, from_time)
+    expect(next_occurrences[0]).to eq(Time.zone.parse('2022-03-27T02:15:00+0100'))
+    # Now it reverts back to 1:15 am local time, as expected
+    expect(next_occurrences[1]).to eq(Time.zone.parse('2022-04-03T01:15:00+0100'))
+
+    from_time = start_time + 7.days - 75.minutes - 1.seconds # 2022-03-26 23:59:59 +0000
+    # Below we expect 2:15 am local time, because 1:15 am local time does not exist
+    next_occurrences = schedule.next_occurrences(3, from_time)
+    expect(next_occurrences[0]).to eq(Time.zone.parse('2022-03-27T02:15:00+0100'))
+    # UNEXPECTED FAIL: It does not revert back to 1:15 am local time, as expected
+    expect(next_occurrences[1]).to eq(Time.zone.parse('2022-04-03T01:15:00+0100'))
+  end
+
   def compare_time_zone_info(start_time)
     schedule = IceCube::Schedule.new(start_time)
     schedule.rrule IceCube::Rule.yearly(1)
