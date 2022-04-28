@@ -377,6 +377,22 @@ module IceCube
           expect(t.zone).to eq "MDT"
         end
       end
+
+      it "round trips from and to ical with time zones" do
+        original = <<-ICAL.gsub(/^\s*/, "").strip
+          DTSTART;TZID=MDT:20130731T143000
+          RRULE:FREQ=WEEKLY;UNTIL=20140730T203000Z;BYDAY=MO,WE,FR
+          RDATE;TZID=MDT:20150812T143000
+          RDATE;TZID=MDT:20150807T143000
+          EXDATE;TZID=MDT:20130823T143000
+          EXDATE;TZID=MDT:20130812T143000
+          EXDATE;TZID=MDT:20130807T143000
+          DTEND;TZID=MDT:20130731T153000
+        ICAL
+
+        schedule_from_ical = IceCube::Schedule.from_ical original
+        expect(schedule_from_ical.to_ical).to eq original
+      end
     end
 
     describe "exceptions" do
