@@ -348,6 +348,37 @@ module IceCube
       end
     end
 
+    describe "time zones" do
+      it "parses start time with the correct time zone" do
+        schedule = IceCube::Schedule.from_ical ical_string_with_multiple_rules
+
+        expect(schedule.start_time).to eq Time.find_zone!("America/Chicago").local(2015, 10, 5, 19, 55, 41)
+      end
+
+      it "parses time zones correctly" do
+        schedule = IceCube::Schedule.from_ical ical_string_with_multiple_exdates_and_rdates
+
+        utc_times = [
+          schedule.recurrence_rules.map(&:until_time)
+        ].flatten
+
+        denver_times = [
+          schedule.start_time,
+          schedule.end_time,
+          schedule.exception_times,
+          schedule.rtimes
+        ].flatten
+
+        utc_times.each do |t|
+          expect(t.zone).to eq "UTC"
+        end
+
+        denver_times.each do |t|
+          expect(t.zone).to eq "MDT"
+        end
+      end
+    end
+
     describe "exceptions" do
       it "handles single EXDATE lines, single RDATE lines" do
         start_time = Time.now
