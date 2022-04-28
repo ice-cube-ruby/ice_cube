@@ -5,7 +5,7 @@ module IceCube
       ical_string.each_line do |line|
         (property, value) = line.split(":")
         (property, tzid) = property.split(";")
-        zone = Time.find_zone(tzid) if tzid.present?
+        zone = find_zone(tzid) if tzid.present?
         case property
         when "DTSTART"
           value = {time: value, zone: zone} if zone.present?
@@ -91,6 +91,19 @@ module IceCube
       end
 
       Rule.from_hash(params)
+    end
+
+    private_class_method def self.find_zone(tzid)
+      (_, zone) = tzid&.split("=")
+      begin
+        Time.find_zone!(zone) if zone.present?
+      rescue ArgumentError
+        (rails_zone, _tzinfo_id) = ActiveSupport::TimeZone::MAPPING.find do |(k, _)|
+          Time.find_zone!(k).now.strftime("%Z") == zone
+        end
+
+        Time.find_zone(rails_zone)
+      end
     end
   end
 end
