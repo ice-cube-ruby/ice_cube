@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Added support for parsing VEVENT from iCal format (#465)
 - Indonesian translations. ([#505](https://github.com/seejohnrun/ice_cube/pull/505)) by [@achmiral](https://github.com/achmiral)
 
 ### Changed
