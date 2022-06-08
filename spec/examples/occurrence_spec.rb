@@ -28,7 +28,7 @@ describe Occurrence do
       time_now = Time.current
       occurrence = Occurrence.new(time_now)
 
-      expect(occurrence.to_s(:short)).to eq time_now.to_s(:short)
+      expect(occurrence.to_formatted_s(:short)).to eq time_now.to_formatted_s(:short)
     end
   end
 
