@@ -78,7 +78,7 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML with .day_of_year" do
-      schedule1 = Schedule.new(Time.now)
+      schedule1 = Schedule.new(Time.zone.now)
       schedule1.add_recurrence_rule Rule.yearly.day_of_year(100, 200)
 
       yaml_string = schedule1.to_yaml
@@ -112,7 +112,7 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML with .month_of_year" do
-      schedule = Schedule.new(Time.now)
+      schedule = Schedule.new(Time.zone.now)
       schedule.add_recurrence_rule Rule.yearly.month_of_year(:april, :may)
 
       yaml_string = schedule.to_yaml
