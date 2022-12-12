@@ -89,6 +89,20 @@ module IceCube
       expect(rule).to eq(IceCube::Rule.monthly.day(:monday, :wednesday).by_set_pos([-1, 1]))
     end
 
+    it 'should raise when by_set_pos is out of range (BYSETPOS)' do
+      expect {
+        IceCube::Rule.from_ical("FREQ=MONTHLY;BYDAY=MO,WE;BYSETPOS=-367")
+      }.to raise_error(/Expecting number in \[-366, -1\] or \[1, 366\]/)
+
+      expect {
+        IceCube::Rule.from_ical("FREQ=MONTHLY;BYDAY=MO,WE;BYSETPOS=367")
+      }.to raise_error(/Expecting number in \[-366, -1\] or \[1, 366\]/)
+
+      expect {
+        IceCube::Rule.from_ical("FREQ=MONTHLY;BYDAY=MO,WE;BYSETPOS=0")
+      }.to raise_error(/Expecting number in \[-366, -1\] or \[1, 366\]/)
+    end
+
     it 'should return no occurrences after daily interval with count is over' do
       schedule = IceCube::Schedule.new(Time.now)
       schedule.add_recurrence_rule(IceCube::Rule.from_ical("FREQ=DAILY;COUNT=5"))

@@ -8,8 +8,5 @@
 /spec/reports/
 /tmp/
 
-# rubymine
-.idea
-
 # rspec failure tracking
 .rspec_status
