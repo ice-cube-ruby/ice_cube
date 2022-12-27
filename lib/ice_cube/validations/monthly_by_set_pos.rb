@@ -32,11 +32,12 @@ module IceCube
       end
 
       def validate(step_time, start_time)
-        start_of_month = step_time.beginning_of_month
-        end_of_month = step_time.end_of_month
+        start_of_month = TimeUtil.build_in_zone([step_time.year, step_time.month, 1, 0, 0, 0], step_time)
+        eom_date = Date.new(step_time.year, step_time.month, -1)
+        end_of_month = TimeUtil.build_in_zone([eom_date.year, eom_date.month, eom_date.day, 23, 59, 59], step_time)
 
         # Needs to start on the first day of the month
-        new_schedule = IceCube::Schedule.new(start_of_month.change(hour: step_time.hour, min: step_time.min, sec: step_time.sec)) do |s|
+        new_schedule = IceCube::Schedule.new(IceCube::TimeUtil.build_in_zone([start_of_month.year, start_of_month.month, start_of_month.day, step_time.hour, step_time.min, step_time.sec], start_of_month)) do |s|
           s.add_recurrence_rule(IceCube::Rule.from_hash(rule.to_hash.except(:by_set_pos, :count, :until)))
         end
 

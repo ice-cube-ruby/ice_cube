@@ -34,11 +34,11 @@ module IceCube
       end
 
       def validate(step_time, start_time)
-        start_of_year = step_time.beginning_of_year
-        end_of_year = step_time.end_of_year
+        start_of_year = TimeUtil.build_in_zone([step_time.year, 1, 1, 0, 0, 0], step_time)
+        end_of_year = TimeUtil.build_in_zone([step_time.year, 12, 31, 23, 59, 59], step_time)
 
         # Needs to start on the first day of the year
-        new_schedule = IceCube::Schedule.new(start_of_year.change(hour: step_time.hour, min: step_time.min, sec: step_time.sec)) do |s|
+        new_schedule = IceCube::Schedule.new(IceCube::TimeUtil.build_in_zone([start_of_year.year, start_of_year.month, start_of_year.day, step_time.hour, step_time.min, step_time.sec], start_of_year)) do |s|
           s.add_recurrence_rule(IceCube::Rule.from_hash(rule.to_hash.except(:by_set_pos, :count, :until)))
         end
 
