@@ -2,7 +2,18 @@ module IceCube
   class IcalParser
     def self.schedule_from_ical(ical_string, options = {})
       data = {}
+
+      # First join lines that are wrapped
+      lines = []
       ical_string.each_line do |line|
+        if lines[-1] && line =~ /\A[ \t].+\z/
+          lines[-1] = lines[-1].strip + line.sub(/\A[ \t]+/, "")
+        else
+          lines << line
+        end
+      end
+
+      lines.each do |line|
         (property, value) = line.split(":")
         (property, _tzid) = property.split(";")
         case property

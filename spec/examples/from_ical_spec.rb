@@ -448,5 +448,13 @@ module IceCube
         it_behaves_like "an invalid ical string"
       end
     end
+
+    describe "ical data with wrapping" do
+      it "matches simple daily" do
+        ical_string = "DTSTART:20130314T201500Z\nDTEND:20130314T201545Z\nRRULE:FREQ=WEEKLY;BYDAY=TH;UNT\n  IL=20130531T100000Z"
+        schedule = IceCube::Schedule.from_ical(ical_string)
+        expect(schedule.to_ical.split(/\n/).select {|x| x =~ /RRULE/}.first).to eq("RRULE:FREQ=WEEKLY;UNTIL=20130531T100000Z;BYDAY=TH")
+      end
+    end
   end
 end
