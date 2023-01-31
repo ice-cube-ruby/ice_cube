@@ -10,6 +10,7 @@ module IceCube
     # include Validations::DayOfYear    # n/a
 
     include Validations::WeeklyInterval
+    include Validations::WeeklyBySetPos
 
     attr_reader :week_start
 
