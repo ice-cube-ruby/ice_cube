@@ -6,7 +6,7 @@ module IceCube
       # First join lines that are wrapped
       lines = []
       ical_string.each_line do |line|
-        if lines[-1] && line =~ /\A[ \t].+\z/
+        if lines[-1] && line =~ /\A[ \t].+/
           lines[-1] = lines[-1].strip + line.sub(/\A[ \t]+/, "")
         else
           lines << line
