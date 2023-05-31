@@ -61,7 +61,7 @@ module IceCube
         ord = IceCube::I18n.t("ice_cube.integer.ordinals")[number] ||
           IceCube::I18n.t("ice_cube.integer.ordinals")[number % 10] ||
           IceCube::I18n.t("ice_cube.integer.ordinals")[:default]
-        number >= 0 ? ord : IceCube::I18n.t("ice_cube.integer.negative", ordinal: ord)
+        (number >= 0) ? ord : IceCube::I18n.t("ice_cube.integer.negative", ordinal: ord)
       end
     end
 

@@ -90,7 +90,7 @@ module IceCube
       else
         t0, t1 = start_time.to_s, end_time.to_s
       end
-      duration > 0 ? "#{t0} - #{t1}" : t0
+      (duration > 0) ? "#{t0} - #{t1}" : t0
     end
 
     def overnight?

@@ -26,7 +26,7 @@ module IceCube
     def validate_interval_lock(time, start_time)
       t0 = starting_unit(start_time)
       t1 = time.send(type)
-      t0 >= t1 ? t0 - t1 : INTERVALS[type] - t1 + t0
+      (t0 >= t1) ? t0 - t1 : INTERVALS[type] - t1 + t0
     end
 
     # Lock the hour if explicitly set by hour_of_day, but allow for the nearest
@@ -73,11 +73,11 @@ module IceCube
       if value && value > 0
         until_next_month = days_in_month + sleeps
       else
-        until_next_month = start < 28 ? days_in_month : TimeUtil.days_to_next_month(date)
+        until_next_month = (start < 28) ? days_in_month : TimeUtil.days_to_next_month(date)
         until_next_month += sleeps - month_overflow
       end
 
-      sleeps >= 0 ? sleeps : until_next_month
+      (sleeps >= 0) ? sleeps : until_next_month
     end
 
     def starting_unit(start_time)

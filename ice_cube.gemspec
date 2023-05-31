@@ -17,7 +17,6 @@ Gem::Specification.new do |s|
   s.version = IceCube::VERSION
   s.platform = Gem::Platform::RUBY
   s.files = Dir["lib/**/*.rb", "config/**/*.yml"]
-  s.test_files = Dir.glob("spec/*.rb")
   s.require_paths = ["lib"]
 
   s.add_development_dependency("rake")
