@@ -286,12 +286,12 @@ module IceCube
       def add(type, val)
         type = :day if type == :wday
         @time += case type
-                 when :year then TimeUtil.days_in_n_years(@time, val) * ONE_DAY
-                 when :month then TimeUtil.days_in_n_months(@time, val) * ONE_DAY
-                 when :day then val * ONE_DAY
-                 when :hour then val * ONE_HOUR
-                 when :min then val * ONE_MINUTE
-                 when :sec then val
+        when :year then TimeUtil.days_in_n_years(@time, val) * ONE_DAY
+        when :month then TimeUtil.days_in_n_months(@time, val) * ONE_DAY
+        when :day then val * ONE_DAY
+        when :hour then val * ONE_HOUR
+        when :min then val * ONE_MINUTE
+        when :sec then val
         end
       end
 
