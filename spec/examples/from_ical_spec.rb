@@ -348,7 +348,7 @@ module IceCube
       end
     end
 
-    describe "time zones" do
+    describe "time zone support" do
       it "parses start time with the correct time zone" do
         schedule = IceCube::Schedule.from_ical ical_string_with_multiple_rules
 
