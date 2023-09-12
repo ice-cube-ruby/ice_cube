@@ -151,6 +151,16 @@ module IceCube
         expect(sorted_ical(IceCube::Schedule.from_ical(ical).to_ical)).to eq(sorted_ical(ical))
       end
 
+      it "handles zone start time" do
+        start_time = Time.now.in_time_zone("America/New_York")
+
+        schedule = IceCube::Schedule.new(start_time)
+        schedule.add_recurrence_rule(IceCube::Rule.weekly.day(:monday, :thursday))
+
+        ical = schedule.to_ical
+        expect(sorted_ical(IceCube::Schedule.from_ical(ical).to_ical)).to eq(sorted_ical(ical))
+      end
+
       it "handles intervals" do
         start_time = Time.now
 
@@ -203,6 +213,16 @@ module IceCube
         expect(sorted_ical(IceCube::Schedule.from_ical(ical).to_ical)).to eq(sorted_ical(ical))
       end
 
+      it "handles zone start time" do
+        start_time = Time.now.in_time_zone("America/Los_Angeles")
+
+        schedule = IceCube::Schedule.new(start_time)
+        schedule.add_recurrence_rule(IceCube::Rule.weekly.day(:monday, :thursday))
+
+        ical = schedule.to_ical
+        expect(sorted_ical(IceCube::Schedule.from_ical(ical).to_ical)).to eq(sorted_ical(ical))
+      end
+
       it "handles intervals" do
         start_time = Time.now
 
@@ -245,6 +265,16 @@ module IceCube
         expect(sorted_ical(IceCube::Schedule.from_ical(ical).to_ical)).to eq(sorted_ical(ical))
       end
 
+      it "handles zone start time" do
+        start_time = Time.now.in_time_zone("Pacific/Honolulu")
+
+        schedule = IceCube::Schedule.new(start_time)
+        schedule.add_recurrence_rule(IceCube::Rule.weekly.day(:monday, :thursday))
+
+        ical = schedule.to_ical
+        expect(sorted_ical(IceCube::Schedule.from_ical(ical).to_ical)).to eq(sorted_ical(ical))
+      end
+
       it "handles intervals" do
         start_time = Time.now
 
@@ -282,6 +312,16 @@ module IceCube
 
         schedule = IceCube::Schedule.new(start_time)
         schedule.add_recurrence_rule(IceCube::Rule.yearly)
+
+        ical = schedule.to_ical
+        expect(sorted_ical(IceCube::Schedule.from_ical(ical).to_ical)).to eq(sorted_ical(ical))
+      end
+
+      it "handles zone start time" do
+        start_time = Time.now.in_time_zone("Europe/Riga")
+
+        schedule = IceCube::Schedule.new(start_time)
+        schedule.add_recurrence_rule(IceCube::Rule.weekly.day(:monday, :thursday))
 
         ical = schedule.to_ical
         expect(sorted_ical(IceCube::Schedule.from_ical(ical).to_ical)).to eq(sorted_ical(ical))
