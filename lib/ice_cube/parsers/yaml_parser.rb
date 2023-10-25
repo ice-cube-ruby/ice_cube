@@ -7,7 +7,7 @@ module IceCube
     attr_reader :hash
 
     def initialize(yaml)
-      @hash = YAML.safe_load(yaml, permitted_classes: [Date, Symbol, Time], aliases: true)
+      @hash = YAML.safe_load(yaml, permitted_classes: [Date, Symbol, Time, IceCube::YearlyRule], aliases: true)
       yaml.match SERIALIZED_START do |match|
         start_time = hash[:start_time] || hash[:start_date]
         TimeUtil.restore_deserialized_offset start_time, match[:tz]
