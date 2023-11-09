@@ -212,7 +212,7 @@ describe IceCube::Schedule, "to_s" do
     before(:each) { I18n.locale = :en }
 
     it "uses I18n" do
-      expect(IceCube::I18n.backend).to eq(I18n)
+      expect(IceCube::I18n).to eq ::I18n
     end
 
     it_behaves_like "to_s in English"

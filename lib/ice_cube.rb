@@ -6,7 +6,8 @@ module IceCube
 
   autoload :TimeUtil, "ice_cube/time_util"
   autoload :FlexibleHash, "ice_cube/flexible_hash"
-  autoload :I18n, "ice_cube/i18n"
+
+  require "ice_cube/i18n"
 
   autoload :Rule, "ice_cube/rule"
   autoload :Schedule, "ice_cube/schedule"

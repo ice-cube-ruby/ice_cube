@@ -1,0 +1,24 @@
+sv:
+  date:
+    day_names:
+    - Söndag
+    - Måndag
+    - Tisdag
+    - Onsdag
+    - Torsdag
+    - Fredag
+    - Lördag
+    month_names:
+    -
+    - Januari
+    - Februari
+    - Mars
+    - April
+    - Maj
+    - Juni
+    - Juli
+    - Augusti
+    - September
+    - Oktober
+    - November
+    - December
