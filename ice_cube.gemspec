@@ -5,14 +5,16 @@ require "ice_cube/version"
 Gem::Specification.new do |s|
   s.name = "ice_cube"
   s.summary = "Ruby Date Recurrence Library"
-  s.description = "ice_cube is a recurring date library for Ruby.  It allows for quick, programatic expansion of recurring date rules."
+  s.description = "ice_cube is a recurring date library for Ruby.  It allows for quick, programmatic expansion of recurring date rules."
   s.author = "John Crepezzi"
   s.email = "john@crepezzi.com"
-  s.homepage = "https://seejohnrun.github.io/ice_cube/"
+  s.homepage = "https://github.com/ice-cube-ruby/ice_cube"
   s.license = "MIT"
 
-  s.metadata["changelog_uri"] = "https://github.com/seejohnrun/ice_cube/blob/master/CHANGELOG.md"
-  s.metadata["wiki_uri"] = "https://github.com/seejohnrun/ice_cube/wiki"
+  s.metadata["homepage_uri"] = s.homepage
+  s.metadata["changelog_uri"] = s.homepage + "/blob/master/CHANGELOG.md"
+  s.metadata["source_code_uri"] = s.homepage
+  s.metadata["wiki_uri"] = s.homepage + "/wiki"
 
   s.version = IceCube::VERSION
   s.platform = Gem::Platform::RUBY
