@@ -118,5 +118,21 @@ module IceCube
         end
       end
     end
+
+    describe :dst_change do
+      let(:timezone) { "Africa/Cairo" }
+      let(:time) { "2024-04-26 00:20:00" }
+      let(:time_in_zone) { ActiveSupport::TimeZone[timezone].parse(time) }
+
+      subject { TimeUtil.dst_change(time_in_zone) }
+
+      it { is_expected.to eql(1) }
+
+      context "when time is not on a DST change" do
+        let(:time) { "2024-04-25 00:20:00" }
+
+        it { is_expected.to be_nil }
+      end
+    end
   end
 end

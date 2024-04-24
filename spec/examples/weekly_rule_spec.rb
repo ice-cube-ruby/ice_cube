@@ -390,5 +390,40 @@ module IceCube
         end
       end
     end
+
+    context "when start time is within a timezone shift in Africa/Cairo timezone", system_time_zone: "UTC" do
+      let(:cairo_tz) { ActiveSupport::TimeZone["Africa/Cairo"] }
+      let(:utc_tz) { ActiveSupport::TimeZone["UTC"] }
+      let(:start_time) { cairo_tz.parse("2022-05-22 00:20:00") }
+      let(:rule) { Rule.weekly(1, :monday).day(:friday) }
+
+      it "parses the start time correctly" do
+        expect(start_time.iso8601).to eq("2022-05-22T00:20:00+02:00")
+      end
+
+      it "calculates the correct time from 2024-04-24 12:00:00 UTC" do
+        expect(rule.next_time(utc_tz.parse("2024-04-24 12:00:00"), start_time, nil).iso8601).to eq("2024-04-26T01:20:00+03:00")
+      end
+
+      it "calculates the correct time from 2024-04-26 00:20:01 Africa/Cairo" do
+        expect(rule.next_time(cairo_tz.parse("2024-04-26 00:20:01"), start_time, nil).iso8601).to eq("2024-05-03T00:20:00+03:00")
+      end
+    end
+
+    describe :realign do
+      let(:cairo_tz) { ActiveSupport::TimeZone["Africa/Cairo"] }
+      let(:utc_tz) { ActiveSupport::TimeZone["UTC"] }
+      let(:start_time) { cairo_tz.parse("2022-05-22 00:20:00") }
+      let(:time) { utc_tz.parse("2024-04-24 12:00:00") }
+      let(:rule) { Rule.weekly(1, :monday).day(:friday) }
+
+      subject { rule.realign(time, start_time)}
+
+      it { puts cairo_tz.parse("2024-04-26T00:20:00") }
+
+      it "realigns the start time to the correct time" do
+        expect(subject.iso8601).to eq("2024-04-26T01:20:00+03:00")
+      end
+    end
   end
 end

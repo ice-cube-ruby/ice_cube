@@ -390,6 +390,35 @@ describe IceCube::Schedule do
       expect(next_hours).to eq [Time.utc(2014, 1, 2, 0o0, 34, 56),
         Time.utc(2014, 1, 2, 0o1, 34, 56)]
     end
+
+    context "Cairo timezone" do
+      let(:schedule) do
+        IceCube::Schedule.from_yaml("---\n:start_time:\n  :time: 2022-05-05 22:20:00.000000000 Z\n  :zone: Africa/Cairo\n:end_time:\n  :time: 2022-05-06 21:40:00.000000000 Z\n  :zone: Africa/Cairo\n:rrules:\n- :validations:\n    :day:\n    - 5\n  :rule_type: IceCube::WeeklyRule\n  :interval: 1\n  :week_start: 1\n:rtimes: []\n:extimes: []\n")
+      end
+      
+      it "has the correct start time" do
+        expect(schedule.start_time.iso8601).to eq("2022-05-06T00:20:00+02:00")
+      end
+
+      it "calculates the corret occurrences from 2024-04-24" do
+        ref_time = Time.utc(2024, 4, 24, 12, 0, 0)
+        occurrences = schedule.next_occurrences(3, ref_time)
+        expect(occurrences.map(&:iso8601)).to eq([
+          "2024-04-26T01:20:00+03:00",
+          "2024-05-03T00:20:00+03:00",
+          "2024-05-10T00:20:00+03:00"
+        ])
+      end
+
+      it "calculates the corret occurrences from 2024-04-21" do
+        occurrences = schedule.next_occurrences(3, Time.utc(2024, 4, 21, 12, 0, 0))
+        expect(occurrences.map(&:iso8601)).to eq([
+          "2024-04-26T01:20:00+03:00",
+          "2024-05-03T00:20:00+03:00",
+          "2024-05-10T00:20:00+03:00"
+        ])
+      end
+    end
   end
 
   describe :next_occurrence do
