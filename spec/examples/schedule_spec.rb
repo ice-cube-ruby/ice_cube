@@ -404,7 +404,7 @@ describe IceCube::Schedule do
         ref_time = Time.utc(2024, 4, 24, 12, 0, 0)
         occurrences = schedule.next_occurrences(3, ref_time)
         expect(occurrences.map(&:iso8601)).to eq([
-          "2024-04-26T01:20:00+03:00",
+          "2024-04-26T00:20:00+03:00",
           "2024-05-03T00:20:00+03:00",
           "2024-05-10T00:20:00+03:00"
         ])
