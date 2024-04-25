@@ -23,7 +23,7 @@ jobs:
       - id: read-version
         run: |
           echo "::set-output name=VERSION::`cat lib/ice_cube/version.rb | grep -i version | awk '{ print $3 }' | sed -e 's/\"//g'`"
-      - uses: dangoslen/changelog-enforcer@v2.3.1
+      - uses: dangoslen/changelog-enforcer@v3
         with:
           skipLabels: 'skip-changelog'
           expectedLatestVersion: ${{ steps.read-version.outputs.VERSION }}
