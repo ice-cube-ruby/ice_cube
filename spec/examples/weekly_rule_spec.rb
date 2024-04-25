@@ -417,7 +417,7 @@ module IceCube
       let(:time) { utc_tz.parse("2024-04-24 12:00:00") }
       let(:rule) { Rule.weekly(1, :monday).day(:friday) }
 
-      subject { rule.realign(time, start_time)}
+      subject { rule.realign(time, start_time) }
 
       it { puts cairo_tz.parse("2024-04-26T00:20:00") }
 

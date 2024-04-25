@@ -395,7 +395,7 @@ describe IceCube::Schedule do
       let(:schedule) do
         IceCube::Schedule.from_yaml("---\n:start_time:\n  :time: 2022-05-05 22:20:00.000000000 Z\n  :zone: Africa/Cairo\n:end_time:\n  :time: 2022-05-06 21:40:00.000000000 Z\n  :zone: Africa/Cairo\n:rrules:\n- :validations:\n    :day:\n    - 5\n  :rule_type: IceCube::WeeklyRule\n  :interval: 1\n  :week_start: 1\n:rtimes: []\n:extimes: []\n")
       end
-      
+
       it "has the correct start time" do
         expect(schedule.start_time.iso8601).to eq("2022-05-06T00:20:00+02:00")
       end
