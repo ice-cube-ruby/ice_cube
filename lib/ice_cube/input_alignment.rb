@@ -8,16 +8,16 @@ module IceCube
 
     attr_reader :rule, :value, :rule_part
 
-    def verify(freq, options = {}, &block)
+    def verify(freq, options = {}, &)
       @rule.validations[:interval] or return
 
       case @rule
       when DailyRule
-        verify_wday_alignment(freq, &block)
+        verify_wday_alignment(freq, &)
       when MonthlyRule
-        verify_month_alignment(freq, &block)
+        verify_month_alignment(freq, &)
       else
-        verify_freq_alignment(freq, &block)
+        verify_freq_alignment(freq, &)
       end
     end
 
@@ -28,12 +28,12 @@ module IceCube
     end
 
     def interval_value
-      @interval_value ||= rule_part == :interval ? value : interval_validation.interval
+      @interval_value ||= (rule_part == :interval) ? value : interval_validation.interval
     end
 
     def fixed_validations
       @fixed_validations ||= @rule.validations.values.flatten.select { |v|
-        interval_type = (v.type == :wday ? :day : v.type)
+        interval_type = ((v.type == :wday) ? :day : v.type)
         v.class < Validations::FixedValue &&
           interval_type == rule.base_interval_validation.type
       }

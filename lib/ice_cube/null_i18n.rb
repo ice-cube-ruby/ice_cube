@@ -5,7 +5,7 @@ module IceCube
     def self.t(key, options = {})
       base = key.to_s.split(".").reduce(config) { |hash, current_key| hash[current_key] }
 
-      base = base[options[:count] == 1 ? "one" : "other"] if options[:count]
+      base = base[(options[:count] == 1) ? "one" : "other"] if options[:count]
 
       case base
       when Hash
