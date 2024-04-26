@@ -35,7 +35,14 @@ module IceCube
       time = TimeUtil::TimeWrapper.new(start_time)
       offset = wday_offset(step_time, start_time)
       time.add(:day, offset)
-      super step_time, time.to_timezoneless_time
+      realigned_time = time.to_time
+      # when the realigned time is in a different hour, we need to adjust the
+      # time to the correct hour with a fixed timezone offset, otherwise
+      # the time will be off by an hour
+      # WARNING: if the next DST change is within the interval, the occurrences
+      # after the next DST change will be off by an hour because the timezone is fixed
+      realigned_time = time.to_timezoneless_time if realigned_time.hour != start_time.hour
+      super step_time, realigned_time
     end
 
     # Calculate how many days to the first wday validation in the correct
