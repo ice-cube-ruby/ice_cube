@@ -282,22 +282,6 @@ module IceCube
         TimeUtil.build_in_zone(parts, @base)
       end
 
-      # This is used keep the correct hour within the interval during DST
-      # changes. It will use the time from the schedule start time to lock the
-      # hour. 
-      def to_timezoneless_time
-        unwrapped_time = to_time
-        Time.new(
-          unwrapped_time.year,
-          unwrapped_time.month,
-          unwrapped_time.day,
-          @time.hour,
-          @time.min,
-          @time.sec,
-          unwrapped_time.utc_offset
-        )
-      end
-
       # DST-safely add an interval of time to the wrapped time
       def add(type, val)
         type = :day if type == :wday

@@ -402,7 +402,7 @@ module IceCube
       end
 
       it "calculates the correct time from 2024-04-24 12:00:00 UTC" do
-        expect(rule.next_time(utc_tz.parse("2024-04-24 12:00:00"), start_time, nil).iso8601).to eq("2024-04-26T00:20:00+03:00")
+        expect(rule.next_time(utc_tz.parse("2024-04-24 12:00:00"), start_time, nil).iso8601).to eq("2024-04-26T01:20:00+03:00")
       end
 
       it "calculates the correct time from 2024-04-26 00:20:01 Africa/Cairo" do
@@ -412,7 +412,7 @@ module IceCube
 
     describe :realign do
       require "active_support/time"
- 
+
       let(:timezone_name) { "Africa/Cairo" }
       let(:timezone) { ActiveSupport::TimeZone[timezone_name] }
       let(:utc_tz) { ActiveSupport::TimeZone["UTC"] }
@@ -424,10 +424,10 @@ module IceCube
       subject { rule.realign(time, start_time) }
 
       it "realigns the start time to the correct time" do
-        expect(subject.iso8601).to eq("2024-04-26T00:20:00+03:00")
+        expect(subject.iso8601).to eq("2024-04-25T00:20:00+02:00")
       end
 
-      context "Berlin timezone" do
+      context "Berlin timezone CET -> CEST " do
         let(:recurrence_day) { :sunday }
         let(:timezone_name) { "Europe/Berlin" }
         let(:start_time) { timezone.parse("2024-03-24 02:30:00") }
@@ -439,7 +439,18 @@ module IceCube
         # would result in faulty start times for the following
         # occurrences (03:30 instead of 02:30)
         it "realigns the start time to the correct time" do
-          expect(subject.iso8601).to eq("2024-03-31T02:30:00+02:00")
+          expect(subject.iso8601).to eq("2024-03-30T02:30:00+01:00")
+        end
+      end
+
+      context "Berlin timezone CEST -> CET " do
+        let(:recurrence_day) { :sunday }
+        let(:timezone_name) { "Europe/Berlin" }
+        let(:start_time) { timezone.parse("2023-10-22 02:30:00") }
+        let(:time) { timezone.parse("2023-10-24 02:30:00") }
+
+        it "realigns the start time to the correct time" do
+          expect(subject.iso8601).to eq("2023-10-29T02:30:00+02:00")
         end
       end
     end

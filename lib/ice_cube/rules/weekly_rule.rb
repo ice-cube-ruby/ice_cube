@@ -36,12 +36,15 @@ module IceCube
       offset = wday_offset(step_time, start_time)
       time.add(:day, offset)
       realigned_time = time.to_time
-      # when the realigned time is in a different hour, we need to adjust the
-      # time to the correct hour with a fixed timezone offset, otherwise
-      # the time will be off by an hour
-      # WARNING: if the next DST change is within the interval, the occurrences
-      # after the next DST change will be off by an hour because the timezone is fixed
-      realigned_time = time.to_timezoneless_time if realigned_time.hour != start_time.hour
+      # when the realigned time is in a different hour, it means that
+      # time falls to the DST switch timespan. In this case, we need to
+      # move the time back by one day to ensure that the hour stays the same
+      # WARNING: this could not work if the DST change is on a monday
+      # as the realigned time would be moved to the previous week. 
+      if realigned_time.hour != start_time.hour
+        time.add(:day, -1)
+        realigned_time = time.to_time
+      end
       super step_time, realigned_time
     end
 
