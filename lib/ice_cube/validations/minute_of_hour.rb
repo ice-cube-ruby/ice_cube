@@ -20,7 +20,7 @@ module IceCube
       first_minute = validations[:minute_of_hour].min_by(&:value)
       time = TimeUtil::TimeWrapper.new(start_time, false)
       time.min = first_minute.value
-      super opening_time, time.to_time
+      super(opening_time, time.to_time)
     end
 
     class Validation < Validations::FixedValue
