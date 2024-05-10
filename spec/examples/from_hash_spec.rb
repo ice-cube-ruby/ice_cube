@@ -41,5 +41,89 @@ module IceCube
         expect(Rule.from_hash({ rule_type: "IceCube::YearlyRule" })).to be_a YearlyRule
       end
     end
+
+    describe "creating monthly rule" do
+      context "with valid day_of_week validations" do
+        let(:input_hash) {
+          {
+            "rule_type": "IceCube::MonthlyRule",
+            "interval": 1,
+            "validations": {
+              "day_of_week": {
+                "0": [2],
+                "1": [2],
+                "2": [2],
+                "3": [2],
+                "4": [2],
+                "5": [2],
+                "6": [1,2]
+              },
+              "hour_of_day": 7,
+              "minute_of_hour": 19
+            }
+          }
+        }
+
+        it "can provide the first occurrence" do
+          rule = Rule.from_hash(input_hash)
+          schedule = Schedule.new(Time.utc(2010, 1, 1, 0, 0, 0))
+          schedule.add_recurrence_rule rule
+          expect(schedule.first(10).map(&:to_time)).to eq([
+                                            Time.utc(2010, 1, 2, 7, 19, 0),
+                                            Time.utc(2010, 1, 8, 7, 19, 0),
+                                            Time.utc(2010, 1, 9, 7, 19, 0),
+                                            Time.utc(2010, 1, 10, 7, 19, 0),
+                                            Time.utc(2010, 1, 11, 7, 19, 0),
+                                            Time.utc(2010, 1, 12, 7, 19, 0),
+                                            Time.utc(2010, 1, 13, 7, 19, 0),
+                                            Time.utc(2010, 1, 14, 7, 19, 0),
+                                            Time.utc(2010, 2, 6, 7, 19, 0),
+                                            Time.utc(2010, 2, 8, 7, 19, 0)
+                                          ])
+        end
+      end
+
+      context "with invalid day_of_week validations" do
+        let(:input_hash_with_zeroeth_occurrence) {
+          {
+            "rule_type": "IceCube::MonthlyRule",
+            "interval": 1,
+            "validations": {
+              "day_of_week": {
+                "1": [],
+                "2": [0],
+                "3": [],
+                "4": []
+              },
+              "hour_of_day": 7,
+              "minute_of_hour": 19
+            }
+          }
+        }
+        let(:input_hash_with_sixth_occurrence) {
+          {
+            "rule_type": "IceCube::MonthlyRule",
+            "interval": 1,
+            "validations": {
+              "day_of_week": {
+                "1": [],
+                "2": [6],
+                "3": [],
+                "4": []
+              },
+              "hour_of_day": 7,
+              "minute_of_hour": 19
+            }
+          }
+        }
+
+        it "should raise an ArgumentError" do
+          expect { Rule.from_hash(input_hash_with_zeroeth_occurrence) }
+            .to raise_error ArgumentError, "Invalid day_of_week occurrence: 0"
+          expect { Rule.from_hash(input_hash_with_sixth_occurrence) }
+            .to raise_error ArgumentError, "Invalid day_of_week occurrence: 6"
+        end
+      end
+    end
   end
 end
