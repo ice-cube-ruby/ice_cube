@@ -40,12 +40,12 @@ module IceCube
       # time falls to the DST switch timespan. In this case, we need to
       # move the time back by one day to ensure that the hour stays the same
       # WARNING: this could not work if the DST change is on a monday
-      # as the realigned time would be moved to the previous week. 
+      # as the realigned time would be moved to the previous week.
       if realigned_time.hour != start_time.hour
         time.add(:day, -1)
         realigned_time = time.to_time
       end
-      super step_time, realigned_time
+      super(step_time, realigned_time)
     end
 
     # Calculate how many days to the first wday validation in the correct

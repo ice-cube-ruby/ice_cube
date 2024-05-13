@@ -668,7 +668,7 @@ describe IceCube::Schedule do
   def quick_attempt_test
     time = Time.now
     10.times do
-      (yield).next_occurrence(Time.now)
+      yield.next_occurrence(Time.now)
     end
     total = Time.now - time
     expect(total).to be < 0.1
