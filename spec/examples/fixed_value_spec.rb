@@ -1,7 +1,6 @@
 require "spec_helper"
 
 RSpec.describe IceCube::Validations::HourOfDay::Validation do
-
   describe :validate do
     let(:timezone) { "Africa/Cairo" }
     let(:time) { "2024-05-03 00:20:00" }

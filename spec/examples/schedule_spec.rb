@@ -395,7 +395,7 @@ describe IceCube::Schedule do
       require "active_support/time"
 
       let(:schedule) do
-        IceCube::Schedule.new(ActiveSupport::TimeZone['Africa/Cairo'].parse("2022-05-05 00:20:00")).tap do |schedule|
+        IceCube::Schedule.new(ActiveSupport::TimeZone["Africa/Cairo"].parse("2022-05-05 00:20:00")).tap do |schedule|
           schedule.add_recurrence_rule IceCube::Rule.weekly.day(:friday)
         end
       end
@@ -413,7 +413,7 @@ describe IceCube::Schedule do
         expect(occurrences.map(&:iso8601)).to eq([
           "2024-04-26T01:20:00+03:00",
           "2024-05-03T00:20:00+03:00",
-          "2024-05-10T00:20:00+03:00",
+          "2024-05-10T00:20:00+03:00"
         ])
       end
 
@@ -422,7 +422,7 @@ describe IceCube::Schedule do
         expect(occurrences.map(&:iso8601)).to eq([
           "2024-04-19T00:20:00+02:00",
           "2024-04-26T01:20:00+03:00",
-          "2024-05-03T00:20:00+03:00",
+          "2024-05-03T00:20:00+03:00"
         ])
       end
 
@@ -431,7 +431,7 @@ describe IceCube::Schedule do
         expect(occurrences.map(&:iso8601).last(3)).to eq([
           "2024-10-18T00:20:00+03:00",
           "2024-10-25T00:20:00+03:00",
-          "2024-11-01T00:20:00+02:00",
+          "2024-11-01T00:20:00+02:00"
         ])
       end
     end
