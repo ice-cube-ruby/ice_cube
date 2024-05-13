@@ -8,16 +8,16 @@ module IceCube
 
     attr_reader :rule, :value, :rule_part
 
-    def verify(freq, options = {}, &block)
+    def verify(freq, options = {}, &)
       @rule.validations[:interval] or return
 
       case @rule
       when DailyRule
-        verify_wday_alignment(freq, &block)
+        verify_wday_alignment(freq, &)
       when MonthlyRule
-        verify_month_alignment(freq, &block)
+        verify_month_alignment(freq, &)
       else
-        verify_freq_alignment(freq, &block)
+        verify_freq_alignment(freq, &)
       end
     end
 
