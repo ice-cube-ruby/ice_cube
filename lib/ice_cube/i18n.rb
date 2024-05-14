@@ -1,7 +1,7 @@
 require "ice_cube/null_i18n"
 
 module IceCube
-  LOCALES_PATH = File.expand_path(File.join("..", "..", "..", "config", "locales"), __FILE__)
+  LOCALES_PATH = File.expand_path(File.join("..", "..", "config", "locales"), __dir__)
 
   I18n = begin
     require "i18n"
