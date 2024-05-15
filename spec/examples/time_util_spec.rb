@@ -42,32 +42,38 @@ module IceCube
     end
 
     describe :wday_to_sym do
-      it "converts 0..6 to weekday symbols" do
-        expect(TimeUtil.wday_to_sym(1)).to eq(:monday)
-      end
+      [:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday].each_with_index do |sym, i|
+        it "converts #{i} to weekday symbol :#{sym}" do
+          expect(TimeUtil.wday_to_sym(i)).to eq(sym)
+        end
 
-      it "returns weekday symbols as is" do
-        expect(TimeUtil.wday_to_sym(:monday)).to eq(:monday)
+        it "returns :#{sym} when passed :#{sym}" do
+          expect(TimeUtil.wday_to_sym(sym)).to eq(sym)
+        end
       end
 
       it "raises an error for bad input" do
         expect { TimeUtil.wday_to_sym(:anyday) }.to raise_error(ArgumentError)
-        expect { TimeUtil.wday_to_sym(17) }.to raise_error(ArgumentError)
+        expect { TimeUtil.wday_to_sym(8) }.to raise_error(ArgumentError)
+        expect { TimeUtil.wday_to_sym(-1) }.to raise_error(ArgumentError)
       end
     end
 
     describe :sym_to_wday do
-      it "converts weekday symbols to 0..6 wday numbers" do
-        expect(TimeUtil.sym_to_wday(:monday)).to eq(1)
-      end
+      [:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday].each_with_index do |sym, i|
+        it "converts :#{sym} to integer #{i}" do
+          expect(TimeUtil.sym_to_wday(sym)).to eq(i)
+        end
 
-      it "returns wday numbers as is" do
-        expect(TimeUtil.sym_to_wday(1)).to eq(1)
+        it "returns #{i} when passed #{i}" do
+          expect(TimeUtil.sym_to_wday(i)).to eq(i)
+        end
       end
 
       it "raises an error for bad input" do
         expect { TimeUtil.sym_to_wday(:anyday) }.to raise_error(ArgumentError)
-        expect { TimeUtil.sym_to_wday(17) }.to raise_error(ArgumentError)
+        expect { TimeUtil.sym_to_wday(-1) }.to raise_error(ArgumentError)
+        expect { TimeUtil.sym_to_wday(8) }.to raise_error(ArgumentError)
       end
     end
 
