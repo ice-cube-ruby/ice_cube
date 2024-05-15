@@ -15,7 +15,8 @@ module IceCube
       attr_reader :day, :occ
 
       def initialize(day, occ)
-        raise ArgumentError, "Invalid day_of_week occurrence: #{occ}" if occ == 0 || occ > 5 || occ < -5
+        raise ArgumentError, "Integer occurrence value required" unless occ.is_a?(Integer)
+        raise ArgumentError, "Invalid day_of_week occurrence: #{occ.inspect}" if occ.zero? || occ.abs > 5
 
         @day = day
         @occ = occ
