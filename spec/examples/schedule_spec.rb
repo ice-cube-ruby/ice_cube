@@ -390,6 +390,51 @@ describe IceCube::Schedule do
       expect(next_hours).to eq [Time.utc(2014, 1, 2, 0o0, 34, 56),
         Time.utc(2014, 1, 2, 0o1, 34, 56)]
     end
+
+    context "Cairo timezone" do
+      require "active_support/time"
+
+      let(:schedule) do
+        IceCube::Schedule.new(ActiveSupport::TimeZone["Africa/Cairo"].parse("2022-05-05 00:20:00")).tap do |schedule|
+          schedule.add_recurrence_rule IceCube::Rule.weekly.day(:friday)
+        end
+      end
+
+      it "has the correct start time" do
+        expect(schedule.start_time.iso8601).to eq("2022-05-05T00:20:00+02:00")
+      end
+
+      it "has the correct start time timezone" do
+        expect(schedule.start_time.zone).to eq("EET")
+      end
+
+      it "calculates the correct occurrences from 2024-04-24" do
+        occurrences = schedule.next_occurrences(3, Time.utc(2024, 4, 24, 12, 0, 0))
+        expect(occurrences.map(&:iso8601)).to eq([
+          "2024-04-26T01:20:00+03:00",
+          "2024-05-03T00:20:00+03:00",
+          "2024-05-10T00:20:00+03:00"
+        ])
+      end
+
+      it "calculates the correct occurrences from 2024-04-17" do
+        occurrences = schedule.next_occurrences(3, Time.utc(2024, 4, 17, 12, 0, 0))
+        expect(occurrences.map(&:iso8601)).to eq([
+          "2024-04-19T00:20:00+02:00",
+          "2024-04-26T01:20:00+03:00",
+          "2024-05-03T00:20:00+03:00"
+        ])
+      end
+
+      it "preserves the timezone for the next DST switch" do
+        occurrences = schedule.next_occurrences(28, Time.utc(2024, 4, 24, 12, 0, 0))
+        expect(occurrences.map(&:iso8601).last(3)).to eq([
+          "2024-10-18T00:20:00+03:00",
+          "2024-10-25T00:20:00+03:00",
+          "2024-11-01T00:20:00+02:00"
+        ])
+      end
+    end
   end
 
   describe :next_occurrence do

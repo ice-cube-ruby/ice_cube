@@ -35,7 +35,17 @@ module IceCube
       time = TimeUtil::TimeWrapper.new(start_time)
       offset = wday_offset(step_time, start_time)
       time.add(:day, offset)
-      super(step_time, time.to_time)
+      realigned_time = time.to_time
+      # when the realigned time is in a different hour, it means that
+      # time falls to the DST switch timespan. In this case, we need to
+      # move the time back by one day to ensure that the hour stays the same
+      # WARNING: this could not work if the DST change is on a monday
+      # as the realigned time would be moved to the previous week.
+      if realigned_time.hour != start_time.hour
+        time.add(:day, -1)
+        realigned_time = time.to_time
+      end
+      super(step_time, realigned_time)
     end
 
     # Calculate how many days to the first wday validation in the correct

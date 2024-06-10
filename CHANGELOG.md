@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `I18n.load_path` injection ([#546](https://github.com/ice-cube-ruby/ice_cube/pull/546)) by [@glaszig](https://github.com/glaszig)
 
 ### Fixed
+- Fix for weekly occurrences when the next occurrence happens within a DST switch timespan ([#551](https://github.com/ice-cube-ruby/ice_cube/pull/551)) by [@larskuhnt](https://github.com/larskuhnt)
 - Fix for weekly interval results when requesting `occurrences_between` on a narrow range ([#487](https://github.com/seejohnrun/ice_cube/pull/487)) by [@jakebrady5](https://github.com/jakebrady5)
 - When using a rule with hour_of_day validations, and asking for occurrences on the day that DST skips forward, valid occurrences would be missed. ([#464](https://github.com/seejohnrun/ice_cube/pull/464)) by [@jakebrady5](https://github.com/jakebrady5)
 - Include `exrules` when exporting a schedule to YAML, JSON or a Hash. ([#519](https://github.com/ice-cube-ruby/ice_cube/pull/519)) by [@pacso](https://github.com/pacso)

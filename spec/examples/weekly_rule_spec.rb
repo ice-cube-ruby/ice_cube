@@ -390,5 +390,69 @@ module IceCube
         end
       end
     end
+
+    context "when start time is within a timezone shift in Africa/Cairo timezone", system_time_zone: "UTC" do
+      let(:cairo_tz) { ActiveSupport::TimeZone["Africa/Cairo"] }
+      let(:utc_tz) { ActiveSupport::TimeZone["UTC"] }
+      let(:start_time) { cairo_tz.parse("2022-05-22 00:20:00") }
+      let(:rule) { Rule.weekly(1, :monday).day(:friday) }
+
+      it "parses the start time correctly" do
+        expect(start_time.iso8601).to eq("2022-05-22T00:20:00+02:00")
+      end
+
+      it "calculates the correct time from 2024-04-24 12:00:00 UTC" do
+        expect(rule.next_time(utc_tz.parse("2024-04-24 12:00:00"), start_time, nil).iso8601).to eq("2024-04-26T01:20:00+03:00")
+      end
+
+      it "calculates the correct time from 2024-04-26 00:20:01 Africa/Cairo" do
+        expect(rule.next_time(cairo_tz.parse("2024-04-26 00:20:01"), start_time, nil).iso8601).to eq("2024-05-03T00:20:00+03:00")
+      end
+    end
+
+    describe :realign do
+      require "active_support/time"
+
+      let(:timezone_name) { "Africa/Cairo" }
+      let(:timezone) { ActiveSupport::TimeZone[timezone_name] }
+      let(:utc_tz) { ActiveSupport::TimeZone["UTC"] }
+      let(:start_time) { timezone.parse("2022-05-22 00:20:00") }
+      let(:time) { utc_tz.parse("2024-04-24 12:00:00") }
+      let(:recurrence_day) { :friday }
+      let(:rule) { Rule.weekly(1, :monday).day(recurrence_day) }
+
+      subject { rule.realign(time, start_time) }
+
+      it "realigns the start time to the correct time" do
+        expect(subject.iso8601).to eq("2024-04-25T00:20:00+02:00")
+      end
+
+      context "Berlin timezone CET -> CEST " do
+        let(:recurrence_day) { :sunday }
+        let(:timezone_name) { "Europe/Berlin" }
+        let(:start_time) { timezone.parse("2024-03-24 02:30:00") }
+        let(:time) { timezone.parse("2024-03-27 02:30:00") }
+
+        # the next occurrence is on sunday within the DST shift
+        # where the clock is set forward from 02:00 to 03:00
+        # so the next occurrence is on actually on 03:30 but this
+        # would result in faulty start times for the following
+        # occurrences (03:30 instead of 02:30)
+        it "realigns the start time to the correct time" do
+          expect(subject.iso8601).to eq("2024-03-30T02:30:00+01:00")
+        end
+      end
+
+      context "Berlin timezone CEST -> CET " do
+        let(:recurrence_day) { :sunday }
+        let(:timezone_name) { "Europe/Berlin" }
+        let(:start_time) { timezone.parse("2023-10-22 02:30:00") }
+        let(:time) { timezone.parse("2023-10-24 02:30:00") }
+
+        it "realigns the start time to the correct time" do
+          expect(subject.iso8601).to eq("2023-10-29T02:30:00+02:00")
+        end
+      end
+    end
   end
 end
