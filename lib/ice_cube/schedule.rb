@@ -207,6 +207,10 @@ module IceCube
       enumerate_occurrences(from, nil, options)
     end
 
+    def occurrences_between_enumerator(begin_time, closing_time, options = {})
+      enumerate_occurrences(begin_time, closing_time, options)
+    end
+
     # Occurrences between two times
     def occurrences_between(begin_time, closing_time, options = {})
       enumerate_occurrences(begin_time, closing_time, options).to_a

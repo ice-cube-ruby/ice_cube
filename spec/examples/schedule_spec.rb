@@ -318,6 +318,19 @@ describe IceCube::Schedule do
     end
   end
 
+  describe :occurrences_between_enumerator do
+    it do
+      schedule = IceCube::Schedule.new(Time.new(2021, 1, 1))
+      schedule.add_recurrence_rule(IceCube::Rule.from_ical("FREQ=MONTHLY;BYMONTHDAY=-1"))
+
+      start = Time.new(2022, 1, 1)
+      finish = start + 365 * IceCube::ONE_DAY
+      dates = schedule.occurrences_between_enumerator(start, finish).lazy.map(&:to_date).first(2)
+
+      expect(dates).to eq [Date.new(2022, 1, 31), Date.new(2022, 2, 28)]
+    end
+  end
+
   describe :all_occurrences do
     it "has end times for each occurrence" do
       schedule = IceCube::Schedule.new(Time.now, duration: IceCube::ONE_HOUR)
