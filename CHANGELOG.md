@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Indonesian translations. ([#505](https://github.com/seejohnrun/ice_cube/pull/505)) by [@achmiral](https://github.com/achmiral)
+- The `IceCube::IcalParser` finds the time zones matching an iCal schedule's date/time strings, accomodating for times with daylight savings ([#555](https://github.com/ice-cube-ruby/ice_cube/pull/555)) by [@jankeesvw](https://github.com/jankeesvw) and [@epologee](https://github.com/epologee)
 
 ### Changed
 - Removed use of `delegate` method added in [66f1d797](https://github.com/ice-cube-ruby/ice_cube/commit/66f1d797092734563bfabd2132c024c7d087f683) , reverting to previous implementation. ([#522](https://github.com/ice-cube-ruby/ice_cube/pull/522))  by [@pacso](https://github.com/pacso)
