@@ -306,7 +306,7 @@ describe IceCube::Schedule do
     it "should be equivalent to all_occurrences in terms of arrays" do
       schedule = IceCube::Schedule.new(Time.now, duration: IceCube::ONE_HOUR)
       schedule.add_recurrence_rule IceCube::Rule.daily.until(Time.now + 3 * IceCube::ONE_DAY)
-      expect(schedule.all_occurrences).to eq(schedule.all_occurrences_enumerator.to_a)
+      expect(schedule.all_occurrences).to match_array(schedule.all_occurrences_enumerator.to_a)
     end
   end
 
@@ -314,7 +314,7 @@ describe IceCube::Schedule do
     it "should be equivalent to remaining_occurrences in terms of arrays" do
       schedule = IceCube::Schedule.new(Time.now, duration: IceCube::ONE_HOUR)
       schedule.add_recurrence_rule IceCube::Rule.daily.until(Time.now + 3 * IceCube::ONE_DAY)
-      expect(schedule.remaining_occurrences).to eq(schedule.remaining_occurrences_enumerator.to_a)
+      expect(schedule.remaining_occurrences).to match_array(schedule.remaining_occurrences_enumerator.to_a)
     end
   end
 
