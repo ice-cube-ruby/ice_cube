@@ -316,7 +316,6 @@ Use the GitHub [issue tracker][ice_cube-issues]
 
 
 [ical-3.6.1]: https://tools.ietf.org/html/rfc5545#section-3.6.1
-[github-avit]: https://github.com/avit/
 [ice_cube-lone_star_pdf]: https://ice-cube-ruby.github.io/ice_cube/static/lsrc_ice_cube.pdf
 [ice_cube-ruby_nyc_pdf]: https://ice-cube-ruby.github.io/ice_cube/static/ice_cube_ruby_nyc.pdf
 [ice_cube-docs]: https://ice-cube-ruby.github.io/ice_cube/
