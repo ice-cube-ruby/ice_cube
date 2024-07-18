@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Include `exrules` when exporting a schedule to YAML, JSON or a Hash. ([#519](https://github.com/ice-cube-ruby/ice_cube/pull/519)) by [@pacso](https://github.com/pacso)
 - Documentation links updated to point to the new repository location. ([#553](https://github.com/ice-cube-ruby/ice_cube/pull/553)) by [@pacso](https://github.com/pacso)
 - Input validation added for day_of_week validator. Fixes infinite loops when invalid day_of_week occurrences are provided. ([#554](https://github.com/ice-cube-ruby/ice_cube/pull/554)) by [@pacso](https://github.com/pacso)
+- Documentation links in README.md updated to new repository location. ([#527](https://github.com/ice-cube-ruby/ice_cube/pull/527) by [@dalpo](https://github.com/dalpo))
 
 ## [0.16.4] - 2021-10-21
 ### Added
