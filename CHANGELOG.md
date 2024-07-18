@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed use of `delegate` method added in [66f1d797](https://github.com/ice-cube-ruby/ice_cube/commit/66f1d797092734563bfabd2132c024c7d087f683) , reverting to previous implementation. ([#522](https://github.com/ice-cube-ruby/ice_cube/pull/522))  by [@pacso](https://github.com/pacso)
 - Updated supported versions of Ruby and Rails and fixed standardrb lint issues. ([#552](https://github.com/ice-cube-ruby/ice_cube/pull/552)) by [@pacso](https://github.com/pacso)
 - Fixed `I18n.load_path` injection ([#546](https://github.com/ice-cube-ruby/ice_cube/pull/546)) by [@glaszig](https://github.com/glaszig)
+- Use `exepect` in specs ([#530](https://github.com/ice-cube-ruby/ice_cube/pull/530) by [@artofhuman](https://github.com/artofhuman))
 
 ### Fixed
 - Fix for weekly interval results when requesting `occurrences_between` on a narrow range ([#487](https://github.com/seejohnrun/ice_cube/pull/487)) by [@jakebrady5](https://github.com/jakebrady5)
