@@ -15,6 +15,9 @@ module IceCube
       attr_reader :day, :occ
 
       def initialize(day, occ)
+        raise ArgumentError, "Integer occurrence value required" unless occ.is_a?(Integer)
+        raise ArgumentError, "Invalid day_of_week occurrence: #{occ.inspect}" if occ.zero? || occ.abs > 5
+
         @day = day
         @occ = occ
       end
@@ -29,12 +32,12 @@ module IceCube
 
       def validate(step_time, start_time)
         wday = step_time.wday
-        offset = day < wday ? (7 - wday + day) : (day - wday)
+        offset = (day < wday) ? (7 - wday + day) : (day - wday)
         wrapper = TimeUtil::TimeWrapper.new(step_time)
         wrapper.add :day, offset
         loop do
           which_occ, num_occ = TimeUtil.which_occurrence_in_month(wrapper.to_time, day)
-          this_occ = occ < 0 ? (num_occ + occ + 1) : occ
+          this_occ = (occ < 0) ? (num_occ + occ + 1) : occ
           break offset if which_occ == this_occ
           wrapper.add :day, 7
           offset += 7
