@@ -160,8 +160,8 @@ module IceCube
     end
 
     # Iterate forever
-    def each_occurrence(&)
-      enumerate_occurrences(start_time, &).to_a
+    def each_occurrence(&block)
+      enumerate_occurrences(start_time, &block).to_a
       self
     end
 
