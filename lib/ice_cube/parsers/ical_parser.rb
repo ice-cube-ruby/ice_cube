@@ -2,28 +2,53 @@ module IceCube
   class IcalParser
     def self.schedule_from_ical(ical_string, options = {})
       data = {}
+      current_state = :parsing_calendar
       ical_string.each_line do |line|
         (property, value) = line.split(":")
         (property, _tzid) = property.split(";")
-        case property
-        when "DTSTART"
-          data[:start_time] = TimeUtil.deserialize_time(value)
-        when "DTEND"
-          data[:end_time] = TimeUtil.deserialize_time(value)
-        when "RDATE"
-          data[:rtimes] ||= []
-          data[:rtimes] += value.split(",").map { |v| TimeUtil.deserialize_time(v) }
-        when "EXDATE"
-          data[:extimes] ||= []
-          data[:extimes] += value.split(",").map { |v| TimeUtil.deserialize_time(v) }
-        when "DURATION"
-          data[:duration] # FIXME
-        when "RRULE"
-          data[:rrules] ||= []
-          data[:rrules] += [rule_from_ical(value)]
+
+        case current_state
+        when :parsing_calendar then current_state = parse_calendar(data, property, value)
+        when :parsing_event then current_state = parse_event(data, property, value)
         end
       end
       Schedule.from_hash data
+    end
+
+    def self.parse_calendar(data, property, value)
+      case property
+      when "DTSTART"
+        data[:start_time] = TimeUtil.deserialize_time(value)
+      when "DTEND"
+        data[:end_time] = TimeUtil.deserialize_time(value)
+      when "RDATE"
+        data[:rtimes] ||= []
+        data[:rtimes] += value.split(",").map { |v| TimeUtil.deserialize_time(v) }
+      when "EXDATE"
+        data[:extimes] ||= []
+        data[:extimes] += value.split(",").map { |v| TimeUtil.deserialize_time(v) }
+      when "DURATION"
+        data[:duration] # FIXME
+      when "RRULE"
+        data[:rrules] ||= []
+        data[:rrules] += [rule_from_ical(value)]
+      when "BEGIN"
+        return :parsing_event if value.chomp == "VEVENT"
+      end
+
+      :parsing_calendar
+    end
+
+    def self.parse_event(data, property, value)
+      case property
+      when "DTSTART"
+        data[:rtimes] ||= []
+        data[:rtimes] += value.split(",").map { |v| TimeUtil.deserialize_time(v) }
+      when "END"
+        return :parsing_calendar if value.chomp == "VEVENT"
+      end
+
+      :parsing_event
     end
 
     def self.rule_from_ical(ical)

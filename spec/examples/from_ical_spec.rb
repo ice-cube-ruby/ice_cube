@@ -115,6 +115,17 @@ module IceCube
   RRULE:FREQ=WEEKLY;INTERVAL=2;WKST=SU;BYDAY=FR
     ICAL
 
+    ical_string_with_events = <<-ICAL.gsub(/^\s*/, "")
+  BEGIN:VEVENT
+  DTSTART;VALUE=DATE:20120406
+  DTEND;VALUE=DATE:20120407
+  END:VEVENT
+  BEGIN:VEVENT
+  DTSTART;VALUE=DATE:20120409
+  DTEND;VALUE=DATE:20120410
+  END:VEVENT
+    ICAL
+
     def sorted_ical(ical)
       ical.split("\n").sort.map { |field|
         k, v = field.split(":")
@@ -378,10 +389,41 @@ module IceCube
       end
     end
 
+    describe "one-off dates" do
+      it "handles a specific day as a recurrence time" do
+        start_time = Time.now
+
+        schedule = IceCube::Schedule.new(start_time)
+        schedule.add_recurrence_time(start_time)
+
+        ical = schedule.to_ical
+        expect(sorted_ical(IceCube::Schedule.from_ical(ical).to_ical)).to eq(sorted_ical(ical))
+      end
+
+      it "converts events to recurrence times" do
+        start_time = Time.utc(2019, 1, 16)
+
+        schedule = IceCube::Schedule.new(start_time)
+        schedule.add_recurrence_time(start_time)
+
+        event_ical = "DTSTART:20190116T000000Z\nBEGIN:VEVENT\nDTSTART:20190116T000000Z\nDTEND:20190117T000000Z\nEND:VEVENT"
+
+        ical = schedule.to_ical
+        expect(sorted_ical(IceCube::Schedule.from_ical(event_ical).to_ical)).to eq(sorted_ical(ical))
+      end
+    end
+
     describe "multiple rules" do
       it "handles multiple recurrence rules" do
         schedule = IceCube::Schedule.from_ical ical_string_with_multiple_rules
         expect(schedule.recurrence_rules.count).to eq(2)
+      end
+    end
+
+    describe "events" do
+      it "converts each event into it's own recurrence time" do
+        schedule = IceCube::Schedule.from_ical ical_string_with_events
+        expect(schedule.recurrence_times.count).to eq(2)
       end
     end
 
