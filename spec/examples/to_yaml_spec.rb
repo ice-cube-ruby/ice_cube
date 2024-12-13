@@ -24,14 +24,14 @@ module IceCube
     end
 
     it "should respond to .to_yaml" do
-      schedule = Schedule.new(Time.now)
+      schedule = Schedule.new(Time.zone.now)
       schedule.add_recurrence_rule Rule.daily.until(Time.now)
       # check assumption
       expect(schedule).to respond_to("to_yaml")
     end
 
     it "should be able to make a round-trip to YAML" do
-      schedule = Schedule.new(Time.now)
+      schedule = Schedule.new(Time.zone.now)
       schedule.add_recurrence_rule Rule.daily.until(Time.now + 10)
       result1 = schedule.all_occurrences
 
@@ -45,7 +45,7 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML with .day" do
-      schedule = Schedule.new(Time.now)
+      schedule = Schedule.new(Time.zone.now)
       schedule.add_recurrence_rule Rule.daily.day(:monday, :wednesday)
 
       yaml_string = schedule.to_yaml
@@ -78,7 +78,7 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML with .day_of_year" do
-      schedule1 = Schedule.new(Time.now)
+      schedule1 = Schedule.new(Time.zone.now)
       schedule1.add_recurrence_rule Rule.yearly.day_of_year(100, 200)
 
       yaml_string = schedule1.to_yaml
@@ -90,7 +90,7 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML with .hour_of_day" do
-      schedule = Schedule.new(Time.now)
+      schedule = Schedule.new(Time.zone.now)
       schedule.add_recurrence_rule Rule.daily.hour_of_day(1, 2)
 
       yaml_string = schedule.to_yaml
@@ -101,7 +101,7 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML with .minute_of_hour" do
-      schedule = Schedule.new(Time.now)
+      schedule = Schedule.new(Time.zone.now)
       schedule.add_recurrence_rule Rule.daily.minute_of_hour(0, 30)
 
       yaml_string = schedule.to_yaml
@@ -112,7 +112,7 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML with .month_of_year" do
-      schedule = Schedule.new(Time.now)
+      schedule = Schedule.new(Time.zone.now)
       schedule.add_recurrence_rule Rule.yearly.month_of_year(:april, :may)
 
       yaml_string = schedule.to_yaml
@@ -123,7 +123,7 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML with .second_of_minute" do
-      schedule = Schedule.new(Time.now)
+      schedule = Schedule.new(Time.zone.now)
       schedule.add_recurrence_rule Rule.daily.second_of_minute(1, 2)
 
       yaml_string = schedule.to_yaml
@@ -134,7 +134,7 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML whilst preserving exception rules" do
-      original_schedule = Schedule.new(Time.now)
+      original_schedule = Schedule.new(Time.zone.now)
       original_schedule.add_recurrence_rule Rule.daily.day(:monday, :wednesday)
       original_schedule.add_exception_rule Rule.daily.day(:wednesday)
 
@@ -151,7 +151,7 @@ module IceCube
     end
 
     it "should have a to_yaml representation of a schedule that does not contain ruby objects" do
-      schedule = Schedule.new(Time.now)
+      schedule = Schedule.new(Time.zone.now)
       schedule.add_recurrence_rule Rule.daily.day_of_week(monday: [1, -1]).month_of_year(:april)
       expect(schedule.to_yaml.include?("object")).to be_falsey
     end
@@ -222,7 +222,7 @@ module IceCube
     end
 
     it "should be able to roll forward and back in time" do
-      schedule = Schedule.new(Time.now)
+      schedule = Schedule.new(Time.zone.now)
       rt_schedule = Schedule.from_yaml(schedule.to_yaml)
       expect(rt_schedule.start_time.utc_offset).to eq(schedule.start_time.utc_offset)
     end
@@ -234,7 +234,7 @@ module IceCube
     end
 
     it "should work to_yaml with non-TimeWithZone" do
-      schedule = Schedule.new(Time.now)
+      schedule = Schedule.new(Time.zone.now)
       expect(schedule.to_yaml.length).to be < 200
     end
 
