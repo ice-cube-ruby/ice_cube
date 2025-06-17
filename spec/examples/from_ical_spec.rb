@@ -110,7 +110,7 @@ module IceCube
     ICAL
 
     ical_string_with_multiple_rules = <<-ICAL.gsub(/^\s*/, "")
-  DTSTART;TZID=CDT:20151005T195541
+  DTSTART;TZID=America/Chicago:20151005T195541
   RRULE:FREQ=WEEKLY;BYDAY=MO,TU
   RRULE:FREQ=WEEKLY;INTERVAL=2;WKST=SU;BYDAY=FR
     ICAL

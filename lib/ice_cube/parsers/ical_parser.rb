@@ -48,10 +48,14 @@ module IceCube
         Time.new(base_time.year, base_time.month, base_time.day,
           base_time.hour, base_time.min, base_time.sec, offset_seconds)
       else
-        # TZID is a timezone name - try to use it if possible
-        # For now, fall back to standard parsing
-        # TODO: Could be enhanced to support timezone names if TZInfo is available
-        TimeUtil.deserialize_time(time_value)
+        # TZID is a timezone name - Assume it's a valid timezone in a try-catch block
+        begin
+          TimeUtil.deserialize_time({time: time_value, zone: tzid})
+        rescue ArgumentError
+          # If the timezone is invalid, fall back to standard deserialization
+          # Perhaps we want to log this?
+          TimeUtil.deserialize_time(time_value)
+        end
       end
     end
 
