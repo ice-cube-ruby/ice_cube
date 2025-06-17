@@ -4,18 +4,25 @@ module IceCube
       data = {}
       ical_string.each_line do |line|
         (property, value) = line.split(":")
-        (property, _tzid) = property.split(";")
+        (property, tzid_param) = property.split(";")
+
+        # Extract TZID if present
+        tzid = nil
+        if tzid_param && tzid_param.start_with?("TZID=")
+          tzid = tzid_param[5..-1] # Remove "TZID=" prefix
+        end
+
         case property
         when "DTSTART"
-          data[:start_time] = TimeUtil.deserialize_time(value)
+          data[:start_time] = deserialize_time_with_tzid(value, tzid)
         when "DTEND"
-          data[:end_time] = TimeUtil.deserialize_time(value)
+          data[:end_time] = deserialize_time_with_tzid(value, tzid)
         when "RDATE"
           data[:rtimes] ||= []
-          data[:rtimes] += value.split(",").map { |v| TimeUtil.deserialize_time(v) }
+          data[:rtimes] += value.split(",").map { |v| deserialize_time_with_tzid(v, tzid) }
         when "EXDATE"
           data[:extimes] ||= []
-          data[:extimes] += value.split(",").map { |v| TimeUtil.deserialize_time(v) }
+          data[:extimes] += value.split(",").map { |v| deserialize_time_with_tzid(v, tzid) }
         when "DURATION"
           data[:duration] # FIXME
         when "RRULE"
@@ -24,6 +31,28 @@ module IceCube
         end
       end
       Schedule.from_hash data
+    end
+
+    def self.deserialize_time_with_tzid(time_value, tzid)
+      if tzid.nil? || tzid.empty?
+        # No TZID, use standard deserialization
+        TimeUtil.deserialize_time(time_value)
+      elsif tzid.match?(/^[+-]\d{4}$/)
+        # TZID is an offset like +0300 or -0500
+        # Parse the time and apply the offset
+        base_time = Time.strptime(time_value, "%Y%m%dT%H%M%S")
+        offset_hours = tzid[1..2].to_i
+        offset_minutes = tzid[3..4].to_i
+        offset_seconds = offset_hours * 3600 + offset_minutes * 60
+        offset_seconds *= -1 if tzid[0] == "-"
+        Time.new(base_time.year, base_time.month, base_time.day,
+          base_time.hour, base_time.min, base_time.sec, offset_seconds)
+      else
+        # TZID is a timezone name - try to use it if possible
+        # For now, fall back to standard parsing
+        # TODO: Could be enhanced to support timezone names if TZInfo is available
+        TimeUtil.deserialize_time(time_value)
+      end
     end
 
     def self.rule_from_ical(ical)

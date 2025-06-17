@@ -35,10 +35,21 @@ module IceCube
 
     def self.ical_format(time, force_utc)
       time = time.dup.utc if force_utc
+
+      # Keep timezone. strftime will serializer short versions of time zone (eg. EEST),
+      # which are not reversivible, as there are many repeated abbreviated zones. This will result in
+      # issues in parsing
+      if time.respond_to?(:time_zone)
+        tz_id = time.time_zone.name
+        return ";TZID=#{tz_id}:#{IceCube::I18n.l(time, format: "%Y%m%dT%H%M%S")}" # local time specified"
+      end
+
       if time.utc?
         ":#{IceCube::I18n.l(time, format: "%Y%m%dT%H%M%SZ")}" # utc time
       else
-        ";TZID=#{IceCube::I18n.l(time, format: "%Z:%Y%m%dT%H%M%S")}" # local time specified
+        # Warn %Z (capital) is OS dependent, and not unique (CST can be in Asia +0800, or Americas (-0500)
+        # at least %z allows recovery of accurate utc offset during parsing
+        ";TZID=#{time.strftime("%z")}:#{IceCube::I18n.l(time, format: "%Y%m%dT%H%M%S")}" # local time specified
       end
     end
 

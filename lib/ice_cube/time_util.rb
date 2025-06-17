@@ -87,7 +87,8 @@ module IceCube
       case time
       when Time, Date
         if time.respond_to?(:time_zone)
-          {time: time.utc, zone: time.time_zone.name}
+          # avoid .utc as it changes the object timezone
+          {time: time.getutc, zone: time.time_zone.name}
         else
           time
         end

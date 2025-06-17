@@ -429,5 +429,67 @@ module IceCube
         it_behaves_like "an invalid ical string"
       end
     end
+
+    describe "timezone offset parsing" do
+      it "should correctly parse TZID with offset format" do
+        # Test parsing TZID with offset format like +0300
+        ical_string = "DTSTART;TZID=+0300:20250618T001306"
+
+        schedule = IceCube::Schedule.from_ical(ical_string)
+
+        # Should preserve the +0300 offset (10800 seconds)
+        expect(schedule.start_time.utc_offset).to eq(10800)
+
+        # Should parse the correct local time
+        expect(schedule.start_time.year).to eq(2025)
+        expect(schedule.start_time.month).to eq(6)
+        expect(schedule.start_time.day).to eq(18)
+        expect(schedule.start_time.hour).to eq(0)
+        expect(schedule.start_time.min).to eq(13)
+        expect(schedule.start_time.sec).to eq(6)
+      end
+
+      it "should correctly parse TZID with negative offset format" do
+        # Test parsing TZID with negative offset format like -0500
+        ical_string = "DTSTART;TZID=-0500:20250618T001306"
+
+        schedule = IceCube::Schedule.from_ical(ical_string)
+
+        puts "Parsed time (negative offset): #{schedule.start_time.inspect}"
+        puts "Parsed offset: #{schedule.start_time.utc_offset}"
+        puts "Expected offset: #{-5 * 3600} (-18000 seconds for -0500)"
+
+        # Should preserve the -0500 offset (-18000 seconds)
+        expect(schedule.start_time.utc_offset).to eq(-18000)
+
+        # Should parse the correct local time
+        expect(schedule.start_time.year).to eq(2025)
+        expect(schedule.start_time.month).to eq(6)
+        expect(schedule.start_time.day).to eq(18)
+        expect(schedule.start_time.hour).to eq(0)
+        expect(schedule.start_time.min).to eq(13)
+        expect(schedule.start_time.sec).to eq(6)
+      end
+
+      it "should handle round-trip serialization with offset-based TZID" do
+        # Create a time with specific offset
+        original_time = Time.new(2025, 6, 18, 0, 13, 6, "+03:00")
+        original_schedule = IceCube::Schedule.new(original_time)
+
+        # Convert to iCal
+        ical_string = original_schedule.to_ical
+        puts "Generated iCal: #{ical_string}"
+
+        # Parse back
+        parsed_schedule = IceCube::Schedule.from_ical(ical_string)
+
+        # Should maintain timezone information
+        expect(parsed_schedule.start_time.utc_offset).to eq(original_time.utc_offset)
+        expect(parsed_schedule.start_time.to_i).to eq(original_time.to_i) # Same instant
+        expect(parsed_schedule.start_time.hour).to eq(original_time.hour) # Same local hour
+        expect(parsed_schedule.start_time.min).to eq(original_time.min)   # Same local minute
+        expect(parsed_schedule.start_time.sec).to eq(original_time.sec)   # Same local second
+      end
+    end
   end
 end
