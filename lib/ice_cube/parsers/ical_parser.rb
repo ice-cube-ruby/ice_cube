@@ -37,16 +37,6 @@ module IceCube
       if tzid.nil? || tzid.empty?
         # No TZID, use standard deserialization
         TimeUtil.deserialize_time(time_value)
-      elsif tzid.match?(/^[+-]\d{4}$/)
-        # TZID is an offset like +0300 or -0500
-        # Parse the time and apply the offset
-        base_time = Time.strptime(time_value, "%Y%m%dT%H%M%S")
-        offset_hours = tzid[1..2].to_i
-        offset_minutes = tzid[3..4].to_i
-        offset_seconds = offset_hours * 3600 + offset_minutes * 60
-        offset_seconds *= -1 if tzid[0] == "-"
-        Time.new(base_time.year, base_time.month, base_time.day,
-          base_time.hour, base_time.min, base_time.sec, offset_seconds)
       else
         # TZID is a timezone name - Assume it's a valid timezone in a try-catch block
         begin

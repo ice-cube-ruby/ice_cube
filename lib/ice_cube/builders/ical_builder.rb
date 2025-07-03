@@ -47,9 +47,10 @@ module IceCube
       if time.utc?
         ":#{IceCube::I18n.l(time, format: "%Y%m%dT%H%M%SZ")}" # utc time
       else
-        # Warn %Z (capital) is OS dependent, and not unique (CST can be in Asia +0800, or Americas (-0500)
-        # at least %z allows recovery of accurate utc offset during parsing
-        ";TZID=#{time.strftime("%z")}:#{IceCube::I18n.l(time, format: "%Y%m%dT%H%M%S")}" # local time specified
+        # Convert to UTC as TZID=+xxxx format is not recognized by JS libraries
+        warn "IceCube: Time object does not have timezone info. Assuming UTC: #{caller(1..1).first}"
+        utc_time = time.dup.utc
+        ":#{IceCube::I18n.l(utc_time, format: "%Y%m%dT%H%M%SZ")}" # converted to utc time
       end
     end
 
