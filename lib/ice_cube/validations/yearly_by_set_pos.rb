@@ -39,7 +39,8 @@ module IceCube
 
         # Needs to start on the first day of the year
         new_schedule = IceCube::Schedule.new(IceCube::TimeUtil.build_in_zone([start_of_year.year, start_of_year.month, start_of_year.day, step_time.hour, step_time.min, step_time.sec], start_of_year)) do |s|
-          s.add_recurrence_rule(IceCube::Rule.from_hash(rule.to_hash.except(:by_set_pos, :count, :until)))
+          filtered_hash = rule.to_hash.reject { |key, _| [:by_set_pos, :count, :until].include?(key) }
+          s.add_recurrence_rule(IceCube::Rule.from_hash(filtered_hash))
         end
 
         occurrences = new_schedule.occurrences_between(start_of_year, end_of_year)

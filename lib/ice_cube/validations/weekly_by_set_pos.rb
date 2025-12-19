@@ -54,7 +54,8 @@ module IceCube
           ], step_time
         )
         new_schedule = IceCube::Schedule.new(start_of_week_adjusted) do |s|
-          s.add_recurrence_rule(IceCube::Rule.from_hash(rule.to_hash.except(:by_set_pos, :count, :until)))
+          filtered_hash = rule.to_hash.reject { |key, _| [:by_set_pos, :count, :until].include?(key) }
+          s.add_recurrence_rule(IceCube::Rule.from_hash(filtered_hash))
         end
 
         occurrences = new_schedule.occurrences_between(start_of_week, end_of_week)
