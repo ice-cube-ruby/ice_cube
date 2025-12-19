@@ -89,6 +89,11 @@ module IceCube
       expect(rule).to eq(IceCube::Rule.monthly.day(:monday, :wednesday).by_set_pos([-1, 1]))
     end
 
+    it "should preserve by_set_pos in a to_hash/from_hash round trip" do
+      rule = IceCube::Rule.monthly.day(:monday, :wednesday).by_set_pos([-1, 1])
+      expect(IceCube::Rule.from_hash(rule.to_hash)).to eq(rule)
+    end
+
     it "should raise when by_set_pos is out of range (BYSETPOS)" do
       expect {
         IceCube::Rule.from_ical("FREQ=MONTHLY;BYDAY=MO,WE;BYSETPOS=-367")

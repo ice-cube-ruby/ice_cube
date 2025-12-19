@@ -55,6 +55,11 @@ module IceCube
         )
         new_schedule = IceCube::Schedule.new(start_of_week_adjusted) do |s|
           filtered_hash = rule.to_hash.reject { |key, _| [:by_set_pos, :count, :until].include?(key) }
+          # Avoid recursive BYSETPOS evaluation in the temporary schedule.
+          if filtered_hash[:validations]
+            filtered_hash[:validations] = filtered_hash[:validations].reject { |key, _| key == :by_set_pos }
+            filtered_hash.delete(:validations) if filtered_hash[:validations].empty?
+          end
           s.add_recurrence_rule(IceCube::Rule.from_hash(filtered_hash))
         end
 
@@ -79,7 +84,7 @@ module IceCube
       end
 
       def build_hash(builder)
-        builder[:by_set_pos] = by_set_pos
+        builder.validations_array(:by_set_pos) << by_set_pos
       end
 
       def build_ical(builder)
