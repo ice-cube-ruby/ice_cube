@@ -26,6 +26,10 @@ module IceCube
       end
 
       def type
+        # Use the smallest expanded unit so we don't skip intra-day candidates.
+        return :sec if rule.validations[:second_of_minute]
+        return :min if rule.validations[:minute_of_hour]
+        return :hour if rule.validations[:hour_of_day]
         :day
       end
 
@@ -37,8 +41,8 @@ module IceCube
         start_of_year = TimeUtil.build_in_zone([step_time.year, 1, 1, 0, 0, 0], step_time)
         end_of_year = TimeUtil.build_in_zone([step_time.year, 12, 31, 23, 59, 59], step_time)
 
-        # Needs to start on the first day of the year
-        new_schedule = IceCube::Schedule.new(IceCube::TimeUtil.build_in_zone([start_of_year.year, start_of_year.month, start_of_year.day, step_time.hour, step_time.min, step_time.sec], start_of_year)) do |s|
+        # Use the schedule start_time to preserve implicit date/time anchors.
+        new_schedule = IceCube::Schedule.new(start_time) do |s|
           filtered_hash = rule.to_hash.reject { |key, _| [:by_set_pos, :count, :until].include?(key) }
           # Avoid recursive BYSETPOS evaluation in the temporary schedule.
           if filtered_hash[:validations]

@@ -53,6 +53,18 @@ module IceCube
           Time.new(2016,1,27,12,0,0),
         ])
     end
+
+    it "should work with bysecond expansions" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MONTHLY;COUNT=4;BYSECOND=1,2,3,4;BYSETPOS=2"
+      schedule.start_time = Time.new(2015, 5, 28, 12, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2017, 01, 01))).
+        to eq([
+          Time.new(2015,5,28,12,0,2),
+          Time.new(2015,6,28,12,0,2),
+          Time.new(2015,7,28,12,0,2),
+          Time.new(2015,8,28,12,0,2)
+        ])
+    end
   end
 
   describe YearlyRule, "BYSETPOS" do
@@ -97,6 +109,16 @@ module IceCube
           Time.new(2016, 7, 31),
           Time.new(2018, 7, 31),
           Time.new(2020, 7, 31),
+        ])
+    end
+
+    it "should work with byhour expansions" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;COUNT=2;BYMONTH=7;BYHOUR=1,2;BYSETPOS=1"
+      schedule.start_time = Time.new(2016, 7, 5, 0, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2016, 01, 01), Time.new(2018, 01, 01))).
+        to eq([
+          Time.new(2016, 7, 5, 1, 0, 0),
+          Time.new(2017, 7, 5, 1, 0, 0)
         ])
     end
   end
