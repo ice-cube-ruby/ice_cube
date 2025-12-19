@@ -301,6 +301,25 @@ module IceCube
         ])
     end
 
+    it "should apply BYSETPOS before count" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;COUNT=1;BYHOUR=1,2,3;BYSETPOS=-1"
+      schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 05))).
+        to eq([
+          Time.new(2023,1,1,3,0,0)
+        ])
+    end
+
+    it "should apply BYSETPOS before until" do
+      # If UNTIL were applied before BYSETPOS, the 02:00 occurrence would be selected.
+      schedule = IceCube::Schedule.new(Time.new(2023, 1, 1, 0, 0, 0))
+      schedule.add_recurrence_rule(
+        IceCube::Rule.daily.hour_of_day(1, 2, 3).by_set_pos(-1).until(Time.new(2023, 1, 1, 2, 0, 0))
+      )
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 02))).
+        to eq([])
+    end
+
     it "should support negative positions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;COUNT=3;BYHOUR=1,2,3;BYSETPOS=-1"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
@@ -359,6 +378,13 @@ module IceCube
           Time.new(2023,1,1,1,10,50),
           Time.new(2023,1,1,2,10,50)
         ])
+    end
+
+    it "should return no occurrences when BYSETPOS exceeds the set size" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=HOURLY;COUNT=2;BYMINUTE=10,20;BYSETPOS=3"
+      schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 2, 0, 0))).
+        to eq([])
     end
 
     it "should support negative positions with second expansions" do

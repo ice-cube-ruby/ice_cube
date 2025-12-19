@@ -49,6 +49,8 @@ module IceCube
           s.add_recurrence_rule(IceCube::Rule.from_hash(filtered_hash))
         end
 
+        # Build the full candidate set for this interval without COUNT/UNTIL,
+        # then map the selected occurrence to positive/negative positions.
         occurrences = new_schedule.occurrences_between(start_of_day, end_of_day)
         index = occurrences.index(step_time)
         if index.nil?
