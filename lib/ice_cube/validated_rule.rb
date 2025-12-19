@@ -45,15 +45,22 @@ module IceCube
 
     # Compute the next time after (or including) the specified time in respect
     # to the given start time
-    def next_time(time, start_time, closing_time)
+    # When increment is false, callers are probing for the next candidate and
+    # must not consume COUNT.
+    def next_time(time, start_time, closing_time, increment: true)
       @time = time
       @start_time ||= realign(time, start_time)
       @time = @start_time if @time < @start_time
 
       return nil unless find_acceptable_time_before(closing_time)
 
-      @uses += 1 if @time
+      @uses += 1 if @time && increment
       @time
+    end
+
+    def increment_uses
+      # Count is consumed only when the rule's occurrence is emitted.
+      @uses += 1
     end
 
     def realign(opening_time, start_time)
