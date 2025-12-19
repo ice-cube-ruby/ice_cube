@@ -32,6 +32,7 @@ module IceCube
       end
 
       def validate(step_time, start_time)
+        # Define the current minute window so BYSETPOS is applied per minute.
         start_of_minute = TimeUtil.build_in_zone(
           [step_time.year, step_time.month, step_time.day, step_time.hour, step_time.min, 0], step_time
         )

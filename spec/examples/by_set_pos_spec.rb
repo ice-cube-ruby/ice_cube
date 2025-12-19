@@ -279,6 +279,17 @@ module IceCube
         ])
     end
 
+    it "should respect day boundaries when starting late" do
+      # Ensures BYSETPOS grouping resets per day while preserving the start_time minute anchor.
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;COUNT=2;BYHOUR=1,2;BYSETPOS=1"
+      schedule.start_time = Time.new(2023, 1, 1, 23, 30, 0)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 05))).
+        to eq([
+          Time.new(2023,1,2,1,30,0),
+          Time.new(2023,1,3,1,30,0)
+        ])
+    end
+
     it "should apply after multiple BYxxx expansions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;COUNT=3;BYHOUR=9,10;BYMINUTE=15,45;BYSETPOS=3"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
@@ -327,6 +338,18 @@ module IceCube
         ])
     end
 
+    it "should respect hour boundaries when starting late" do
+      # Ensures BYSETPOS grouping resets per hour, not from the schedule start_time.
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=HOURLY;COUNT=3;BYMINUTE=10,20;BYSETPOS=1"
+      schedule.start_time = Time.new(2023, 1, 1, 0, 45, 0)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 5, 0, 0))).
+        to eq([
+          Time.new(2023,1,1,1,10,0),
+          Time.new(2023,1,1,2,10,0),
+          Time.new(2023,1,1,3,10,0)
+        ])
+    end
+
     it "should apply after multiple BYxxx expansions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=HOURLY;COUNT=3;BYMINUTE=10,20;BYSECOND=5,50;BYSETPOS=2"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
@@ -369,6 +392,18 @@ module IceCube
       expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 5, 0))).
         to eq([
           Time.new(2023,1,1,0,0,10),
+          Time.new(2023,1,1,0,1,10),
+          Time.new(2023,1,1,0,2,10),
+          Time.new(2023,1,1,0,3,10)
+        ])
+    end
+
+    it "should respect minute boundaries when starting late" do
+      # Ensures BYSETPOS grouping resets per minute, not from the schedule start_time.
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MINUTELY;COUNT=3;BYSECOND=10,20;BYSETPOS=1"
+      schedule.start_time = Time.new(2023, 1, 1, 0, 0, 45)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 5, 0))).
+        to eq([
           Time.new(2023,1,1,0,1,10),
           Time.new(2023,1,1,0,2,10),
           Time.new(2023,1,1,0,3,10)

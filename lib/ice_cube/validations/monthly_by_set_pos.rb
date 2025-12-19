@@ -36,6 +36,7 @@ module IceCube
       end
 
       def validate(step_time, start_time)
+        # Define the current month window so BYSETPOS is applied per month.
         start_of_month = TimeUtil.build_in_zone([step_time.year, step_time.month, 1, 0, 0, 0], step_time)
         eom_date = Date.new(step_time.year, step_time.month, -1)
         end_of_month = TimeUtil.build_in_zone([eom_date.year, eom_date.month, eom_date.day, 23, 59, 59], step_time)

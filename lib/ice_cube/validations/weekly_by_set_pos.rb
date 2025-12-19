@@ -35,7 +35,8 @@ module IceCube
       end
 
       def validate(step_time, start_time)
-        # Use vanilla Ruby Date objects so we can add and subtract dates across DST changes
+        # Define the week window using WKST so BYSETPOS is applied per week.
+        # Use vanilla Ruby Date objects so we can add and subtract dates across DST changes.
         step_time_date = step_time.to_date
         start_day_of_week = TimeUtil.sym_to_wday(rule.week_start)
         step_time_day_of_week = step_time_date.wday

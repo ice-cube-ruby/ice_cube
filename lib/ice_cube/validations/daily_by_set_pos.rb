@@ -34,6 +34,7 @@ module IceCube
       end
 
       def validate(step_time, start_time)
+        # Define the current day window so BYSETPOS is applied per day.
         start_of_day = TimeUtil.beginning_of_date(step_time, step_time)
         end_of_day = TimeUtil.end_of_date(step_time, step_time)
 

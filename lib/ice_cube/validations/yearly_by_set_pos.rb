@@ -38,6 +38,7 @@ module IceCube
       end
 
       def validate(step_time, start_time)
+        # Define the current year window so BYSETPOS is applied per year.
         start_of_year = TimeUtil.build_in_zone([step_time.year, 1, 1, 0, 0, 0], step_time)
         end_of_year = TimeUtil.build_in_zone([step_time.year, 12, 31, 23, 59, 59], step_time)
 
