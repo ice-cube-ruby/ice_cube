@@ -50,6 +50,9 @@ module IceCube
     autoload :YearlyInterval, "ice_cube/validations/yearly_interval"
     autoload :HourlyInterval, "ice_cube/validations/hourly_interval"
 
+    autoload :MinutelyBySetPos, "ice_cube/validations/minutely_by_set_pos"
+    autoload :HourlyBySetPos, "ice_cube/validations/hourly_by_set_pos"
+    autoload :DailyBySetPos, "ice_cube/validations/daily_by_set_pos"
     autoload :WeeklyBySetPos, "ice_cube/validations/weekly_by_set_pos"
     autoload :MonthlyBySetPos, "ice_cube/validations/monthly_by_set_pos"
     autoload :YearlyBySetPos, "ice_cube/validations/yearly_by_set_pos"

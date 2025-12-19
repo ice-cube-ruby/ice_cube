@@ -253,4 +253,115 @@ module IceCube
         ])
     end
   end
+
+  describe DailyRule, "BYSETPOS" do
+    it "should work with hour expansions" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;COUNT=4;BYHOUR=1,2;BYSETPOS=2"
+      schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 06))).
+        to eq([
+          Time.new(2023,1,1,2,0,0),
+          Time.new(2023,1,2,2,0,0),
+          Time.new(2023,1,3,2,0,0),
+          Time.new(2023,1,4,2,0,0)
+        ])
+    end
+
+    it "should support negative positions" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;COUNT=3;BYHOUR=1,2,3;BYSETPOS=-1"
+      schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 06))).
+        to eq([
+          Time.new(2023,1,1,3,0,0),
+          Time.new(2023,1,2,3,0,0),
+          Time.new(2023,1,3,3,0,0)
+        ])
+    end
+
+    it "should support multiple positions with minute expansions" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;BYMINUTE=10,20,30;BYSETPOS=1,-1"
+      schedule.start_time = Time.new(2023, 1, 1, 12, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 03))).
+        to eq([
+          Time.new(2023,1,1,12,10,0),
+          Time.new(2023,1,1,12,30,0),
+          Time.new(2023,1,2,12,10,0),
+          Time.new(2023,1,2,12,30,0)
+        ])
+    end
+  end
+
+  describe HourlyRule, "BYSETPOS" do
+    it "should work with minute expansions" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=HOURLY;COUNT=4;BYMINUTE=10,20;BYSETPOS=2"
+      schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 5, 0, 0))).
+        to eq([
+          Time.new(2023,1,1,0,20,0),
+          Time.new(2023,1,1,1,20,0),
+          Time.new(2023,1,1,2,20,0),
+          Time.new(2023,1,1,3,20,0)
+        ])
+    end
+
+    it "should support negative positions with second expansions" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=HOURLY;COUNT=3;BYSECOND=5,10,15;BYSETPOS=-1"
+      schedule.start_time = Time.new(2023, 1, 1, 0, 34, 0)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 4, 0, 0))).
+        to eq([
+          Time.new(2023,1,1,0,34,15),
+          Time.new(2023,1,1,1,34,15),
+          Time.new(2023,1,1,2,34,15)
+        ])
+    end
+
+    it "should support multiple positions" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=HOURLY;BYMINUTE=5,10,15;BYSETPOS=1,-1"
+      schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 2, 0, 0))).
+        to eq([
+          Time.new(2023,1,1,0,5,0),
+          Time.new(2023,1,1,0,15,0),
+          Time.new(2023,1,1,1,5,0),
+          Time.new(2023,1,1,1,15,0)
+        ])
+    end
+  end
+
+  describe MinutelyRule, "BYSETPOS" do
+    it "should work with second expansions" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MINUTELY;COUNT=4;BYSECOND=5,10;BYSETPOS=2"
+      schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 5, 0))).
+        to eq([
+          Time.new(2023,1,1,0,0,10),
+          Time.new(2023,1,1,0,1,10),
+          Time.new(2023,1,1,0,2,10),
+          Time.new(2023,1,1,0,3,10)
+        ])
+    end
+
+    it "should support negative positions" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MINUTELY;COUNT=3;BYSECOND=1,2,3;BYSETPOS=-1"
+      schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 4, 0))).
+        to eq([
+          Time.new(2023,1,1,0,0,3),
+          Time.new(2023,1,1,0,1,3),
+          Time.new(2023,1,1,0,2,3)
+        ])
+    end
+
+    it "should support multiple positions" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MINUTELY;BYSECOND=5,10,15;BYSETPOS=1,-1"
+      schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 2, 0))).
+        to eq([
+          Time.new(2023,1,1,0,0,5),
+          Time.new(2023,1,1,0,0,15),
+          Time.new(2023,1,1,0,1,5),
+          Time.new(2023,1,1,0,1,15)
+        ])
+    end
+  end
 end
