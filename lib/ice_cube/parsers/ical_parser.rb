@@ -86,7 +86,7 @@ module IceCube
         when "BYYEARDAY"
           validations[:day_of_year] = value.split(",").map(&:to_i)
         when "BYSETPOS"
-          params[:validations][:by_set_pos] = value.split(',').collect(&:to_i)
+          validations[:by_set_pos] = value.split(",").map(&:to_i)
         else
           validations[name] = nil # invalid type
         end

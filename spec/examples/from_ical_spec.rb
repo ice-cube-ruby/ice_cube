@@ -84,12 +84,12 @@ module IceCube
       expect(rule).to eq(IceCube::Rule.weekly(2, :monday))
     end
 
-    it 'should be able to parse by_set_pos start (BYSETPOS)' do
+    it "should be able to parse by_set_pos start (BYSETPOS)" do
       rule = IceCube::Rule.from_ical("FREQ=MONTHLY;BYDAY=MO,WE;BYSETPOS=-1,1")
       expect(rule).to eq(IceCube::Rule.monthly.day(:monday, :wednesday).by_set_pos([-1, 1]))
     end
 
-    it 'should raise when by_set_pos is out of range (BYSETPOS)' do
+    it "should raise when by_set_pos is out of range (BYSETPOS)" do
       expect {
         IceCube::Rule.from_ical("FREQ=MONTHLY;BYDAY=MO,WE;BYSETPOS=-367")
       }.to raise_error(/Expecting number in \[-366, -1\] or \[1, 366\]/)
@@ -103,7 +103,7 @@ module IceCube
       }.to raise_error(/Expecting number in \[-366, -1\] or \[1, 366\]/)
     end
 
-    it 'should return no occurrences after daily interval with count is over' do
+    it "should return no occurrences after daily interval with count is over" do
       schedule = IceCube::Schedule.new(Time.now)
       schedule.add_recurrence_rule(IceCube::Rule.from_ical("FREQ=DAILY;COUNT=5"))
       expect(schedule.occurrences_between(Time.now + (IceCube::ONE_DAY * 7), Time.now + (IceCube::ONE_DAY * 14)).count).to eq(0)

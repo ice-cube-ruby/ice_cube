@@ -68,7 +68,7 @@ module IceCube
       end
 
       def build_ical(builder)
-        builder['BYSETPOS'] << by_set_pos
+        builder["BYSETPOS"] << by_set_pos
       end
 
       nil

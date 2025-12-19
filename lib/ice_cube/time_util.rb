@@ -1,5 +1,5 @@
-require 'date'
-require 'time'
+require "date"
+require "time"
 
 module IceCube
   module TimeUtil
