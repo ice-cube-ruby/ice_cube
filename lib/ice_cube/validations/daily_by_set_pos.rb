@@ -34,23 +34,13 @@ module IceCube
       end
 
       def validate(step_time, start_time)
-        # Define the current day window so BYSETPOS is applied per day.
-        start_of_day = TimeUtil.beginning_of_date(step_time, step_time)
-        end_of_day = TimeUtil.end_of_date(step_time, step_time)
+        # Compute the interval bounds and build a filtered schedule that preserves
+        # implicit anchors while avoiding BYSETPOS/COUNT/UNTIL truncation.
+        start_of_day, end_of_day = Validations::BySetPosHelper.interval_bounds(:day, step_time)
+        new_schedule = Validations::BySetPosHelper.build_filtered_schedule(rule, start_time)
 
-        # Use the schedule start_time to preserve implicit date/time anchors.
-        new_schedule = IceCube::Schedule.new(start_time) do |s|
-          filtered_hash = rule.to_hash.reject { |key, _| [:by_set_pos, :count, :until].include?(key) }
-          # Avoid recursive BYSETPOS evaluation in the temporary schedule.
-          if filtered_hash[:validations]
-            filtered_hash[:validations] = filtered_hash[:validations].reject { |key, _| key == :by_set_pos }
-            filtered_hash.delete(:validations) if filtered_hash[:validations].empty?
-          end
-          s.add_recurrence_rule(IceCube::Rule.from_hash(filtered_hash))
-        end
-
-        # Build the full candidate set for this interval without COUNT/UNTIL,
-        # then map the selected occurrence to positive/negative positions.
+        # Build the full candidate set for this interval, then map the selected
+        # occurrence to positive/negative positions.
         occurrences = new_schedule.occurrences_between(start_of_day, end_of_day)
         index = occurrences.index(step_time)
         if index.nil?

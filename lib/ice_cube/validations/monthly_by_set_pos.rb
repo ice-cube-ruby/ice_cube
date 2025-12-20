@@ -36,24 +36,13 @@ module IceCube
       end
 
       def validate(step_time, start_time)
-        # Define the current month window so BYSETPOS is applied per month.
-        start_of_month = TimeUtil.build_in_zone([step_time.year, step_time.month, 1, 0, 0, 0], step_time)
-        eom_date = Date.new(step_time.year, step_time.month, -1)
-        end_of_month = TimeUtil.build_in_zone([eom_date.year, eom_date.month, eom_date.day, 23, 59, 59], step_time)
+        # Compute the interval bounds and build a filtered schedule that preserves
+        # implicit anchors while avoiding BYSETPOS/COUNT/UNTIL truncation.
+        start_of_month, end_of_month = Validations::BySetPosHelper.interval_bounds(:month, step_time)
+        new_schedule = Validations::BySetPosHelper.build_filtered_schedule(rule, start_time)
 
-        # Use the schedule start_time to preserve implicit date/time anchors.
-        new_schedule = IceCube::Schedule.new(start_time) do |s|
-          filtered_hash = rule.to_hash.reject { |key, _| [:by_set_pos, :count, :until].include?(key) }
-          # Avoid recursive BYSETPOS evaluation in the temporary schedule.
-          if filtered_hash[:validations]
-            filtered_hash[:validations] = filtered_hash[:validations].reject { |key, _| key == :by_set_pos }
-            filtered_hash.delete(:validations) if filtered_hash[:validations].empty?
-          end
-          s.add_recurrence_rule(IceCube::Rule.from_hash(filtered_hash))
-        end
-
-        # Build the full candidate set for this interval without COUNT/UNTIL,
-        # then map the selected occurrence to positive/negative positions.
+        # Build the full candidate set for this interval, then map the selected
+        # occurrence to positive/negative positions.
         occurrences = new_schedule.occurrences_between(start_of_month, end_of_month)
         index = occurrences.index(step_time)
         if index == nil

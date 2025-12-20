@@ -35,35 +35,15 @@ module IceCube
       end
 
       def validate(step_time, start_time)
-        # Define the week window using WKST so BYSETPOS is applied per week.
-        # Use vanilla Ruby Date objects so we can add and subtract dates across DST changes.
-        step_time_date = step_time.to_date
-        start_day_of_week = TimeUtil.sym_to_wday(rule.week_start)
-        step_time_day_of_week = step_time_date.wday
-        days_delta = step_time_day_of_week - start_day_of_week
-        days_to_start = days_delta >= 0 ? days_delta : 7 + days_delta
-        start_of_week_date = step_time_date - days_to_start
-        end_of_week_date = start_of_week_date + 6
-        start_of_week = IceCube::TimeUtil.build_in_zone(
-          [start_of_week_date.year, start_of_week_date.month, start_of_week_date.day, 0, 0, 0], step_time
+        # Compute the interval bounds and build a filtered schedule that preserves
+        # implicit anchors while avoiding BYSETPOS/COUNT/UNTIL truncation.
+        start_of_week, end_of_week = Validations::BySetPosHelper.interval_bounds(
+          :week, step_time, week_start: rule.week_start
         )
-        end_of_week = IceCube::TimeUtil.build_in_zone(
-          [end_of_week_date.year, end_of_week_date.month, end_of_week_date.day, 23, 59, 59], step_time
-        )
+        new_schedule = Validations::BySetPosHelper.build_filtered_schedule(rule, start_time)
 
-        # Use the schedule start_time to preserve implicit date/time anchors.
-        new_schedule = IceCube::Schedule.new(start_time) do |s|
-          filtered_hash = rule.to_hash.reject { |key, _| [:by_set_pos, :count, :until].include?(key) }
-          # Avoid recursive BYSETPOS evaluation in the temporary schedule.
-          if filtered_hash[:validations]
-            filtered_hash[:validations] = filtered_hash[:validations].reject { |key, _| key == :by_set_pos }
-            filtered_hash.delete(:validations) if filtered_hash[:validations].empty?
-          end
-          s.add_recurrence_rule(IceCube::Rule.from_hash(filtered_hash))
-        end
-
-        # Build the full candidate set for this interval without COUNT/UNTIL,
-        # then map the selected occurrence to positive/negative positions.
+        # Build the full candidate set for this interval, then map the selected
+        # occurrence to positive/negative positions.
         occurrences = new_schedule.occurrences_between(start_of_week, end_of_week)
         index = occurrences.index(step_time)
         if index.nil?
