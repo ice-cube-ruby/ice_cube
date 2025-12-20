@@ -54,6 +54,13 @@ module IceCube
           TimeUtil.build_in_zone([step_time.year, step_time.month, step_time.day, step_time.hour, step_time.min, 0], step_time),
           TimeUtil.build_in_zone([step_time.year, step_time.month, step_time.day, step_time.hour, step_time.min, 59], step_time)
         ]
+      when :sec
+        # Build a second window in the schedule's zone so BYSETPOS is applied
+        # per-second (the set size is typically 1).
+        second = TimeUtil.build_in_zone(
+          [step_time.year, step_time.month, step_time.day, step_time.hour, step_time.min, step_time.sec], step_time
+        )
+        [second, second]
       else
         raise ArgumentError, "Unsupported interval type: #{interval_type}"
       end

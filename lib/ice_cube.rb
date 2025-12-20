@@ -51,6 +51,7 @@ module IceCube
     autoload :HourlyInterval, "ice_cube/validations/hourly_interval"
 
     autoload :BySetPosHelper, "ice_cube/validations/by_set_pos_helper"
+    autoload :SecondlyBySetPos, "ice_cube/validations/secondly_by_set_pos"
     autoload :MinutelyBySetPos, "ice_cube/validations/minutely_by_set_pos"
     autoload :HourlyBySetPos, "ice_cube/validations/hourly_by_set_pos"
     autoload :DailyBySetPos, "ice_cube/validations/daily_by_set_pos"

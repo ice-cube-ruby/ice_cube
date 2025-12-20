@@ -259,6 +259,9 @@ BYSETPOS selects the nth occurrence within each interval after all other BYxxx
 filters/expansions are applied. Use positive values (from the start) or
 negative values (from the end). Repeated values do not duplicate occurrences,
 and positions beyond the set size yield no occurrence for that interval.
+RFC 5545 requires BYSETPOS to be used with another BYxxx rule part; IceCube
+allows BYSETPOS without another BYxxx and applies it to the single occurrence
+in each interval.
 
 ```ruby
 # last weekday of the month

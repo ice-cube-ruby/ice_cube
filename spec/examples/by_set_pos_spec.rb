@@ -421,6 +421,22 @@ module IceCube
         ])
     end
 
+    it "should ignore nonexistent local times in the BYSETPOS set", system_time_zone: "America/New_York" do
+      # DST spring-forward skips 2:00 AM; the invalid time must not be counted.
+      start_time = Time.local(2019, 3, 10, 0, 0, 0)
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule(
+        IceCube::Rule.daily.count(1).hour_of_day(1, 2, 3).by_set_pos(2)
+      )
+      occurrences = schedule.occurrences_between(
+        Time.local(2019, 3, 10, 0, 0, 0),
+        Time.local(2019, 3, 11, 0, 0, 0)
+      )
+      expect(occurrences).to eq([
+        Time.local(2019,3,10,3,0,0)
+      ])
+    end
+
     it "should apply after multiple BYxxx expansions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;COUNT=3;BYHOUR=9,10;BYMINUTE=15,45;BYSETPOS=3"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
@@ -693,6 +709,38 @@ module IceCube
           Time.new(2023,1,1,0,1,5),
           Time.new(2023,1,1,0,1,15)
         ])
+    end
+  end
+
+  describe SecondlyRule, "BYSETPOS" do
+    it "should allow BYSETPOS without other BYxxx parts" do
+      # RFC requires another BYxxx, but IceCube permits this for convenience.
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=SECONDLY;COUNT=3;BYSETPOS=1"
+      schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 0, 10))).
+        to eq([
+          Time.new(2023,1,1,0,0,0),
+          Time.new(2023,1,1,0,0,1),
+          Time.new(2023,1,1,0,0,2)
+        ])
+    end
+
+    it "should apply BYSETPOS per interval with INTERVAL > 1" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=SECONDLY;INTERVAL=2;COUNT=3;BYSETPOS=1"
+      schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 0, 10))).
+        to eq([
+          Time.new(2023,1,1,0,0,0),
+          Time.new(2023,1,1,0,0,2),
+          Time.new(2023,1,1,0,0,4)
+        ])
+    end
+
+    it "should return empty when BYSETPOS exceeds set size" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=SECONDLY;COUNT=2;BYSETPOS=2"
+      schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 0, 10))).
+        to eq([])
     end
   end
 end
