@@ -384,6 +384,42 @@ module IceCube
       expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2016, 01, 01))).
         to eq([])
     end
+
+    it "should select positive positions within a BYYEARDAY set" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;COUNT=2;BYYEARDAY=1,10,20;BYSETPOS=2"
+      schedule.start_time = Time.new(2015, 1, 1, 9, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1))).
+        to eq([
+          Time.new(2015, 1, 10, 9, 0, 0),
+          Time.new(2016, 1, 10, 9, 0, 0)
+        ])
+    end
+
+    it "should select negative positions within a BYYEARDAY set" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;COUNT=2;BYYEARDAY=1,10,20;BYSETPOS=-1"
+      schedule.start_time = Time.new(2015, 1, 1, 9, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1))).
+        to eq([
+          Time.new(2015, 1, 20, 9, 0, 0),
+          Time.new(2016, 1, 20, 9, 0, 0)
+        ])
+    end
+
+    it "should return empty when BYSETPOS exceeds a BYYEARDAY set" do
+      schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;COUNT=2;BYYEARDAY=1,10,20;BYSETPOS=4"
+      schedule.start_time = Time.new(2015, 1, 1, 9, 0, 0)
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1))).
+        to eq([])
+    end
+
+    it "should apply BYSETPOS before COUNT and UNTIL for BYYEARDAY" do
+      schedule = IceCube::Schedule.new(Time.new(2015, 1, 1, 9, 0, 0))
+      schedule.add_recurrence_rule(
+        IceCube::Rule.yearly.day_of_year(1, 10, 20).by_set_pos(2).count(2).until(Time.new(2015, 1, 5))
+      )
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1))).
+        to eq([])
+    end
   end
 
   describe DailyRule, "BYSETPOS" do
