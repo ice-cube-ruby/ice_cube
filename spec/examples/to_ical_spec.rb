@@ -78,6 +78,14 @@ describe IceCube, "to_ical" do
     expect(rule.to_ical).to eq("FREQ=DAILY;BYSECOND=0,15,30,45")
   end
 
+  it "should be able to serialize a .by_set_pos rule to_ical" do
+    rule = IceCube::Rule.monthly.day(:monday, :wednesday).by_set_pos(-1, 1)
+    ical = rule.to_ical
+    expect(ical).to include("FREQ=MONTHLY")
+    expect(ical).to include("BYDAY=MO,WE")
+    expect(ical).to include("BYSETPOS=-1,1")
+  end
+
   it "should be able to collapse a combination day_of_week and day" do
     rule = IceCube::Rule.daily.day(:monday, :tuesday).day_of_week(monday: [1, -1])
     expect(["FREQ=DAILY;BYDAY=TU,1MO,-1MO", "FREQ=DAILY;BYDAY=1MO,-1MO,TU"].include?(rule.to_ical)).to be_truthy
