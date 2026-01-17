@@ -40,7 +40,7 @@ module IceCube
         start_of_week, end_of_week = Validations::BySetPosHelper.interval_bounds(
           :week, step_time, week_start: rule.week_start
         )
-        new_schedule = Validations::BySetPosHelper.build_filtered_schedule(rule, start_time)
+        new_schedule = Validations::BySetPosHelper.build_filtered_schedule(rule, start_time, start_of_week)
 
         # Build the full candidate set for this interval, then map the selected
         # occurrence to positive/negative positions.

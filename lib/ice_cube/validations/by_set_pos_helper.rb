@@ -66,7 +66,7 @@ module IceCube
       end
     end
 
-    def build_filtered_schedule(rule, start_time)
+    def build_filtered_schedule(rule, start_time, interval_start)
       # Strip BYSETPOS/COUNT/UNTIL so the candidate set is complete, and avoid
       # recursive BYSETPOS evaluation when we rebuild the temporary rule.
       filtered_hash = rule.to_hash.reject { |key, _| [:by_set_pos, :count, :until].include?(key) }
@@ -75,8 +75,59 @@ module IceCube
         filtered_hash.delete(:validations) if filtered_hash[:validations].empty?
       end
 
-      # Use the schedule start_time to preserve implicit anchors like minute/second.
-      IceCube::Schedule.new(start_time) do |s|
+      # Determine which components are being expanded by BYxxx rules.
+      # Per RFC 5545, BYSETPOS operates on "the set of recurrence instances" which
+      # "starts at the beginning of the interval defined by the FREQ rule part."
+      # We must anchor the temp schedule to the interval boundary for expanded units,
+      # while preserving DTSTART's value for implicit (non-expanded) units.
+      v = rule.validations
+      expands_day   = v[:day] || v[:day_of_month] || v[:day_of_week] || v[:day_of_year]
+      expands_month = v[:month_of_year]
+      expands_hour  = v[:hour_of_day]
+      expands_min   = v[:minute_of_hour]
+      expands_sec   = v[:second_of_minute]
+
+      # Anchor date: determine based on which date components are expanded.
+      # WeeklyRule is special: "day" expansion means weekdays within the week.
+      anchor_date = if rule.is_a?(WeeklyRule)
+        if expands_day
+          interval_start.to_date
+        else
+          # Preserve the weekday from DTSTART within the current week interval.
+          delta = (start_time.wday - interval_start.wday) % 7
+          interval_start.to_date + delta
+        end
+      elsif expands_day
+        # Day expansion: use interval_start's full date
+        interval_start.to_date
+      elsif expands_month && rule.is_a?(YearlyRule)
+        # BYMONTH expansion for yearly rules: use interval_start's year/month but DTSTART's day.
+        # This ensures we capture all months in the set while preserving the implicit day.
+        # Note: For sub-month frequencies (daily, hourly, etc.), BYMONTH is just a filter,
+        # not an expansion within the interval, so we don't shift the anchor date.
+        day = [start_time.day, TimeUtil.days_in_month(Date.new(interval_start.year, interval_start.month, 1))].min
+        Date.new(interval_start.year, interval_start.month, day)
+      else
+        start_time.to_date
+      end
+
+      # Anchor time: use interval boundary for expanded units, DTSTART for the rest.
+      # This ensures the candidate set starts at the interval boundary for expanded
+      # units while preserving implicit time-of-day anchors from DTSTART.
+      hour = expands_hour ? interval_start.hour : start_time.hour
+      min  = expands_min  ? interval_start.min  : start_time.min
+      sec  = expands_sec  ? interval_start.sec  : start_time.sec
+
+      # Preserve sub-second precision from DTSTART to ensure occurrences.index(step_time)
+      # can find exact matches when DTSTART has fractional seconds.
+      sec_with_subsec = sec + TimeUtil.subsec(start_time)
+
+      schedule_start = TimeUtil.build_in_zone(
+        [anchor_date.year, anchor_date.month, anchor_date.day, hour, min, sec_with_subsec],
+        start_time
+      )
+
+      IceCube::Schedule.new(schedule_start) do |s|
         s.add_recurrence_rule(IceCube::Rule.from_hash(filtered_hash))
       end
     end

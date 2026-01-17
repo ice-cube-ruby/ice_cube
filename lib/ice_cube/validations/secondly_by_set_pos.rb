@@ -34,7 +34,7 @@ module IceCube
         # Compute the interval bounds and build a filtered schedule that preserves
         # implicit anchors while avoiding BYSETPOS/COUNT/UNTIL truncation.
         start_of_second, end_of_second = Validations::BySetPosHelper.interval_bounds(:sec, step_time)
-        new_schedule = Validations::BySetPosHelper.build_filtered_schedule(rule, start_time)
+        new_schedule = Validations::BySetPosHelper.build_filtered_schedule(rule, start_time, start_of_second)
 
         # Build the full candidate set for this interval, then map the selected
         # occurrence to positive/negative positions.

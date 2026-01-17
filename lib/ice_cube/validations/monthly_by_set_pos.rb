@@ -39,7 +39,7 @@ module IceCube
         # Compute the interval bounds and build a filtered schedule that preserves
         # implicit anchors while avoiding BYSETPOS/COUNT/UNTIL truncation.
         start_of_month, end_of_month = Validations::BySetPosHelper.interval_bounds(:month, step_time)
-        new_schedule = Validations::BySetPosHelper.build_filtered_schedule(rule, start_time)
+        new_schedule = Validations::BySetPosHelper.build_filtered_schedule(rule, start_time, start_of_month)
 
         # Build the full candidate set for this interval, then map the selected
         # occurrence to positive/negative positions.

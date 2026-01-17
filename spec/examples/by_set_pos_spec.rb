@@ -106,6 +106,20 @@ module IceCube
       expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 02, 01))).
         to eq([])
     end
+
+    it "should include start_time when it matches the BYSETPOS position" do
+      # Jan 4, 2023 is Wednesday, the 2nd day in week [Mon, Wed, Fri]
+      schedule = IceCube::Schedule.new(Time.new(2023, 1, 4, 9, 0, 0))
+      schedule.add_recurrence_rule(
+        IceCube::Rule.weekly.day(:monday, :wednesday, :friday).by_set_pos(2).count(4)
+      )
+      expect(schedule.all_occurrences).to eq([
+        Time.new(2023, 1, 4, 9, 0, 0),
+        Time.new(2023, 1, 11, 9, 0, 0),
+        Time.new(2023, 1, 18, 9, 0, 0),
+        Time.new(2023, 1, 25, 9, 0, 0)
+      ])
+    end
   end
 
   describe MonthlyRule, "BYSETPOS" do
@@ -265,6 +279,20 @@ module IceCube
       expect(occurrences).to eq(expected_occurrences)
       expect(occurrences.size).to eq(24)
     end
+
+    it "should include start_time when it matches the BYSETPOS position" do
+      # July 11, 2023 IS the 2nd Tuesday of July
+      schedule = IceCube::Schedule.new(Time.new(2023, 7, 11, 12, 0, 0))
+      schedule.add_recurrence_rule(
+        IceCube::Rule.monthly.day(:tuesday).by_set_pos(2).count(4)
+      )
+      expect(schedule.all_occurrences).to eq([
+        Time.new(2023, 7, 11, 12, 0, 0),
+        Time.new(2023, 8, 8, 12, 0, 0),
+        Time.new(2023, 9, 12, 12, 0, 0),
+        Time.new(2023, 10, 10, 12, 0, 0)
+      ])
+    end
   end
 
   describe YearlyRule, "BYSETPOS" do
@@ -420,6 +448,21 @@ module IceCube
       expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1))).
         to eq([])
     end
+
+    it "should include start_time when it matches the BYSETPOS position" do
+      # July 2, 2015 IS the 2nd day in July
+      schedule = IceCube::Schedule.new(Time.new(2015, 7, 2, 9, 0, 0))
+      schedule.add_recurrence_rule(
+        IceCube::Rule.yearly.month_of_year(7).day(
+          :sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday
+        ).by_set_pos(2).count(3)
+      )
+      expect(schedule.all_occurrences).to eq([
+        Time.new(2015, 7, 2, 9, 0, 0),
+        Time.new(2016, 7, 2, 9, 0, 0),
+        Time.new(2017, 7, 2, 9, 0, 0)
+      ])
+    end
   end
 
   describe DailyRule, "BYSETPOS" do
@@ -544,6 +587,19 @@ module IceCube
           Time.new(2023,1,2,12,30,0)
         ])
     end
+
+    it "should include start_time when it matches the BYSETPOS position" do
+      # Starting at 2am, the 2nd hour in [1, 2, 3]
+      schedule = IceCube::Schedule.new(Time.new(2023, 1, 1, 2, 0, 0))
+      schedule.add_recurrence_rule(
+        IceCube::Rule.daily.hour_of_day(1, 2, 3).by_set_pos(2).count(3)
+      )
+      expect(schedule.all_occurrences).to eq([
+        Time.new(2023, 1, 1, 2, 0, 0),
+        Time.new(2023, 1, 2, 2, 0, 0),
+        Time.new(2023, 1, 3, 2, 0, 0)
+      ])
+    end
   end
 
   describe HourlyRule, "BYSETPOS" do
@@ -645,6 +701,19 @@ module IceCube
           Time.new(2023,1,1,1,15,0)
         ])
     end
+
+    it "should include start_time when it matches the BYSETPOS position" do
+      # Starting at minute 20, the 2nd minute in [10, 20, 30]
+      schedule = IceCube::Schedule.new(Time.new(2023, 1, 1, 0, 20, 0))
+      schedule.add_recurrence_rule(
+        IceCube::Rule.hourly.minute_of_hour(10, 20, 30).by_set_pos(2).count(3)
+      )
+      expect(schedule.all_occurrences).to eq([
+        Time.new(2023, 1, 1, 0, 20, 0),
+        Time.new(2023, 1, 1, 1, 20, 0),
+        Time.new(2023, 1, 1, 2, 20, 0)
+      ])
+    end
   end
 
   describe MinutelyRule, "BYSETPOS" do
@@ -745,6 +814,128 @@ module IceCube
           Time.new(2023,1,1,0,1,5),
           Time.new(2023,1,1,0,1,15)
         ])
+    end
+
+    it "should include start_time when it matches the BYSETPOS position" do
+      # Starting at second 20, the 2nd second in [10, 20, 30]
+      schedule = IceCube::Schedule.new(Time.new(2023, 1, 1, 0, 0, 20))
+      schedule.add_recurrence_rule(
+        IceCube::Rule.minutely.second_of_minute(10, 20, 30).by_set_pos(2).count(3)
+      )
+      expect(schedule.all_occurrences).to eq([
+        Time.new(2023, 1, 1, 0, 0, 20),
+        Time.new(2023, 1, 1, 0, 1, 20),
+        Time.new(2023, 1, 1, 0, 2, 20)
+      ])
+    end
+  end
+
+  # Regression tests for interval boundary anchoring issues
+  describe "interval boundary anchoring" do
+    # Finding 1: Sub-day expansions (BYHOUR/BYMINUTE/BYSECOND) should anchor to interval start
+    context "sub-day expansions" do
+      it "FREQ=DAILY with BYHOUR should anchor to start of day, not DTSTART" do
+        # DTSTART is 9am, which is position 2 in [8, 9, 10].
+        # The BYSETPOS validator must count from start of day to see [8am, 9am, 10am].
+        # If it wrongly anchors to DTSTART (9am), it would only see [9am, 10am]
+        # and 9am would appear at position 1 (not matching BYSETPOS=2).
+        schedule = IceCube::Schedule.new(Time.new(2023, 1, 1, 9, 0, 0))
+        schedule.add_recurrence_rule(
+          IceCube::Rule.daily.hour_of_day(8, 9, 10).by_set_pos(2).count(3)
+        )
+        # If buggy: would return [10am Jan 1, 10am Jan 2, 10am Jan 3] (position 2 of truncated [9am, 10am])
+        # If correct: [9am Jan 1, 9am Jan 2, 9am Jan 3] (position 2 of full [8am, 9am, 10am])
+        expect(schedule.all_occurrences).to eq([
+          Time.new(2023, 1, 1, 9, 0, 0),
+          Time.new(2023, 1, 2, 9, 0, 0),
+          Time.new(2023, 1, 3, 9, 0, 0)
+        ])
+      end
+
+      it "FREQ=HOURLY with BYMINUTE should anchor to start of hour, not DTSTART" do
+        # Starting at minute 30. With BYMINUTE=15,30,45 the candidate set is [15,30,45].
+        # Position 2 = minute 30.
+        # If anchored wrongly to minute 30, we'd see [30,45] and position 2 = 45.
+        schedule = IceCube::Schedule.new(Time.new(2023, 1, 1, 0, 30, 0))
+        schedule.add_recurrence_rule(
+          IceCube::Rule.hourly.minute_of_hour(15, 30, 45).by_set_pos(2).count(3)
+        )
+        # If buggy: would return [:30, 1:30, 2:30] with position treated as 1 of truncated set
+        # or [0:45, 1:45, 2:45] if position 2 of [30,45]
+        # If correct: [0:30, 1:30, 2:30] (position 2 of full set [15,30,45])
+        expect(schedule.all_occurrences).to eq([
+          Time.new(2023, 1, 1, 0, 30, 0),
+          Time.new(2023, 1, 1, 1, 30, 0),
+          Time.new(2023, 1, 1, 2, 30, 0)
+        ])
+      end
+
+      it "FREQ=MINUTELY with BYSECOND should anchor to start of minute, not DTSTART" do
+        # Starting at second 30. With BYSECOND=15,30,45 the candidate set is [15,30,45].
+        # Position 2 = second 30.
+        schedule = IceCube::Schedule.new(Time.new(2023, 1, 1, 0, 0, 30))
+        schedule.add_recurrence_rule(
+          IceCube::Rule.minutely.second_of_minute(15, 30, 45).by_set_pos(2).count(3)
+        )
+        expect(schedule.all_occurrences).to eq([
+          Time.new(2023, 1, 1, 0, 0, 30),
+          Time.new(2023, 1, 1, 0, 1, 30),
+          Time.new(2023, 1, 1, 0, 2, 30)
+        ])
+      end
+    end
+
+    # Finding 2: BYMONTH-only expansions should anchor to start of year (for yearly rules only)
+    context "BYMONTH-only expansions" do
+      it "FREQ=HOURLY with BYMONTH should NOT shift anchor date" do
+        # DTSTART is Jan 31 at 10:00. BYMONTH=4 means only April.
+        # For hourly rules, BYMONTH is just a filter, not an expansion within the interval.
+        # The first April occurrence should be April 1 (at midnight, since hourly steps through all hours).
+        # If buggy: anchor_date for April 1 would be April 30, rejecting all early April occurrences.
+        schedule = IceCube::Schedule.new(Time.new(2023, 1, 31, 10, 0, 0))
+        schedule.add_recurrence_rule(
+          IceCube::Rule.hourly.month_of_year(4).by_set_pos(1).count(3)
+        )
+        # Key assertion: first occurrence is April 1, not April 30
+        expect(schedule.first(3)).to eq([
+          Time.new(2023, 4, 1, 0, 0, 0),
+          Time.new(2023, 4, 1, 1, 0, 0),
+          Time.new(2023, 4, 1, 2, 0, 0)
+        ])
+      end
+
+      it "FREQ=YEARLY with BYMONTH should anchor to start of year, not DTSTART" do
+        # Starting in February with BYMONTH=1,2,3 and BYSETPOS=2.
+        # Candidate set for year should be [Jan, Feb, Mar].
+        # Position 2 = February.
+        # If anchored wrongly to DTSTART (February), we'd only see [Feb, Mar]
+        # and position 2 = March.
+        schedule = IceCube::Schedule.new(Time.new(2023, 2, 15, 9, 0, 0))
+        schedule.add_recurrence_rule(
+          IceCube::Rule.yearly.month_of_year(1, 2, 3).by_set_pos(2).count(3)
+        )
+        # If buggy: [Mar 15 2023, Mar 15 2024, Mar 15 2025] (position 2 of [Feb, Mar])
+        # If correct: [Feb 15 2023, Feb 15 2024, Feb 15 2025] (position 2 of [Jan, Feb, Mar])
+        expect(schedule.all_occurrences).to eq([
+          Time.new(2023, 2, 15, 9, 0, 0),
+          Time.new(2024, 2, 15, 9, 0, 0),
+          Time.new(2025, 2, 15, 9, 0, 0)
+        ])
+      end
+
+      it "FREQ=YEARLY with BYMONTH and BYSETPOS=-1 should select last month in set" do
+        # Starting in January with BYMONTH=1,2,3 and BYSETPOS=-1.
+        # Position -1 = March (last in set).
+        schedule = IceCube::Schedule.new(Time.new(2023, 1, 15, 9, 0, 0))
+        schedule.add_recurrence_rule(
+          IceCube::Rule.yearly.month_of_year(1, 2, 3).by_set_pos(-1).count(3)
+        )
+        expect(schedule.all_occurrences).to eq([
+          Time.new(2023, 3, 15, 9, 0, 0),
+          Time.new(2024, 3, 15, 9, 0, 0),
+          Time.new(2025, 3, 15, 9, 0, 0)
+        ])
+      end
     end
   end
 
