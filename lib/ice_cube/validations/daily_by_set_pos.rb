@@ -3,7 +3,7 @@ module IceCube
     def by_set_pos(*by_set_pos)
       by_set_pos.flatten!
       by_set_pos.each do |set_pos|
-        unless (-366..366).include?(set_pos) && set_pos != 0
+        unless (-366..366).cover?(set_pos) && set_pos != 0
           raise ArgumentError, "Expecting number in [-366, -1] or [1, 366], got #{set_pos} (#{by_set_pos})"
         end
       end

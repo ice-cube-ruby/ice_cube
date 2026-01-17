@@ -1,10 +1,9 @@
 module IceCube
-
   module Validations::MonthlyBySetPos
     def by_set_pos(*by_set_pos)
       by_set_pos.flatten!
       by_set_pos.each do |set_pos|
-        unless (-366..366).include?(set_pos) && set_pos != 0
+        unless (-366..366).cover?(set_pos) && set_pos != 0
           raise ArgumentError, "Expecting number in [-366, -1] or [1, 366], got #{set_pos} (#{by_set_pos})"
         end
       end
@@ -15,7 +14,6 @@ module IceCube
     end
 
     class Validation
-
       attr_reader :rule, :by_set_pos
 
       def initialize(by_set_pos, rule)
@@ -45,7 +43,7 @@ module IceCube
         # occurrence to positive/negative positions.
         occurrences = new_schedule.occurrences_between(start_of_month, end_of_month)
         index = occurrences.index(step_time)
-        if index == nil
+        if index.nil?
           1
         else
           positive_set_pos = index + 1
@@ -73,7 +71,5 @@ module IceCube
 
       nil
     end
-
   end
-
 end

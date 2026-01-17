@@ -26,7 +26,7 @@ module IceCube
         start_day_of_week = TimeUtil.sym_to_wday(week_start)
         step_time_day_of_week = step_time_date.wday
         days_delta = step_time_day_of_week - start_day_of_week
-        days_to_start = days_delta >= 0 ? days_delta : 7 + days_delta
+        days_to_start = (days_delta >= 0) ? days_delta : 7 + days_delta
         start_of_week_date = step_time_date - days_to_start
         end_of_week_date = start_of_week_date + 6
         [
@@ -69,9 +69,9 @@ module IceCube
     def build_filtered_schedule(rule, start_time, interval_start)
       # Strip BYSETPOS/COUNT/UNTIL so the candidate set is complete, and avoid
       # recursive BYSETPOS evaluation when we rebuild the temporary rule.
-      filtered_hash = rule.to_hash.reject { |key, _| [:by_set_pos, :count, :until].include?(key) }
+      filtered_hash = rule.to_hash.except(:by_set_pos, :count, :until)
       if filtered_hash[:validations]
-        filtered_hash[:validations] = filtered_hash[:validations].reject { |key, _| key == :by_set_pos }
+        filtered_hash[:validations] = filtered_hash[:validations].except(:by_set_pos)
         filtered_hash.delete(:validations) if filtered_hash[:validations].empty?
       end
 
@@ -81,11 +81,11 @@ module IceCube
       # We must anchor the temp schedule to the interval boundary for expanded units,
       # while preserving DTSTART's value for implicit (non-expanded) units.
       v = rule.validations
-      expands_day   = v[:day] || v[:day_of_month] || v[:day_of_week] || v[:day_of_year]
+      expands_day = v[:day] || v[:day_of_month] || v[:day_of_week] || v[:day_of_year]
       expands_month = v[:month_of_year]
-      expands_hour  = v[:hour_of_day]
-      expands_min   = v[:minute_of_hour]
-      expands_sec   = v[:second_of_minute]
+      expands_hour = v[:hour_of_day]
+      expands_min = v[:minute_of_hour]
+      expands_sec = v[:second_of_minute]
 
       # Anchor date: determine based on which date components are expanded.
       # WeeklyRule is special: "day" expansion means weekdays within the week.
@@ -115,8 +115,8 @@ module IceCube
       # This ensures the candidate set starts at the interval boundary for expanded
       # units while preserving implicit time-of-day anchors from DTSTART.
       hour = expands_hour ? interval_start.hour : start_time.hour
-      min  = expands_min  ? interval_start.min  : start_time.min
-      sec  = expands_sec  ? interval_start.sec  : start_time.sec
+      min = expands_min ? interval_start.min : start_time.min
+      sec = expands_sec ? interval_start.sec : start_time.sec
 
       # Preserve sub-second precision from DTSTART to ensure occurrences.index(step_time)
       # can find exact matches when DTSTART has fractional seconds.

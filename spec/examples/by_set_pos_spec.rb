@@ -6,12 +6,12 @@ module IceCube
       # Weekly on Monday, Wednesday, and Friday with the week starting on Wednesday, the last day of the set
       schedule = IceCube::Schedule.from_ical("RRULE:FREQ=WEEKLY;COUNT=4;WKST=WE;BYDAY=MO,WE,FR;BYSETPOS=-1")
       schedule.start_time = Time.new(2022, 12, 27, 12, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2022, 01, 01), Time.new(2024, 01, 01))).
-        to eq([
-          Time.new(2023,1,2,12,0,0),
-          Time.new(2023,1,9,12,0,0),
-          Time.new(2023,1,16,12,0,0),
-          Time.new(2023,1,23,12,0,0)
+      expect(schedule.occurrences_between(Time.new(2022, 1, 1), Time.new(2024, 1, 1)))
+        .to eq([
+          Time.new(2023, 1, 2, 12, 0, 0),
+          Time.new(2023, 1, 9, 12, 0, 0),
+          Time.new(2023, 1, 16, 12, 0, 0),
+          Time.new(2023, 1, 23, 12, 0, 0)
         ])
     end
 
@@ -19,62 +19,62 @@ module IceCube
       # Every 2 weeks on Monday, Wednesday, and Friday with the week starting on Wednesday, the last day of the set
       schedule = IceCube::Schedule.from_ical("RRULE:FREQ=WEEKLY;COUNT=4;INTERVAL=2;WKST=WE;BYDAY=MO,WE,FR;BYSETPOS=-1")
       schedule.start_time = Time.new(2022, 12, 27, 12, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2022, 01, 01), Time.new(2024, 01, 01))).
-        to eq([
-          Time.new(2023,1,9,12,0,0),
-          Time.new(2023,1,23,12,0,0),
-          Time.new(2023,2,6,12,0,0),
-          Time.new(2023,2,20,12,0,0)
+      expect(schedule.occurrences_between(Time.new(2022, 1, 1), Time.new(2024, 1, 1)))
+        .to eq([
+          Time.new(2023, 1, 9, 12, 0, 0),
+          Time.new(2023, 1, 23, 12, 0, 0),
+          Time.new(2023, 2, 6, 12, 0, 0),
+          Time.new(2023, 2, 20, 12, 0, 0)
         ])
     end
 
     it "should support positive positions" do
       schedule = IceCube::Schedule.from_ical("RRULE:FREQ=WEEKLY;COUNT=4;BYDAY=MO,WE;BYSETPOS=1")
       schedule.start_time = Time.new(2023, 1, 1, 9, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 02, 01))).
-        to eq([
-          Time.new(2023,1,2,9,0,0),
-          Time.new(2023,1,9,9,0,0),
-          Time.new(2023,1,16,9,0,0),
-          Time.new(2023,1,23,9,0,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 2, 1)))
+        .to eq([
+          Time.new(2023, 1, 2, 9, 0, 0),
+          Time.new(2023, 1, 9, 9, 0, 0),
+          Time.new(2023, 1, 16, 9, 0, 0),
+          Time.new(2023, 1, 23, 9, 0, 0)
         ])
     end
 
     it "should support multiple positive positions" do
       schedule = IceCube::Schedule.from_ical("RRULE:FREQ=WEEKLY;COUNT=6;BYDAY=MO,WE,FR;BYSETPOS=1,3")
       schedule.start_time = Time.new(2023, 1, 1, 9, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 02, 01))).
-        to eq([
-          Time.new(2023,1,2,9,0,0),
-          Time.new(2023,1,6,9,0,0),
-          Time.new(2023,1,9,9,0,0),
-          Time.new(2023,1,13,9,0,0),
-          Time.new(2023,1,16,9,0,0),
-          Time.new(2023,1,20,9,0,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 2, 1)))
+        .to eq([
+          Time.new(2023, 1, 2, 9, 0, 0),
+          Time.new(2023, 1, 6, 9, 0, 0),
+          Time.new(2023, 1, 9, 9, 0, 0),
+          Time.new(2023, 1, 13, 9, 0, 0),
+          Time.new(2023, 1, 16, 9, 0, 0),
+          Time.new(2023, 1, 20, 9, 0, 0)
         ])
     end
 
     it "should support mixed positive and negative positions" do
       schedule = IceCube::Schedule.from_ical("RRULE:FREQ=WEEKLY;COUNT=4;BYDAY=MO,WE,FR;BYSETPOS=1,-1")
       schedule.start_time = Time.new(2023, 1, 1, 9, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 02, 01))).
-        to eq([
-          Time.new(2023,1,2,9,0,0),
-          Time.new(2023,1,6,9,0,0),
-          Time.new(2023,1,9,9,0,0),
-          Time.new(2023,1,13,9,0,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 2, 1)))
+        .to eq([
+          Time.new(2023, 1, 2, 9, 0, 0),
+          Time.new(2023, 1, 6, 9, 0, 0),
+          Time.new(2023, 1, 9, 9, 0, 0),
+          Time.new(2023, 1, 13, 9, 0, 0)
         ])
     end
 
     it "should work with hour expansions" do
       schedule = IceCube::Schedule.from_ical("RRULE:FREQ=WEEKLY;COUNT=4;BYDAY=MO;BYHOUR=1,2;BYSETPOS=2")
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 02, 01))).
-        to eq([
-          Time.new(2023,1,2,2,0,0),
-          Time.new(2023,1,9,2,0,0),
-          Time.new(2023,1,16,2,0,0),
-          Time.new(2023,1,23,2,0,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 2, 1)))
+        .to eq([
+          Time.new(2023, 1, 2, 2, 0, 0),
+          Time.new(2023, 1, 9, 2, 0, 0),
+          Time.new(2023, 1, 16, 2, 0, 0),
+          Time.new(2023, 1, 23, 2, 0, 0)
         ])
     end
 
@@ -82,19 +82,19 @@ module IceCube
       # Duplicated BYSETPOS values should not duplicate occurrences.
       schedule = IceCube::Schedule.from_ical("RRULE:FREQ=WEEKLY;COUNT=3;BYDAY=MO,WE;BYSETPOS=1,1")
       schedule.start_time = Time.new(2023, 1, 2, 9, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 02, 01))).
-        to eq([
-          Time.new(2023,1,2,9,0,0),
-          Time.new(2023,1,9,9,0,0),
-          Time.new(2023,1,16,9,0,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 2, 1)))
+        .to eq([
+          Time.new(2023, 1, 2, 9, 0, 0),
+          Time.new(2023, 1, 9, 9, 0, 0),
+          Time.new(2023, 1, 16, 9, 0, 0)
         ])
     end
 
     it "should return empty when BYSETPOS exceeds set size" do
       schedule = IceCube::Schedule.from_ical("RRULE:FREQ=WEEKLY;COUNT=2;BYDAY=MO,WE;BYSETPOS=3")
       schedule.start_time = Time.new(2023, 1, 2, 9, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 02, 01))).
-        to eq([])
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 2, 1)))
+        .to eq([])
     end
 
     it "should respect until limits" do
@@ -103,8 +103,8 @@ module IceCube
       schedule.add_recurrence_rule(
         IceCube::Rule.weekly.day(:monday, :wednesday).by_set_pos(-1).until(Time.new(2023, 1, 3, 9, 0, 0))
       )
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 02, 01))).
-        to eq([])
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 2, 1)))
+        .to eq([])
     end
 
     it "should include start_time when it matches the BYSETPOS position" do
@@ -126,59 +126,59 @@ module IceCube
     it "should behave correctly" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MONTHLY;COUNT=4;BYDAY=WE;BYSETPOS=4"
       schedule.start_time = Time.new(2015, 5, 28, 12, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2017, 01, 01))).
-        to eq([
-          Time.new(2015,6,24,12,0,0),
-          Time.new(2015,7,22,12,0,0),
-          Time.new(2015,8,26,12,0,0),
-          Time.new(2015,9,23,12,0,0)
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1)))
+        .to eq([
+          Time.new(2015, 6, 24, 12, 0, 0),
+          Time.new(2015, 7, 22, 12, 0, 0),
+          Time.new(2015, 8, 26, 12, 0, 0),
+          Time.new(2015, 9, 23, 12, 0, 0)
         ])
     end
 
     it "should work with intervals" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MONTHLY;COUNT=4;BYDAY=WE;BYSETPOS=4;INTERVAL=2"
       schedule.start_time = Time.new(2015, 5, 28, 12, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2017, 01, 01))).
-        to eq([
-          Time.new(2015,7,22,12,0,0),
-          Time.new(2015,9,23,12,0,0),
-          Time.new(2015,11,25,12,0,0),
-          Time.new(2016,1,27,12,0,0),
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1)))
+        .to eq([
+          Time.new(2015, 7, 22, 12, 0, 0),
+          Time.new(2015, 9, 23, 12, 0, 0),
+          Time.new(2015, 11, 25, 12, 0, 0),
+          Time.new(2016, 1, 27, 12, 0, 0)
         ])
     end
 
     it "should support negative positions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MONTHLY;COUNT=4;BYDAY=WE;BYSETPOS=-1"
       schedule.start_time = Time.new(2015, 5, 28, 12, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2017, 01, 01))).
-        to eq([
-          Time.new(2015,6,24,12,0,0),
-          Time.new(2015,7,29,12,0,0),
-          Time.new(2015,8,26,12,0,0),
-          Time.new(2015,9,30,12,0,0)
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1)))
+        .to eq([
+          Time.new(2015, 6, 24, 12, 0, 0),
+          Time.new(2015, 7, 29, 12, 0, 0),
+          Time.new(2015, 8, 26, 12, 0, 0),
+          Time.new(2015, 9, 30, 12, 0, 0)
         ])
     end
 
     it "should support multiple positions with monthday expansions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MONTHLY;COUNT=3;BYMONTHDAY=1,15,30;BYSETPOS=2"
       schedule.start_time = Time.new(2015, 5, 1, 12, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2015, 12, 01))).
-        to eq([
-          Time.new(2015,5,15,12,0,0),
-          Time.new(2015,6,15,12,0,0),
-          Time.new(2015,7,15,12,0,0)
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2015, 12, 1)))
+        .to eq([
+          Time.new(2015, 5, 15, 12, 0, 0),
+          Time.new(2015, 6, 15, 12, 0, 0),
+          Time.new(2015, 7, 15, 12, 0, 0)
         ])
     end
 
     it "should support multiple positions within the month" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MONTHLY;COUNT=4;BYMONTHDAY=1,15,30;BYSETPOS=1,2"
       schedule.start_time = Time.new(2015, 5, 1, 12, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2015, 8, 1))).
-        to eq([
-          Time.new(2015,5,1,12,0,0),
-          Time.new(2015,5,15,12,0,0),
-          Time.new(2015,6,1,12,0,0),
-          Time.new(2015,6,15,12,0,0)
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2015, 8, 1)))
+        .to eq([
+          Time.new(2015, 5, 1, 12, 0, 0),
+          Time.new(2015, 5, 15, 12, 0, 0),
+          Time.new(2015, 6, 1, 12, 0, 0),
+          Time.new(2015, 6, 15, 12, 0, 0)
         ])
     end
 
@@ -186,19 +186,19 @@ module IceCube
       # Duplicated BYSETPOS values should not duplicate occurrences.
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MONTHLY;COUNT=3;BYMONTHDAY=10,20;BYSETPOS=1,1"
       schedule.start_time = Time.new(2015, 5, 1, 12, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2015, 10, 01))).
-        to eq([
-          Time.new(2015,5,10,12,0,0),
-          Time.new(2015,6,10,12,0,0),
-          Time.new(2015,7,10,12,0,0)
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2015, 10, 1)))
+        .to eq([
+          Time.new(2015, 5, 10, 12, 0, 0),
+          Time.new(2015, 6, 10, 12, 0, 0),
+          Time.new(2015, 7, 10, 12, 0, 0)
         ])
     end
 
     it "should return empty when BYSETPOS exceeds set size" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MONTHLY;COUNT=2;BYMONTHDAY=10,20;BYSETPOS=3"
       schedule.start_time = Time.new(2015, 5, 1, 12, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2015, 10, 01))).
-        to eq([])
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2015, 10, 1)))
+        .to eq([])
     end
 
     it "should respect until limits" do
@@ -207,43 +207,43 @@ module IceCube
       schedule.add_recurrence_rule(
         IceCube::Rule.monthly.day_of_month(10, 20).by_set_pos(2).until(Time.new(2015, 5, 15, 12, 0, 0))
       )
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2015, 10, 01))).
-        to eq([])
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2015, 10, 1)))
+        .to eq([])
     end
 
     it "should apply after multiple BYxxx filters" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MONTHLY;COUNT=4;BYDAY=MO,TU,WE,TH,FR;BYMONTHDAY=13,14,15;BYSETPOS=-1"
       schedule.start_time = Time.new(2019, 1, 1, 9, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2019, 01, 01), Time.new(2019, 05, 01))).
-        to eq([
-          Time.new(2019,1,15,9,0,0),
-          Time.new(2019,2,15,9,0,0),
-          Time.new(2019,3,15,9,0,0),
-          Time.new(2019,4,15,9,0,0)
+      expect(schedule.occurrences_between(Time.new(2019, 1, 1), Time.new(2019, 5, 1)))
+        .to eq([
+          Time.new(2019, 1, 15, 9, 0, 0),
+          Time.new(2019, 2, 15, 9, 0, 0),
+          Time.new(2019, 3, 15, 9, 0, 0),
+          Time.new(2019, 4, 15, 9, 0, 0)
         ])
     end
 
     it "should work with byminute expansions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MONTHLY;COUNT=4;BYMINUTE=1,2;BYSETPOS=2"
       schedule.start_time = Time.new(2015, 5, 28, 12, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2017, 01, 01))).
-        to eq([
-          Time.new(2015,5,28,12,2,0),
-          Time.new(2015,6,28,12,2,0),
-          Time.new(2015,7,28,12,2,0),
-          Time.new(2015,8,28,12,2,0)
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1)))
+        .to eq([
+          Time.new(2015, 5, 28, 12, 2, 0),
+          Time.new(2015, 6, 28, 12, 2, 0),
+          Time.new(2015, 7, 28, 12, 2, 0),
+          Time.new(2015, 8, 28, 12, 2, 0)
         ])
     end
 
     it "should work with bysecond expansions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MONTHLY;COUNT=4;BYSECOND=1,2,3,4;BYSETPOS=2"
       schedule.start_time = Time.new(2015, 5, 28, 12, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2017, 01, 01))).
-        to eq([
-          Time.new(2015,5,28,12,0,2),
-          Time.new(2015,6,28,12,0,2),
-          Time.new(2015,7,28,12,0,2),
-          Time.new(2015,8,28,12,0,2)
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1)))
+        .to eq([
+          Time.new(2015, 5, 28, 12, 0, 2),
+          Time.new(2015, 6, 28, 12, 0, 2),
+          Time.new(2015, 7, 28, 12, 0, 2),
+          Time.new(2015, 8, 28, 12, 0, 2)
         ])
     end
 
@@ -251,10 +251,10 @@ module IceCube
       # BYSECOND should not reset the minute inherited from the schedule start_time.
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MONTHLY;COUNT=2;BYSECOND=10,20;BYSETPOS=1"
       schedule.start_time = Time.new(2015, 5, 28, 12, 30, 5)
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2015, 12, 01))).
-        to eq([
-          Time.new(2015,5,28,12,30,10),
-          Time.new(2015,6,28,12,30,10)
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2015, 12, 1)))
+        .to eq([
+          Time.new(2015, 5, 28, 12, 30, 10),
+          Time.new(2015, 6, 28, 12, 30, 10)
         ])
     end
 
@@ -298,9 +298,9 @@ module IceCube
   describe YearlyRule, "BYSETPOS" do
     it "should behave correctly" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;BYMONTH=7;BYDAY=SU,MO,TU,WE,TH,FR,SA;BYSETPOS=-1"
-      schedule.start_time = Time.new(1966,7,5)
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2017, 01, 01))).
-        to eq([
+      schedule.start_time = Time.new(1966, 7, 5)
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1)))
+        .to eq([
           Time.new(2015, 7, 31),
           Time.new(2016, 7, 31)
         ])
@@ -308,43 +308,43 @@ module IceCube
 
     it "should work with intervals" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;BYMONTH=7;BYDAY=SU,MO,TU,WE,TH,FR,SA;BYSETPOS=-1;INTERVAL=2"
-      schedule.start_time = Time.new(1966,7,5)
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2023, 01, 01))).
-        to eq([
+      schedule.start_time = Time.new(1966, 7, 5)
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2023, 1, 1)))
+        .to eq([
           Time.new(2016, 7, 31),
           Time.new(2018, 7, 31),
           Time.new(2020, 7, 31),
-          Time.new(2022, 7, 31),
+          Time.new(2022, 7, 31)
         ])
     end
 
     it "should work with counts" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;BYMONTH=7;BYDAY=SU,MO,TU,WE,TH,FR,SA;BYSETPOS=-1;COUNT=3"
-      schedule.start_time = Time.new(2016,1,1)
-      expect(schedule.occurrences_between(Time.new(2016, 01, 01), Time.new(2050, 01, 01))).
-        to eq([
+      schedule.start_time = Time.new(2016, 1, 1)
+      expect(schedule.occurrences_between(Time.new(2016, 1, 1), Time.new(2050, 1, 1)))
+        .to eq([
           Time.new(2016, 7, 31),
           Time.new(2017, 7, 31),
-          Time.new(2018, 7, 31),
+          Time.new(2018, 7, 31)
         ])
     end
 
     it "should work with counts and intervals" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;BYMONTH=7;BYDAY=SU,MO,TU,WE,TH,FR,SA;BYSETPOS=-1;COUNT=3;INTERVAL=2"
-      schedule.start_time = Time.new(2016,1,1)
-      expect(schedule.occurrences_between(Time.new(2016, 01, 01), Time.new(2050, 01, 01))).
-        to eq([
+      schedule.start_time = Time.new(2016, 1, 1)
+      expect(schedule.occurrences_between(Time.new(2016, 1, 1), Time.new(2050, 1, 1)))
+        .to eq([
           Time.new(2016, 7, 31),
           Time.new(2018, 7, 31),
-          Time.new(2020, 7, 31),
+          Time.new(2020, 7, 31)
         ])
     end
 
     it "should support multiple positive positions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;COUNT=4;BYMONTH=7;BYDAY=SU,MO,TU,WE,TH,FR,SA;BYSETPOS=1,2"
       schedule.start_time = Time.new(2015, 1, 1)
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2017, 12, 31))).
-        to eq([
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 12, 31)))
+        .to eq([
           Time.new(2015, 7, 1),
           Time.new(2015, 7, 2),
           Time.new(2016, 7, 1),
@@ -355,8 +355,8 @@ module IceCube
     it "should support multiple negative positions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;COUNT=4;BYMONTH=7;BYDAY=SU,MO,TU,WE,TH,FR,SA;BYSETPOS=-1,-2"
       schedule.start_time = Time.new(2015, 1, 1)
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2017, 12, 31))).
-        to eq([
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 12, 31)))
+        .to eq([
           Time.new(2015, 7, 30),
           Time.new(2015, 7, 31),
           Time.new(2016, 7, 30),
@@ -367,8 +367,8 @@ module IceCube
     it "should work with byhour expansions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;COUNT=2;BYMONTH=7;BYHOUR=1,2;BYSETPOS=1"
       schedule.start_time = Time.new(2016, 7, 5, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2016, 01, 01), Time.new(2018, 01, 01))).
-        to eq([
+      expect(schedule.occurrences_between(Time.new(2016, 1, 1), Time.new(2018, 1, 1)))
+        .to eq([
           Time.new(2016, 7, 5, 1, 0, 0),
           Time.new(2017, 7, 5, 1, 0, 0)
         ])
@@ -378,8 +378,8 @@ module IceCube
       # BYHOUR should not reset the minute/second inherited from the schedule start_time.
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;COUNT=2;BYMONTH=7;BYHOUR=1,2;BYSETPOS=2"
       schedule.start_time = Time.new(2016, 7, 5, 0, 45, 30)
-      expect(schedule.occurrences_between(Time.new(2016, 01, 01), Time.new(2018, 01, 01))).
-        to eq([
+      expect(schedule.occurrences_between(Time.new(2016, 1, 1), Time.new(2018, 1, 1)))
+        .to eq([
           Time.new(2016, 7, 5, 2, 45, 30),
           Time.new(2017, 7, 5, 2, 45, 30)
         ])
@@ -389,8 +389,8 @@ module IceCube
       # Duplicated BYSETPOS values should not duplicate occurrences.
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;COUNT=2;BYMONTH=7;BYMONTHDAY=1,2;BYSETPOS=1,1"
       schedule.start_time = Time.new(2015, 1, 1)
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2017, 01, 01))).
-        to eq([
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1)))
+        .to eq([
           Time.new(2015, 7, 1),
           Time.new(2016, 7, 1)
         ])
@@ -399,8 +399,8 @@ module IceCube
     it "should return empty when BYSETPOS exceeds set size" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;COUNT=2;BYMONTH=7;BYMONTHDAY=1,2;BYSETPOS=3"
       schedule.start_time = Time.new(2015, 1, 1)
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2017, 01, 01))).
-        to eq([])
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1)))
+        .to eq([])
     end
 
     it "should respect until limits" do
@@ -409,15 +409,15 @@ module IceCube
       schedule.add_recurrence_rule(
         IceCube::Rule.yearly.month_of_year(7).day_of_month(1, 2).by_set_pos(2).until(Time.new(2015, 7, 1))
       )
-      expect(schedule.occurrences_between(Time.new(2015, 01, 01), Time.new(2016, 01, 01))).
-        to eq([])
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2016, 1, 1)))
+        .to eq([])
     end
 
     it "should select positive positions within a BYYEARDAY set" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;COUNT=2;BYYEARDAY=1,10,20;BYSETPOS=2"
       schedule.start_time = Time.new(2015, 1, 1, 9, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1))).
-        to eq([
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1)))
+        .to eq([
           Time.new(2015, 1, 10, 9, 0, 0),
           Time.new(2016, 1, 10, 9, 0, 0)
         ])
@@ -426,8 +426,8 @@ module IceCube
     it "should select negative positions within a BYYEARDAY set" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;COUNT=2;BYYEARDAY=1,10,20;BYSETPOS=-1"
       schedule.start_time = Time.new(2015, 1, 1, 9, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1))).
-        to eq([
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1)))
+        .to eq([
           Time.new(2015, 1, 20, 9, 0, 0),
           Time.new(2016, 1, 20, 9, 0, 0)
         ])
@@ -436,8 +436,8 @@ module IceCube
     it "should return empty when BYSETPOS exceeds a BYYEARDAY set" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=YEARLY;COUNT=2;BYYEARDAY=1,10,20;BYSETPOS=4"
       schedule.start_time = Time.new(2015, 1, 1, 9, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1))).
-        to eq([])
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1)))
+        .to eq([])
     end
 
     it "should apply BYSETPOS before COUNT and UNTIL for BYYEARDAY" do
@@ -445,8 +445,8 @@ module IceCube
       schedule.add_recurrence_rule(
         IceCube::Rule.yearly.day_of_year(1, 10, 20).by_set_pos(2).count(2).until(Time.new(2015, 1, 5))
       )
-      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1))).
-        to eq([])
+      expect(schedule.occurrences_between(Time.new(2015, 1, 1), Time.new(2017, 1, 1)))
+        .to eq([])
     end
 
     it "should include start_time when it matches the BYSETPOS position" do
@@ -469,23 +469,23 @@ module IceCube
     it "should work with hour expansions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;COUNT=4;BYHOUR=1,2;BYSETPOS=2"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 06))).
-        to eq([
-          Time.new(2023,1,1,2,0,0),
-          Time.new(2023,1,2,2,0,0),
-          Time.new(2023,1,3,2,0,0),
-          Time.new(2023,1,4,2,0,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 6)))
+        .to eq([
+          Time.new(2023, 1, 1, 2, 0, 0),
+          Time.new(2023, 1, 2, 2, 0, 0),
+          Time.new(2023, 1, 3, 2, 0, 0),
+          Time.new(2023, 1, 4, 2, 0, 0)
         ])
     end
 
     it "should apply BYSETPOS per interval with INTERVAL > 1" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;INTERVAL=2;COUNT=3;BYHOUR=1,2;BYSETPOS=2"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 8))).
-        to eq([
-          Time.new(2023,1,1,2,0,0),
-          Time.new(2023,1,3,2,0,0),
-          Time.new(2023,1,5,2,0,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 8)))
+        .to eq([
+          Time.new(2023, 1, 1, 2, 0, 0),
+          Time.new(2023, 1, 3, 2, 0, 0),
+          Time.new(2023, 1, 5, 2, 0, 0)
         ])
     end
 
@@ -493,10 +493,10 @@ module IceCube
       # Ensures BYSETPOS grouping resets per day while preserving the start_time minute anchor.
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;COUNT=2;BYHOUR=1,2;BYSETPOS=1"
       schedule.start_time = Time.new(2023, 1, 1, 23, 30, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 05))).
-        to eq([
-          Time.new(2023,1,2,1,30,0),
-          Time.new(2023,1,3,1,30,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 5)))
+        .to eq([
+          Time.new(2023, 1, 2, 1, 30, 0),
+          Time.new(2023, 1, 3, 1, 30, 0)
         ])
     end
 
@@ -512,27 +512,27 @@ module IceCube
         Time.local(2019, 3, 11, 0, 0, 0)
       )
       expect(occurrences).to eq([
-        Time.local(2019,3,10,3,0,0)
+        Time.local(2019, 3, 10, 3, 0, 0)
       ])
     end
 
     it "should apply after multiple BYxxx expansions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;COUNT=3;BYHOUR=9,10;BYMINUTE=15,45;BYSETPOS=3"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 05))).
-        to eq([
-          Time.new(2023,1,1,10,15,0),
-          Time.new(2023,1,2,10,15,0),
-          Time.new(2023,1,3,10,15,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 5)))
+        .to eq([
+          Time.new(2023, 1, 1, 10, 15, 0),
+          Time.new(2023, 1, 2, 10, 15, 0),
+          Time.new(2023, 1, 3, 10, 15, 0)
         ])
     end
 
     it "should apply BYSETPOS before count" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;COUNT=1;BYHOUR=1,2,3;BYSETPOS=-1"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 05))).
-        to eq([
-          Time.new(2023,1,1,3,0,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 5)))
+        .to eq([
+          Time.new(2023, 1, 1, 3, 0, 0)
         ])
     end
 
@@ -542,49 +542,49 @@ module IceCube
       schedule.add_recurrence_rule(
         IceCube::Rule.daily.hour_of_day(1, 2, 3).by_set_pos(-1).until(Time.new(2023, 1, 1, 2, 0, 0))
       )
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 02))).
-        to eq([])
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 2)))
+        .to eq([])
     end
 
     it "should ignore repeated positions" do
       # Duplicated BYSETPOS values should not duplicate occurrences.
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;COUNT=3;BYHOUR=1,2;BYSETPOS=1,1"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 06))).
-        to eq([
-          Time.new(2023,1,1,1,0,0),
-          Time.new(2023,1,2,1,0,0),
-          Time.new(2023,1,3,1,0,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 6)))
+        .to eq([
+          Time.new(2023, 1, 1, 1, 0, 0),
+          Time.new(2023, 1, 2, 1, 0, 0),
+          Time.new(2023, 1, 3, 1, 0, 0)
         ])
     end
 
     it "should return empty when BYSETPOS exceeds set size" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;COUNT=2;BYHOUR=1,2;BYSETPOS=3"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 06))).
-        to eq([])
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 6)))
+        .to eq([])
     end
 
     it "should support negative positions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;COUNT=3;BYHOUR=1,2,3;BYSETPOS=-1"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 06))).
-        to eq([
-          Time.new(2023,1,1,3,0,0),
-          Time.new(2023,1,2,3,0,0),
-          Time.new(2023,1,3,3,0,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 6)))
+        .to eq([
+          Time.new(2023, 1, 1, 3, 0, 0),
+          Time.new(2023, 1, 2, 3, 0, 0),
+          Time.new(2023, 1, 3, 3, 0, 0)
         ])
     end
 
     it "should support multiple positions with minute expansions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=DAILY;BYMINUTE=10,20,30;BYSETPOS=1,-1"
       schedule.start_time = Time.new(2023, 1, 1, 12, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 03))).
-        to eq([
-          Time.new(2023,1,1,12,10,0),
-          Time.new(2023,1,1,12,30,0),
-          Time.new(2023,1,2,12,10,0),
-          Time.new(2023,1,2,12,30,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 3)))
+        .to eq([
+          Time.new(2023, 1, 1, 12, 10, 0),
+          Time.new(2023, 1, 1, 12, 30, 0),
+          Time.new(2023, 1, 2, 12, 10, 0),
+          Time.new(2023, 1, 2, 12, 30, 0)
         ])
     end
 
@@ -606,23 +606,23 @@ module IceCube
     it "should work with minute expansions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=HOURLY;COUNT=4;BYMINUTE=10,20;BYSETPOS=2"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 5, 0, 0))).
-        to eq([
-          Time.new(2023,1,1,0,20,0),
-          Time.new(2023,1,1,1,20,0),
-          Time.new(2023,1,1,2,20,0),
-          Time.new(2023,1,1,3,20,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 5, 0, 0)))
+        .to eq([
+          Time.new(2023, 1, 1, 0, 20, 0),
+          Time.new(2023, 1, 1, 1, 20, 0),
+          Time.new(2023, 1, 1, 2, 20, 0),
+          Time.new(2023, 1, 1, 3, 20, 0)
         ])
     end
 
     it "should apply BYSETPOS per interval with INTERVAL > 1" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=HOURLY;INTERVAL=2;COUNT=3;BYMINUTE=10,20;BYSETPOS=1"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 6, 0, 0))).
-        to eq([
-          Time.new(2023,1,1,0,10,0),
-          Time.new(2023,1,1,2,10,0),
-          Time.new(2023,1,1,4,10,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 6, 0, 0)))
+        .to eq([
+          Time.new(2023, 1, 1, 0, 10, 0),
+          Time.new(2023, 1, 1, 2, 10, 0),
+          Time.new(2023, 1, 1, 4, 10, 0)
         ])
     end
 
@@ -630,40 +630,40 @@ module IceCube
       # Ensures BYSETPOS grouping resets per hour, not from the schedule start_time.
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=HOURLY;COUNT=3;BYMINUTE=10,20;BYSETPOS=1"
       schedule.start_time = Time.new(2023, 1, 1, 0, 45, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 5, 0, 0))).
-        to eq([
-          Time.new(2023,1,1,1,10,0),
-          Time.new(2023,1,1,2,10,0),
-          Time.new(2023,1,1,3,10,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 5, 0, 0)))
+        .to eq([
+          Time.new(2023, 1, 1, 1, 10, 0),
+          Time.new(2023, 1, 1, 2, 10, 0),
+          Time.new(2023, 1, 1, 3, 10, 0)
         ])
     end
 
     it "should apply after multiple BYxxx expansions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=HOURLY;COUNT=3;BYMINUTE=10,20;BYSECOND=5,50;BYSETPOS=2"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 4, 0, 0))).
-        to eq([
-          Time.new(2023,1,1,0,10,50),
-          Time.new(2023,1,1,1,10,50),
-          Time.new(2023,1,1,2,10,50)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 4, 0, 0)))
+        .to eq([
+          Time.new(2023, 1, 1, 0, 10, 50),
+          Time.new(2023, 1, 1, 1, 10, 50),
+          Time.new(2023, 1, 1, 2, 10, 50)
         ])
     end
 
     it "should return no occurrences when BYSETPOS exceeds the set size" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=HOURLY;COUNT=2;BYMINUTE=10,20;BYSETPOS=3"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 2, 0, 0))).
-        to eq([])
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 2, 0, 0)))
+        .to eq([])
     end
 
     it "should ignore repeated positions" do
       # Duplicated BYSETPOS values should not duplicate occurrences.
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=HOURLY;COUNT=2;BYMINUTE=10,20;BYSETPOS=2,2"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 3, 0, 0))).
-        to eq([
-          Time.new(2023,1,1,0,20,0),
-          Time.new(2023,1,1,1,20,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 3, 0, 0)))
+        .to eq([
+          Time.new(2023, 1, 1, 0, 20, 0),
+          Time.new(2023, 1, 1, 1, 20, 0)
         ])
     end
 
@@ -673,32 +673,32 @@ module IceCube
       schedule.add_recurrence_rule(
         IceCube::Rule.hourly.minute_of_hour(10, 20).by_set_pos(2).until(Time.new(2023, 1, 1, 0, 25, 0))
       )
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 2, 0, 0))).
-        to eq([
-          Time.new(2023,1,1,0,20,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 2, 0, 0)))
+        .to eq([
+          Time.new(2023, 1, 1, 0, 20, 0)
         ])
     end
 
     it "should support negative positions with second expansions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=HOURLY;COUNT=3;BYSECOND=5,10,15;BYSETPOS=-1"
       schedule.start_time = Time.new(2023, 1, 1, 0, 34, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 4, 0, 0))).
-        to eq([
-          Time.new(2023,1,1,0,34,15),
-          Time.new(2023,1,1,1,34,15),
-          Time.new(2023,1,1,2,34,15)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 4, 0, 0)))
+        .to eq([
+          Time.new(2023, 1, 1, 0, 34, 15),
+          Time.new(2023, 1, 1, 1, 34, 15),
+          Time.new(2023, 1, 1, 2, 34, 15)
         ])
     end
 
     it "should support multiple positions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=HOURLY;BYMINUTE=5,10,15;BYSETPOS=1,-1"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 2, 0, 0))).
-        to eq([
-          Time.new(2023,1,1,0,5,0),
-          Time.new(2023,1,1,0,15,0),
-          Time.new(2023,1,1,1,5,0),
-          Time.new(2023,1,1,1,15,0)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 2, 0, 0)))
+        .to eq([
+          Time.new(2023, 1, 1, 0, 5, 0),
+          Time.new(2023, 1, 1, 0, 15, 0),
+          Time.new(2023, 1, 1, 1, 5, 0),
+          Time.new(2023, 1, 1, 1, 15, 0)
         ])
     end
 
@@ -720,41 +720,41 @@ module IceCube
     it "should work with second expansions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MINUTELY;COUNT=4;BYSECOND=5,10;BYSETPOS=2"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 5, 0))).
-        to eq([
-          Time.new(2023,1,1,0,0,10),
-          Time.new(2023,1,1,0,1,10),
-          Time.new(2023,1,1,0,2,10),
-          Time.new(2023,1,1,0,3,10)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 0, 5, 0)))
+        .to eq([
+          Time.new(2023, 1, 1, 0, 0, 10),
+          Time.new(2023, 1, 1, 0, 1, 10),
+          Time.new(2023, 1, 1, 0, 2, 10),
+          Time.new(2023, 1, 1, 0, 3, 10)
         ])
     end
 
     it "should apply BYSETPOS per interval with INTERVAL > 1" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MINUTELY;INTERVAL=5;COUNT=3;BYSECOND=10,20;BYSETPOS=-1"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 20, 0))).
-        to eq([
-          Time.new(2023,1,1,0,0,20),
-          Time.new(2023,1,1,0,5,20),
-          Time.new(2023,1,1,0,10,20)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 0, 20, 0)))
+        .to eq([
+          Time.new(2023, 1, 1, 0, 0, 20),
+          Time.new(2023, 1, 1, 0, 5, 20),
+          Time.new(2023, 1, 1, 0, 10, 20)
         ])
     end
 
     it "should return empty when BYSETPOS exceeds set size" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MINUTELY;COUNT=2;BYSECOND=10,20;BYSETPOS=3"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 5, 0))).
-        to eq([])
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 0, 5, 0)))
+        .to eq([])
     end
 
     it "should ignore repeated positions" do
       # Duplicated BYSETPOS values should not duplicate occurrences.
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MINUTELY;COUNT=2;BYSECOND=10,20;BYSETPOS=1,1"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 5, 0))).
-        to eq([
-          Time.new(2023,1,1,0,0,10),
-          Time.new(2023,1,1,0,1,10)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 0, 5, 0)))
+        .to eq([
+          Time.new(2023, 1, 1, 0, 0, 10),
+          Time.new(2023, 1, 1, 0, 1, 10)
         ])
     end
 
@@ -764,9 +764,9 @@ module IceCube
       schedule.add_recurrence_rule(
         IceCube::Rule.minutely.second_of_minute(10, 20).by_set_pos(2).until(Time.new(2023, 1, 1, 0, 0, 25))
       )
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 2, 0))).
-        to eq([
-          Time.new(2023,1,1,0,0,20)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 0, 2, 0)))
+        .to eq([
+          Time.new(2023, 1, 1, 0, 0, 20)
         ])
     end
 
@@ -774,45 +774,45 @@ module IceCube
       # Ensures BYSETPOS grouping resets per minute, not from the schedule start_time.
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MINUTELY;COUNT=3;BYSECOND=10,20;BYSETPOS=1"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 45)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 5, 0))).
-        to eq([
-          Time.new(2023,1,1,0,1,10),
-          Time.new(2023,1,1,0,2,10),
-          Time.new(2023,1,1,0,3,10)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 0, 5, 0)))
+        .to eq([
+          Time.new(2023, 1, 1, 0, 1, 10),
+          Time.new(2023, 1, 1, 0, 2, 10),
+          Time.new(2023, 1, 1, 0, 3, 10)
         ])
     end
 
     it "should apply after BYxxx filters and expansions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MINUTELY;COUNT=3;BYHOUR=1;BYSECOND=10,20,30;BYSETPOS=2"
       schedule.start_time = Time.new(2023, 1, 1, 1, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 1, 5, 0))).
-        to eq([
-          Time.new(2023,1,1,1,0,20),
-          Time.new(2023,1,1,1,1,20),
-          Time.new(2023,1,1,1,2,20)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 1, 5, 0)))
+        .to eq([
+          Time.new(2023, 1, 1, 1, 0, 20),
+          Time.new(2023, 1, 1, 1, 1, 20),
+          Time.new(2023, 1, 1, 1, 2, 20)
         ])
     end
 
     it "should support negative positions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MINUTELY;COUNT=3;BYSECOND=1,2,3;BYSETPOS=-1"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 4, 0))).
-        to eq([
-          Time.new(2023,1,1,0,0,3),
-          Time.new(2023,1,1,0,1,3),
-          Time.new(2023,1,1,0,2,3)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 0, 4, 0)))
+        .to eq([
+          Time.new(2023, 1, 1, 0, 0, 3),
+          Time.new(2023, 1, 1, 0, 1, 3),
+          Time.new(2023, 1, 1, 0, 2, 3)
         ])
     end
 
     it "should support multiple positions" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=MINUTELY;BYSECOND=5,10,15;BYSETPOS=1,-1"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 2, 0))).
-        to eq([
-          Time.new(2023,1,1,0,0,5),
-          Time.new(2023,1,1,0,0,15),
-          Time.new(2023,1,1,0,1,5),
-          Time.new(2023,1,1,0,1,15)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 0, 2, 0)))
+        .to eq([
+          Time.new(2023, 1, 1, 0, 0, 5),
+          Time.new(2023, 1, 1, 0, 0, 15),
+          Time.new(2023, 1, 1, 0, 1, 5),
+          Time.new(2023, 1, 1, 0, 1, 15)
         ])
     end
 
@@ -944,30 +944,30 @@ module IceCube
       # RFC requires another BYxxx, but IceCube permits this for convenience.
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=SECONDLY;COUNT=3;BYSETPOS=1"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 0, 10))).
-        to eq([
-          Time.new(2023,1,1,0,0,0),
-          Time.new(2023,1,1,0,0,1),
-          Time.new(2023,1,1,0,0,2)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 0, 0, 10)))
+        .to eq([
+          Time.new(2023, 1, 1, 0, 0, 0),
+          Time.new(2023, 1, 1, 0, 0, 1),
+          Time.new(2023, 1, 1, 0, 0, 2)
         ])
     end
 
     it "should apply BYSETPOS per interval with INTERVAL > 1" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=SECONDLY;INTERVAL=2;COUNT=3;BYSETPOS=1"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 0, 10))).
-        to eq([
-          Time.new(2023,1,1,0,0,0),
-          Time.new(2023,1,1,0,0,2),
-          Time.new(2023,1,1,0,0,4)
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 0, 0, 10)))
+        .to eq([
+          Time.new(2023, 1, 1, 0, 0, 0),
+          Time.new(2023, 1, 1, 0, 0, 2),
+          Time.new(2023, 1, 1, 0, 0, 4)
         ])
     end
 
     it "should return empty when BYSETPOS exceeds set size" do
       schedule = IceCube::Schedule.from_ical "RRULE:FREQ=SECONDLY;COUNT=2;BYSETPOS=2"
       schedule.start_time = Time.new(2023, 1, 1, 0, 0, 0)
-      expect(schedule.occurrences_between(Time.new(2023, 01, 01), Time.new(2023, 01, 01, 0, 0, 10))).
-        to eq([])
+      expect(schedule.occurrences_between(Time.new(2023, 1, 1), Time.new(2023, 1, 1, 0, 0, 10)))
+        .to eq([])
     end
   end
 end
