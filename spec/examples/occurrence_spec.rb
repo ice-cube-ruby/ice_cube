@@ -28,7 +28,12 @@ describe Occurrence do
       time_now = Time.current
       occurrence = Occurrence.new(time_now)
 
-      expect(occurrence.to_s(:short)).to eq time_now.to_s(:short)
+      # From Rails 7.1 onwards, support for format options was removed
+      if time_now.public_method(:to_s).arity != 0
+        expect(occurrence.to_s(:short)).to eq time_now.to_s(:short)
+      else
+        expect(occurrence.to_s(:short)).to eq time_now.to_s
+      end
     end
   end
 

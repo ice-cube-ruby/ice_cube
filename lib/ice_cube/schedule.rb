@@ -160,8 +160,8 @@ module IceCube
     end
 
     # Iterate forever
-    def each_occurrence(&block)
-      enumerate_occurrences(start_time, &block).to_a
+    def each_occurrence(&)
+      enumerate_occurrences(start_time, &).to_a
       self
     end
 
@@ -191,7 +191,7 @@ module IceCube
       from = TimeUtil.match_zone(from, start_time) or raise ArgumentError, "Time required, got #{from.inspect}"
       return [] if from <= start_time
       a = enumerate_occurrences(start_time, from - 1).to_a
-      a.size > num ? a[-1 * num, a.size] : a
+      (a.size > num) ? a[-1 * num, a.size] : a
     end
 
     # The remaining occurrences (same requirements as all_occurrences)
@@ -358,9 +358,7 @@ module IceCube
       data[:start_date] = data[:start_time] if IceCube.compatibility <= 11
       data[:end_time] = TimeUtil.serialize_time(end_time) if end_time
       data[:rrules] = recurrence_rules.map(&:to_hash)
-      if IceCube.compatibility <= 11 && exception_rules.any?
-        data[:exrules] = exception_rules.map(&:to_hash)
-      end
+      data[:exrules] = exception_rules.map(&:to_hash) if exception_rules.any?
       data[:rtimes] = recurrence_times.map do |rt|
         TimeUtil.serialize_time(rt)
       end

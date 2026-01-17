@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + "/../spec_helper"
+require "active_support"
 require "active_support/time"
 require "active_support/version"
 require "tzinfo" if ActiveSupport::VERSION::MAJOR == 3
@@ -45,10 +46,10 @@ module IceCube
     end
 
     it "can round trip TimeWithZone to YAML" do
-      schedule = Schedule.new(t0 = Time.zone.parse("2010-02-05 05:00:00"))
-      schedule.add_recurrence_time t0
-      schedule2 = Schedule.from_yaml(schedule.to_yaml)
-      expect(schedule.all_occurrences).to eq(schedule2.all_occurrences)
+      schedule1 = Schedule.new(t0 = Time.zone.parse("2010-02-05 05:00:00"))
+      schedule1.add_recurrence_time t0
+      schedule2 = Schedule.from_yaml(schedule1.to_yaml)
+      expect(schedule2.all_occurrences).to eq(schedule1.all_occurrences)
     end
 
     it "uses local zone from start time to determine occurs_on? from the beginning of day" do
