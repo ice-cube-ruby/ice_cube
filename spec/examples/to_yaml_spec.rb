@@ -134,7 +134,10 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML whilst preserving exception rules" do
-      original_schedule = Schedule.new(Time.now)
+      # Use UTC to avoid DST issues. YAML round-tripping loses timezone info (only
+      # preserves numeric offset), so crossing a DST boundary would cause mismatched
+      # offsets. UTC has no DST transitions.
+      original_schedule = Schedule.new(Time.utc(2023, 6, 1, 12, 0, 0))
       original_schedule.add_recurrence_rule Rule.daily.day(:monday, :wednesday)
       original_schedule.add_exception_rule Rule.daily.day(:wednesday)
 
