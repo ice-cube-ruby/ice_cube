@@ -134,7 +134,8 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML with .by_set_pos (positive)" do
-      schedule = Schedule.new(Time.zone.now)
+      # Use UTC to avoid DST/timezone issues that can cause infinite loops in BYSETPOS validation
+      schedule = Schedule.new(Time.utc(2023, 6, 1, 12, 0, 0))
       schedule.add_recurrence_rule Rule.monthly.day(:monday, :wednesday, :friday).by_set_pos(1)
 
       yaml_string = schedule.to_yaml
@@ -145,7 +146,8 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML with .by_set_pos (negative)" do
-      schedule = Schedule.new(Time.zone.now)
+      # Use UTC to avoid DST/timezone issues that can cause infinite loops in BYSETPOS validation
+      schedule = Schedule.new(Time.utc(2023, 6, 1, 12, 0, 0))
       schedule.add_recurrence_rule Rule.monthly.day(:monday, :tuesday, :wednesday, :thursday, :friday).by_set_pos(-1)
 
       yaml_string = schedule.to_yaml
@@ -156,7 +158,8 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML with .by_set_pos (multiple positions)" do
-      schedule = Schedule.new(Time.zone.now)
+      # Use UTC to avoid DST/timezone issues that can cause infinite loops in BYSETPOS validation
+      schedule = Schedule.new(Time.utc(2023, 6, 1, 12, 0, 0))
       schedule.add_recurrence_rule Rule.weekly.day(:monday, :wednesday, :friday).by_set_pos(1, -1)
 
       yaml_string = schedule.to_yaml
@@ -167,7 +170,8 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML with .by_set_pos on daily rule" do
-      schedule = Schedule.new(Time.zone.now)
+      # Use UTC to avoid DST/timezone issues that can cause infinite loops in BYSETPOS validation
+      schedule = Schedule.new(Time.utc(2023, 6, 1, 12, 0, 0))
       schedule.add_recurrence_rule Rule.daily.hour_of_day(9, 12, 15).by_set_pos(2)
 
       yaml_string = schedule.to_yaml
