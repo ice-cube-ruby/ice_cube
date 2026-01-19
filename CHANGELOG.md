@@ -5,9 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [UNRELEASED]
+### Added
+- Support for BYSETPOS with all rule frequencies (yearly, monthly, weekly, daily, hourly, minutely, secondly). ([#449](https://github.com/ice-cube-ruby/ice_cube/pull/449)) by [@nehresma](https://github.com/nehresma) and [@NicolasMarlier](https://github.com/NicolasMarlier)
+
 ### Changed
 - Updated CI test matrix to support Rails 7.2, 8.0, 8.1 and Ruby 3.2, 3.3, 3.4, 4.0 by [@nehresma](https://github.com/nehresma) and [@pacso](https://github.com/pacso)
-
 
 ## [0.17.0] - 2024-07-18
 ### Added

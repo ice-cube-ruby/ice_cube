@@ -85,11 +85,8 @@ module IceCube
     # time formats and is only used when ActiveSupport is available.
     #
     def to_s(format = nil)
-      if format && to_time.public_method(:to_s).arity != 0
-        t0, t1 = start_time.to_s(format), end_time.to_s(format)
-      else
-        t0, t1 = start_time.to_s, end_time.to_s
-      end
+      t0 = format_time(start_time, format)
+      t1 = format_time(end_time, format)
       (duration > 0) ? "#{t0} - #{t1}" : t0
     end
 
@@ -97,6 +94,19 @@ module IceCube
       offset = start_time + 3600 * 24
       midnight = Time.new(offset.year, offset.month, offset.day)
       midnight < end_time
+    end
+
+    private
+
+    # Normalize formatted output across ActiveSupport versions:
+    # Rails 7.1+ prefers to_fs, older versions use to_formatted_s or to_s(:format).
+    def format_time(time, format)
+      return time.to_s unless format
+      return time.to_fs(format) if time.respond_to?(:to_fs)
+      return time.to_formatted_s(format) if time.respond_to?(:to_formatted_s)
+      return time.to_s(format) if time.public_method(:to_s).arity != 0
+
+      time.to_s
     end
   end
 end

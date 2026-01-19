@@ -11,7 +11,7 @@ module IceCube
       true
     end
 
-    def next_time(t, _, closing_time)
+    def next_time(t, _, closing_time, increment: true)
       unless closing_time && closing_time < t
         time if time.to_i >= t.to_i
       end
