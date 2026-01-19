@@ -133,6 +133,50 @@ module IceCube
       expect(schedule.first(10).map { |r| r.to_s }).to eq(schedule2.first(10).map { |r| r.to_s })
     end
 
+    it "should be able to make a round-trip to YAML with .by_set_pos (positive)" do
+      schedule = Schedule.new(Time.zone.now)
+      schedule.add_recurrence_rule Rule.monthly.day(:monday, :wednesday, :friday).by_set_pos(1)
+
+      yaml_string = schedule.to_yaml
+      schedule2 = Schedule.from_yaml(yaml_string)
+
+      # compare without usecs
+      expect(schedule.first(10).map { |r| r.to_s }).to eq(schedule2.first(10).map { |r| r.to_s })
+    end
+
+    it "should be able to make a round-trip to YAML with .by_set_pos (negative)" do
+      schedule = Schedule.new(Time.zone.now)
+      schedule.add_recurrence_rule Rule.monthly.day(:monday, :tuesday, :wednesday, :thursday, :friday).by_set_pos(-1)
+
+      yaml_string = schedule.to_yaml
+      schedule2 = Schedule.from_yaml(yaml_string)
+
+      # compare without usecs
+      expect(schedule.first(10).map { |r| r.to_s }).to eq(schedule2.first(10).map { |r| r.to_s })
+    end
+
+    it "should be able to make a round-trip to YAML with .by_set_pos (multiple positions)" do
+      schedule = Schedule.new(Time.zone.now)
+      schedule.add_recurrence_rule Rule.weekly.day(:monday, :wednesday, :friday).by_set_pos(1, -1)
+
+      yaml_string = schedule.to_yaml
+      schedule2 = Schedule.from_yaml(yaml_string)
+
+      # compare without usecs
+      expect(schedule.first(10).map { |r| r.to_s }).to eq(schedule2.first(10).map { |r| r.to_s })
+    end
+
+    it "should be able to make a round-trip to YAML with .by_set_pos on daily rule" do
+      schedule = Schedule.new(Time.zone.now)
+      schedule.add_recurrence_rule Rule.daily.hour_of_day(9, 12, 15).by_set_pos(2)
+
+      yaml_string = schedule.to_yaml
+      schedule2 = Schedule.from_yaml(yaml_string)
+
+      # compare without usecs
+      expect(schedule.first(10).map { |r| r.to_s }).to eq(schedule2.first(10).map { |r| r.to_s })
+    end
+
     it "should be able to make a round-trip to YAML whilst preserving exception rules" do
       # Use UTC to avoid DST issues. YAML round-tripping loses timezone info (only
       # preserves numeric offset), so crossing a DST boundary would cause mismatched
