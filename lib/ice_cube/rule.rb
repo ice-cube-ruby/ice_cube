@@ -36,8 +36,8 @@ module IceCube
     end
 
     # Yaml implementation
-    def to_yaml(*args)
-      YAML.dump(to_hash, *args)
+    def to_yaml(*)
+      YAML.dump(to_hash, *)
     end
 
     # From yaml
