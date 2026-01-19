@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + "/../spec_helper"
+require "logger"
 require "active_support"
 require "active_support/time"
 
@@ -76,6 +77,21 @@ describe IceCube, "to_ical" do
   it "should be able to serialize a .second_of_minute rule to_ical" do
     rule = IceCube::Rule.daily.second_of_minute(0, 15, 30, 45)
     expect(rule.to_ical).to eq("FREQ=DAILY;BYSECOND=0,15,30,45")
+  end
+
+  it "should be able to serialize a .by_set_pos rule to_ical" do
+    rule = IceCube::Rule.monthly.day(:monday, :wednesday).by_set_pos(-1, 1)
+    ical = rule.to_ical
+    expect(ical).to include("FREQ=MONTHLY")
+    expect(ical).to include("BYDAY=MO,WE")
+    expect(ical).to include("BYSETPOS=-1,1")
+  end
+
+  it "should be able to serialize a secondly BYSETPOS rule to_ical" do
+    rule = IceCube::Rule.secondly.by_set_pos(1)
+    ical = rule.to_ical
+    expect(ical).to include("FREQ=SECONDLY")
+    expect(ical).to include("BYSETPOS=1")
   end
 
   it "should be able to collapse a combination day_of_week and day" do

@@ -10,6 +10,7 @@ module IceCube
     # include Validations::DayOfYear    # n/a
 
     include Validations::DailyInterval
+    include Validations::DailyBySetPos
 
     def initialize(interval = 1)
       super
