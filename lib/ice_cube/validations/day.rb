@@ -61,7 +61,7 @@ module IceCube
         elsif validation_days == (1..5).to_a
           IceCube::I18n.t("ice_cube.on_weekdays")
         else
-          day_names = ->(d) { (IceCube::I18n.t("ice_cube.days_on")[d]).to_s }
+          day_names = ->(d) { IceCube::I18n.t("ice_cube.days_on")[d].to_s }
           segments = validation_days.map(&day_names)
           IceCube::I18n.t("ice_cube.on_days", days: StringBuilder.sentence(segments))
         end
