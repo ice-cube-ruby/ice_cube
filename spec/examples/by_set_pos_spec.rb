@@ -970,4 +970,102 @@ module IceCube
         .to eq([])
     end
   end
+
+  describe "Edge cases" do
+    it "should preserve sub-second precision with BYSETPOS" do
+      # Start time with microseconds (fractional seconds)
+      start_time = Time.new(2023, 1, 1, 12, 0, 0.123456, "+00:00")
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule IceCube::Rule.daily.hour_of_day(9, 12, 15).by_set_pos(2)
+
+      occurrences = schedule.first(3)
+      # Each occurrence should preserve the microseconds from the start time
+      # Due to floating point representation, we allow a small delta (within 10 microseconds)
+      occurrences.each do |occ|
+        expect(occ.usec).to be_within(10).of(123456), "Expected microseconds to be preserved, got #{occ.usec} for #{occ}"
+      end
+    end
+
+    it "should work with very large intervals (INTERVAL=100)" do
+      # Test that BYSETPOS works with large intervals
+      start_time = Time.new(2023, 1, 1, 0, 0, 0)
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule IceCube::Rule.monthly(100).day(:monday).by_set_pos(1)
+
+      first_occurrence = schedule.first
+      second_occurrence = schedule.occurrences_between(start_time, start_time + 10000 * IceCube::ONE_DAY)[1]
+
+      expect(first_occurrence).to eq(Time.new(2023, 1, 2, 0, 0, 0)) # First Monday in Jan 2023
+      # Second occurrence should be 100 months later
+      expect(second_occurrence).to eq(Time.new(2031, 5, 5, 0, 0, 0)) # First Monday in May 2031 (100 months later)
+    end
+
+    it "should handle INTERVAL=50 with BYSETPOS on yearly rules" do
+      start_time = Time.new(2000, 1, 1, 0, 0, 0)
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule IceCube::Rule.yearly(50).month_of_year(:january, :december).by_set_pos(-1)
+
+      occurrences = schedule.first(3)
+      # Should get December in years 2000, 2050, 2100
+      expect(occurrences.map { |t| [t.year, t.month] }).to eq([
+        [2000, 12],
+        [2050, 12],
+        [2100, 12]
+      ])
+    end
+
+    it "should handle BYYEARDAY=366 with BYSETPOS in non-leap years" do
+      # 2023 is not a leap year
+      start_time = Time.new(2023, 1, 1, 0, 0, 0)
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule IceCube::Rule.yearly.day_of_year(365, 366).by_set_pos(-1)
+
+      # In non-leap years, day 366 doesn't exist, so should only get day 365
+      first_occurrence = schedule.first
+      expect(first_occurrence).to eq(Time.new(2023, 12, 31, 0, 0, 0))
+
+      # In 2024 (leap year), should get day 366
+      second_occurrence = schedule.occurrences_between(start_time, start_time + 3 * 365 * IceCube::ONE_DAY)[1]
+      expect(second_occurrence).to eq(Time.new(2024, 12, 31, 0, 0, 0)) # Day 366 in leap year
+    end
+
+    it "should handle BYYEARDAY=366 with BYSETPOS=1 in leap year" do
+      # 2024 is a leap year
+      start_time = Time.new(2024, 1, 1, 0, 0, 0)
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule IceCube::Rule.yearly.day_of_year(365, 366).by_set_pos(1)
+
+      # Should get day 365 (first position)
+      first_occurrence = schedule.first
+      expect(first_occurrence).to eq(Time.new(2024, 12, 30, 0, 0, 0))
+    end
+
+    it "should preserve nanosecond precision with BYSETPOS" do
+      # Ruby Time objects support nanosecond precision
+      start_time = Time.new(2023, 1, 1, 12, 0, 0.123456789, "+00:00")
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule IceCube::Rule.weekly.day(:monday, :wednesday).by_set_pos(1)
+
+      occurrences = schedule.first(3)
+      # Each occurrence should preserve the sub-second precision from the start time
+      # Due to floating point representation, we allow a small delta (within 1 nanosecond)
+      occurrences.each do |occ|
+        expect(occ.nsec).to be_within(1).of(123456789), "Expected nanoseconds to be preserved, got #{occ.nsec} for #{occ}"
+      end
+    end
+
+    it "should handle INTERVAL=1000 with BYSETPOS on daily rules" do
+      start_time = Time.new(2023, 1, 1, 0, 0, 0)
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.add_recurrence_rule IceCube::Rule.daily(1000).hour_of_day(6, 12, 18).by_set_pos(2)
+
+      first_occurrence = schedule.first
+      # Should get 12:00 (second position) on day 1
+      expect(first_occurrence).to eq(Time.new(2023, 1, 1, 12, 0, 0))
+
+      # Second occurrence should be 1000 days later
+      second_occurrence = schedule.occurrences_between(start_time, start_time + 1500 * IceCube::ONE_DAY)[1]
+      expect(second_occurrence).to eq(Time.new(2025, 9, 27, 12, 0, 0)) # 1000 days later
+    end
+  end
 end
