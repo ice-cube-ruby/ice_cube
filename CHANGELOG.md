@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [UNRELEASED]
+### Changed
+- Updated CI test matrix to support Rails 7.2, 8.0, 8.1 and Ruby 3.2, 3.3, 3.4, 4.0 by [@nehresma](https://github.com/nehresma) and [@pacso](https://github.com/pacso)
+
+
 ## [0.17.0] - 2024-07-18
 ### Added
 - Indonesian translations. ([#505](https://github.com/seejohnrun/ice_cube/pull/505)) by [@achmiral](https://github.com/achmiral)
