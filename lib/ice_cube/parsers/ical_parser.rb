@@ -15,18 +15,25 @@ module IceCube
 
       lines.each do |line|
         (property, value) = line.split(":")
-        (property, _tzid) = property.split(";")
+        (property, tzid_param) = property.split(";")
+
+        # Extract TZID if present
+        tzid = nil
+        if tzid_param && tzid_param.start_with?("TZID=")
+          tzid = tzid_param[5..-1] # Remove "TZID=" prefix
+        end
+
         case property
         when "DTSTART"
-          data[:start_time] = TimeUtil.deserialize_time(value)
+          data[:start_time] = deserialize_time_with_tzid(value, tzid)
         when "DTEND"
-          data[:end_time] = TimeUtil.deserialize_time(value)
+          data[:end_time] = deserialize_time_with_tzid(value, tzid)
         when "RDATE"
           data[:rtimes] ||= []
-          data[:rtimes] += value.split(",").map { |v| TimeUtil.deserialize_time(v) }
+          data[:rtimes] += value.split(",").map { |v| deserialize_time_with_tzid(v, tzid) }
         when "EXDATE"
           data[:extimes] ||= []
-          data[:extimes] += value.split(",").map { |v| TimeUtil.deserialize_time(v) }
+          data[:extimes] += value.split(",").map { |v| deserialize_time_with_tzid(v, tzid) }
         when "DURATION"
           data[:duration] # FIXME
         when "RRULE"
@@ -35,6 +42,22 @@ module IceCube
         end
       end
       Schedule.from_hash data
+    end
+
+    def self.deserialize_time_with_tzid(time_value, tzid)
+      if tzid.nil? || tzid.empty?
+        # No TZID, use standard deserialization
+        TimeUtil.deserialize_time(time_value)
+      else
+        # TZID is a timezone name - Assume it's a valid timezone in a try-catch block
+        begin
+          TimeUtil.deserialize_time({time: time_value, zone: tzid})
+        rescue ArgumentError
+          # If the timezone is invalid, fall back to standard deserialization
+          # Perhaps we want to log this?
+          TimeUtil.deserialize_time(time_value)
+        end
+      end
     end
 
     def self.rule_from_ical(ical)
