@@ -42,8 +42,57 @@ jobs:
       - lint
     strategy:
       matrix:
-        rails: ['7.2', '8.0', '8.1']
-        ruby: ['3.2', '3.3', '3.4', '4.0']
+        rails: ['6.1', '7.0', '7.1', '7.2', '8.0', '8.1']
+        ruby: ['2.6', '2.7', '3.0', '3.1', '3.2', '3.3', '3.4', '4.0']
+        exclude:
+          # Rails 6.1: Only supports Ruby 2.6-3.0
+          - rails: '6.1'
+            ruby: '3.1'
+          - rails: '6.1'
+            ruby: '3.2'
+          - rails: '6.1'
+            ruby: '3.3'
+          - rails: '6.1'
+            ruby: '3.4'
+          - rails: '6.1'
+            ruby: '4.0'
+          # Rails 7.0 & 7.1: Require Ruby 2.7+, tested up to 3.3
+          - rails: '7.0'
+            ruby: '2.6'
+          - rails: '7.0'
+            ruby: '3.4'
+          - rails: '7.0'
+            ruby: '4.0'
+          - rails: '7.1'
+            ruby: '2.6'
+          - rails: '7.1'
+            ruby: '3.4'
+          - rails: '7.1'
+            ruby: '4.0'
+          # Rails 7.2: Requires Ruby 3.1+
+          - rails: '7.2'
+            ruby: '2.6'
+          - rails: '7.2'
+            ruby: '2.7'
+          - rails: '7.2'
+            ruby: '3.0'
+          # Rails 8.0 & 8.1: Require Ruby 3.2+
+          - rails: '8.0'
+            ruby: '2.6'
+          - rails: '8.0'
+            ruby: '2.7'
+          - rails: '8.0'
+            ruby: '3.0'
+          - rails: '8.0'
+            ruby: '3.1'
+          - rails: '8.1'
+            ruby: '2.6'
+          - rails: '8.1'
+            ruby: '2.7'
+          - rails: '8.1'
+            ruby: '3.0'
+          - rails: '8.1'
+            ruby: '3.1'
     runs-on: ubuntu-latest
     env:
       RAILS_VERSION: ${{ matrix.rails }}

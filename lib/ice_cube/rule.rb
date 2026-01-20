@@ -36,13 +36,18 @@ module IceCube
     end
 
     # Yaml implementation
-    def to_yaml(*)
-      YAML.dump(to_hash, *)
+    def to_yaml(*args)
+      YAML.dump(to_hash, *args)
     end
 
     # From yaml
     def self.from_yaml(yaml)
-      from_hash YAML.safe_load(yaml, permitted_classes: [Date, Symbol, Time])
+      # Ruby 2.6-3.0 use positional args, Ruby 3.1+ uses keyword args for YAML.safe_load
+      if RUBY_VERSION < "3.1"
+        from_hash YAML.safe_load(yaml, [Date, Symbol, Time])
+      else
+        from_hash YAML.safe_load(yaml, permitted_classes: [Date, Symbol, Time])
+      end
     end
 
     def to_hash
