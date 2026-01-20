@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for BYSETPOS with all rule frequencies (yearly, monthly, weekly, daily, hourly, minutely, secondly). ([#449](https://github.com/ice-cube-ruby/ice_cube/pull/449)) by [@nehresma](https://github.com/nehresma) and [@NicolasMarlier](https://github.com/NicolasMarlier)
 
 ### Changed
-- Updated CI test matrix to support Rails 7.2, 8.0, 8.1 and Ruby 3.2, 3.3, 3.4, 4.0 by [@nehresma](https://github.com/nehresma) and [@pacso](https://github.com/pacso)
+- Updated CI test matrix to support Rails 7.2, 8.0, 8.1 and Ruby 3.2, 3.3, 3.4, 4.0. ([#565](https://github.com/ice-cube-ruby/ice_cube/pull/565)) by [@nehresma](https://github.com/nehresma) and [@pacso](https://github.com/pacso)
+- Added backwards compatibility for Ruby 2.6+ by replacing anonymous block arguments with explicit block parameters and adding Rails/Ruby version compatibility exclusions in CI test matrix. ([#562](https://github.com/ice-cube-ruby/ice_cube/pull/562)) by [@scpike](https://github.com/scpike)
 
 ## [0.17.0] - 2024-07-18
 ### Added
