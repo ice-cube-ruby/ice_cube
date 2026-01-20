@@ -68,6 +68,8 @@ module IceCube
         else
           time.to_time
         end
+      when Occurrence
+        time.to_time
       else
         time
       end
