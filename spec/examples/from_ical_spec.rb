@@ -372,6 +372,69 @@ module IceCube
       end
     end
 
+    describe "time zone support" do
+      it "parses start time with the correct time zone" do
+        schedule = IceCube::Schedule.from_ical ical_string_with_multiple_rules
+
+        expect(schedule.start_time).to eq Time.find_zone!("America/Chicago").local(2015, 10, 5, 19, 55, 41)
+      end
+
+      it "parses time zones correctly" do
+        schedule = IceCube::Schedule.from_ical ical_string_with_multiple_exdates_and_rdates
+
+        utc_times = [
+          schedule.recurrence_rules.map(&:until_time)
+        ].flatten
+
+        denver_times = [
+          schedule.start_time,
+          schedule.end_time,
+          schedule.exception_times,
+          schedule.rtimes
+        ].flatten
+
+        utc_times.each do |t|
+          expect(t.zone).to eq "UTC"
+        end
+
+        denver_times.each do |t|
+          expect(t.zone).to eq "MDT"
+        end
+      end
+
+      it "round trips from and to ical with time zones in the summer (MDT)" do
+        original = <<-ICAL.gsub(/^\s*/, "").strip
+          DTSTART;TZID=MDT:20130731T143000
+          RRULE:FREQ=WEEKLY;UNTIL=20140730T203000Z;BYDAY=MO,WE,FR
+          RDATE;TZID=MDT:20150812T143000
+          RDATE;TZID=MDT:20150807T143000
+          EXDATE;TZID=MDT:20130823T143000
+          EXDATE;TZID=MDT:20130812T143000
+          EXDATE;TZID=MDT:20130807T143000
+          DTEND;TZID=MDT:20130731T153000
+        ICAL
+
+        schedule_from_ical = IceCube::Schedule.from_ical original
+        expect(schedule_from_ical.to_ical).to eq original
+      end
+
+      it "round trips from and to ical with time zones in the winter (MST)" do
+        original = <<-ICAL.gsub(/^\s*/, "").strip
+          DTSTART;TZID=MST:20130131T143000
+          RRULE:FREQ=WEEKLY;UNTIL=20140130T203000Z;BYDAY=MO,WE,FR
+          RDATE;TZID=MST:20150212T143000
+          RDATE;TZID=MST:20150207T143000
+          EXDATE;TZID=MST:20130223T143000
+          EXDATE;TZID=MST:20130212T143000
+          EXDATE;TZID=MST:20130207T143000
+          DTEND;TZID=MST:20130131T153000
+        ICAL
+
+        schedule_from_ical = IceCube::Schedule.from_ical original
+        expect(schedule_from_ical.to_ical).to eq original
+      end
+    end
+
     describe "exceptions" do
       it "handles single EXDATE lines, single RDATE lines" do
         start_time = Time.now
