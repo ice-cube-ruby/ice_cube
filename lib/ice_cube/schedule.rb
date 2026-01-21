@@ -459,7 +459,12 @@ module IceCube
           rule.increment_uses if candidate == min_time && rule.respond_to?(:increment_uses)
         end
         next (time = min_time + 1) if exception_time?(min_time)
-        break Occurrence.new(min_time, min_time + duration)
+
+        e_time = min_time + duration
+        # Make sure to add the timezone difference, in case we span tz zones (offsets)
+        # majority of cases this will be 0, but when we span tz zones, we need to account for it
+        e_time += TimeUtil.zone_offset_delta(min_time, e_time)
+        break Occurrence.new(min_time, e_time)
       end
     end
 
