@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use `exepect` in specs ([#530](https://github.com/ice-cube-ruby/ice_cube/pull/530) by [@artofhuman](https://github.com/artofhuman))
 
 ### Fixed
+- The `IceCube::IcalParser` finds the time zones matching an iCal schedule's date/time strings, accomodating for times with daylight savings ([#526](https://github.com/ice-cube-ruby/ice_cube/pull/526)) by [@jankeesvw](https://github.com/jankeesvw) and [@epologee](https://github.com/epologee)
 - Fix for weekly interval results when requesting `occurrences_between` on a narrow range ([#487](https://github.com/seejohnrun/ice_cube/pull/487)) by [@jakebrady5](https://github.com/jakebrady5)
 - When using a rule with hour_of_day validations, and asking for occurrences on the day that DST skips forward, valid occurrences would be missed. ([#464](https://github.com/seejohnrun/ice_cube/pull/464)) by [@jakebrady5](https://github.com/jakebrady5)
 - Include `exrules` when exporting a schedule to YAML, JSON or a Hash. ([#519](https://github.com/ice-cube-ruby/ice_cube/pull/519)) by [@pacso](https://github.com/pacso)

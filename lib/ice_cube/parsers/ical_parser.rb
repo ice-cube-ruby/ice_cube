@@ -15,18 +15,27 @@ module IceCube
 
       lines.each do |line|
         (property, value) = line.split(":")
-        (property, _tzid) = property.split(";")
+        (property, tzid) = property.split(";")
+        zone = find_zone(tzid, value) if tzid.present?
         case property
         when "DTSTART"
+          value = {time: value, zone: zone} if zone.present?
           data[:start_time] = TimeUtil.deserialize_time(value)
         when "DTEND"
+          value = {time: value, zone: zone} if zone.present?
           data[:end_time] = TimeUtil.deserialize_time(value)
         when "RDATE"
           data[:rtimes] ||= []
-          data[:rtimes] += value.split(",").map { |v| TimeUtil.deserialize_time(v) }
+          data[:rtimes] += value.split(",").map do |v|
+            v = {time: v, zone: zone} if zone.present?
+            TimeUtil.deserialize_time(v)
+          end
         when "EXDATE"
           data[:extimes] ||= []
-          data[:extimes] += value.split(",").map { |v| TimeUtil.deserialize_time(v) }
+          data[:extimes] += value.split(",").map do |v|
+            v = {time: v, zone: zone} if zone.present?
+            TimeUtil.deserialize_time(v)
+          end
         when "DURATION"
           data[:duration] # FIXME
         when "RRULE"
@@ -93,6 +102,21 @@ module IceCube
       end
 
       Rule.from_hash(params)
+    end
+
+    private_class_method def self.find_zone(tzid, time_string)
+      (_, zone) = tzid&.split("=")
+      begin
+        Time.find_zone!(zone) if zone.present?
+      rescue ArgumentError
+        (rails_zone, _tzinfo_id) = ActiveSupport::TimeZone::MAPPING.find do |(k, _)|
+          time = Time.parse(time_string)
+
+          Time.find_zone!(k).local(time.year, time.month, time.day, time.hour, time.min).strftime("%Z") == zone
+        end
+
+        Time.find_zone(rails_zone)
+      end
     end
   end
 end
