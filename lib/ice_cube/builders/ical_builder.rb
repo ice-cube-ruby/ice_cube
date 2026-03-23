@@ -37,6 +37,8 @@ module IceCube
       time = time.dup.utc if force_utc
       if time.utc?
         ":#{IceCube::I18n.l(time, format: "%Y%m%dT%H%M%SZ")}" # utc time
+      elsif time.respond_to?(:time_zone)
+        ";TZID=#{time.time_zone.name}:#{IceCube::I18n.l(time, format: '%Y%m%dT%H%M%S')}" # time zone specified
       else
         ";TZID=#{IceCube::I18n.l(time, format: "%Z:%Y%m%dT%H%M%S")}" # local time specified
       end

@@ -154,6 +154,24 @@ module IceCube
       end
     end
 
+    describe "TZID on date-time properties" do
+      # to_ical emits DTSTART;TZID=<zone abbr>:… for non-UTC times; IcalParser
+      # currently drops TZID and parses the date-time without zone context.
+      it "parses DTSTART so the instant matches the same schedule's to_ical output" do
+        zone = Time.find_zone!("Mountain Time (US & Canada)")
+        start = zone.local(2013, 7, 31, 14, 30, 0)
+        schedule = IceCube::Schedule.new(start)
+        schedule.add_recurrence_rule(IceCube::Rule.daily)
+        ical = schedule.to_ical
+        roundtrip = IceCube::Schedule.from_ical(ical)
+
+        expect(roundtrip.start_time.utc).to eq(start.utc)
+        # Time#zone is the abbreviation (e.g. "MDT"), same as to_ical's TZID value — not zone.name
+        expect(roundtrip.start_time.zone).to eq(start.zone)
+        expect(roundtrip.start_time.utc_offset).to eq(start.utc_offset)
+      end
+    end
+
     describe "daily frequency" do
       it "matches simple daily" do
         start_time = Time.now
