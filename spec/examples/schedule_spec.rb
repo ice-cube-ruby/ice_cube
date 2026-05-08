@@ -356,6 +356,23 @@ describe IceCube::Schedule do
       schedule.rrule IceCube::Rule.daily.count(3)
       expect(schedule.all_occurrences.size).to eq(5)
     end
+
+    it "should consume counts for overlapping occurrences across rules" do
+      start_time = Time.new(2019, 1, 1)
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.rrule IceCube::Rule.daily.count(2)
+      schedule.rrule IceCube::Rule.daily.count(2)
+      expect(schedule.all_occurrences).to eq([start_time, start_time + ONE_DAY])
+    end
+
+    it "should apply count limits independently across multiple rules without overlap" do
+      start_time = Time.new(2019, 1, 1)
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.rrule IceCube::Rule.monthly.day_of_month(1).count(12)
+      schedule.rrule IceCube::Rule.monthly.day_of_month(15).count(12)
+      occurrences = schedule.occurrences_between(start_time, Time.new(2021, 1, 1))
+      expect(occurrences.size).to eq(24)
+    end
   end
 
   describe :next_occurrences do

@@ -78,7 +78,7 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML with .day_of_year" do
-      schedule1 = Schedule.new(Time.now)
+      schedule1 = Schedule.new(Time.zone.now)
       schedule1.add_recurrence_rule Rule.yearly.day_of_year(100, 200)
 
       yaml_string = schedule1.to_yaml
@@ -112,7 +112,7 @@ module IceCube
     end
 
     it "should be able to make a round-trip to YAML with .month_of_year" do
-      schedule = Schedule.new(Time.now)
+      schedule = Schedule.new(Time.zone.now)
       schedule.add_recurrence_rule Rule.yearly.month_of_year(:april, :may)
 
       yaml_string = schedule.to_yaml
@@ -133,8 +133,59 @@ module IceCube
       expect(schedule.first(10).map { |r| r.to_s }).to eq(schedule2.first(10).map { |r| r.to_s })
     end
 
+    it "should be able to make a round-trip to YAML with .by_set_pos (positive)" do
+      # Use UTC to avoid DST/timezone issues that can cause infinite loops in BYSETPOS validation
+      schedule = Schedule.new(Time.utc(2023, 6, 1, 12, 0, 0))
+      schedule.add_recurrence_rule Rule.monthly.day(:monday, :wednesday, :friday).by_set_pos(1)
+
+      yaml_string = schedule.to_yaml
+      schedule2 = Schedule.from_yaml(yaml_string)
+
+      # compare without usecs
+      expect(schedule.first(10).map { |r| r.to_s }).to eq(schedule2.first(10).map { |r| r.to_s })
+    end
+
+    it "should be able to make a round-trip to YAML with .by_set_pos (negative)" do
+      # Use UTC to avoid DST/timezone issues that can cause infinite loops in BYSETPOS validation
+      schedule = Schedule.new(Time.utc(2023, 6, 1, 12, 0, 0))
+      schedule.add_recurrence_rule Rule.monthly.day(:monday, :tuesday, :wednesday, :thursday, :friday).by_set_pos(-1)
+
+      yaml_string = schedule.to_yaml
+      schedule2 = Schedule.from_yaml(yaml_string)
+
+      # compare without usecs
+      expect(schedule.first(10).map { |r| r.to_s }).to eq(schedule2.first(10).map { |r| r.to_s })
+    end
+
+    it "should be able to make a round-trip to YAML with .by_set_pos (multiple positions)" do
+      # Use UTC to avoid DST/timezone issues that can cause infinite loops in BYSETPOS validation
+      schedule = Schedule.new(Time.utc(2023, 6, 1, 12, 0, 0))
+      schedule.add_recurrence_rule Rule.weekly.day(:monday, :wednesday, :friday).by_set_pos(1, -1)
+
+      yaml_string = schedule.to_yaml
+      schedule2 = Schedule.from_yaml(yaml_string)
+
+      # compare without usecs
+      expect(schedule.first(10).map { |r| r.to_s }).to eq(schedule2.first(10).map { |r| r.to_s })
+    end
+
+    it "should be able to make a round-trip to YAML with .by_set_pos on daily rule" do
+      # Use UTC to avoid DST/timezone issues that can cause infinite loops in BYSETPOS validation
+      schedule = Schedule.new(Time.utc(2023, 6, 1, 12, 0, 0))
+      schedule.add_recurrence_rule Rule.daily.hour_of_day(9, 12, 15).by_set_pos(2)
+
+      yaml_string = schedule.to_yaml
+      schedule2 = Schedule.from_yaml(yaml_string)
+
+      # compare without usecs
+      expect(schedule.first(10).map { |r| r.to_s }).to eq(schedule2.first(10).map { |r| r.to_s })
+    end
+
     it "should be able to make a round-trip to YAML whilst preserving exception rules" do
-      original_schedule = Schedule.new(Time.now)
+      # Use UTC to avoid DST issues. YAML round-tripping loses timezone info (only
+      # preserves numeric offset), so crossing a DST boundary would cause mismatched
+      # offsets. UTC has no DST transitions.
+      original_schedule = Schedule.new(Time.utc(2023, 6, 1, 12, 0, 0))
       original_schedule.add_recurrence_rule Rule.daily.day(:monday, :wednesday)
       original_schedule.add_exception_rule Rule.daily.day(:wednesday)
 
@@ -324,8 +375,14 @@ module IceCube
 
       symbol_yaml = Schedule.from_hash(symbol_data).to_yaml
       string_yaml = Schedule.from_hash(string_data).to_yaml
-      expect(YAML.safe_load(symbol_yaml, permitted_classes: [Symbol, Time]))
-        .to eq(YAML.safe_load(string_yaml, permitted_classes: [Symbol, Time]))
+      # Ruby 2.6-3.0 use positional args, Ruby 3.1+ uses keyword args for YAML.safe_load
+      if RUBY_VERSION < "3.1"
+        expect(YAML.safe_load(symbol_yaml, [Symbol, Time]))
+          .to eq(YAML.safe_load(string_yaml, [Symbol, Time]))
+      else
+        expect(YAML.safe_load(symbol_yaml, permitted_classes: [Symbol, Time]))
+          .to eq(YAML.safe_load(string_yaml, permitted_classes: [Symbol, Time]))
+      end
     end
 
     it "should raise an ArgumentError when trying to deserialize an invalid rule type" do
