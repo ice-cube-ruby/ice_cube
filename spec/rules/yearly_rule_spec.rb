@@ -38,7 +38,7 @@ describe IceCube::YearlyRule do
     schedule.add_recurrence_rule IceCube::Rule.yearly.month_of_year(:april).day_of_week(monday: [1, -1])
 
     one_year = 365 * IceCube::ONE_DAY
-    expect(schedule.occurrences(start_time + one_year).size).to eq(2)
+    expect(schedule.occurrences(start_time + one_year)).to eq [Time.local(2011, 4, 4, 5, 0, 0), Time.local(2011, 4, 25, 5, 0, 0)]
   end
 
   it "should produce the correct number of days for @interval = 1" do

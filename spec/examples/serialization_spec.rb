@@ -15,7 +15,12 @@ describe IceCube::Schedule do
       let(:start_time) { Time.now.in_time_zone("America/Vancouver") }
 
       it "serializes time as a Hash" do
-        hash = YAML.safe_load(yaml, permitted_classes: [Symbol, Time])
+        # Ruby 2.6-3.0 use positional args, Ruby 3.1+ uses keyword args for YAML.safe_load
+        hash = if RUBY_VERSION < "3.1"
+          YAML.safe_load(yaml, [Symbol, Time])
+        else
+          YAML.safe_load(yaml, permitted_classes: [Symbol, Time])
+        end
         expect(hash[:start_time][:time]).to eq start_time.utc
         expect(hash[:start_time][:zone]).to eq "America/Vancouver"
       end

@@ -253,6 +253,31 @@ schedule.add_recurrence_rule IceCube::Rule.yearly(3).month_of_year(:march)
 schedule.add_recurrence_rule IceCube::Rule.yearly(3).month_of_year(3)
 ```
 
+### BYSETPOS (select the nth occurrence)
+
+BYSETPOS selects the nth occurrence within each interval after all other BYxxx
+filters/expansions are applied. Use positive values (from the start) or
+negative values (from the end). Repeated values do not duplicate occurrences,
+and positions beyond the set size yield no occurrence for that interval.
+RFC 5545 requires BYSETPOS to be used with another BYxxx rule part; IceCube
+allows BYSETPOS without another BYxxx and applies it to the single occurrence
+in each interval.
+
+```ruby
+# last weekday of the month
+schedule.add_recurrence_rule(
+  IceCube::Rule.monthly.day(:monday, :tuesday, :wednesday, :thursday, :friday).by_set_pos(-1)
+)
+
+# second occurrence in each day's expanded set
+schedule.add_recurrence_rule(
+  IceCube::Rule.daily.hour_of_day(9, 17).by_set_pos(2)
+)
+```
+
+Note: If you expand with BYHOUR/BYMINUTE/BYSECOND, any unspecified smaller
+time components are inherited from the schedule's start_time.
+
 ### Hourly (by hour of day)
 
 ```ruby
@@ -298,7 +323,7 @@ https://github.com/GetJobber/recurring_select
 
 ## Contributors
 
-https://github.com/seejohnrun/ice_cube/graphs/contributors
+https://github.com/ice-cube-ruby/ice_cube/graphs/contributors
 
 ---
 
@@ -316,10 +341,7 @@ Use the GitHub [issue tracker][ice_cube-issues]
 
 
 [ical-3.6.1]: https://tools.ietf.org/html/rfc5545#section-3.6.1
-[github-avit]: https://github.com/avit/
-[travis-ice_cube]: http://travis-ci.org/seejohnrun/ice_cube
-[travis-ice_cube-badge_image]: https://secure.travis-ci.org/seejohnrun/ice_cube.svg
-[ice_cube-lone_star_pdf]: http://seejohnrun.github.com/ice_cube/static/lsrc_ice_cube.pdf
-[ice_cube-ruby_nyc_pdf]: http://seejohnrun.github.com/ice_cube/static/ice_cube_ruby_nyc.pdf
-[ice_cube-docs]: http://seejohnrun.github.io/ice_cube/
-[ice_cube-issues]: https://github.com/seejohnrun/ice_cube/issues
+[ice_cube-lone_star_pdf]: https://ice-cube-ruby.github.io/ice_cube/static/lsrc_ice_cube.pdf
+[ice_cube-ruby_nyc_pdf]: https://ice-cube-ruby.github.io/ice_cube/static/ice_cube_ruby_nyc.pdf
+[ice_cube-docs]: https://ice-cube-ruby.github.io/ice_cube/
+[ice_cube-issues]: https://github.com/ice-cube-ruby/ice_cube/issues

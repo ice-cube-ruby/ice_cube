@@ -51,7 +51,7 @@ module IceCube
       else
         time.getlocal(reference.utc_offset)
       end
-      Date === input_time ? beginning_of_date(time, reference) : time
+      (Date === input_time) ? beginning_of_date(time, reference) : time
     end
 
     # Ensure that this is either nil, or a time
@@ -286,12 +286,12 @@ module IceCube
       def add(type, val)
         type = :day if type == :wday
         @time += case type
-                 when :year then TimeUtil.days_in_n_years(@time, val) * ONE_DAY
-                 when :month then TimeUtil.days_in_n_months(@time, val) * ONE_DAY
-                 when :day then val * ONE_DAY
-                 when :hour then val * ONE_HOUR
-                 when :min then val * ONE_MINUTE
-                 when :sec then val
+        when :year then TimeUtil.days_in_n_years(@time, val) * ONE_DAY
+        when :month then TimeUtil.days_in_n_months(@time, val) * ONE_DAY
+        when :day then val * ONE_DAY
+        when :hour then val * ONE_HOUR
+        when :min then val * ONE_MINUTE
+        when :sec then val
         end
       end
 
@@ -318,20 +318,20 @@ module IceCube
       end
 
       def clear_sec
-        @time.sec > 0 ? @time -= @time.sec : @time
+        (@time.sec > 0) ? @time -= @time.sec : @time
       end
 
       def clear_min
-        @time.min > 0 ? @time -= (@time.min * ONE_MINUTE) : @time
+        (@time.min > 0) ? @time -= (@time.min * ONE_MINUTE) : @time
       end
 
       def clear_hour
-        @time.hour > 0 ? @time -= (@time.hour * ONE_HOUR) : @time
+        (@time.hour > 0) ? @time -= (@time.hour * ONE_HOUR) : @time
       end
 
       # Move to the first of the month, 0 hours
       def clear_day
-        @time.day > 1 ? @time -= (@time.day - 1) * ONE_DAY : @time
+        (@time.day > 1) ? @time -= (@time.day - 1) * ONE_DAY : @time
       end
 
       # Clear to january 1st

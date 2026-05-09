@@ -306,7 +306,7 @@ describe IceCube::Schedule do
     it "should be equivalent to all_occurrences in terms of arrays" do
       schedule = IceCube::Schedule.new(Time.now, duration: IceCube::ONE_HOUR)
       schedule.add_recurrence_rule IceCube::Rule.daily.until(Time.now + 3 * IceCube::ONE_DAY)
-      schedule.all_occurrences == schedule.all_occurrences_enumerator.to_a
+      expect(schedule.all_occurrences).to match_array(schedule.all_occurrences_enumerator.to_a)
     end
   end
 
@@ -314,7 +314,7 @@ describe IceCube::Schedule do
     it "should be equivalent to remaining_occurrences in terms of arrays" do
       schedule = IceCube::Schedule.new(Time.now, duration: IceCube::ONE_HOUR)
       schedule.add_recurrence_rule IceCube::Rule.daily.until(Time.now + 3 * IceCube::ONE_DAY)
-      schedule.remaining_occurrences == schedule.remaining_occurrences_enumerator.to_a
+      expect(schedule.remaining_occurrences).to match_array(schedule.remaining_occurrences_enumerator.to_a)
     end
   end
 
@@ -355,6 +355,23 @@ describe IceCube::Schedule do
       schedule.rrule IceCube::Rule.minutely.count(3)
       schedule.rrule IceCube::Rule.daily.count(3)
       expect(schedule.all_occurrences.size).to eq(5)
+    end
+
+    it "should consume counts for overlapping occurrences across rules" do
+      start_time = Time.new(2019, 1, 1)
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.rrule IceCube::Rule.daily.count(2)
+      schedule.rrule IceCube::Rule.daily.count(2)
+      expect(schedule.all_occurrences).to eq([start_time, start_time + ONE_DAY])
+    end
+
+    it "should apply count limits independently across multiple rules without overlap" do
+      start_time = Time.new(2019, 1, 1)
+      schedule = IceCube::Schedule.new(start_time)
+      schedule.rrule IceCube::Rule.monthly.day_of_month(1).count(12)
+      schedule.rrule IceCube::Rule.monthly.day_of_month(15).count(12)
+      occurrences = schedule.occurrences_between(start_time, Time.new(2021, 1, 1))
+      expect(occurrences.size).to eq(24)
     end
   end
 
@@ -795,7 +812,7 @@ describe IceCube::Schedule do
     expect(occurrence.dst?).to eq(start_time.dst?) if start_time.respond_to? :dst?
     expect(occurrence.utc?).to eq(start_time.utc?) if start_time.respond_to? :utc?
     expect(occurrence.zone).to eq(start_time.zone)
-    occurrence.utc_offset == start_time.utc_offset
+    expect(occurrence.utc_offset).to eq(start_time.utc_offset)
   end
 
   def trap_infinite_loop_beyond(iterations)

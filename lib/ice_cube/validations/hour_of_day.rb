@@ -28,7 +28,7 @@ module IceCube
         time.hour = first_hour.value
       end
 
-      super opening_time, time.to_time
+      super(opening_time, time.to_time)
     end
 
     class Validation < Validations::FixedValue

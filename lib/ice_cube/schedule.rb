@@ -191,7 +191,7 @@ module IceCube
       from = TimeUtil.match_zone(from, start_time) or raise ArgumentError, "Time required, got #{from.inspect}"
       return [] if from <= start_time
       a = enumerate_occurrences(start_time, from - 1).to_a
-      a.size > num ? a[-1 * num, a.size] : a
+      (a.size > num) ? a[-1 * num, a.size] : a
     end
 
     # The remaining occurrences (same requirements as all_occurrences)
@@ -442,13 +442,22 @@ module IceCube
     # Get the next time after (or including) a specific time
     def next_time(time, closing_time)
       loop do
-        min_time = recurrence_rules_with_implicit_start_occurrence.reduce(nil) do |best_time, rule|
-          new_time = rule.next_time(time, start_time, best_time || closing_time)
-          [best_time, new_time].compact.min
+        # Probe all rules without consuming counts so we can pick the earliest
+        # candidate, then charge counts only to rules that emitted that time.
+        min_time = nil
+        candidates = []
+        recurrence_rules_with_implicit_start_occurrence.each do |rule|
+          candidate = rule.next_time(time, start_time, min_time || closing_time, increment: false)
+          next unless candidate
+          candidates << [rule, candidate]
+          min_time = candidate if min_time.nil? || candidate < min_time
         rescue StopIteration
-          best_time
+          next
         end
         break unless min_time
+        candidates.each do |rule, candidate|
+          rule.increment_uses if candidate == min_time && rule.respond_to?(:increment_uses)
+        end
         next (time = min_time + 1) if exception_time?(min_time)
         break Occurrence.new(min_time, min_time + duration)
       end

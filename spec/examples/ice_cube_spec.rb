@@ -485,8 +485,8 @@ describe IceCube::Schedule do
     end_time = DAY + IceCube::ONE_DAY * 2
     schedule = IceCube::Schedule.new(start_time, duration: 20)
     schedule.add_recurrence_rule IceCube::Rule.daily.until(end_time)
-    expect(schedule.occurring_at?((DAY + 2 * IceCube::ONE_DAY + 10))).to be_truthy # in range
-    expect(schedule.occurring_at?((DAY + 4 * IceCube::ONE_DAY + 10))).to be_falsey # out of range
+    expect(schedule.occurring_at?(DAY + 2 * IceCube::ONE_DAY + 10)).to be_truthy # in range
+    expect(schedule.occurring_at?(DAY + 4 * IceCube::ONE_DAY + 10)).to be_falsey # out of range
   end
 
   it "should not create an infinite loop crossing over february - github issue 6" do
@@ -668,7 +668,7 @@ describe IceCube::Schedule do
   def quick_attempt_test
     time = Time.now
     10.times do
-      (yield).next_occurrence(Time.now)
+      yield.next_occurrence(Time.now)
     end
     total = Time.now - time
     expect(total).to be < 0.1

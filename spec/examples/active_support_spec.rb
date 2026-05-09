@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + "/../spec_helper"
+require "logger"
 require "active_support"
 require "active_support/time"
 require "active_support/version"

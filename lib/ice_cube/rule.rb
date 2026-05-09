@@ -42,18 +42,23 @@ module IceCube
 
     # From yaml
     def self.from_yaml(yaml)
-      from_hash YAML.safe_load(yaml, permitted_classes: [Date, Symbol, Time])
+      # Ruby 2.6-3.0 use positional args, Ruby 3.1+ uses keyword args for YAML.safe_load
+      if RUBY_VERSION < "3.1"
+        from_hash YAML.safe_load(yaml, [Date, Symbol, Time])
+      else
+        from_hash YAML.safe_load(yaml, permitted_classes: [Date, Symbol, Time])
+      end
     end
 
     def to_hash
       raise MethodNotImplemented, "Expected to be overridden by subclasses"
     end
 
-    def next_time(time, schedule, closing_time)
+    def next_time(time, schedule, closing_time, increment: true)
     end
 
     def on?(time, schedule)
-      next_time(time, schedule, time).to_i == time.to_i
+      next_time(time, schedule, time, increment: false).to_i == time.to_i
     end
 
     class << self
@@ -73,10 +78,7 @@ module IceCube
 
         rule = IceCube::Rule.send(interval_type, hash[:interval] || 1)
 
-        if match[1] == "Weekly"
-          rule.interval(hash[:interval] || 1, TimeUtil.wday_to_sym(hash[:week_start] || 0))
-        end
-
+        rule.interval(hash[:interval] || 1, TimeUtil.wday_to_sym(hash[:week_start] || 0)) if rule.is_a? WeeklyRule
         rule.until(TimeUtil.deserialize_time(hash[:until])) if hash[:until]
         rule.count(hash[:count]) if hash[:count]
 

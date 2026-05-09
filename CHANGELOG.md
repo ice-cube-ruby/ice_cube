@@ -4,17 +4,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [UNRELEASED]
+### Added
+- Support for BYSETPOS with all rule frequencies (yearly, monthly, weekly, daily, hourly, minutely, secondly). ([#449](https://github.com/ice-cube-ruby/ice_cube/pull/449)) by [@nehresma](https://github.com/nehresma) and [@NicolasMarlier](https://github.com/NicolasMarlier)
+
+### Changed
+- Updated CI test matrix to support Rails 7.2, 8.0, 8.1 and Ruby 3.2, 3.3, 3.4, 4.0. ([#565](https://github.com/ice-cube-ruby/ice_cube/pull/565)) by [@nehresma](https://github.com/nehresma) and [@pacso](https://github.com/pacso)
+- Added backwards compatibility for Ruby 2.6+ by replacing anonymous block arguments with explicit block parameters and adding Rails/Ruby version compatibility exclusions in CI test matrix. ([#562](https://github.com/ice-cube-ruby/ice_cube/pull/562)) by [@scpike](https://github.com/scpike)
+
+## [0.17.0] - 2024-07-18
 ### Added
 - Indonesian translations. ([#505](https://github.com/seejohnrun/ice_cube/pull/505)) by [@achmiral](https://github.com/achmiral)
 
 ### Changed
 - Removed use of `delegate` method added in [66f1d797](https://github.com/ice-cube-ruby/ice_cube/commit/66f1d797092734563bfabd2132c024c7d087f683) , reverting to previous implementation. ([#522](https://github.com/ice-cube-ruby/ice_cube/pull/522))  by [@pacso](https://github.com/pacso)
+- Updated supported versions of Ruby and Rails and fixed standardrb lint issues. ([#552](https://github.com/ice-cube-ruby/ice_cube/pull/552)) by [@pacso](https://github.com/pacso)
+- Fixed `I18n.load_path` injection ([#546](https://github.com/ice-cube-ruby/ice_cube/pull/546)) by [@glaszig](https://github.com/glaszig)
+- Use `exepect` in specs ([#530](https://github.com/ice-cube-ruby/ice_cube/pull/530) by [@artofhuman](https://github.com/artofhuman))
 
 ### Fixed
 - Fix for weekly interval results when requesting `occurrences_between` on a narrow range ([#487](https://github.com/seejohnrun/ice_cube/pull/487)) by [@jakebrady5](https://github.com/jakebrady5)
 - When using a rule with hour_of_day validations, and asking for occurrences on the day that DST skips forward, valid occurrences would be missed. ([#464](https://github.com/seejohnrun/ice_cube/pull/464)) by [@jakebrady5](https://github.com/jakebrady5)
 - Include `exrules` when exporting a schedule to YAML, JSON or a Hash. ([#519](https://github.com/ice-cube-ruby/ice_cube/pull/519)) by [@pacso](https://github.com/pacso)
+- Documentation links updated to point to the new repository location. ([#553](https://github.com/ice-cube-ruby/ice_cube/pull/553)) by [@pacso](https://github.com/pacso)
+- Input validation added for day_of_week validator. Fixes infinite loops when invalid day_of_week occurrences are provided. ([#554](https://github.com/ice-cube-ruby/ice_cube/pull/554)) by [@pacso](https://github.com/pacso)
+- Documentation links in README.md updated to new repository location. ([#527](https://github.com/ice-cube-ruby/ice_cube/pull/527) by [@dalpo](https://github.com/dalpo))
 
 ## [0.16.4] - 2021-10-21
 ### Added
