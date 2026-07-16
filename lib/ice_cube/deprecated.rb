@@ -1,13 +1,12 @@
 module IceCube
   module Deprecated
-
     # Define a deprecated alias for a method
     # @param [Symbol] name - name of method to define
     # @param [Symbol] replacement - name of method to replace (alias)
     def deprecated_alias(name, replacement)
       # Create a wrapped version
       define_method(name) do |*args, &block|
-        warn "IceCube: #{self.class}##{name} is deprecated (use #{replacement})", caller[0]
+        warn "IceCube: #{self.class}##{name} is deprecated (use #{replacement})", caller(1..1).first
         send replacement, *args, &block
       end
     end
@@ -21,7 +20,7 @@ module IceCube
       alias_method old_name, name
       # And replace it with a wrapped version
       define_method(name) do |*args, &block|
-        warn "IceCube: #{self.class}##{name} is deprecated (use #{replacement})", caller[0]
+        warn "IceCube: #{self.class}##{name} is deprecated (use #{replacement})", caller(1..1).first
         send old_name, *args, &block
       end
     end
@@ -29,7 +28,7 @@ module IceCube
     def self.schedule_options(schedule, options)
       if options[:start_date_override]
         warn "IceCube: :start_date_override option is deprecated " \
-             "(use a block: `{|s| s.start_time = override }`)", caller[0]
+             "(use a block: `{|s| s.start_time = override }`)", caller(1..1).first
         schedule.start_time = options[:start_date_override]
       end
     end

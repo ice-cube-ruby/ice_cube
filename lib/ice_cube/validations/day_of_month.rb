@@ -1,7 +1,5 @@
 module IceCube
-
   module Validations::DayOfMonth
-
     def day_of_month(*days)
       days.flatten.each do |day|
         unless day.is_a?(Integer)
@@ -15,9 +13,8 @@ module IceCube
     end
 
     class Validation < Validations::FixedValue
-
       attr_reader :day
-      alias :value :day
+      alias_method :value, :day
 
       def initialize(day)
         @day = day
@@ -44,17 +41,14 @@ module IceCube
       end
 
       def build_ical(builder)
-        builder['BYMONTHDAY'] << day
+        builder["BYMONTHDAY"] << day
       end
 
       StringBuilder.register_formatter(:day_of_month) do |entries|
         sentence = StringBuilder.sentence(entries)
-        str = IceCube::I18n.t('ice_cube.days_of_month', count: entries.size, segments: sentence)
-        IceCube::I18n.t('ice_cube.on', sentence: str)
+        str = IceCube::I18n.t("ice_cube.days_of_month", count: entries.size, segments: sentence)
+        IceCube::I18n.t("ice_cube.on", sentence: str)
       end
-
     end
-
   end
-
 end

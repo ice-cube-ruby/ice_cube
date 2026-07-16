@@ -1,9 +1,7 @@
-require 'yaml'
+require "yaml"
 
 module IceCube
-
   class Rule
-
     INTERVAL_TYPES = [
       :secondly, :minutely, :hourly,
       :daily, :weekly, :monthly, :yearly
@@ -39,33 +37,37 @@ module IceCube
 
     # Yaml implementation
     def to_yaml(*args)
-      YAML::dump(to_hash, *args)
+      YAML.dump(to_hash, *args)
     end
 
     # From yaml
     def self.from_yaml(yaml)
-      from_hash YAML::load(yaml)
+      # Ruby 2.6-3.0 use positional args, Ruby 3.1+ uses keyword args for YAML.safe_load
+      if RUBY_VERSION < "3.1"
+        from_hash YAML.safe_load(yaml, [Date, Symbol, Time])
+      else
+        from_hash YAML.safe_load(yaml, permitted_classes: [Date, Symbol, Time])
+      end
     end
 
     def to_hash
       raise MethodNotImplemented, "Expected to be overridden by subclasses"
     end
 
-    def next_time(time, schedule, closing_time)
+    def next_time(time, schedule, closing_time, increment: true)
     end
 
     def on?(time, schedule)
-      next_time(time, schedule, time).to_i == time.to_i
+      next_time(time, schedule, time, increment: false).to_i == time.to_i
     end
 
     class << self
-
       # Convert from a hash and create a rule
       def from_hash(original_hash)
         hash = IceCube::FlexibleHash.new original_hash
 
-        unless hash[:rule_type] && match = hash[:rule_type].match(/\:\:(.+?)Rule/)
-          raise ArgumentError, 'Invalid rule type'
+        unless hash[:rule_type] && (match = hash[:rule_type].match(/::(.+?)Rule/))
+          raise ArgumentError, "Invalid rule type"
         end
 
         interval_type = match[1].downcase.to_sym
@@ -76,14 +78,11 @@ module IceCube
 
         rule = IceCube::Rule.send(interval_type, hash[:interval] || 1)
 
-        if match[1] == "Weekly"
-          rule.interval(hash[:interval] || 1, TimeUtil.wday_to_sym(hash[:week_start] || 0))
-        end
-
+        rule.interval(hash[:interval] || 1, TimeUtil.wday_to_sym(hash[:week_start] || 0)) if rule.is_a? WeeklyRule
         rule.until(TimeUtil.deserialize_time(hash[:until])) if hash[:until]
         rule.count(hash[:count]) if hash[:count]
 
-        hash[:validations] && hash[:validations].each do |name, args|
+        hash[:validations]&.each do |name, args|
           apply_validation(rule, name, args)
         end
 
@@ -101,12 +100,10 @@ module IceCube
 
         args.is_a?(Array) ? rule.send(name, *args) : rule.send(name, args)
       end
-
     end
 
     # Convenience methods for creating Rules
     class << self
-
       # Secondly Rule
       def secondly(interval = 1)
         SecondlyRule.new(interval)
@@ -141,9 +138,6 @@ module IceCube
       def yearly(interval = 1)
         YearlyRule.new(interval)
       end
-
     end
-
   end
-
 end

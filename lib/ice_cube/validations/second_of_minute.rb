@@ -1,7 +1,5 @@
 module IceCube
-
   module Validations::SecondOfMinute
-
     def second_of_minute(*seconds)
       seconds.flatten.each do |second|
         unless second.is_a?(Integer)
@@ -22,13 +20,12 @@ module IceCube
       first_second = Array(validations[:second_of_minute]).min_by(&:value)
       time = TimeUtil::TimeWrapper.new(start_time, false)
       time.sec = first_second.value
-      super opening_time, time.to_time
+      super(opening_time, time.to_time)
     end
 
     class Validation < Validations::FixedValue
-
       attr_reader :second
-      alias :value :second
+      alias_method :value, :second
 
       def initialize(second)
         @second = second
@@ -55,16 +52,13 @@ module IceCube
       end
 
       def build_ical(builder)
-        builder['BYSECOND'] << second
+        builder["BYSECOND"] << second
       end
 
       StringBuilder.register_formatter(:second_of_minute) do |segments|
         str = StringBuilder.sentence(segments)
-        IceCube::I18n.t('ice_cube.on_seconds_of_minute', count: segments.size, segments: str)
+        IceCube::I18n.t("ice_cube.on_seconds_of_minute", count: segments.size, segments: str)
       end
-
     end
-
   end
-
 end

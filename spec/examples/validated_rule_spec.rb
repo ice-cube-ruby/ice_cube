@@ -1,9 +1,8 @@
-require 'active_support/time'
-require File.dirname(__FILE__) + '/../spec_helper'
+require "active_support/time"
+require File.dirname(__FILE__) + "/../spec_helper"
 
 describe IceCube, "::ValidatedRule" do
   describe "#next_time" do
-
     context "monthly" do
       let(:rule) { IceCube::Rule.monthly }
 
@@ -18,7 +17,7 @@ describe IceCube, "::ValidatedRule" do
         expect(rule.next_time(t0 + 1, t0, nil)).to eq t1
       end
 
-      it 'should return the next month near end of longer month [#171]' do
+      it "should return the next month near end of longer month [#171]" do
         t0 = Time.new(2013, 1, 1)
         t1 = Time.new(2013, 2, 1)
         [27, 28, 29, 30, 31].each do |day|
@@ -37,10 +36,9 @@ describe IceCube, "::ValidatedRule" do
           expect(rule.next_time(t0 + ONE_HOUR + 1, t0, nil)).to eq Time.local(2013, 4, 30)
         end
       end
-
     end
 
-    it 'should match times with usec' do
+    it "should match times with usec" do
       t0 = Time.new(2012, 12, 21, 12, 21, 12.12121212)
       rule = IceCube::Rule.secondly
 

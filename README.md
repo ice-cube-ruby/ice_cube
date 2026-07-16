@@ -1,7 +1,8 @@
 # ice_cube - Easy schedule expansion
 
-[![Build Status][travis-ice_cube-badge_image]][travis-ice_cube]
+[![Tests](https://github.com/seejohnrun/ice_cube/actions/workflows/tests.yaml/badge.svg)](https://github.com/seejohnrun/ice_cube/actions/workflows/tests.yaml)
 [![Gem Version](https://badge.fury.io/rb/ice_cube.svg)](http://badge.fury.io/rb/ice_cube)
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
 
 ```bash
 gem install ice_cube
@@ -31,7 +32,7 @@ schedule.add_recurrence_rule(
 
 ## Quick Introductions
 
-* [Presentation from Lone Star Ruby Conf][ice_cube-lone_star_pdf]
+* Presentation from Lone Star Ruby Conf ([slides][ice_cube-lone_star_pdf], [YouTube](https://youtu.be/dOMW0WcvvRc))
 * [Quick Introduction][ice_cube-ruby_nyc_pdf]
 * [Documentation Website][ice_cube-docs]
 
@@ -90,17 +91,17 @@ schedule.previous_occurrence(from_time)
 schedule.previous_occurrences(4, from_time)
 
 # or include prior occurrences with a duration overlapping from_time
-schedule.next_occurrences(4, from_time, :spans => true)
-schedule.occurrences_between(from_time, to_time, :spans => true)
+schedule.next_occurrences(4, from_time, spans: true)
+schedule.occurrences_between(from_time, to_time, spans: true)
 
 # or give the schedule a duration and ask if occurring_at?
-schedule = IceCube::Schedule.new(now, :duration => 3600)
+schedule = IceCube::Schedule.new(now, duration: 3600)
 schedule.add_recurrence_rule IceCube::Rule.daily
 schedule.occurring_at?(now + 1800) # true
 schedule.occurring_between?(t1, t2)
 
 # using end_time also sets the duration
-schedule = IceCube::Schedule.new(start = Time.now, :end_time => start + 3600)
+schedule = IceCube::Schedule.new(start = Time.now, end_time: start + 3600)
 schedule.add_recurrence_rule IceCube::Rule.daily
 schedule.occurring_at?(start + 3599) # true
 schedule.occurring_at?(start + 3600) # false
@@ -161,7 +162,7 @@ ice_cube can provide ical or string representations of individual rules, or the
 whole schedule.
 
 ```ruby
-rule = IceCube::Rule.daily(2).day_of_week(:tuesday => [1, -1], :wednesday => [2])
+rule = IceCube::Rule.daily(2).day_of_week(tuesday: [1, -1], wednesday: [2])
 
 rule.to_ical # 'FREQ=DAILY;INTERVAL=2;BYDAY=1TU,-1TU,2WE'
 
@@ -217,12 +218,12 @@ month (e.g. no occurrences in February for `day_of_month(31)`).
 
 ```ruby
 # every month on the first and last tuesdays of the month
-schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_week(:tuesday => [1, -1])
+schedule.add_recurrence_rule IceCube::Rule.monthly.day_of_week(tuesday: [1, -1])
 
 # every other month on the first monday and last tuesday
 schedule.add_recurrence_rule IceCube::Rule.monthly(2).day_of_week(
-  :monday => [1],
-  :tuesday => [-1]
+  monday: [1],
+  tuesday: [-1]
 )
 
 # for programmatic convenience (same as above)
@@ -252,6 +253,31 @@ schedule.add_recurrence_rule IceCube::Rule.yearly(3).month_of_year(:march)
 schedule.add_recurrence_rule IceCube::Rule.yearly(3).month_of_year(3)
 ```
 
+### BYSETPOS (select the nth occurrence)
+
+BYSETPOS selects the nth occurrence within each interval after all other BYxxx
+filters/expansions are applied. Use positive values (from the start) or
+negative values (from the end). Repeated values do not duplicate occurrences,
+and positions beyond the set size yield no occurrence for that interval.
+RFC 5545 requires BYSETPOS to be used with another BYxxx rule part; IceCube
+allows BYSETPOS without another BYxxx and applies it to the single occurrence
+in each interval.
+
+```ruby
+# last weekday of the month
+schedule.add_recurrence_rule(
+  IceCube::Rule.monthly.day(:monday, :tuesday, :wednesday, :thursday, :friday).by_set_pos(-1)
+)
+
+# second occurrence in each day's expanded set
+schedule.add_recurrence_rule(
+  IceCube::Rule.daily.hour_of_day(9, 17).by_set_pos(2)
+)
+```
+
+Note: If you expand with BYHOUR/BYMINUTE/BYSECOND, any unspecified smaller
+time components are inherited from the schedule's start_time.
+
 ### Hourly (by hour of day)
 
 ```ruby
@@ -269,7 +295,7 @@ schedule.add_recurrence_rule IceCube::Rule.hourly(2).day(:monday)
 schedule.add_recurrence_rule IceCube::Rule.minutely(10)
 
 # every hour and a half, on the last tuesday of the month
-schedule.add_recurrence_rule IceCube::Rule.minutely(90).day_of_week(:tuesday => [-1])
+schedule.add_recurrence_rule IceCube::Rule.minutely(90).day_of_week(tuesday: [-1])
 ```
 
 ### Secondly (every N seconds)
@@ -297,10 +323,7 @@ https://github.com/GetJobber/recurring_select
 
 ## Contributors
 
-* Andrew Vit ([@avit][github-avit])
-* Mat Brown - mat@patch.com
-* Philip Roberts
-* @sakrafd
+https://github.com/ice-cube-ruby/ice_cube/graphs/contributors
 
 ---
 
@@ -318,10 +341,7 @@ Use the GitHub [issue tracker][ice_cube-issues]
 
 
 [ical-3.6.1]: https://tools.ietf.org/html/rfc5545#section-3.6.1
-[github-avit]: https://github.com/avit/
-[travis-ice_cube]: http://travis-ci.org/seejohnrun/ice_cube
-[travis-ice_cube-badge_image]: https://secure.travis-ci.org/seejohnrun/ice_cube.svg
-[ice_cube-lone_star_pdf]: http://seejohnrun.github.com/ice_cube/static/lsrc_ice_cube.pdf
-[ice_cube-ruby_nyc_pdf]: http://seejohnrun.github.com/ice_cube/static/ice_cube_ruby_nyc.pdf
-[ice_cube-docs]: http://seejohnrun.github.com/ice_cube/
-[ice_cube-issues]: https://github.com/seejohnrun/ice_cube/issues
+[ice_cube-lone_star_pdf]: https://ice-cube-ruby.github.io/ice_cube/static/lsrc_ice_cube.pdf
+[ice_cube-ruby_nyc_pdf]: https://ice-cube-ruby.github.io/ice_cube/static/ice_cube_ruby_nyc.pdf
+[ice_cube-docs]: https://ice-cube-ruby.github.io/ice_cube/
+[ice_cube-issues]: https://github.com/ice-cube-ruby/ice_cube/issues

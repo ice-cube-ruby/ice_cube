@@ -1,7 +1,5 @@
 module IceCube
-
   class MonthlyRule < ValidatedRule
-
     include Validations::HourOfDay
     include Validations::MinuteOfHour
     include Validations::SecondOfMinute
@@ -12,6 +10,7 @@ module IceCube
     # include Validations::DayOfYear    # n/a
 
     include Validations::MonthlyInterval
+    include Validations::MonthlyBySetPos
 
     def initialize(interval = 1)
       super
@@ -19,7 +18,5 @@ module IceCube
       schedule_lock(:day, :hour, :min, :sec)
       reset
     end
-
   end
-
 end

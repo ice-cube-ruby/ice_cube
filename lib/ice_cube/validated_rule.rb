@@ -1,9 +1,7 @@
-require 'ice_cube/input_alignment'
+require "ice_cube/input_alignment"
 
 module IceCube
-
   class ValidatedRule < Rule
-
     include Validations::ScheduleLock
 
     include Validations::Count
@@ -20,13 +18,16 @@ module IceCube
       :base_sec, :base_min, :base_day, :base_hour, :base_month, :base_wday,
       :day_of_year, :second_of_minute, :minute_of_hour, :day_of_month,
       :hour_of_day, :month_of_year, :day_of_week,
-      :interval
+      :interval,
+      # BYSETPOS selects the nth occurrence within the set after all other
+      # BYxxx filters/expansions are applied (RFC 5545), so it must run last.
+      :by_set_pos
     ]
 
     attr_reader :validations
 
     def initialize(interval = 1)
-      @validations = Hash.new
+      @validations = {}
     end
 
     # Reset the uses on the rule to 0
@@ -46,17 +47,22 @@ module IceCube
 
     # Compute the next time after (or including) the specified time in respect
     # to the given start time
-    def next_time(time, start_time, closing_time)
+    # When increment is false, callers are probing for the next candidate and
+    # must not consume COUNT.
+    def next_time(time, start_time, closing_time, increment: true)
       @time = time
-      unless @start_time
-        @start_time = realign(time, start_time)
-        @time = @start_time if @time < @start_time
-      end
+      @start_time ||= realign(time, start_time)
+      @time = @start_time if @time < @start_time
 
       return nil unless find_acceptable_time_before(closing_time)
 
-      @uses += 1 if @time
+      @uses += 1 if @time && increment
       @time
+    end
+
+    def increment_uses
+      # Count is consumed only when the rule's occurrence is emitted.
+      @uses += 1
     end
 
     def realign(opening_time, start_time)
@@ -183,7 +189,5 @@ module IceCube
         yield error
       end
     end
-
   end
-
 end

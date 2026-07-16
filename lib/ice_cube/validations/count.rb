@@ -1,7 +1,5 @@
 module IceCube
-
   module Validations::Count
-
     # Value reader for limit
     def occurrence_count
       (arr = @validations[:count]) && (val = arr[0]) && val.count
@@ -16,7 +14,6 @@ module IceCube
     end
 
     class Validation
-
       attr_reader :rule, :count
 
       def initialize(count, rule)
@@ -45,16 +42,13 @@ module IceCube
       end
 
       def build_ical(builder)
-        builder['COUNT'] << count
+        builder["COUNT"] << count
       end
 
       StringBuilder.register_formatter(:count) do |segments|
         count = segments.first
-        IceCube::I18n.t('ice_cube.times', count: count)
+        IceCube::I18n.t("ice_cube.times", count: count)
       end
-
     end
-
   end
-
 end

@@ -1,7 +1,5 @@
 module IceCube
-
   class DailyRule < ValidatedRule
-
     include Validations::HourOfDay
     include Validations::MinuteOfHour
     include Validations::SecondOfMinute
@@ -12,6 +10,7 @@ module IceCube
     # include Validations::DayOfYear    # n/a
 
     include Validations::DailyInterval
+    include Validations::DailyBySetPos
 
     def initialize(interval = 1)
       super
@@ -19,7 +18,5 @@ module IceCube
       schedule_lock(:hour, :min, :sec)
       reset
     end
-
   end
-
 end

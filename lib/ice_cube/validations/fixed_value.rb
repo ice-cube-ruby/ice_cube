@@ -1,5 +1,4 @@
 module IceCube
-
   # This abstract validation class is used by the various "fixed-time" (e.g.
   # day, day_of_month, hour_of_day) Validation and ScheduleLock::Validation
   # modules. It is not a standalone rule validation module like the others.
@@ -9,12 +8,11 @@ module IceCube
   # start_time
   #
   class Validations::FixedValue
-
-    INTERVALS = {:min => 60, :sec => 60, :hour => 24, :month => 12, :wday => 7}
+    INTERVALS = {min: 60, sec: 60, hour: 24, month: 12, wday: 7}
 
     def validate(time, start_time)
       case type
-      when :day  then validate_day_lock(time, start_time)
+      when :day then validate_day_lock(time, start_time)
       when :hour then validate_hour_lock(time, start_time)
       else validate_interval_lock(time, start_time)
       end
@@ -28,7 +26,7 @@ module IceCube
     def validate_interval_lock(time, start_time)
       t0 = starting_unit(start_time)
       t1 = time.send(type)
-      t0 >= t1 ? t0 - t1 : INTERVALS[type] - t1 + t0
+      (t0 >= t1) ? t0 - t1 : INTERVALS[type] - t1 + t0
     end
 
     # Lock the hour if explicitly set by hour_of_day, but allow for the nearest
@@ -39,12 +37,10 @@ module IceCube
       h1 = time.hour
       if h0 >= h1
         h0 - h1
+      elsif (dst_offset = TimeUtil.dst_change(time))
+        h0 - h1 + dst_offset
       else
-        if dst_offset = TimeUtil.dst_change(time)
-          h0 - h1 + dst_offset
-        else
-          24 - h1 + h0
-        end
+        24 - h1 + h0
       end
     end
 
@@ -77,19 +73,17 @@ module IceCube
       if value && value > 0
         until_next_month = days_in_month + sleeps
       else
-        until_next_month = start < 28 ? days_in_month : TimeUtil.days_to_next_month(date)
+        until_next_month = (start < 28) ? days_in_month : TimeUtil.days_to_next_month(date)
         until_next_month += sleeps - month_overflow
       end
 
-      sleeps >= 0 ? sleeps : until_next_month
+      (sleeps >= 0) ? sleeps : until_next_month
     end
 
     def starting_unit(start_time)
       start = value || start_time.send(type)
-      start = start % INTERVALS[type] if start < 0
+      start %= INTERVALS[type] if start < 0
       start
     end
-
   end
-
 end

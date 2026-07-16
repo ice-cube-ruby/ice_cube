@@ -1,6 +1,5 @@
 module IceCube
   class HashParser
-
     attr_reader :hash
 
     def initialize(original_hash)
@@ -26,13 +25,13 @@ module IceCube
       data = IceCube::FlexibleHash.new(hash.dup)
 
       if (start_date = data.delete(:start_date))
-        warn "IceCube: :start_date is deprecated, please use :start_time at: #{ caller[0] }"
+        warn "IceCube: :start_date is deprecated, please use :start_time at: #{caller(1..1).first}"
         data[:start_time] = start_date
       end
 
-      {:rdates => :rtimes, :exdates => :extimes}.each do |old_key, new_key|
+      {rdates: :rtimes, exdates: :extimes}.each do |old_key, new_key|
         if (times = data.delete(old_key))
-          warn "IceCube: :#{old_key} is deprecated, please use :#{new_key} at: #{ caller[0] }"
+          warn "IceCube: :#{old_key} is deprecated, please use :#{new_key} at: #{caller(1..1).first}"
           (data[new_key] ||= []).concat times
         end
       end
@@ -61,7 +60,6 @@ module IceCube
 
     def apply_exrules(schedule, data)
       return unless data[:exrules]
-      warn "IceCube: :exrules is deprecated, and will be removed in a future release. at: #{ caller[0] }"
       data[:exrules].each do |h|
         rrule = h.is_a?(IceCube::Rule) ? h : IceCube::Rule.from_hash(h)
 
@@ -86,6 +84,5 @@ module IceCube
     def parse_time(time)
       TimeUtil.deserialize_time(time)
     end
-
   end
 end

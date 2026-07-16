@@ -1,14 +1,12 @@
-require 'active_support/time'
-require File.dirname(__FILE__) + '/../spec_helper'
+require "active_support/time"
+require File.dirname(__FILE__) + "/../spec_helper"
 
 describe IceCube::Schedule do
-
   let(:start_time) { Time.now }
   let(:schedule) { IceCube::Schedule.new(start_time) }
-  let(:yaml)     { described_class.dump(schedule) }
+  let(:yaml) { described_class.dump(schedule) }
 
   describe "::dump(schedule)" do
-
     it "serializes a Schedule object as YAML string" do
       expect(yaml).to start_with "---\n"
     end
@@ -17,7 +15,12 @@ describe IceCube::Schedule do
       let(:start_time) { Time.now.in_time_zone("America/Vancouver") }
 
       it "serializes time as a Hash" do
-        hash = YAML.load(yaml)
+        # Ruby 2.6-3.0 use positional args, Ruby 3.1+ uses keyword args for YAML.safe_load
+        hash = if RUBY_VERSION < "3.1"
+          YAML.safe_load(yaml, [Symbol, Time])
+        else
+          YAML.safe_load(yaml, permitted_classes: [Symbol, Time])
+        end
         expect(hash[:start_time][:time]).to eq start_time.utc
         expect(hash[:start_time][:zone]).to eq "America/Vancouver"
       end
@@ -32,7 +35,6 @@ describe IceCube::Schedule do
         end
       end
     end
-
   end
 
   describe "::load(yaml)" do
@@ -60,6 +62,5 @@ describe IceCube::Schedule do
         end
       end
     end
-
   end
 end

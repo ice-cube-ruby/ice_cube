@@ -1,7 +1,5 @@
 module IceCube
-
   module Validations::HourOfDay
-
     # Add hour of day validations
     def hour_of_day(*hours)
       hours.flatten.each do |hour|
@@ -22,7 +20,7 @@ module IceCube
       freq = base_interval_validation.interval
 
       first_hour = Array(validations[:hour_of_day]).min_by(&:value)
-      time = TimeUtil::TimeWrapper.new(start_time, false)
+      time = TimeUtil::TimeWrapper.new(start_time, true)
       if freq > 1 && base_interval_validation.type == :hour
         offset = first_hour.validate(opening_time, start_time)
         time.add(:hour, offset - freq)
@@ -30,13 +28,12 @@ module IceCube
         time.hour = first_hour.value
       end
 
-      super opening_time, time.to_time
+      super(opening_time, time.to_time)
     end
 
     class Validation < Validations::FixedValue
-
       attr_reader :hour
-      alias :value :hour
+      alias_method :value, :hour
 
       def initialize(hour)
         @hour = hour
@@ -63,16 +60,13 @@ module IceCube
       end
 
       def build_ical(builder)
-        builder['BYHOUR'] << hour
+        builder["BYHOUR"] << hour
       end
 
       StringBuilder.register_formatter(:hour_of_day) do |segments|
         str = StringBuilder.sentence(segments)
-        IceCube::I18n.t('ice_cube.at_hours_of_the_day', count: segments.size, segments: str)
+        IceCube::I18n.t("ice_cube.at_hours_of_the_day", count: segments.size, segments: str)
       end
-
     end
-
   end
-
 end
