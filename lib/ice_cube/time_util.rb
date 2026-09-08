@@ -114,6 +114,96 @@ module IceCube
       end
     end
 
+    # Deserialize a time in the named time zone (an iCalendar TZID).
+    #
+    # TZID values are not registered by RFC 5545, which points implementers at
+    # the IANA (Olson) database instead, so +tzid+ is resolved against whichever
+    # zone database is available: ActiveSupport first, then TZInfo. ice_cube has
+    # no runtime dependency on either, and a TZID may also simply be unknown
+    # (Outlook, for example, emits Windows zone names such as "Eastern Standard
+    # Time"). When the zone cannot be resolved this warns and falls back to
+    # zone-less parsing rather than raising, so an unrecognised TZID degrades to
+    # the pre-TZID behaviour instead of breaking the parse.
+    def self.deserialize_time_with_zone(time_value, tzid)
+      return deserialize_time(time_value) if tzid.nil? || tzid.empty?
+
+      unless (zone = find_zone(tzid))
+        reason = if zone_database_available?
+          "unknown TZID #{tzid.inspect} (an IANA identifier such as \"America/New_York\" is expected)"
+        else
+          "cannot resolve TZID #{tzid.inspect} without a time zone database (require \"active_support/time\" or \"tzinfo\")"
+        end
+        warn "IceCube: #{reason}; parsing #{time_value.to_s.strip.inspect} " \
+             "without a time zone at: #{caller(1..1).first}"
+        return deserialize_time(time_value)
+      end
+
+      time_in_zone(time_value, zone) || deserialize_time(time_value)
+    end
+
+    # Whether any time zone database ice_cube knows how to use is loaded.
+    def self.zone_database_available?
+      (Time.respond_to?(:find_zone) || defined?(TZInfo::Timezone)) ? true : false
+    end
+
+    # Look up an IANA time zone identifier, preferring ActiveSupport (which also
+    # accepts Rails' own zone labels) and falling back to TZInfo. Returns nil
+    # when neither is loaded or the identifier is not recognised.
+    def self.find_zone(tzid)
+      if Time.respond_to?(:find_zone)
+        Time.find_zone(tzid)
+      elsif defined?(TZInfo::Timezone)
+        begin
+          TZInfo::Timezone.get(tzid)
+        rescue
+          nil
+        end
+      end
+    end
+
+    # Interpret an iCalendar date-time string as a wall clock reading in +zone+.
+    # A trailing "Z" marks the value as UTC, in which case it is converted into
+    # the zone rather than read as local time. Returns nil if the value cannot
+    # be interpreted, leaving the caller to fall back.
+    def self.time_in_zone(time_value, zone)
+      time_value = time_value.to_s.strip
+      if zone.respond_to?(:parse) # ActiveSupport::TimeZone
+        zone.parse(time_value)
+      else # TZInfo::Timezone
+        time_in_tzinfo_zone(time_value, zone)
+      end
+    rescue
+      nil
+    end
+
+    # TZInfo gives the correct offset for the instant, but only ActiveSupport
+    # zones survive as a zone on the Time object, so occurrences after a DST
+    # transition keep the start time's offset rather than following the zone.
+    # Note that TZInfo returns a TimeWithOffset whose #zone is an abbreviation
+    # (eg. "EST"); match_zone treats that as a system-local time and would
+    # relocate every occurrence into the system zone, so flatten it to a plain
+    # Time carrying just the offset.
+    def self.time_in_tzinfo_zone(time_value, zone)
+      time = Time.parse(time_value)
+      local = if time_value.end_with?("Z")
+        zone.utc_to_local(time)
+      else
+        zone.local_time(*CLOCK_VALUES.map { |unit| time.public_send(unit) })
+      end
+      warn_tzinfo_dst_limitation
+      Time.new(local.year, local.month, local.day, local.hour, local.min, local.sec, local.utc_offset)
+    end
+
+    # Once per process: this caveat applies to every TZID parsed this way.
+    def self.warn_tzinfo_dst_limitation
+      return if @tzinfo_dst_warned
+
+      @tzinfo_dst_warned = true
+      warn "IceCube: resolving TZID with TZInfo. Occurrences will keep the start " \
+           "time's UTC offset across DST transitions; require \"active_support/time\" " \
+           "for full DST support."
+    end
+
     # Get a more precise equality for time objects
     # Ruby provides a Time#hash method, but it fails to account for UTC
     # offset (so the current date may be different) or DST rules (so the
