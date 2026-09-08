@@ -513,5 +513,41 @@ module IceCube
         expect(schedule.start_time).to eq(Time.parse("20130101T090000"))
       end
     end
+
+    describe "ActiveSupport time zone labels" do
+      # Serialization emits IANA identifiers, but ActiveSupport names its zones
+      # with its own labels, and earlier versions wrote those into the TZID.
+      # Those strings are still out there, so they have to keep parsing.
+      it "should parse a TZID given as an ActiveSupport zone label" do
+        schedule = IceCube::Schedule.from_ical "DTSTART;TZID=Eastern Time (US & Canada):20100510T090000"
+        expect(schedule.start_time).to eq(Time.utc(2010, 5, 10, 13, 0, 0))
+        expect(schedule.start_time.utc_offset).to eq(-4 * 3600)
+      end
+
+      it "should follow DST for a TZID given as an ActiveSupport zone label" do
+        schedule = IceCube::Schedule.from_ical <<~ICAL
+          DTSTART;TZID=Eastern Time (US & Canada):20130308T090000
+          RRULE:FREQ=DAILY
+        ICAL
+        expect(schedule.first(4).map(&:utc_offset)).to eq([-5, -5, -4, -4].map { |h| h * 3600 })
+      end
+
+      it "should read a zone label and an IANA identifier as the same zone" do
+        labelled = IceCube::Schedule.from_ical <<~ICAL
+          DTSTART;TZID=Eastern Time (US & Canada):20130308T090000
+          RRULE:FREQ=DAILY
+        ICAL
+        iana = IceCube::Schedule.from_ical <<~ICAL
+          DTSTART;TZID=America/New_York:20130308T090000
+          RRULE:FREQ=DAILY
+        ICAL
+        expect(labelled.first(4)).to eq(iana.first(4))
+      end
+
+      it "should re-serialize a zone label as its IANA identifier" do
+        schedule = IceCube::Schedule.from_ical "DTSTART;TZID=Eastern Time (US & Canada):20100510T090000"
+        expect(schedule.to_ical).to eq("DTSTART;TZID=America/New_York:20100510T090000")
+      end
+    end
   end
 end
