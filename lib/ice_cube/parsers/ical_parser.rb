@@ -14,19 +14,23 @@ module IceCube
       end
 
       lines.each do |line|
-        (property, value) = line.split(":")
-        (property, _tzid) = property.split(";")
+        (name_and_params, value) = split_content_line(line)
+        next if value.nil?
+
+        (property, *params) = split_unquoted(name_and_params, ";")
+        tzid = tzid_from_params(params)
+
         case property
         when "DTSTART"
-          data[:start_time] = TimeUtil.deserialize_time(value)
+          data[:start_time] = TimeUtil.deserialize_time_with_zone(value, tzid)
         when "DTEND"
-          data[:end_time] = TimeUtil.deserialize_time(value)
+          data[:end_time] = TimeUtil.deserialize_time_with_zone(value, tzid)
         when "RDATE"
           data[:rtimes] ||= []
-          data[:rtimes] += value.split(",").map { |v| TimeUtil.deserialize_time(v) }
+          data[:rtimes] += value.split(",").map { |v| TimeUtil.deserialize_time_with_zone(v, tzid) }
         when "EXDATE"
           data[:extimes] ||= []
-          data[:extimes] += value.split(",").map { |v| TimeUtil.deserialize_time(v) }
+          data[:extimes] += value.split(",").map { |v| TimeUtil.deserialize_time_with_zone(v, tzid) }
         when "DURATION"
           data[:duration] # FIXME
         when "RRULE"
@@ -35,6 +39,50 @@ module IceCube
         end
       end
       Schedule.from_hash data
+    end
+
+    # Split a content line into its property part (name and parameters) and its
+    # value, at the first colon that is not inside a quoted parameter value.
+    # Parameter values are quoted precisely so they may contain a colon
+    # (RFC 5545 section 3.1), as in DTSTART;TZID="GMT+05:00":20130101T090000.
+    # Returns a nil value for a line with no colon at all.
+    def self.split_content_line(line)
+      in_quotes = false
+      line.each_char.with_index do |char, index|
+        case char
+        when '"' then in_quotes = !in_quotes
+        when ":" then return [line[0, index], line[(index + 1)..]] unless in_quotes
+        end
+      end
+      [line, nil]
+    end
+
+    # Split on +delimiter+, ignoring delimiters inside a quoted value.
+    def self.split_unquoted(string, delimiter)
+      parts = [+""]
+      in_quotes = false
+      string.each_char do |char|
+        in_quotes = !in_quotes if char == '"'
+        if char == delimiter && !in_quotes
+          parts << +""
+        else
+          parts.last << char
+        end
+      end
+      parts
+    end
+
+    # Find the TZID parameter among a property's parameters. TZID is not
+    # necessarily the first parameter (DTSTART;VALUE=DATE-TIME;TZID=... is
+    # equally valid), parameter names are case-insensitive, and the value may be
+    # double-quoted (RFC 5545 sections 3.1 and 3.2.19).
+    def self.tzid_from_params(params)
+      param = params.find { |p| p =~ /\ATZID=/i }
+      return nil unless param
+
+      tzid = param.split("=", 2).last.to_s.strip
+      tzid = tzid[1..-2] if tzid.length >= 2 && tzid.start_with?('"') && tzid.end_with?('"')
+      tzid.empty? ? nil : tzid
     end
 
     def self.rule_from_ical(ical)

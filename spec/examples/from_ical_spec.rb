@@ -134,7 +134,7 @@ module IceCube
     ICAL
 
     ical_string_with_multiple_rules = <<-ICAL.gsub(/^\s*/, "")
-  DTSTART;TZID=CDT:20151005T195541
+  DTSTART;TZID=America/Chicago:20151005T195541
   RRULE:FREQ=WEEKLY;BYDAY=MO,TU
   RRULE:FREQ=WEEKLY;INTERVAL=2;WKST=SU;BYDAY=FR
     ICAL
@@ -459,6 +459,94 @@ module IceCube
         ical_string = "DTSTART:20130314T201500Z\nDTEND:20130314T201545Z\nRRULE:FREQ=WEEKLY;BYDAY=TH;UNT\n  IL=20130531T100000Z\nDESCRIPTION:This is a test event\nSUMMARY:Test Event\n"
         schedule = IceCube::Schedule.from_ical(ical_string)
         expect(schedule.to_ical.split("\n").find { |x| x =~ /RRULE/ }).to eq("RRULE:FREQ=WEEKLY;UNTIL=20130531T100000Z;BYDAY=TH")
+      end
+    end
+
+    describe "TZID parameter handling" do
+      it "should read TZID when it is not the first parameter" do
+        schedule = IceCube::Schedule.from_ical "DTSTART;VALUE=DATE-TIME;TZID=America/New_York:20130101T090000"
+        expect(schedule.start_time.utc_offset).to eq(-5 * 3600)
+        expect(schedule.start_time).to eq(Time.utc(2013, 1, 1, 14, 0, 0))
+      end
+
+      it "should read a TZID whose parameter name is lower case" do
+        schedule = IceCube::Schedule.from_ical "DTSTART;tzid=America/New_York:20130101T090000"
+        expect(schedule.start_time).to eq(Time.utc(2013, 1, 1, 14, 0, 0))
+      end
+
+      it "should read a double-quoted TZID" do
+        schedule = IceCube::Schedule.from_ical %(DTSTART;TZID="America/New_York":20130101T090000)
+        expect(schedule.start_time).to eq(Time.utc(2013, 1, 1, 14, 0, 0))
+      end
+
+      it "should not split the value on a colon inside a quoted parameter" do
+        schedule = IceCube::Schedule.from_ical %(DTSTART;TZID="Etc/GMT+5":20130101T090000)
+        expect(schedule.start_time).to eq(Time.utc(2013, 1, 1, 14, 0, 0))
+      end
+
+      it "should ignore a line with no value at all" do
+        expect {
+          IceCube::Schedule.from_ical "BEGIN:VEVENT\nDTSTART;TZID=America/New_York:20130101T090000\nEND"
+        }.not_to raise_error
+      end
+
+      it "should fall back to zone-less parsing and warn for an unknown TZID", expect_warnings: true do
+        schedule = nil
+        warnings = capture_warnings do
+          schedule = IceCube::Schedule.from_ical "DTSTART;TZID=Not/AZone:20130101T090000"
+        end
+        expect(warnings).to match(/unknown TZID "Not\/AZone"/)
+        expect(schedule.start_time).to eq(Time.parse("20130101T090000"))
+      end
+
+      it "should not raise when a time zone database is unavailable" do
+        # ice_cube has no runtime dependency on ActiveSupport or TZInfo, so a
+        # TZID must degrade rather than blow up when neither is loaded.
+        allow(TimeUtil).to receive(:find_zone).and_return(nil)
+        allow(TimeUtil).to receive(:zone_database_available?).and_return(false)
+
+        schedule = nil
+        warnings = capture_warnings do
+          schedule = IceCube::Schedule.from_ical "DTSTART;TZID=America/New_York:20130101T090000"
+        end
+        expect(warnings).to match(/without a time zone database/)
+        expect(schedule.start_time).to eq(Time.parse("20130101T090000"))
+      end
+    end
+
+    describe "ActiveSupport time zone labels" do
+      # Serialization emits IANA identifiers, but ActiveSupport names its zones
+      # with its own labels, and earlier versions wrote those into the TZID.
+      # Those strings are still out there, so they have to keep parsing.
+      it "should parse a TZID given as an ActiveSupport zone label" do
+        schedule = IceCube::Schedule.from_ical "DTSTART;TZID=Eastern Time (US & Canada):20100510T090000"
+        expect(schedule.start_time).to eq(Time.utc(2010, 5, 10, 13, 0, 0))
+        expect(schedule.start_time.utc_offset).to eq(-4 * 3600)
+      end
+
+      it "should follow DST for a TZID given as an ActiveSupport zone label" do
+        schedule = IceCube::Schedule.from_ical <<~ICAL
+          DTSTART;TZID=Eastern Time (US & Canada):20130308T090000
+          RRULE:FREQ=DAILY
+        ICAL
+        expect(schedule.first(4).map(&:utc_offset)).to eq([-5, -5, -4, -4].map { |h| h * 3600 })
+      end
+
+      it "should read a zone label and an IANA identifier as the same zone" do
+        labelled = IceCube::Schedule.from_ical <<~ICAL
+          DTSTART;TZID=Eastern Time (US & Canada):20130308T090000
+          RRULE:FREQ=DAILY
+        ICAL
+        iana = IceCube::Schedule.from_ical <<~ICAL
+          DTSTART;TZID=America/New_York:20130308T090000
+          RRULE:FREQ=DAILY
+        ICAL
+        expect(labelled.first(4)).to eq(iana.first(4))
+      end
+
+      it "should re-serialize a zone label as its IANA identifier" do
+        schedule = IceCube::Schedule.from_ical "DTSTART;TZID=Eastern Time (US & Canada):20100510T090000"
+        expect(schedule.to_ical).to eq("DTSTART;TZID=America/New_York:20100510T090000")
       end
     end
   end

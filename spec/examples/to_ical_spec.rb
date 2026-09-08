@@ -113,7 +113,7 @@ describe IceCube, "to_ical" do
   it "should be able to serialize a base schedule to ical in local time" do
     Time.zone = "Eastern Time (US & Canada)"
     schedule = IceCube::Schedule.new(Time.zone.local(2010, 5, 10, 9, 0, 0))
-    expect(schedule.to_ical).to eq("DTSTART;TZID=EDT:20100510T090000")
+    expect(schedule.to_ical).to eq("DTSTART;TZID=America/New_York:20100510T090000")
   end
 
   it "should be able to serialize a base schedule to ical in UTC time" do
@@ -126,7 +126,7 @@ describe IceCube, "to_ical" do
     schedule = IceCube::Schedule.new(Time.zone.local(2010, 5, 10, 9, 0, 0))
     schedule.add_recurrence_rule IceCube::Rule.weekly
     # test equality
-    expectation = "DTSTART;TZID=PDT:20100510T090000\n"
+    expectation = "DTSTART;TZID=America/Los_Angeles:20100510T090000\n"
     expectation << "RRULE:FREQ=WEEKLY"
     expect(schedule.to_ical).to eq(expectation)
   end
@@ -136,7 +136,7 @@ describe IceCube, "to_ical" do
     schedule = IceCube::Schedule.new(Time.zone.local(2010, 10, 20, 4, 30, 0))
     schedule.add_recurrence_rule IceCube::Rule.weekly.day_of_week(monday: [2, -1])
     schedule.add_recurrence_rule IceCube::Rule.hourly
-    expectation = "DTSTART;TZID=EDT:20101020T043000\n"
+    expectation = "DTSTART;TZID=America/New_York:20101020T043000\n"
     expectation << "RRULE:FREQ=WEEKLY;BYDAY=2MO,-1MO\n"
     expectation << "RRULE:FREQ=HOURLY"
     expect(schedule.to_ical).to eq(expectation)
@@ -147,7 +147,7 @@ describe IceCube, "to_ical" do
     schedule = IceCube::Schedule.new(Time.zone.local(2010, 5, 10, 9, 0, 0))
     schedule.add_exception_rule IceCube::Rule.weekly
     # test equality
-    expectation = "DTSTART;TZID=PDT:20100510T090000\n"
+    expectation = "DTSTART;TZID=America/Los_Angeles:20100510T090000\n"
     expectation << "EXRULE:FREQ=WEEKLY"
     expect(schedule.to_ical).to eq(expectation)
   end
@@ -157,7 +157,7 @@ describe IceCube, "to_ical" do
     schedule = IceCube::Schedule.new(Time.zone.local(2010, 10, 20, 4, 30, 0))
     schedule.add_exception_rule IceCube::Rule.weekly.day_of_week(monday: [2, -1])
     schedule.add_exception_rule IceCube::Rule.hourly
-    expectation = "DTSTART;TZID=EDT:20101020T043000\n"
+    expectation = "DTSTART;TZID=America/New_York:20101020T043000\n"
     expectation << "EXRULE:FREQ=WEEKLY;BYDAY=2MO,-1MO\n"
     expectation << "EXRULE:FREQ=HOURLY"
     expect(schedule.to_ical).to eq(expectation)
@@ -208,10 +208,10 @@ describe IceCube, "to_ical" do
     expect(schedule.duration).to eq(3600)
   end
 
-  it "should default to to_ical using local time" do
+  it "should default to to_ical using UTC when there is no timezone info" do
     time = Time.now
-    schedule = IceCube::Schedule.new(Time.now)
-    expect(schedule.to_ical).to eq("DTSTART;TZID=#{time.zone}:#{time.strftime("%Y%m%dT%H%M%S")}") # default false
+    schedule = IceCube::Schedule.new(time)
+    expect(schedule.to_ical).to eq("DTSTART:#{time.utc.strftime("%Y%m%dT%H%M%S")}Z") # converts local to UTC
   end
 
   it "should not have an rtime that duplicates start time" do
@@ -223,10 +223,10 @@ describe IceCube, "to_ical" do
 
   it "should be able to receive a to_ical in utc time" do
     time = Time.now
-    schedule = IceCube::Schedule.new(Time.now)
-    expect(schedule.to_ical).to eq("DTSTART;TZID=#{time.zone}:#{time.strftime("%Y%m%dT%H%M%S")}") # default false
-    expect(schedule.to_ical(false)).to eq("DTSTART;TZID=#{time.zone}:#{time.strftime("%Y%m%dT%H%M%S")}")
-    expect(schedule.to_ical(true)).to eq("DTSTART:#{time.utc.strftime("%Y%m%dT%H%M%S")}Z")
+    schedule = IceCube::Schedule.new(time)
+    expect(schedule.to_ical).to eq("DTSTART:#{time.utc.strftime("%Y%m%dT%H%M%S")}Z") # converts local to UTC
+    expect(schedule.to_ical(false)).to eq("DTSTART:#{time.utc.strftime("%Y%m%dT%H%M%S")}Z") # still converts local to UTC
+    expect(schedule.to_ical(true)).to eq("DTSTART:#{time.utc.strftime("%Y%m%dT%H%M%S")}Z") # force UTC
   end
 
   it "should be able to serialize to ical with an until date" do
@@ -263,5 +263,31 @@ describe IceCube, "to_ical" do
     rule = IceCube::Rule.weekly
     rule.interval(2)
     expect(rule.to_ical).to match(/^FREQ=WEEKLY;INTERVAL=2/)
+  end
+
+  describe "time zone identifiers" do
+    before { IceCube::IcalBuilder.instance_variable_set(:@missing_time_zone_warned, false) }
+
+    it "should serialize the IANA identifier rather than a Rails zone label" do
+      Time.zone = "Eastern Time (US & Canada)"
+      schedule = IceCube::Schedule.new(Time.zone.local(2010, 5, 10, 9, 0, 0))
+      expect(schedule.to_ical).to eq("DTSTART;TZID=America/New_York:20100510T090000")
+    end
+
+    it "should round-trip a schedule created from a Rails zone label" do
+      Time.zone = "Eastern Time (US & Canada)"
+      schedule = IceCube::Schedule.new(Time.zone.local(2013, 3, 8, 9, 0, 0))
+      schedule.add_recurrence_rule IceCube::Rule.daily
+      round_tripped = IceCube::Schedule.from_ical(schedule.to_ical)
+      expect(round_tripped.first(4)).to eq(schedule.first(4))
+    end
+
+    it "should warn only once per process for times with no zone info", expect_warnings: true do
+      schedule = IceCube::Schedule.new(Time.local(2010, 5, 10, 9, 0, 0))
+      warnings = capture_warnings do
+        3.times { schedule.to_ical }
+      end
+      expect(warnings.scan("does not have timezone info").size).to eq(1)
+    end
   end
 end
