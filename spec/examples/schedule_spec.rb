@@ -701,6 +701,87 @@ describe IceCube::Schedule do
       schedule = IceCube::Schedule.new Time.now
       expect(schedule.remove_exception_time(Time.now)).to be_nil
     end
+
+    it "should restore the occurrence at a removed exception time" do
+      schedule = IceCube::Schedule.new(t0 = Time.utc(2010, 1, 1))
+      schedule.rrule IceCube::Rule.hourly.count(3)
+      schedule.extime t0 + ONE_HOUR
+      expect(schedule.all_occurrences).to eq([t0, t0 + 2 * ONE_HOUR])
+      schedule.remove_exception_time t0 + ONE_HOUR
+      expect(schedule.all_occurrences).to eq([t0, t0 + ONE_HOUR, t0 + 2 * ONE_HOUR])
+    end
+
+    it "should allow an exception time to be added again after removal" do
+      schedule = IceCube::Schedule.new(t0 = Time.utc(2010, 1, 1))
+      schedule.rrule IceCube::Rule.hourly.count(3)
+      schedule.extime t0 + ONE_HOUR
+      schedule.remove_exception_time t0 + ONE_HOUR
+      schedule.extime t0 + ONE_HOUR
+      expect(schedule.exception_times).to eq([t0 + ONE_HOUR])
+      expect(schedule.all_occurrences).to eq([t0, t0 + 2 * ONE_HOUR])
+    end
+
+    it "should keep a copy and its original consistent with their exception times" do
+      schedule = IceCube::Schedule.new(t0 = Time.utc(2010, 1, 1))
+      schedule.rrule IceCube::Rule.hourly.count(4)
+      schedule.extime t0 + ONE_HOUR
+      schedule.all_occurrences
+      copy = schedule.dup
+      copy.remove_exception_time t0 + ONE_HOUR
+      copy.extime t0 + 2 * ONE_HOUR
+      [schedule, copy].each do |s|
+        expect(s.all_occurrences).to eq([0, 1, 2, 3].map { |h| t0 + h * ONE_HOUR } - s.exception_times)
+      end
+    end
+  end
+
+  describe :add_exception_time do
+    it "should not add the same exception time twice" do
+      schedule = IceCube::Schedule.new(t0 = Time.utc(2010, 1, 1))
+      2.times { schedule.extime t0 + ONE_HOUR }
+      expect(schedule.exception_times).to eq([t0 + ONE_HOUR])
+    end
+
+    it "should keep exception times that differ by a fraction of a second" do
+      schedule = IceCube::Schedule.new(t0 = Time.utc(2010, 1, 1))
+      schedule.extime t0
+      schedule.extime t0 + 0.5
+      expect(schedule.exception_times).to eq([t0, t0 + 0.5])
+    end
+
+    it "should skip an exception time given in another time zone" do
+      schedule = IceCube::Schedule.new(t0 = Time.utc(2010, 1, 1))
+      schedule.rrule IceCube::Rule.hourly.count(3)
+      schedule.extime((t0 + ONE_HOUR).getlocal("+09:00"))
+      expect(schedule.all_occurrences).to eq([t0, t0 + 2 * ONE_HOUR])
+    end
+
+    it "should combine exception times with exception rules" do
+      schedule = IceCube::Schedule.new(t0 = Time.utc(2010, 1, 1))
+      schedule.rrule IceCube::Rule.hourly.count(6)
+      schedule.extime t0 + ONE_HOUR
+      schedule.exrule IceCube::Rule.hourly(2)
+      expect(schedule.all_occurrences).to eq([t0 + 3 * ONE_HOUR, t0 + 5 * ONE_HOUR])
+    end
+
+    it "should handle thousands of exception times quickly" do
+      schedule = IceCube::Schedule.new(t0 = Time.utc(2010, 1, 1))
+      schedule.rrule IceCube::Rule.minutely(15).until(t0 + 32 * ONE_DAY)
+      (ONE_DAY...31 * ONE_DAY).step(15 * ONE_MINUTE) { |offset| schedule.extime t0 + offset }
+      expect(schedule.exception_times.size).to eq(2880)
+      expect(schedule.all_occurrences.size).to eq(2 * 96 + 1)
+    end
+  end
+
+  describe :remove_exception_rule do
+    it "should restore occurrences excluded by a removed exception rule" do
+      schedule = IceCube::Schedule.new(t0 = Time.utc(2010, 1, 1))
+      schedule.rrule IceCube::Rule.hourly.count(4)
+      schedule.extime t0 + ONE_HOUR
+      schedule.exrule IceCube::Rule.hourly(2)
+      schedule.remove_exception_rule IceCube::Rule.hourly(2)
+      expect(schedule.all_occurrences).to eq([t0, t0 + 2 * ONE_HOUR, t0 + 3 * ONE_HOUR])
+    end
   end
 
   describe :occurs_on? do

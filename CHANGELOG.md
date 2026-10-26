@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated CI test matrix to support Rails 7.2, 8.0, 8.1 and Ruby 3.2, 3.3, 3.4, 4.0. ([#565](https://github.com/ice-cube-ruby/ice_cube/pull/565)) by [@nehresma](https://github.com/nehresma) and [@pacso](https://github.com/pacso)
 - Added backwards compatibility for Ruby 2.6+ by replacing anonymous block arguments with explicit block parameters and adding Rails/Ruby version compatibility exclusions in CI test matrix. ([#562](https://github.com/ice-cube-ruby/ice_cube/pull/562)) by [@scpike](https://github.com/scpike)
 
+### Fixed
+- Adding, checking and enumerating exception times no longer slows down quadratically with the number of exception times. ([#572](https://github.com/ice-cube-ruby/ice_cube/pull/572)) by [@xulkrnan](https://github.com/xulkrnan)
+
 ## [0.17.0] - 2024-07-18
 ### Added
 - Indonesian translations. ([#505](https://github.com/seejohnrun/ice_cube/pull/505)) by [@achmiral](https://github.com/achmiral)

@@ -19,6 +19,7 @@ module IceCube
       self.end_time = options[:end_time] if options[:end_time]
       @all_recurrence_rules = []
       @all_exception_rules = []
+      @exception_index = {}
       yield self if block_given?
     end
 
@@ -80,13 +81,22 @@ module IceCube
     # Add an exception rule to the schedule
     def add_exception_rule(rule)
       return if rule.nil?
-      @all_exception_rules << rule unless @all_exception_rules.include?(rule)
+      if rule.is_a?(SingleOccurrenceRule)
+        return if exception_index[:times].key?(rule.time.to_r)
+        exception_index[:times][rule.time.to_r] = true
+        exception_index[:seconds][rule.time.to_i] = true
+      else
+        return if @all_exception_rules.include?(rule)
+        exception_index[:rules] << rule
+      end
+      @all_exception_rules << rule
     end
     alias_method :exrule, :add_exception_rule
 
     # Remove an exception rule
     def remove_exception_rule(rule)
       res = @all_exception_rules.delete(rule)
+      rebuild_exception_index
       res.nil? ? [] : [res]
     end
 
@@ -136,6 +146,7 @@ module IceCube
       @all_exception_rules.delete_if do |rule|
         found = true if rule.is_a?(SingleOccurrenceRule) && rule.time == time
       end
+      rebuild_exception_index
       time if found
     end
     alias_method :remove_extime, :remove_exception_time
@@ -473,9 +484,27 @@ module IceCube
     # Return a boolean indicating whether or not a specific time
     # is excluded from the schedule
     def exception_time?(time)
-      @all_exception_rules.any? do |rule|
-        rule.on?(time, start_time)
-      end
+      exception_index[:seconds].key?(time.to_i) ||
+        exception_index[:rules].any? { |rule| rule.on?(time, start_time) }
+    end
+
+    # Exception times as exact values (for de-duplication) and whole seconds
+    # (for lookup), plus the remaining exception rules. Like the rule arrays,
+    # the index is shared with copies made by dup/clone, so it is only ever
+    # updated in place.
+    def exception_index
+      @exception_index ||= {}
+      rebuild_exception_index if @exception_index.empty?
+      @exception_index
+    end
+
+    def rebuild_exception_index
+      single, rules = @all_exception_rules.partition { |r| r.is_a?(SingleOccurrenceRule) }
+      (@exception_index ||= {}).replace(
+        times: single.to_h { |r| [r.time.to_r, true] },
+        seconds: single.to_h { |r| [r.time.to_i, true] },
+        rules: rules
+      )
     end
 
     def require_terminating_rules
