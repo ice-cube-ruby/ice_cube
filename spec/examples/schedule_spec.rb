@@ -733,6 +733,14 @@ describe IceCube::Schedule do
         expect(s.all_occurrences).to eq([0, 1, 2, 3].map { |h| t0 + h * ONE_HOUR } - s.exception_times)
       end
     end
+
+    it "should keep the other exception times when the time to remove is not set" do
+      schedule = IceCube::Schedule.new(t0 = Time.utc(2010, 1, 1))
+      schedule.rrule IceCube::Rule.hourly.count(3)
+      schedule.extime t0 + ONE_HOUR
+      expect(schedule.remove_exception_time(t0 + 2 * ONE_HOUR)).to be_nil
+      expect(schedule.all_occurrences).to eq([t0, t0 + 2 * ONE_HOUR])
+    end
   end
 
   describe :add_exception_time do
@@ -781,6 +789,15 @@ describe IceCube::Schedule do
       schedule.exrule IceCube::Rule.hourly(2)
       schedule.remove_exception_rule IceCube::Rule.hourly(2)
       expect(schedule.all_occurrences).to eq([t0, t0 + 2 * ONE_HOUR, t0 + 3 * ONE_HOUR])
+    end
+
+    it "should keep the other exceptions when the rule to remove is not set" do
+      schedule = IceCube::Schedule.new(t0 = Time.utc(2010, 1, 1))
+      schedule.rrule IceCube::Rule.hourly.count(4)
+      schedule.extime t0 + ONE_HOUR
+      schedule.exrule IceCube::Rule.hourly(2)
+      expect(schedule.remove_exception_rule(IceCube::Rule.daily)).to eq([])
+      expect(schedule.all_occurrences).to eq([t0 + 3 * ONE_HOUR])
     end
   end
 

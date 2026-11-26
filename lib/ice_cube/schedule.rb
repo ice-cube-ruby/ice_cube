@@ -96,7 +96,7 @@ module IceCube
     # Remove an exception rule
     def remove_exception_rule(rule)
       res = @all_exception_rules.delete(rule)
-      rebuild_exception_index
+      rebuild_exception_index unless res.nil?
       res.nil? ? [] : [res]
     end
 
@@ -146,7 +146,7 @@ module IceCube
       @all_exception_rules.delete_if do |rule|
         found = true if rule.is_a?(SingleOccurrenceRule) && rule.time == time
       end
-      rebuild_exception_index
+      rebuild_exception_index if found
       time if found
     end
     alias_method :remove_extime, :remove_exception_time
